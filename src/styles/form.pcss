@@ -1,0 +1,40 @@
+.input-field {
+  width: 100%;
+  margin: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--color-light);
+  border-color: var(--color-light);
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: var(--color-white);
+  height: auto;
+}
+
+select, input {
+  border: transparent;
+  border-bottom: 1px solid var(--color-light);
+  background-color: transparent;
+  position: relative;
+
+  &::placeholder {
+     color: var(--color-light)
+  }
+}
+
+textarea {
+  border: 1px solid var(--color-light);
+  &::placeholder {
+    color: var(--color-light)
+  }
+}
+input[disabled],
+textarea[disabled], select[disabled] {
+  border: none;
+  padding: 15px 0;
+  pointer-events: none;
+}
+
+.moduleItem-input[disabled], .moduleItem-select[disabled] {
+  min-width: 130px;
+  padding: 0;
+}

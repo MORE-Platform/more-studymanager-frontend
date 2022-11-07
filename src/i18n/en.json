@@ -1,0 +1,60 @@
+{
+  "message": "testing message",
+
+  "studyId": "Study ID",
+  "title": "Title",
+  "start": "Start",
+  "end": "End",
+  "plannedStart": "Planed Start",
+  "plannedEnd": "Planned End",
+  "status": "Status",
+  "description": "Description",
+
+  "participants": "Participants",
+  "participantId": "Participant Id",
+  "editParticipant": "Edit Participant",
+  "createParticipant": "Create Participant",
+  "alias": "Alias",
+  "edited": "Last Edited",
+  "externalId": "External Id",
+  "edit": "Edit",
+  "setReady": "Set Ready",
+  "save": "Save",
+  "cancel": "Cancel",
+  "registrationToken": "Registration Token",
+  "delete": "Delete",
+  "isRequired": "Required",
+  "isNotRequired": "Not required",
+  "New": "New",
+  "add": "Add",
+  "type": "Type",
+  "modules": "Modules",
+
+  "researcherRole": "Role",
+  "roleViewer": "Viewer",
+  "roleOwner": "Owner",
+
+  "statusActive": "active",
+  "statusApproved": "approved",
+  "statusCompleted": "completed",
+  "statusInactive": "inactive",
+  "statusInvited": "invited",
+  "statusAccepted": "accepted",
+  "statusDropout": "dropped out",
+
+  "statusPrep": "In Preparation",
+  "statusNew": "New",
+
+  "prepStudies": "In Preparation",
+  "activeStudies": "Active Studies",
+  "completedStudies": "Completed Studies",
+
+  "createStudy": "Create study",
+  "updateStudy": "Edit study",
+
+  "smartphoneAccelerometer": "Smartphone Accelerometer",
+  "heartRateMeter": "Heart Rate Meter",
+
+  "noModulesMsg": "Studies has no modules yet.",
+  "deleteMsg": "Are you sure you want to delete "
+}

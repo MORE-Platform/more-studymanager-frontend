@@ -1,0 +1,944 @@
+openapi: 3.0.2
+info:
+  version: 1.0.0
+  title: Configurator API
+security:
+  - OAuth:
+      - read
+      - write
+servers:
+  - url: https://localhost:8080/api/v1
+    description: Local Test Server
+paths:
+  /components/{componentType}:
+    get:
+      tags:
+        - components
+      operationId: listComponents
+      description: List component of certain type
+      parameters:
+        - name: componentType
+          in: path
+          schema:
+            type: string
+            enum:
+              - action
+              - trigger
+              - observation
+          required: true
+      responses:
+        '200':
+          description: Components successfully returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ComponentFactory'
+  /components/{componentType}/{componentId}/web-component.js:
+    get:
+      tags:
+        - components
+      operationId: getWebComponentScript
+      description: Get web component script
+      parameters:
+        - name: componentType
+          in: path
+          schema:
+            type: string
+            enum:
+              - action
+              - trigger
+              - observation
+          required: true
+        - name: componentId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Returned script successfully
+          content:
+            text/javascript:
+              schema:
+                type: string
+        '404':
+          description: Not found
+  /studies:
+    post:
+      tags:
+        - studies
+      operationId: createStudy
+      description: Create a new study
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Study'
+      responses:
+        '201':
+          description: Study successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: Study creation failed
+        '500':
+          description: Error
+    get:
+      tags:
+        - studies
+      description: List all studies
+      operationId: listStudies
+      responses:
+        '200':
+          description: Successfully listed all studies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Study'
+        '404':
+          description: Not found
+
+  /studies/{studyId}:
+    get:
+      tags:
+        - studies
+      description: Get study information
+      operationId: getStudy
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully returned study information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - studies
+      description: Update a study
+      operationId: updateStudy
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Study'
+      responses:
+        '200':
+          description: Successfully updated study
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: Could not update study
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - studies
+      description: Delete a study
+      operationId: deleteStudy
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Study deleted
+        '404':
+          description: Not found
+
+  /studies/{studyId}/status:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    put:
+      tags:
+        - studies
+      operationId: setStatus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatusChange'
+      responses:
+        '202':
+          description: Status changed deleted
+        '400':
+          description: Bad request
+
+  /studies/{studyId}/studyGroups:
+    post:
+      tags:
+        - studyGroups
+      operationId: createStudyGroup
+      description: Create a new study group
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyGroup'
+      responses:
+        '201':
+          description: Study group successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyGroup'
+        '400':
+          description: Study group creation failed
+        '500':
+          description: Error
+    get:
+      tags:
+        - studyGroups
+      description: List all study groups for a study
+      operationId: listStudyGroups
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully listed all study groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudyGroup'
+        '404':
+          description: Not found
+
+  /studies/{studyId}/studyGroups/{studyGroupId}:
+    get:
+      tags:
+        - studyGroups
+      description: Get study group information
+      operationId: getStudyGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/StudyGroupId'
+      responses:
+        '200':
+          description: Successfully returned study group information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyGroup'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - studyGroups
+      description: Update a study group
+      operationId: updateStudyGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/StudyGroupId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyGroup'
+      responses:
+        '200':
+          description: Successfully updated study group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyGroup'
+        '400':
+          description: Could not update study group
+        '404':
+          description: Not found
+    delete:
+      tags:
+        - studyGroups
+      description: Delete a study group
+      operationId: deleteStudyGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/StudyGroupId'
+      responses:
+        '200':
+          description: Study group deleted
+        '404':
+          description: Not found
+
+  /studies/{studyId}/participants:
+    post:
+      tags:
+        - participants
+      description: Create participants for study
+      operationId: createParticipants
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Participant'
+          text/csv:
+            schema:
+              type: string
+              description: csv
+        required: true
+      responses:
+        '201':
+          description: created participant
+          content:
+            application/json:
+              schema:
+                type: array
+                description: list all participants
+                items:
+                  $ref: '#/components/schemas/Participant'
+        '500':
+          description: Error
+    get:
+      tags:
+        - participants
+      description: List participants for study
+      operationId: listParticipants
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Participant'
+        '404':
+          description: Not found
+
+  /studies/{studyId}/participants/{participantId}:
+    get:
+      tags:
+        - participants
+      description: get participant properties
+      operationId: getParticipant
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+      responses:
+        '200':
+          description: successfully updated participant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+        '404':
+          description: not found
+    put:
+      tags:
+        - participants
+      description: update participant properties
+      operationId: updateParticipant
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Participant'
+      responses:
+        '200':
+          description: successfully updated participant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+        '400':
+          description: could not update participant
+        '404':
+          description: not found
+    delete:
+      tags:
+        - participants
+      description: Delete participant
+      operationId: deleteParticipant
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+      responses:
+        '200':
+          description: deleted participants
+        '500':
+          description: Error
+
+  /studies/{studyId}/observations:
+    post:
+      tags:
+        - observations
+      description: Add Observation
+      operationId: addObservation
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
+
+      responses:
+        '200':
+          description: Observations added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+
+        '400':
+          description: Could not add observations
+    get:
+      tags:
+        - observations
+      description: List Observations
+      operationId: listObservations
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Observation'
+        '404':
+          description: not found
+  /studies/{studyId}/observations/{observationId}:
+    put:
+      tags:
+        - observations
+      description: update observation
+      operationId: updateObservation
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Observation'
+      responses:
+        '200':
+          description: observation successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+
+        '400':
+          description: could not update observation
+        '404':
+          description: not found
+    delete:
+      tags:
+        - observations
+      description: Delete observation
+      operationId: deleteObservation
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationId'
+      responses:
+        '204':
+          description: Successfully deleted observation
+        '404':
+          description: not found
+        '500':
+          description: Error
+
+  /studies/{studyId}/interventions:
+    post:
+      tags:
+        - interventions
+      description: Add Intervention
+      operationId: addIntervention
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Intervention'
+
+      responses:
+        '200':
+          description: Intervention added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Intervention'
+
+        '400':
+          description: Could not add intervention
+    get:
+      tags:
+        - interventions
+      description: List Interventions
+      operationId: listInterventions
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: intervention successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Intervention'
+        '404':
+          description: not found
+
+  /studies/{studyId}/interventions/{interventionId}:
+    get:
+      tags:
+        - interventions
+      description: Get Intervention
+      operationId: getIntervention
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/InterventionId'
+      responses:
+        '200':
+          description: intervention successful returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Intervention'
+        '404':
+          description: not found
+  /studies/{studyId}/interventions/{interventionId}/trigger:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/InterventionId'
+    get:
+      tags:
+        - interventions
+      description: Get trigger
+      operationId: getTrigger
+      responses:
+        '200':
+          description: trigger returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+        '400':
+          description: bad request
+    put:
+      tags:
+        - interventions
+      description: Update trigger
+      operationId: updateTrigger
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trigger'
+      responses:
+        '200':
+          description: trigger updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trigger'
+        '400':
+          description: bad request
+
+  /studies/{studyId}/interventions/{interventionId}/actions:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/InterventionId'
+    get:
+      tags:
+        - interventions
+      description: List actions
+      operationId: listActions
+      responses:
+        '200':
+          description: action updated successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Action'
+        '400':
+          description: bad request
+    post:
+      tags:
+        - interventions
+      description: Create action
+      operationId: createAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+      responses:
+        '200':
+          description: action created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        '400':
+          description: bad request
+  /studies/{studyId}/interventions/{interventionId}/actions/{actionId}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/InterventionId'
+      - $ref: '#/components/parameters/ActionId'
+    get:
+      tags:
+        - interventions
+      description: Get action
+      operationId: getAction
+      responses:
+        '200':
+          description: action returned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        '400':
+          description: bad request
+    put:
+      tags:
+        - interventions
+      description: Update action
+      operationId: updateAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+      responses:
+        '200':
+          description: action updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        '400':
+          description: bad request
+    delete:
+      tags:
+        - interventions
+      description: Delete action
+      operationId: deleteAction
+      responses:
+        '204':
+          description: action deleted successfully
+        '400':
+          description: bad request
+components:
+  schemas:
+    ComponentFactory:
+      type: object
+      properties:
+        componentId:
+          type: string
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        hasWebComponent:
+          type: boolean
+    Study:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        title:
+          type: string
+        purpose:
+          type: string
+        participantInfo:
+          type: string
+        consentInfo:
+          type: string
+        status:
+          $ref: '#/components/schemas/StudyStatus'
+        start:
+          type: string
+          format: date
+          readOnly: true
+        end:
+          type: string
+          format: date
+          readOnly: true
+        plannedStart:
+          type: string
+          format: date
+        plannedEnd:
+          type: string
+          format: date
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    StatusChange:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/StudyStatus'
+
+    StudyStatus:
+      type: string
+      enum:
+        - draft
+        - active
+        - paused
+        - closed
+      readOnly: true
+      default: draft
+
+    StudyGroup:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        studyGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        numberOfParticipants:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Participant:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        participantId:
+          $ref: '#/components/schemas/Id'
+        alias:
+          type: string
+        studyGroupId:
+          type: string
+        registrationToken:
+          type: string
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/ParticipantStatus'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    ParticipantStatus:
+      type: string
+      enum:
+        - new
+        - registered
+
+    Observation:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        observationId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/IdReference'
+        title:
+          type: string
+        purpose:
+          type: string
+        participantInfo:
+          type: string
+        type:
+          type: string
+        properties:
+          type: object
+        schedule:
+          $ref: './TimeRange.yaml/#/components/schemas/TimeRange'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Intervention:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        interventionId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/IdReference'
+        title:
+          type: string
+        purpose:
+          type: string
+        schedule:
+          $ref: './TimeRange.yaml/#/components/schemas/TimeRange'
+        trigger:
+          $ref: '#/components/schemas/Trigger'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Trigger:
+      type: object
+      readOnly: true
+      properties:
+        type:
+          type: string
+        properties:
+          type: object
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    Action:
+      type: object
+      properties:
+        actionId:
+          $ref: '#/components/schemas/Id'
+        type:
+          type: string
+        properties:
+          type: object
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    StudyId:
+      type: integer
+      format: int64
+      readOnly: true
+
+    Id:
+      type: integer
+      format: int32
+      readOnly: true
+
+    IdReference:
+      type: integer
+      format: int32
+
+  parameters:
+    StudyId:
+      name: studyId
+      in: path
+      schema:
+        $ref: '#/components/schemas/StudyId'
+      required: true
+    StudyGroupId:
+      name: studyGroupId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      required: true
+    ParticipantId:
+      name: participantId
+      in: path
+      schema:
+        type: integer
+        format: int64
+      required: true
+    ObservationId:
+      name: observationId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+    InterventionId:
+      name: interventionId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+    ActionId:
+      name: actionId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+
+  securitySchemes:
+    OAuth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://auth.more.redlink.io/authorize #TODO
+          scopes:
+            read: read studies
+            write: write studies

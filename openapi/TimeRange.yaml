@@ -1,0 +1,143 @@
+openapi: "3.0.3"
+info:
+  title: TimeRange Model
+  version: "1.0"
+  description: see https://www.rfc-editor.org/rfc/rfc8984.html#name-recurrence-properties
+
+components:
+  schemas:
+    TimeRange:
+      description: Time range
+      type: object
+      readOnly: true
+      properties:
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        mode:
+          type: string
+          enum:
+            - by
+            - till
+        occurrence:
+          $ref: '#/components/schemas/Occurrence'
+        interval:
+          $ref: '#/components/schemas/Interval'
+      required:
+        - start
+        - end
+        - mode
+        - occurrence
+
+    Occurrence:
+      type: string
+      enum:
+        - always
+        - once
+        - interval
+
+    Interval:
+      description: iCal format for Intervals. [Docs](https://icalendar.org/iCalendar-RFC-5545/3-8-5-3-recurrence-rule.html)
+      type: object
+      properties:
+        freq:
+          $ref: '#/components/schemas/Frequency'
+        interval:
+          description: Number of freq iterations (e.g. DAILY + Interval(2) = Every second day)
+          type: integer
+          minimum: 1
+        until:
+          type: string
+          format: date-time
+        count:
+          description: How many times the interval should occur
+          type: integer
+          minimum: 1
+        byMonth:
+          description: Months in number JAN=1, FEB=2, etc.
+          type: array
+          items:
+            $ref: '#/components/schemas/Month'
+        byWeekDays:
+          description: On which days of the week
+          type: array
+          items:
+            type: object
+            properties:
+              weekday:
+                $ref: '#/components/schemas/Weekday'
+              numberOfDay:
+                description: Used to specify which day in a monthly or yearly interval should be used as a reminder (e.g. Sunday, 1 -> the first sunday of the month / Monday, 20 -> the 20th monday of the year)
+                type: integer
+                default: 0
+        weekday:
+          $ref: '#/components/schemas/Weekday'
+        byMonthDay:
+          description: Days of month
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 31
+        byYearDay:
+          description: Days of year
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 365
+        byWeekNumber:
+          description: Number of weeks in year
+          type: array
+          items:
+            type: integer
+            minimum: 1
+            maximum: 53
+        offset:
+          description: date offset (hours, days, weeks, months, years)
+          type: integer
+        exceptions:
+          type: array
+          items:
+            type: string
+            format: date-time
+
+    Frequency:
+      type: string
+      enum:
+        - minutley
+        - hourly
+        - daily
+        - weekly
+        - monthly
+        - yearly
+
+    Weekday:
+      type: string
+      enum:
+        - monday
+        - tuesday
+        - wednesday
+        - thursday
+        - friday
+        - saturday
+        - sunday
+
+    Month:
+      type: string
+      enum:
+        - january
+        - february
+        - march
+        - april
+        - may
+        - june
+        - july
+        - august
+        - september
+        - october
+        - november
+        - december
