@@ -6,12 +6,10 @@
   import {Study} from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  import { useConfirm } from "primevue/useconfirm";
 
   const { studyApi } = useStudiesApiClient()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
-  const confirm = useConfirm();
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'title', header: 'title' },
@@ -23,19 +21,8 @@
   ]
 
   const rowActions: MoreTableAction[] = [
-    { id:'delete', label:'Delete', icon:'pi pi-times'}
+    { id:'delete', label:'Delete', icon:'pi pi-times', confirm: {header: 'Confirm', message: 'Really delete study?'}}
   ]
-
-  const confirmDelete = (study: Study) => {
-    confirm.require({
-      message: 'Really delete study?',
-      header: 'Confirmation',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        deleteStudy(study)
-      }
-    });
-  }
 
   async function listStudies(): Promise<void> {
     try {
@@ -47,12 +34,13 @@
   }
 
   function goToStudy(id: string) {
+    console.log(id);
     router.push({ name: 'Study', params: { id: id } })
   }
 
   function execute(action: MoreTableActionResult) {
     switch (action.id) {
-      case 'delete': return confirmDelete(action.data as Study)
+      case 'delete': return deleteStudy(action.data as Study)
       default: console.error('no handler for action', action)
     }
   }
@@ -67,6 +55,7 @@
 <template>
   <div>
     <MoreTable
+      row-id="studyId"
       :title="$t('studyList')"
       :columns="studyColumns"
       :has-edit="false"

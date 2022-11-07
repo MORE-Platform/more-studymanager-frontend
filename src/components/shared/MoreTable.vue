@@ -5,11 +5,16 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import {Study} from '../../generated-sources/openapi';
+import {useConfirm} from 'primevue/useconfirm';
 
 defineProps({
   title: {
     type: String,
     default: '',
+  },
+  rowId: {
+    type: String,
+    required: true,
   },
   columns: {
     type: Array as PropType<Array<MoreTableColumn>>,
@@ -29,6 +34,8 @@ defineProps({
   }
 })
 
+const confirm = useConfirm();
+
 const emit = defineEmits<{
   (e: 'onselect', rowKey: string): void
   (e: 'onaction', result: MoreTableActionResult): void
@@ -38,8 +45,19 @@ function selectHandler(rowKey: string) {
   emit('onselect', rowKey)
 }
 
-function actionHandler(id: string, data: unknown) {
-  emit('onaction', {id, data})
+function actionHandler(action: MoreTableAction, data: unknown) {
+  if(action.confirm) {
+    confirm.require({
+      header: action.confirm.header,
+      message: action.confirm.message,
+      accept: () => {
+        emit('onaction', {id: action.id, data})
+      }
+    });
+  } else {
+    emit('onaction', {id: action.id, data})
+  }
+
 }
 
 </script>
@@ -52,7 +70,7 @@ function actionHandler(id: string, data: unknown) {
       :value="data"
       selection-mode="single"
       responsive-layout="scroll"
-      @row-click="selectHandler($event.data[id])"
+      @row-click="selectHandler($event.data[rowId])"
     >
       <Column
         v-for="column in columns"
@@ -73,7 +91,7 @@ function actionHandler(id: string, data: unknown) {
         :row-hover="true"
       >
         <template #body="slotProps">
-          <Button v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action.id, slotProps.data)"></Button>
+          <Button v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action, slotProps.data)"></Button>
         </template>
       </Column>
     </DataTable>
