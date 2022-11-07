@@ -11,7 +11,7 @@ export default defineConfig({
       runtimeOnly: false,
       compositionOnly: true,
       defaultSFCLang: 'json',
-      include: path.resolve('./src/i18n/de'),
+      include: path.resolve('./src/i18n/en'),
     }),
   ],
   server: {

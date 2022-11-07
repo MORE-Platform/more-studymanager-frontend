@@ -22,6 +22,8 @@ import PrimeVue from 'primevue/config'
 import 'primevue/resources/primevue.min.css'
 import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primeicons/primeicons.css'
+import Tooltip from 'primevue/tooltip';
+import ConfirmationService from 'primevue/confirmationservice';
 
 // Router
 import { Router } from './router'
@@ -37,8 +39,11 @@ const app = createApp(App)
 app.use(Router)
 app.use(i18n)
 app.use(PrimeVue)
+app.use(ConfirmationService);
 
 app.mount('#app')
+
+app.directive('tooltip', Tooltip);
 
 const modulesApi = new ModulesApi({
   basePath: '/api/v1',

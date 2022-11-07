@@ -2,15 +2,18 @@
   import { ref, Ref } from 'vue'
   import useStudiesApiClient from '../composable/useStudiesApi'
   import { useRouter } from 'vue-router'
-  import DatatableColumn from '../models/DatatableColumn'
+  import {MoreTableAction, MoreTableActionResult, MoreTableColumn} from '../models/MoreTableModel'
   import {Study} from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import { useConfirm } from "primevue/useconfirm";
 
   const { studyApi } = useStudiesApiClient()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
+  const confirm = useConfirm();
 
-  const studyColumns: DatatableColumn[] = [
+  const studyColumns: MoreTableColumn[] = [
     { field: 'title', header: 'title' },
     { field: 'plannedStart', header: 'plannedStart' },
     { field: 'plannedEnd', header: 'plannedEnd' },
@@ -18,6 +21,21 @@
     { field: 'end', header: 'end' },
     { field: 'status', header: 'status' },
   ]
+
+  const rowActions: MoreTableAction[] = [
+    { id:'delete', label:'Delete', icon:'pi pi-times'}
+  ]
+
+  const confirmDelete = (study: Study) => {
+    confirm.require({
+      message: 'Really delete study?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        deleteStudy(study)
+      }
+    });
+  }
 
   async function listStudies(): Promise<void> {
     try {
@@ -32,18 +50,32 @@
     router.push({ name: 'Study', params: { id: id } })
   }
 
+  function execute(action: MoreTableActionResult) {
+    switch (action.id) {
+      case 'delete': return confirmDelete(action.data as Study)
+      default: console.error('no handler for action', action)
+    }
+  }
+
+  function deleteStudy(study: Study) {
+    studyApi.deleteStudy(study.studyId as number).then(listStudies)
+  }
+
   listStudies()
 </script>
 
 <template>
   <div>
     <MoreTable
-      id=""
+      :title="$t('studyList')"
       :columns="studyColumns"
       :has-edit="false"
       :has-delete="false"
       :data="studyList"
+      :row-actions="rowActions"
       @onselect="goToStudy($event)"
+      @onaction="execute($event)"
     />
+    <ConfirmDialog></ConfirmDialog>
   </div>
 </template>

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {PropType} from 'vue'
-import DatatableColumn from '../../models/DatatableColumn'
-import PrimeVueDataTable from 'primevue/datatable'
-import PrimeVueColumn from 'primevue/column'
+import {MoreTableColumn, MoreTableAction, MoreTableActionResult} from '../../models/MoreTableModel'
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
 import {Study} from '../../generated-sources/openapi';
 
 defineProps({
@@ -11,22 +12,34 @@ defineProps({
     default: '',
   },
   columns: {
-    type: Array as PropType<Array<DatatableColumn>>,
+    type: Array as PropType<Array<MoreTableColumn>>,
     required: true,
   },
   data: {
     type: Array as PropType<Array<Study>>,
     required: true,
+  },
+  rowActions: {
+    type: Array as PropType<Array<MoreTableAction>>,
+    default: () => [],
+  },
+  tableActions: {
+    type: Array as PropType<Array<MoreTableAction>>,
+    default: () => [],
   }
 })
 
 const emit = defineEmits<{
-  (e: 'onSelect', value: string): void
-  (e: 'onAction', id: string): void
+  (e: 'onselect', rowKey: string): void
+  (e: 'onaction', result: MoreTableActionResult): void
 }>()
 
-function selectClickHandler(id: string) {
-  emit('onSelect', id)
+function selectHandler(rowKey: string) {
+  emit('onselect', rowKey)
+}
+
+function actionHandler(id: string, data: unknown) {
+  emit('onaction', {id, data})
 }
 
 </script>
@@ -35,13 +48,13 @@ function selectClickHandler(id: string) {
   <div>
     <h3>{{ title }}</h3>
 
-    <PrimeVueDataTable
+    <DataTable
       :value="data"
       selection-mode="single"
       responsive-layout="scroll"
-      @row-click="selectClickHandler($event.data[id])"
+      @row-click="selectHandler($event.data[id])"
     >
-      <PrimeVueColumn
+      <Column
         v-for="column in columns"
         :key="column.field"
         :field="column.field"
@@ -52,9 +65,18 @@ function selectClickHandler(id: string) {
         <template #body="slotProps">
           {{ slotProps.data[column.field] }}
         </template>
-      </PrimeVueColumn
+      </Column>
+
+      <Column
+        key="actions"
+        :header="$t('actions')"
+        :row-hover="true"
       >
-    </PrimeVueDataTable>
+        <template #body="slotProps">
+          <Button v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action.id, slotProps.data)"></Button>
+        </template>
+      </Column>
+    </DataTable>
   </div>
 </template>
 
