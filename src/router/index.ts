@@ -4,6 +4,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
 import NotFound from '../views/NotFound.vue'
 import Study from '../views/Study.vue'
+import StudyGroup from '../views/StudyGroup.vue'
+import Participants from '../views/Participants.vue'
 
 const routes = [
   {
@@ -12,10 +14,22 @@ const routes = [
     component: Dashboard,
   },
   {
-    path: '/study/:id',
+    path: '/studies/:studyId',
     meta: { title: 'Study' },
     name: 'Study',
     component: Study,
+  },
+  {
+    path: '/studies/:studyId/participants',
+    meta: { title: 'Participants' },
+    name: 'Participants',
+    component: Participants,
+  },
+  {
+    path: '/studies/:studyId/groups/:groupId',
+    meta: { title: 'StudyGroup' },
+    name: 'StudyGroup',
+    component: StudyGroup,
   },
   {
     path: '/:page',

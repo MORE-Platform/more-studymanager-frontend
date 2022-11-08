@@ -38,8 +38,7 @@ const { studyApi } = useStudiesApiClient()
   }
 
   function goToStudy(id: string) {
-    console.log(id);
-    router.push({ name: 'Study', params: { id: id } })
+    router.push({ name: 'Study', params: { studyId: id } })
   }
 
   function execute(action: MoreTableActionResult) {
