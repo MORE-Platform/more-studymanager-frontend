@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import {PropType} from 'vue'
-import {MoreTableColumn, MoreTableAction, MoreTableActionResult} from '../../models/MoreTableModel'
+import {onBeforeMount, PropType, ref} from 'vue'
+import {
+  MoreTableColumn,
+  MoreTableAction,
+  MoreTableActionResult,
+  MoreTableRowEditResult
+} from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
-import {Study} from '../../generated-sources/openapi';
+import InputText from 'primevue/inputtext'
+import Calendar from 'primevue/calendar'
 import {useConfirm} from 'primevue/useconfirm';
+import {MoreTableEditableType} from '../../models/MoreTableModel'
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     default: '',
@@ -20,8 +27,8 @@ defineProps({
     type: Array as PropType<Array<MoreTableColumn>>,
     required: true,
   },
-  data: {
-    type: Array as PropType<Array<Study>>,
+  rows: {
+    type: Array as PropType<Array<unknown>>,
     required: true,
   },
   rowActions: {
@@ -34,11 +41,20 @@ defineProps({
   }
 })
 
+const editable = ref(false);
+onBeforeMount(() => {
+  editable.value = !!props.columns.find(c => c.editable)
+})
+
 const confirm = useConfirm();
+
+const editingRows = ref([]);
+const editMode = ref(false);
 
 const emit = defineEmits<{
   (e: 'onselect', rowKey: string): void
   (e: 'onaction', result: MoreTableActionResult): void
+  (e: 'onchange', value: MoreTableRowEditResult): void
 }>()
 
 function selectHandler(rowKey: string) {
@@ -60,6 +76,21 @@ function actionHandler(action: MoreTableAction, data: unknown) {
 
 }
 
+function edit(row: any) {
+  editMode.value = true;
+  editingRows.value.push(row);
+}
+
+function cancel(row: any) {
+  editingRows.value.splice(editingRows.value.findIndex(r => r[props.rowId] === row[props.rowId]));
+  editMode.value = false;
+}
+
+function save(row:any) {
+  emit('onchange', {rowId: row[props.rowId], data: row})
+  cancel(row);
+}
+
 </script>
 
 <template>
@@ -67,9 +98,11 @@ function actionHandler(action: MoreTableAction, data: unknown) {
     <h3>{{ title }}</h3>
 
     <DataTable
-      :value="data"
+      :value="rows"
       selection-mode="single"
       responsive-layout="scroll"
+      :edit-mode="editable ? 'row' : undefined"
+      v-model:editingRows="editingRows"
       @row-click="selectHandler($event.data[rowId])"
     >
       <Column
@@ -80,8 +113,12 @@ function actionHandler(action: MoreTableAction, data: unknown) {
         :data-key="column.field"
         :row-hover="true"
       >
-        <template #body="slotProps">
-          {{ slotProps.data[column.field] }}
+        <template #editor="{ data, field }" v-if="column.editable">
+          <InputText v-if="column.editable.type === MoreTableEditableType.string" v-model="data[field]" autofocus />
+          <Calendar v-if="column.editable.type === MoreTableEditableType.calendar" inputId="dateformat" v-model="data[field]" autocomplete="off" dateFormat="mm-dd-yy"/>
+        </template>
+        <template #body="{ data, field }" v-else>
+          {{data[field]}}
         </template>
       </Column>
 
@@ -89,13 +126,24 @@ function actionHandler(action: MoreTableAction, data: unknown) {
         key="actions"
         :header="$t('actions')"
         :row-hover="true"
+        class="row-actions"
       >
         <template #body="slotProps">
-          <Button v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action, slotProps.data)"></Button>
+          <Button v-if="!editMode" v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action, slotProps.data)"></Button>
+          <Button v-if="!editMode" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
+          <Button v-if="editMode" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
+          <Button v-if="editMode" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
         </template>
       </Column>
+      <!--<Column :rowEditor="true" style="width:100px" bodyStyle="text-align:center"></Column>-->
     </DataTable>
   </div>
 </template>
 
-<style lang="postcss"></style>
+<style lang="postcss">
+  .row-actions {
+    button {
+      margin: 0 3px
+    }
+  }
+</style>

@@ -1,8 +1,9 @@
 {
   "message": "testing message",
-  "studyList":  "Studies",
+  "studies":  "Studies",
   "studyId": "Study ID",
   "title": "Title",
+  "purpose": "Purpose",
   "start": "Start",
   "end": "End",
   "plannedStart": "Planed Start",
