@@ -11,13 +11,17 @@ import {useRoute, useRouter} from 'vue-router';
   const router = useRouter()
   const route = useRoute()
 
-  const tabsLeft:Tab[] = [
-    {title: 'Overview', name: 'Study', params: {studyId: '3'}},
-    {title: 'Group 1', name: 'StudyGroup', params: {studyId: '3', groupId: '1'}},
-  ] as Tab[]
+  const props = defineProps({
+    studyId: {
+      type: Number,
+      required: true
+    }
+  });
 
-  const tabsRight = [
-    {title: 'Participants', name: 'Participants', params: {studyId: '3'}}
+  const tabs:Tab[] = [
+    {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}},
+    {title: 'Data', name: 'Data', params: {studyId: props.studyId}},
+    {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}}
   ] as Tab[]
 
   function equals(obj1:any, obj2:any) {
@@ -25,7 +29,7 @@ import {useRoute, useRouter} from 'vue-router';
   }
 
   function setActiveTab() {
-    [...tabsLeft, ...tabsRight].forEach((tab:Tab) => {
+    tabs.forEach((tab:Tab) => {
       tab.active = (tab.name === route.name && equals(tab.params, route.params));
     })
   }
@@ -35,27 +39,24 @@ import {useRoute, useRouter} from 'vue-router';
   }
 
   setActiveTab();
+
+  console.log(tabs);
 </script>
 
 <template>
-  <div class="tabnav">
-    <div class="tabnav-left">
-      <div class="tab" v-for="tab in tabsLeft" :class="{ active: tab.active }" @click="goto(tab)">{{tab.title}}</div>
-    </div>
-    <div class="tabnav-right">
-      <div class="tab" v-for="tab in tabsRight" :class="{ active: tab.active }" @click="goto(tab)">{{tab.title}}</div>
-    </div>
+  <div>
+    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+      <li class="tab mr-2" v-for="tab in tabs">
+        <a
+          href="#"
+          class="inline-block p-4 rounded-t-lg"
+          :class="{'cursor-default': tab.active, 'text-blue-600': tab.active, 'bg-gray-100': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
+          @click="goto(tab)"
+        >{{tab.title}}</a>
+      </li>
+    </ul>
   </div>
 </template>
 
 <style lang="postcss">
-  .tab {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-  .tab.active {
-    color: red;
-    text-decoration: none;
-    cursor: default;
-  }
 </style>

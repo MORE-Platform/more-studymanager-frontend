@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
-import useStudiesApiClient from '../composable/useStudiesApi'
+import {useStudiesApi} from '../composable/useApi'
 import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
@@ -12,7 +12,7 @@ import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 
-const { studyApi } = useStudiesApiClient()
+const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
 
@@ -31,19 +31,19 @@ const { studyApi } = useStudiesApiClient()
   async function listStudies(): Promise<void> {
     try {
       studyList.value = []; //TODO necessary?
-      studyList.value = await studyApi.listStudies().then((response) => response.data);
+      studyList.value = await studiesApi.listStudies().then((response) => response.data);
     } catch (e) {
       console.error('cannot list studies', e)
     }
   }
 
   function goToStudy(id: string) {
-    router.push({ name: 'Study', params: { studyId: id } })
+    router.push({ name: 'Overview', params: { studyId: id } })
   }
 
-  function execute(action: MoreTableActionResult) {
+  function execute(action: MoreTableActionResult<Study>) {
     switch (action.id) {
-      case 'delete': return deleteStudy(action.data as Study)
+      case 'delete': return deleteStudy(action.data)
       default: console.error('no handler for action', action)
     }
   }
@@ -53,12 +53,12 @@ const { studyApi } = useStudiesApiClient()
     if(i>-1) {
       const study = value.data as Study;
       studyList.value[i] = study;
-      studyApi.updateStudy(study.studyId as number, study);
+      studiesApi.updateStudy(study.studyId as number, study);
     }
   }
 
   function deleteStudy(study: Study) {
-    studyApi.deleteStudy(study.studyId as number).then(listStudies)
+    studiesApi.deleteStudy(study.studyId as number).then(listStudies)
   }
 
   listStudies()
@@ -70,8 +70,6 @@ const { studyApi } = useStudiesApiClient()
       row-id="studyId"
       :title="$t('studies')"
       :columns="studyColumns"
-      :has-edit="false"
-      :has-delete="false"
       :rows="studyList"
       :row-actions="rowActions"
       @onselect="goToStudy($event)"

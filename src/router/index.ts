@@ -3,20 +3,22 @@ import { createRouter, createWebHistory } from 'vue-router'
 //Routes
 import Dashboard from '../views/Dashboard.vue'
 import NotFound from '../views/NotFound.vue'
-import Study from '../views/Study.vue'
-import StudyGroup from '../views/StudyGroup.vue'
+import Study from '../views/Overview.vue'
+import Interventions from '../views/Interventions.vue'
 import Participants from '../views/Participants.vue'
+import Observations from '../views/Observations.vue'
+import Data from '../views/Data.vue'
 
 const routes = [
   {
     path: '/',
-    meta: { title: 'Home' },
+    meta: { title: 'Dashboard' },
     component: Dashboard,
   },
   {
     path: '/studies/:studyId',
-    meta: { title: 'Study' },
-    name: 'Study',
+    meta: { title: 'Overview' },
+    name: 'Overview',
     component: Study,
   },
   {
@@ -26,10 +28,22 @@ const routes = [
     component: Participants,
   },
   {
-    path: '/studies/:studyId/groups/:groupId',
-    meta: { title: 'StudyGroup' },
-    name: 'StudyGroup',
-    component: StudyGroup,
+    path: '/studies/:studyId/observations',
+    meta: { title: 'Observations' },
+    name: 'Observations',
+    component: Observations,
+  },
+  {
+    path: '/studies/:studyId/interventions',
+    meta: { title: 'Interventions' },
+    name: 'Interventions',
+    component: Interventions,
+  },
+  {
+    path: '/studies/:studyId/data',
+    meta: { title: 'Data' },
+    name: 'Data',
+    component: Data,
   },
   {
     path: '/:page',

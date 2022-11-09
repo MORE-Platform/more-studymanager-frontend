@@ -1,6 +1,7 @@
 {
   "message": "testing message",
   "studies":  "Studies",
+  "studyGroups":  "Study Groups",
   "studyId": "Study ID",
   "title": "Title",
   "purpose": "Purpose",

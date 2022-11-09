@@ -33,6 +33,7 @@ import {
   ParticipantsApi,
   StudiesApi,
 } from 'more-configuration-api-client-ts'
+import {StudyGroupsApi} from './generated-sources/openapi';
 
 const app = createApp(App)
 
@@ -49,11 +50,10 @@ const modulesApi = new ModulesApi({
   basePath: '/api/v1',
 } as Configuration)
 app.provide('modulesApiClient', modulesApi)
-const studiesApi = new StudiesApi({
+const apiConfig = {
   basePath: '/api/v1',
-} as Configuration)
+} as Configuration;
+const studiesApi = new StudiesApi(apiConfig)
 app.provide('studiesApiClient', studiesApi)
-const participantApi = new ParticipantsApi({
-  basePath: '/api/v1',
-} as Configuration)
-app.provide('participantsApiClient', participantApi)
+const studiesGroupsApi = new StudyGroupsApi(apiConfig)
+app.provide('studyGroupsApiClient', studiesGroupsApi)

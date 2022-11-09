@@ -16,9 +16,9 @@ export interface MoreTableRowEditResult {
   data: unknown
 }
 
-export interface MoreTableActionResult {
+export interface MoreTableActionResult<D> {
   id: string,
-  data: unknown
+  data: D
 }
 
 export interface MoreTableActionConfirm {

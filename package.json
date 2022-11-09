@@ -1,5 +1,5 @@
 {
-  "name": "more-mmb-frontend",
+  "name": "more-studymanager-frontend",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -13,7 +13,6 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "createApi": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models",
-    "api": "prism mock -d ./openapi/StudyManagerAPI.yaml",
     "license-check": "licensee --errors-only"
   },
   "engines": {
