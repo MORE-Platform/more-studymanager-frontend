@@ -25,15 +25,11 @@ import 'primeicons/primeicons.css'
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 
+
 // Router
 import { Router } from './router'
-import {
-  Configuration,
-  ModulesApi,
-  ParticipantsApi,
-  StudiesApi,
-} from 'more-configuration-api-client-ts'
-import {StudyGroupsApi} from './generated-sources/openapi';
+import {StudyGroupsApi, Configuration, StudiesApi} from './generated-sources/openapi';
+
 
 const app = createApp(App)
 
@@ -46,10 +42,6 @@ app.mount('#app')
 
 app.directive('tooltip', Tooltip);
 
-const modulesApi = new ModulesApi({
-  basePath: '/api/v1',
-} as Configuration)
-app.provide('modulesApiClient', modulesApi)
 const apiConfig = {
   basePath: '/api/v1',
 } as Configuration;

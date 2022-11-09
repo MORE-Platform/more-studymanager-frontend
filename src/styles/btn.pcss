@@ -15,3 +15,14 @@ button[disabled] {
   background-color: var(--color-light);
   pointer-events: none;
 }
+
+.btn .btn-text {
+  border: none;
+  background-color: transparent;
+  color: var(--text-color-default);
+
+  &:hover, &:active, &:focus {
+    text-decoration: underline;
+    color: var(--color-primary);
+  }
+}
