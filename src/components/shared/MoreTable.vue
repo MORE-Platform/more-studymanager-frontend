@@ -4,7 +4,7 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableActionResult,
-  MoreTableRowEditResult
+  MoreTableRowEditResult, MoreTableSortOptions
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -38,6 +38,14 @@ const props = defineProps({
   tableActions: {
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
+  } ,
+  useFilters: {
+    type: Boolean,
+    default: false
+  },
+  sortOptions: {
+    type: Object as PropType <MoreTableSortOptions>,
+    default:  () => undefined
   }
 })
 
@@ -96,15 +104,17 @@ function save(row:any) {
 <template>
   <div>
     <h3>{{ title }}</h3>
-
     <DataTable
       :value="rows"
+      :sort-field="sortOptions.sortField"
+      :sortOrder="sortOptions.sortOrder"
       selection-mode="single"
       responsive-layout="scroll"
       :edit-mode="editable ? 'row' : undefined"
       v-model:editingRows="editingRows"
       @row-click="selectHandler($event.data[rowId])"
     >
+
       <Column
         v-for="column in columns"
         :key="column.field"
@@ -112,6 +122,9 @@ function save(row:any) {
         :header="$t(column.header)"
         :data-key="column.field"
         :row-hover="true"
+        :sortable="column.sortable"
+        :sortField="defaultSortField"
+
       >
         <template #editor="{ data, field }" v-if="column.editable">
           <InputText v-if="column.editable.type === MoreTableEditableType.string" v-model="data[field]" autofocus />

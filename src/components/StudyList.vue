@@ -6,7 +6,7 @@ import {
   MoreTableAction,
   MoreTableActionResult,
   MoreTableColumn,
-  MoreTableEditableType, MoreTableRowEditResult
+  MoreTableEditableType, MoreTableRowEditResult, MoreTableSortable
 } from '../models/MoreTableModel'
 import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
@@ -17,11 +17,11 @@ const { studiesApi } = useStudiesApi()
   const router = useRouter()
 
   const studyColumns: MoreTableColumn[] = [
-    { field: 'title', header: 'title', editable: {type: MoreTableEditableType.string} },
+    { field: 'title', header: 'title', editable: {type: MoreTableEditableType.string}, sortable: true },
+    { field: 'status', header: 'status', sortable: true,},
     { field: 'purpose', header: 'purpose', editable: {type: MoreTableEditableType.string} },
-    { field: 'plannedEnd', header: 'plannedEnd', editable: {type: MoreTableEditableType.calendar} },
-    { field: 'plannedStart', header: 'plannedStart', editable: {type: MoreTableEditableType.calendar} },
-    { field: 'status', header: 'status'},
+    { field: 'plannedStart', header: 'plannedStart', editable: {type: MoreTableEditableType.calendar}, sortable: true },
+    { field: 'plannedEnd', header: 'plannedEnd', editable: {type: MoreTableEditableType.calendar}, sortable: true },
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -72,6 +72,7 @@ const { studiesApi } = useStudiesApi()
       :columns="studyColumns"
       :rows="studyList"
       :row-actions="rowActions"
+      :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

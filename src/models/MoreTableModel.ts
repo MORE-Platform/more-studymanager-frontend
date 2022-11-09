@@ -2,6 +2,12 @@ export interface MoreTableColumn {
   field: string
   header: string
   editable?: MoreTableEditable
+  sortable?: boolean
+}
+
+export interface MoreTableSortOptions {
+  sortField: string,
+  sortOrder: -1 | 0 | 1
 }
 
 export interface MoreTableAction {
