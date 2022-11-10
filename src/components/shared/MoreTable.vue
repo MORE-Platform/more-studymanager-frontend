@@ -4,7 +4,7 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableActionResult
+  MoreTableRowActionResult, MoreTableActionResult, MoreTableFilters
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -49,10 +49,11 @@ const props = defineProps({
 const tableFilter = createTableFilter();
 
 function createTableFilter() {
-  const filterObject = {} as any;
+  const filterObject = {} as MoreTableFilters;
   props.columns.forEach(column => {
     if(column.filterable) {
       filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
+      console.log(filterObject)
     }
   })
    return ref(filterObject)

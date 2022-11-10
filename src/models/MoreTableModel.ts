@@ -7,9 +7,14 @@ export interface MoreTableColumn {
   filterable?: boolean | MoreTableFilterOption
 }
 
+export interface MoreTableFilters {
+  [key: string]: MoreTableFilterOption
+}
+
 export interface MoreTableFilterOption {
-  showFilterMatchModes: boolean,
-  matchMode?: boolean
+  value?: unknown
+  showFilterMatchModes?: boolean,
+  matchMode?: string
 }
 
 export interface MoreTableSortOptions {
