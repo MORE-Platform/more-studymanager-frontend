@@ -4,9 +4,7 @@ import {useStudyGroupsApi} from '../composable/useApi'
 import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
-  MoreTableActionResult,
-  MoreTableColumn,
-  MoreTableEditableType, MoreTableRowEditResult
+  MoreTableColumn, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
 import {StudyGroup} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
@@ -24,8 +22,8 @@ const props = defineProps({
 });
 
 const studyGroupColumns: MoreTableColumn[] = [
-  { field: 'title', header: 'title', editable: {type: MoreTableEditableType.string} },
-  { field: 'purpose', header: 'purpose', editable: {type: MoreTableEditableType.string} }
+  { field: 'title', header: 'title', editable: true },
+  { field: 'purpose', header: 'purpose', editable: true }
 ]
 
 const rowActions: MoreTableAction[] = [
@@ -45,17 +43,16 @@ function goToStudyGroup(groupId: string) {
   router.push({ name: 'StudyGroup', params: { studyId: props.studyId, groupId } })
 }
 
-function execute(action: MoreTableActionResult<StudyGroup>) {
+function execute(action: MoreTableRowActionResult<StudyGroup>) {
   switch (action.id) {
-    case 'delete': return deleteStudyGroup(action.data)
+    case 'delete': return deleteStudyGroup(action.row)
     default: console.error('no handler for action', action)
   }
 }
 
-function changeValue(value: MoreTableRowEditResult) {
-  const i = studyGroupList.value.findIndex(v => v.studyGroupId === Number(value.rowId));
+function changeValue(studyGroup:StudyGroup) {
+  const i = studyGroupList.value.findIndex(v => v.studyGroupId === studyGroup.studyGroupId);
   if(i>-1) {
-    const studyGroup = value.data as StudyGroup;
     studyGroupList.value[i] = studyGroup;
     studyGroupsApi.updateStudyGroup(studyGroup.studyId as number, studyGroup.studyGroupId as number, studyGroup);
   }

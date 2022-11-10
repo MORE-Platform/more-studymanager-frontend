@@ -2,7 +2,7 @@
 import {UserModel} from '../models/UserModel';
 import {PropType} from 'vue';
 
-const props = defineProps({
+defineProps({
   user: {
     type: Object as PropType<UserModel>,
     required: true

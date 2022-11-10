@@ -4,7 +4,7 @@ import {useRoute, useRouter} from 'vue-router';
   interface Tab {
     title: string
     name: string
-    params: any
+    params: unknown
     active?: boolean
   }
 
@@ -24,7 +24,7 @@ import {useRoute, useRouter} from 'vue-router';
     {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}}
   ] as Tab[]
 
-  function equals(obj1:any, obj2:any) {
+  function equals(obj1:unknown, obj2:unknown) {
     return JSON.stringify(obj1) === JSON.stringify(obj2)
   }
 
@@ -39,14 +39,12 @@ import {useRoute, useRouter} from 'vue-router';
   }
 
   setActiveTab();
-
-  console.log(tabs);
 </script>
 
 <template>
   <div>
     <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-      <li class="tab mr-2" v-for="tab in tabs">
+      <li v-for="tab in tabs" :key="tab.name" class="tab mr-2">
         <a
           href="#"
           class="inline-block p-4 rounded-t-lg"

@@ -4,7 +4,7 @@ import MoreTabNav from "../components/shared/MoreTabNav.vue";
 
 <template>
   <div class="container m-auto mt-10">
-    <!--<MoreTabNav></MoreTabNav>-->
+    <MoreTabNav></MoreTabNav>
     <h1>Participants</h1>
   </div>
 </template>

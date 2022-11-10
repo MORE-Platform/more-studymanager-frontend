@@ -3,8 +3,8 @@ import {onBeforeMount, PropType, ref} from 'vue'
 import {
   MoreTableColumn,
   MoreTableAction,
-  MoreTableActionResult,
-  MoreTableRowEditResult, MoreTableSortOptions
+  MoreTableSortOptions,
+  MoreTableRowActionResult
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -12,7 +12,7 @@ import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import {useConfirm} from 'primevue/useconfirm';
-import {MoreTableEditableType} from '../../models/MoreTableModel'
+import {MoreTableFieldType} from '../../models/MoreTableModel'
 
 const props = defineProps({
   title: {
@@ -45,7 +45,7 @@ const props = defineProps({
   },
   sortOptions: {
     type: Object as PropType <MoreTableSortOptions>,
-    default:  () => undefined
+    default:  () => undefined,
   }
 })
 
@@ -60,26 +60,26 @@ const editingRows = ref([]);
 const editMode = ref(false);
 
 const emit = defineEmits<{
-  (e: 'onselect', rowKey: string): void
-  (e: 'onaction', result: MoreTableActionResult<unknown>): void
-  (e: 'onchange', value: MoreTableRowEditResult): void
+  (e: 'onselect', row: unknown): void
+  (e: 'onaction', result: MoreTableRowActionResult<unknown>): void
+  (e: 'onchange', row: unknown): void
 }>()
 
 function selectHandler(rowKey: string) {
   emit('onselect', rowKey)
 }
 
-function actionHandler(action: MoreTableAction, data: unknown) {
+function rowActionHandler(action: MoreTableAction, row: unknown) {
   if(action.confirm) {
     confirm.require({
       header: action.confirm.header,
       message: action.confirm.message,
       accept: () => {
-        emit('onaction', {id: action.id, data})
+        emit('onaction', {id: action.id, row})
       }
     });
   } else {
-    emit('onaction', {id: action.id, data})
+    emit('onaction', {id: action.id, row})
   }
 
 }
@@ -89,13 +89,13 @@ function edit(row: unknown) {
   editingRows.value.push(row);
 }
 
-function cancel(row: any) {
+function cancel(row: unknown) {
   editingRows.value.splice(editingRows.value.findIndex(r => r[props.rowId] === row[props.rowId]));
   editMode.value = false;
 }
 
-function save(row:any) {
-  emit('onchange', {rowId: row[props.rowId], data: row})
+function save(row: unknown) {
+  emit('onchange', row)
   cancel(row);
 }
 
@@ -107,8 +107,8 @@ function save(row:any) {
     <DataTable
       v-model:editingRows="editingRows"
       :value="rows"
-      :sort-field="sortOptions.sortField"
-      :sort-order="sortOptions.sortOrder"
+      :sort-field="sortOptions?.sortField"
+      :sort-order="sortOptions?.sortOrder"
       :edit-mode="editable ? 'row' : undefined"
       selection-mode="single"
       responsive-layout="scroll"
@@ -125,12 +125,13 @@ function save(row:any) {
         :sortable="column.sortable"
 
       >
-        <template #editor="{ data, field }" v-if="column.editable">
-          <InputText v-if="column.editable.type === MoreTableEditableType.string" v-model="data[field]" autofocus />
-          <Calendar v-if="column.editable.type === MoreTableEditableType.calendar" inputId="dateformat" v-model="data[field]" autocomplete="off" dateFormat="mm-dd-yy"/>
+        <template v-if="column.editable" #editor="{ data, field }">
+          <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
+          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data[field]" input-id="dateformat" autocomplete="off" date-format="mm-dd-yy"/>
         </template>
-        <template #body="{ data, field }" v-else>
-          {{data[field]}}
+        <template v-else #body="{ data, field }">
+          <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
+          <span v-if="column.type === MoreTableFieldType.calendar">{{data[field]}}</span>
         </template>
       </Column>
 
@@ -141,10 +142,14 @@ function save(row:any) {
         class="row-actions"
       >
         <template #body="slotProps">
-          <Button v-if="!editMode" v-for="action in rowActions" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action, slotProps.data)"></Button>
-          <Button v-if="!editMode" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
-          <Button v-if="editMode" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
-          <Button v-if="editMode" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+          <div v-if="!editMode">
+            <Button v-for="action in rowActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data)"></Button>
+            <Button v-if="!editMode" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
+          </div>
+          <div v-else>
+            <Button v-if="editMode" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
+            <Button v-if="editMode" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+          </div>
         </template>
       </Column>
     </DataTable>

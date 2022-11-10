@@ -31,9 +31,9 @@ async function listStudyGroups(studyId:number): Promise<void> {
   }
 }
 
-const studyId = route.params.studyId;
-loadStudy(+studyId);
-listStudyGroups(+studyId);
+const studyId = +route.params.studyId;
+loadStudy(studyId);
+listStudyGroups(studyId);
 </script>
 
 <template>

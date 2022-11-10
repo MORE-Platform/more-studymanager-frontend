@@ -17,6 +17,7 @@
   },
   "plugins": [],
   "rules": {
-    "eqeqeq": "error"
+    "eqeqeq": "error",
+    "vue/multi-word-component-names": "off"
   }
 }

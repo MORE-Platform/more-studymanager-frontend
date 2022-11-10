@@ -1,7 +1,8 @@
 export interface MoreTableColumn {
   field: string
+  type?: MoreTableFieldType //default is string
   header: string
-  editable?: MoreTableEditable
+  editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
 }
 
@@ -17,14 +18,13 @@ export interface MoreTableAction {
   confirm?: MoreTableActionConfirm
 }
 
-export interface MoreTableRowEditResult {
-  rowId: string,
-  data: unknown
+export interface MoreTableRowActionResult<D> {
+  id: string,
+  row: D
 }
 
-export interface MoreTableActionResult<D> {
-  id: string,
-  data: D
+export interface MoreTableActionResult {
+  id: string
 }
 
 export interface MoreTableActionConfirm {
@@ -32,26 +32,22 @@ export interface MoreTableActionConfirm {
   message: string
 }
 
-export enum MoreTableEditableType {
+export enum MoreTableFieldType {
   string,
   choice,
   calendar
 }
 
-export interface MoreTableEditable {
-  type: MoreTableEditableType,
-  properties?: MoreTableEditableChoiceProperties
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface MoreTableEditableProperties {
 }
 
-export interface MoreTableEditableStringProperties {
-  longText: boolean
-}
-
-export interface MoreTableEditableChoiceProperties {
+export interface MoreTableEditableChoiceProperties extends MoreTableEditableProperties{
   emptyText?: string,
   values: MoreTableEditableChoicePropertyValues[]
 }
 
 export interface MoreTableEditableChoicePropertyValues {
-  value: unknown
+  displayValue?:string
+  value: string
 }
