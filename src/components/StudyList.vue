@@ -5,7 +5,7 @@ import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn,
-  MoreTableFieldType, MoreTableRowActionResult, MoreTableFilterOption
+  MoreTableFieldType, MoreTableRowActionResult
 } from '../models/MoreTableModel'
 import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
@@ -14,7 +14,6 @@ import DynamicDialog from 'primevue/dynamicdialog';
 import StudyCreationDialog from './StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
-import {FilterMatchMode, FilterOperator} from 'primevue/api';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])

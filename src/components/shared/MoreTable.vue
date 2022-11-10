@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeMount, PropType, ref, Ref} from 'vue'
+import {onBeforeMount, PropType, ref} from 'vue'
 import {
   MoreTableColumn,
   MoreTableAction,
@@ -40,10 +40,6 @@ const props = defineProps({
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
   } ,
-  tableFilter: {
-    type: Object as PropType<MoreTableFilterOption>,
-    default: () => {}
-  },
   sortOptions: {
     type: Object as PropType <MoreTableSortOptions>,
     default:  () => undefined,
@@ -62,8 +58,8 @@ function createTableFilter() {
    return ref(filterObject)
 }
 
-function filterMatchMode(column: any): Boolean {
-    if (typeof column.filterable !="object" && column.filterable !== undefined) {
+function filterMatchMode(column: MoreTableColumn): boolean {
+    if (typeof column.filterable ==="object" && column.filterable !== undefined) {
     return column.filterable.showFilterMatchModes
    } else {
      return false;
@@ -172,8 +168,9 @@ function clean(row) {
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
-      @row-click="selectHandler($event.data[rowId])"
       v-model:filters="tableFilter"
+      @row-click="selectHandler($event.data[rowId])"
+
     >
 
       <Column
