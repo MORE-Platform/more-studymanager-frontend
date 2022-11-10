@@ -1,3 +1,8 @@
+<script lang="ts">
+interface MoreTableInternalRow {
+  data: unknown,
+}
+</script>
 <script setup lang="ts">
 import {onBeforeMount, PropType, ref} from 'vue'
 import {
@@ -99,10 +104,34 @@ function cancel(row: unknown) {
 }
 
 function save(row: unknown) {
-  emit('onchange', row)
+  emit('onchange', clean(row))
   cancel(row);
 }
 
+function prepare(rows) {
+  return rows.map(row => {
+    props.columns.forEach(column => {
+      if(column.type === MoreTableFieldType.calendar) {
+        console.log(row[column.field])
+        row['__internalValue_' + column.field] = column.field ? new Date(row[column.field]) : undefined;
+      }
+    })
+    return row;
+  });
+}
+
+function clean(row) {
+  props.columns.forEach(column => {
+    if(column.type === MoreTableFieldType.calendar) {
+      const date = row['__internalValue_' + column.field];
+      const tzoffset = new Date(date).getTimezoneOffset()/60;
+      date.setHours(date.getHours()-tzoffset);
+      row[column.field] = date.toISOString().substring(0, 10);
+      delete row['__internalValue_' + column.field];
+    }
+  })
+  return row;
+}
 </script>
 
 <template>
@@ -110,7 +139,7 @@ function save(row: unknown) {
     <h3>{{ title }}</h3>
     <DataTable
       v-model:editingRows="editingRows"
-      :value="rows"
+      :value="prepare(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
       :edit-mode="editable ? 'row' : undefined"
@@ -131,7 +160,7 @@ function save(row: unknown) {
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
-          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data[field]" input-id="dateformat" autocomplete="off" date-format="mm-dd-yy"/>
+          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
         </template>
         <template v-else #body="{ data, field }">
           <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
