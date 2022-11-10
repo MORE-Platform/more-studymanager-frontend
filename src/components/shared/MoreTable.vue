@@ -57,7 +57,7 @@ onBeforeMount(() => {
 const confirm = useConfirm();
 
 const editingRows = ref([]);
-const editMode = ref(false);
+const editMode = ref([]);
 
 const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
@@ -84,14 +84,18 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
 
 }
 
+function isEditMode(row:unknown) {
+  return editMode.value.includes(row[props.rowId])
+}
+
 function edit(row: unknown) {
-  editMode.value = true;
+  editMode.value.push(row[props.rowId]);
   editingRows.value.push(row);
 }
 
 function cancel(row: unknown) {
   editingRows.value.splice(editingRows.value.findIndex(r => r[props.rowId] === row[props.rowId]));
-  editMode.value = false;
+  editMode.value.splice(editMode.value.findIndex(r => r === row[props.rowId]));
 }
 
 function save(row: unknown) {
@@ -142,13 +146,13 @@ function save(row: unknown) {
         class="row-actions"
       >
         <template #body="slotProps">
-          <div v-if="!editMode">
+          <div v-if="!isEditMode(slotProps.data)">
             <Button v-for="action in rowActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data)"></Button>
-            <Button v-if="!editMode" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
+            <Button type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
           </div>
           <div v-else>
-            <Button v-if="editMode" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
-            <Button v-if="editMode" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
+            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
           </div>
         </template>
       </Column>
