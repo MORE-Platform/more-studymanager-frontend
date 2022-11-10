@@ -61,7 +61,7 @@ const editMode = ref(false);
 
 const emit = defineEmits<{
   (e: 'onselect', rowKey: string): void
-  (e: 'onaction', result: MoreTableActionResult): void
+  (e: 'onaction', result: MoreTableActionResult<unknown>): void
   (e: 'onchange', value: MoreTableRowEditResult): void
 }>()
 
@@ -84,7 +84,7 @@ function actionHandler(action: MoreTableAction, data: unknown) {
 
 }
 
-function edit(row: any) {
+function edit(row: unknown) {
   editMode.value = true;
   editingRows.value.push(row);
 }
@@ -105,13 +105,13 @@ function save(row:any) {
   <div>
     <h3>{{ title }}</h3>
     <DataTable
+      v-model:editingRows="editingRows"
       :value="rows"
       :sort-field="sortOptions.sortField"
-      :sortOrder="sortOptions.sortOrder"
+      :sort-order="sortOptions.sortOrder"
+      :edit-mode="editable ? 'row' : undefined"
       selection-mode="single"
       responsive-layout="scroll"
-      :edit-mode="editable ? 'row' : undefined"
-      v-model:editingRows="editingRows"
       @row-click="selectHandler($event.data[rowId])"
     >
 
@@ -123,7 +123,6 @@ function save(row:any) {
         :data-key="column.field"
         :row-hover="true"
         :sortable="column.sortable"
-        :sortField="defaultSortField"
 
       >
         <template #editor="{ data, field }" v-if="column.editable">
@@ -148,7 +147,6 @@ function save(row:any) {
           <Button v-if="editMode" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
         </template>
       </Column>
-      <!--<Column :rowEditor="true" style="width:100px" bodyStyle="text-align:center"></Column>-->
     </DataTable>
   </div>
 </template>
