@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {onBeforeMount, PropType, ref} from 'vue'
+import {onBeforeMount, PropType, ref, Ref} from 'vue'
 import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult
+  MoreTableRowActionResult, MoreTableFilterOption
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -13,6 +13,7 @@ import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import {useConfirm} from 'primevue/useconfirm';
 import {MoreTableFieldType} from '../../models/MoreTableModel'
+import {FilterMatchMode} from 'primevue/api';
 
 const props = defineProps({
   title: {
@@ -39,15 +40,36 @@ const props = defineProps({
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
   } ,
-  useFilters: {
-    type: Boolean,
-    default: false
+  tableFilter: {
+    type: Object as PropType<MoreTableFilterOption>,
+    default: () => {}
   },
   sortOptions: {
     type: Object as PropType <MoreTableSortOptions>,
     default:  () => undefined,
   }
 })
+
+const tableFilter = createTableFilter();
+
+function createTableFilter() {
+  const filterObject = {} as any;
+  props.columns.forEach(column => {
+    if(column.filterable) {
+      filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
+    }
+  })
+   return ref(filterObject)
+}
+
+function filterMatchMode(column: any): Boolean {
+  console.log(typeof column.filterable === "object")
+  if (typeof column.filterable !="object" && column.filterable !== undefined) {
+    return column.filterable.showFilterMatchModes
+   } else {
+     return false;
+   }
+}
 
 const editable = ref(false);
 onBeforeMount(() => {
@@ -114,9 +136,11 @@ function save(row: unknown) {
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
       :edit-mode="editable ? 'row' : undefined"
+      filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
       @row-click="selectHandler($event.data[rowId])"
+      v-model:filters="tableFilter"
     >
 
       <Column
@@ -127,11 +151,15 @@ function save(row: unknown) {
         :data-key="column.field"
         :row-hover="true"
         :sortable="column.sortable"
-
+        :filter="tableFilter"
+        :showFilterMatchModes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
           <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data[field]" input-id="dateformat" autocomplete="off" date-format="mm-dd-yy"/>
+        </template>
+        <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
+          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`"/>
         </template>
         <template v-else #body="{ data, field }">
           <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>

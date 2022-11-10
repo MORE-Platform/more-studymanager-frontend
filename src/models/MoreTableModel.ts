@@ -1,9 +1,18 @@
+import {FilterMatchModeOptions} from "primevue/api";
+import {ColumnFilterMatchModeOptions} from "primevue/column";
+
 export interface MoreTableColumn {
   field: string
   type?: MoreTableFieldType //default is string
   header: string
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
+  filterable?: boolean | MoreTableFilterOption
+}
+
+export interface MoreTableFilterOption {
+  showFilterMatchModes: boolean,
+  matchMode?: boolean
 }
 
 export interface MoreTableSortOptions {

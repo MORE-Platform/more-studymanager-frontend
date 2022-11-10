@@ -5,12 +5,13 @@ import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn,
-  MoreTableFieldType, MoreTableRowActionResult
+  MoreTableFieldType, MoreTableRowActionResult, MoreTableFilterOption
 } from '../models/MoreTableModel'
 import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import {AxiosResponse} from 'axios';
+import {FilterMatchMode, FilterOperator} from 'primevue/api';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
@@ -18,11 +19,11 @@ const { studiesApi } = useStudiesApi()
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
-    { field: 'title', header: 'title', editable: true, sortable: true },
-    { field: 'status', header: 'status', sortable: true,},
+    { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
+    { field: 'status', header: 'status', sortable: true},
     { field: 'purpose', header: 'purpose', editable: true },
-    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true },
-    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true },
+    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
 
   const rowActions: MoreTableAction[] = [
