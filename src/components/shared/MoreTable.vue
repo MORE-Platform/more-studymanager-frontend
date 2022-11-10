@@ -4,7 +4,7 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableActionResult, MoreTableFilterOption
+  MoreTableRowActionResult, MoreTableActionResult
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -161,6 +161,7 @@ function clean(row) {
 
     <DataTable
       v-model:editingRows="editingRows"
+      v-model:filters="tableFilter"
       :value="prepare(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
@@ -168,9 +169,7 @@ function clean(row) {
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
-      v-model:filters="tableFilter"
       @row-click="selectHandler($event.data[rowId])"
-
     >
 
       <Column
@@ -182,14 +181,14 @@ function clean(row) {
         :row-hover="true"
         :sortable="column.sortable"
         :filter="tableFilter"
-        :showFilterMatchModes="filterMatchMode(column)"
+        :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
           <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
-          <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`"/>
+          <InputText  v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
         <template v-else #body="{ data, field }">
           <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
