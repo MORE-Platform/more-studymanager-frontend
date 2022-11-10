@@ -23,7 +23,7 @@ export interface MoreTableSortOptions {
 export interface MoreTableAction {
   id: string,
   label: string,
-  icon: string,
+  icon?: string,
   confirm?: MoreTableActionConfirm
 }
 

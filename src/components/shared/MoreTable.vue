@@ -4,7 +4,7 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableFilterOption
+  MoreTableRowActionResult, MoreTableActionResult, MoreTableFilterOption
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -63,8 +63,7 @@ function createTableFilter() {
 }
 
 function filterMatchMode(column: any): Boolean {
-  console.log(typeof column.filterable === "object")
-  if (typeof column.filterable !="object" && column.filterable !== undefined) {
+    if (typeof column.filterable !="object" && column.filterable !== undefined) {
     return column.filterable.showFilterMatchModes
    } else {
      return false;
@@ -83,12 +82,16 @@ const editMode = ref([]);
 
 const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
-  (e: 'onaction', result: MoreTableRowActionResult<unknown>): void
+  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
 }>()
 
 function selectHandler(rowKey: string) {
   emit('onselect', rowKey)
+}
+
+function actionHandler(action: MoreTableAction) {
+  emit('onaction', {id: action.id})
 }
 
 function rowActionHandler(action: MoreTableAction, row: unknown) {
@@ -121,18 +124,48 @@ function cancel(row: unknown) {
 }
 
 function save(row: unknown) {
-  emit('onchange', row)
+  emit('onchange', clean(row))
   cancel(row);
 }
 
+function prepare(rows) {
+  return rows.map(row => {
+    props.columns.forEach(column => {
+      if(column.type === MoreTableFieldType.calendar) {
+        console.log(row[column.field])
+        row['__internalValue_' + column.field] = column.field ? new Date(row[column.field]) : undefined;
+      }
+    })
+    return row;
+  });
+}
+
+function clean(row) {
+  props.columns.forEach(column => {
+    if(column.type === MoreTableFieldType.calendar) {
+      const date = row['__internalValue_' + column.field];
+      const tzoffset = new Date(date).getTimezoneOffset()/60;
+      date.setHours(date.getHours()-tzoffset);
+      row[column.field] = date.toISOString().substring(0, 10);
+      delete row['__internalValue_' + column.field];
+    }
+  })
+  return row;
+}
 </script>
 
 <template>
   <div>
-    <h3>{{ title }}</h3>
+    <div class="flex mb-8">
+      <h3>{{ title }}</h3>
+      <div class="actions flex flex-1 justify-end">
+        <Button v-for="action in tableActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action)">{{action.label}}</Button>
+      </div>
+    </div>
+
     <DataTable
       v-model:editingRows="editingRows"
-      :value="rows"
+      :value="prepare(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
       :edit-mode="editable ? 'row' : undefined"
@@ -156,7 +189,7 @@ function save(row: unknown) {
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
-          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data[field]" input-id="dateformat" autocomplete="off" date-format="mm-dd-yy"/>
+          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`"/>
@@ -192,6 +225,12 @@ function save(row: unknown) {
   .row-actions {
     button {
       margin: 0 3px
+    }
+  }
+
+  .actions {
+    button {
+      margin-left: 10px;
     }
   }
 </style>
