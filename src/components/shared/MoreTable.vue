@@ -4,7 +4,7 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult
+  MoreTableRowActionResult, MoreTableActionResult
 } from '../../models/MoreTableModel'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -61,12 +61,16 @@ const editMode = ref([]);
 
 const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
-  (e: 'onaction', result: MoreTableRowActionResult<unknown>): void
+  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
 }>()
 
 function selectHandler(rowKey: string) {
   emit('onselect', rowKey)
+}
+
+function actionHandler(action: MoreTableAction) {
+  emit('onaction', {id: action.id})
 }
 
 function rowActionHandler(action: MoreTableAction, row: unknown) {
@@ -131,7 +135,13 @@ function clean(row) {
 
 <template>
   <div>
-    <h3>{{ title }}</h3>
+    <div class="flex mb-8">
+      <h3>{{ title }}</h3>
+      <div class="actions flex flex-1 justify-end">
+        <Button v-for="action in tableActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action)">{{action.label}}</Button>
+      </div>
+    </div>
+
     <DataTable
       v-model:editingRows="editingRows"
       :value="prepare(rows)"
@@ -188,6 +198,12 @@ function clean(row) {
   .row-actions {
     button {
       margin: 0 3px
+    }
+  }
+
+  .actions {
+    button {
+      margin-left: 10px;
     }
   }
 </style>

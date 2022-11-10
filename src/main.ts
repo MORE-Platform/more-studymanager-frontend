@@ -24,6 +24,7 @@ import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
 import 'primeicons/primeicons.css'
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
+import DialogService from 'primevue/dialogservice';
 
 
 // Router
@@ -37,6 +38,7 @@ app.use(Router)
 app.use(i18n)
 app.use(PrimeVue)
 app.use(ConfirmationService);
+app.use(DialogService);
 
 app.mount('#app')
 

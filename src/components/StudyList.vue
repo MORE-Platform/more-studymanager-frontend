@@ -10,11 +10,15 @@ import {
 import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
+import DynamicDialog from 'primevue/dynamicdialog';
+import StudyCreationDialog from './StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
+import {useDialog} from 'primevue/usedialog';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
+const dialog = useDialog();
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
@@ -23,6 +27,10 @@ const { studiesApi } = useStudiesApi()
     { field: 'purpose', header: 'purpose', editable: true },
     { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true },
     { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true },
+  ]
+
+  const tableActions: MoreTableAction[] = [
+    { id:'create', label:'Create Study' }
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -46,6 +54,7 @@ const { studiesApi } = useStudiesApi()
   function execute(action: MoreTableRowActionResult<Study>) {
     switch (action.id) {
       case 'delete': return deleteStudy(action.row)
+      case 'create': return createStudy()
       default: console.error('no handler for action', action)
     }
   }
@@ -62,6 +71,10 @@ const { studiesApi } = useStudiesApi()
     studiesApi.deleteStudy(study.studyId as number).then(listStudies)
   }
 
+  function createStudy() {
+    dialog.open(StudyCreationDialog)
+  }
+
   listStudies()
 </script>
 
@@ -73,11 +86,13 @@ const { studiesApi } = useStudiesApi()
       :columns="studyColumns"
       :rows="studyList"
       :row-actions="rowActions"
+      :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />
     <ConfirmDialog></ConfirmDialog>
+    <DynamicDialog />
   </div>
 </template>
