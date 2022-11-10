@@ -1,8 +1,3 @@
-<script lang="ts">
-interface MoreTableInternalRow {
-  data: unknown,
-}
-</script>
 <script setup lang="ts">
 import {onBeforeMount, PropType, ref} from 'vue'
 import {
