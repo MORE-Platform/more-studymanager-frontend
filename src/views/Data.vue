@@ -8,7 +8,7 @@ const study = route.meta['study'] as Study;
 
 <template>
   <div class="container m-auto mt-10">
-    <MoreTabNav :study-id="study.studyId"></MoreTabNav>
+    <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
     <h1>Data</h1>
   </div>
 </template>

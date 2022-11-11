@@ -47,8 +47,8 @@ const dialog = useDialog();
     }
   }
 
-  function goToStudy(id: string) {
-    router.push({ name: 'Overview', params: { studyId: id } })
+  function goToStudy(id: string|unknown) {
+    router.push({ name: 'Overview', params: { studyId: id as string } })
   }
 
   function execute(action: MoreTableRowActionResult<Study>) {
@@ -60,6 +60,7 @@ const dialog = useDialog();
   }
 
   function changeValue(study:Study) {
+    study = study as Study;
     const i = studyList.value.findIndex(v => v.studyId === study.studyId);
     if(i>-1) {
       studyList.value[i] = study;

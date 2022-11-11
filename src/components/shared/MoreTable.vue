@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import {onBeforeMount, PropType, ref} from 'vue'
+import {onBeforeMount, PropType, Ref, ref} from 'vue'
 import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableActionResult, MoreTableFilters
+  MoreTableRowActionResult, MoreTableActionResult
 } from '../../models/MoreTableModel'
-import DataTable from 'primevue/datatable'
+import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
@@ -48,8 +48,8 @@ const props = defineProps({
 
 const tableFilter = createTableFilter();
 
-function createTableFilter() {
-  const filterObject = {} as MoreTableFilters;
+function createTableFilter(): Ref<DataTableFilterMeta> {
+  const filterObject = {} as DataTableFilterMeta;
   props.columns.forEach(column => {
     if(column.filterable) {
       filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
@@ -61,7 +61,7 @@ function createTableFilter() {
 
 function filterMatchMode(column: MoreTableColumn): boolean {
     if (typeof column.filterable ==="object" && column.filterable !== undefined) {
-    return column.filterable.showFilterMatchModes
+    return column.filterable.showFilterMatchModes as boolean
    } else {
      return false;
    }
@@ -106,16 +106,20 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
 
 }
 
-function isEditMode(row:unknown) {
+function isEditMode(row:any) {
+  // @ts-expect-error: cannot really fix
   return editMode.value.includes(row[props.rowId])
 }
 
-function edit(row: unknown) {
+function edit(row: any) {
+  // @ts-expect-error: cannot really fix
   editMode.value.push(row[props.rowId]);
+
+  // @ts-expect-error: cannot really fix
   editingRows.value.push(row);
 }
 
-function cancel(row: unknown) {
+function cancel(row: any) {
   editingRows.value.splice(editingRows.value.findIndex(r => r[props.rowId] === row[props.rowId]));
   editMode.value.splice(editMode.value.findIndex(r => r === row[props.rowId]));
 }
@@ -125,8 +129,8 @@ function save(row: unknown) {
   cancel(row);
 }
 
-function prepare(rows) {
-  return rows.map(row => {
+function prepare(rows:any) {
+  return rows.map((row:any) => {
     props.columns.forEach(column => {
       if(column.type === MoreTableFieldType.calendar) {
         console.log(row[column.field])
@@ -137,7 +141,7 @@ function prepare(rows) {
   });
 }
 
-function clean(row) {
+function clean(row:any) {
   props.columns.forEach(column => {
     if(column.type === MoreTableFieldType.calendar) {
       const date = row['__internalValue_' + column.field];
@@ -185,7 +189,7 @@ function clean(row) {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-          <InputText v-if="!column.type || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
+          <InputText v-if="column.type !== undefined || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
           <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">

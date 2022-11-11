@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import {useRoute, useRouter} from 'vue-router';
+import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
 
   interface Tab {
     title: string
     name: string
-    params: unknown
+    params: RouteParamsRaw
     active?: boolean
   }
 
