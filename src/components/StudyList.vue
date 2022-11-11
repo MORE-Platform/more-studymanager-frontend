@@ -34,7 +34,7 @@ const { studiesApi } = useStudiesApi()
   ]
 
   const rowActions: MoreTableAction[] = [
-    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete study?'}}
+    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: {{title}}'}}
   ]
 
   async function listStudies(): Promise<void> {
@@ -47,6 +47,10 @@ const { studiesApi } = useStudiesApi()
     }
   }
 
+  async function createStudy(study: Study): Promise<void> {
+    await studiesApi.createStudy(study).then(listStudies);
+  }
+
   function goToStudy(id: string|unknown) {
     router.push({ name: 'Overview', params: { studyId: id as string } })
   }
@@ -54,7 +58,7 @@ const { studiesApi } = useStudiesApi()
   function execute(action: MoreTableRowActionResult<Study>) {
     switch (action.id) {
       case 'delete': return deleteStudy(action.row)
-      case 'create': return createStudy()
+      case 'create': return openCreateDialog()
       default: console.error('no handler for action', action)
     }
   }
@@ -72,12 +76,25 @@ const { studiesApi } = useStudiesApi()
     studiesApi.deleteStudy(study.studyId as number).then(listStudies)
   }
 
-  function createStudy() {
+  function openCreateDialog() {
     dialog.open(StudyCreationDialog,{
       props: {
         header: 'Create Study',
+        style: {
+          width: '50vw',
+        },
+        breakpoints:{
+          '960px': '75vw',
+          '640px': '90vw'
+        },
         modal: true,
         dismissableMask: true,
+
+      },
+      onClose: (options) => {
+        if(options) {
+          createStudy(options.data as Study)
+        }
       }
     })
   }

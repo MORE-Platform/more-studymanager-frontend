@@ -14,6 +14,7 @@ import Calendar from 'primevue/calendar'
 import {useConfirm} from 'primevue/useconfirm';
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
+import {dateToDateString} from '../../utils/dateUtils';
 
 const props = defineProps({
   title: {
@@ -143,9 +144,7 @@ function clean(row:any) {
   props.columns.forEach(column => {
     if(column.type === MoreTableFieldType.calendar) {
       const date = row['__internalValue_' + column.field];
-      const tzoffset = new Date(date).getTimezoneOffset()/60;
-      date.setHours(date.getHours()-tzoffset);
-      row[column.field] = date.toISOString().substring(0, 10);
+      row[column.field] = dateToDateString(date)
       delete row['__internalValue_' + column.field];
     }
   })

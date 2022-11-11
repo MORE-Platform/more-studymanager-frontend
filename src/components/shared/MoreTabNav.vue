@@ -32,7 +32,7 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
 
   function setActiveTab() {
     tabs.forEach((tab:Tab) => {
-      tab.active = (tab.name === route.name && equals(tab.params, route.params));
+      tab.active = (tab.name === route.name);
     })
   }
 

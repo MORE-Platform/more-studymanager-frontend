@@ -30,11 +30,13 @@ const routes = [
       {
         path: '',
         name: 'Overview',
+        meta: { title: 'Overview' },
         component: Study
       },
       {
         path: 'participants',
         name: 'Participants',
+        meta: { title: 'Participants' },
         component: Participants,
       },
       {
