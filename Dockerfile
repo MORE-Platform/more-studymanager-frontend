@@ -2,7 +2,6 @@
 FROM node:lts-alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
-COPY MORE-Platform-tm-openapi-client-typescript-1.0.0.tgz ./
 RUN npm install
 COPY . .
 RUN npm run package
