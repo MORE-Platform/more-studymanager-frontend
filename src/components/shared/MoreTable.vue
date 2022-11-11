@@ -53,7 +53,6 @@ function createTableFilter(): Ref<DataTableFilterMeta> {
   props.columns.forEach(column => {
     if(column.filterable) {
       filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
-      console.log(filterObject)
     }
   })
    return ref(filterObject)
@@ -133,7 +132,6 @@ function prepare(rows:any) {
   return rows.map((row:any) => {
     props.columns.forEach(column => {
       if(column.type === MoreTableFieldType.calendar) {
-        console.log(row[column.field])
         row['__internalValue_' + column.field] = column.field ? new Date(row[column.field]) : undefined;
       }
     })
@@ -156,7 +154,7 @@ function clean(row:any) {
 </script>
 
 <template>
-  <div>
+  <div class="more-table">
     <div class="flex mb-8">
       <h3>{{ title }}</h3>
       <div class="actions flex flex-1 justify-end">
@@ -189,7 +187,7 @@ function clean(row:any) {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-          <InputText v-if="column.type !== undefined || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
+          <InputText v-if="column.type === undefined || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
           <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
@@ -223,15 +221,21 @@ function clean(row:any) {
 </template>
 
 <style lang="postcss">
-  .row-actions {
-    button {
-      margin: 0 3px
-    }
-  }
 
-  .actions {
-    button {
-      margin-left: 10px;
+  .more-table {
+    h3 {
+      color: var(--primary-color)
+    }
+    .row-actions {
+      button {
+        margin: 0 3px
+      }
+    }
+
+    .actions {
+      button {
+        margin-left: 10px;
+      }
     }
   }
 </style>

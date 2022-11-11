@@ -19,9 +19,6 @@ const i18n = createI18n({
 
 // PrimeVue
 import PrimeVue from 'primevue/config'
-import 'primevue/resources/primevue.min.css'
-import 'primevue/resources/themes/bootstrap4-light-blue/theme.css'
-import 'primeicons/primeicons.css'
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';

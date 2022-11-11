@@ -11,14 +11,14 @@ import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
-import StudyCreationDialog from './StudyCreationDialog.vue'
+import StudyCreationDialog from './dialog/StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
-const dialog = useDialog();
+  const dialog = useDialog();
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
@@ -73,7 +73,13 @@ const dialog = useDialog();
   }
 
   function createStudy() {
-    dialog.open(StudyCreationDialog)
+    dialog.open(StudyCreationDialog,{
+      props: {
+        header: 'Create Study',
+        modal: true,
+        dismissableMask: true,
+      }
+    })
   }
 
   listStudies()

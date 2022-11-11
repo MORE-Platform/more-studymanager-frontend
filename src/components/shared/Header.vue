@@ -3,7 +3,7 @@
 
 <template>
   <header class="py-5 shadow-md">
-    <div class="content-block flex justify-between">
+    <div class="container m-auto flex justify-between">
       <router-link to="/">
       <div class="logo">
         <svg
