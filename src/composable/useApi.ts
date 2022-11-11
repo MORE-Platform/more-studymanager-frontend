@@ -1,13 +1,14 @@
-import { inject } from 'vue'
-import {StudiesApi, StudyGroupsApi} from '../generated-sources/openapi';
+import {Configuration, StudiesApi, StudyGroupsApi} from '../generated-sources/openapi';
+
+const apiConfig = {
+  basePath: '/api/v1',
+} as Configuration;
+const studiesApi = new StudiesApi(apiConfig)
+const studyGroupsApi = new StudyGroupsApi(apiConfig)
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi
 } {
-  let studiesApi: StudiesApi | undefined = inject('studiesApiClient')
-  if (!studiesApi) {
-    studiesApi = new StudiesApi()
-  }
   return {
     studiesApi,
   }
@@ -16,10 +17,6 @@ export function useStudiesApi(): {
 export function useStudyGroupsApi(): {
   studyGroupsApi: StudyGroupsApi
 } {
-  let studyGroupsApi: StudyGroupsApi | undefined = inject('studyGroupsApiClient')
-  if (!studyGroupsApi) {
-    studyGroupsApi = new StudyGroupsApi()
-  }
   return {
     studyGroupsApi,
   }
