@@ -4,6 +4,17 @@ export interface MoreTableColumn {
   header: string
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
+  filterable?: boolean | MoreTableFilterOption
+}
+
+export interface MoreTableFilters {
+  [key: string]: MoreTableFilterOption
+}
+
+export interface MoreTableFilterOption {
+  value?: unknown
+  showFilterMatchModes?: boolean,
+  matchMode?: string
 }
 
 export interface MoreTableSortOptions {

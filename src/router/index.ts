@@ -8,42 +8,54 @@ import Interventions from '../views/Interventions.vue'
 import Participants from '../views/Participants.vue'
 import Observations from '../views/Observations.vue'
 import Data from '../views/Data.vue'
+import {useStudiesApi} from '../composable/useApi';
+
+const {studiesApi} = useStudiesApi()
+
+const studyResolver = async (to:any, from:any, next: any) => {
+  to.meta['study'] = await studiesApi.getStudy(to.params.studyId).then((response) => response.data)
+  next()
+}
 
 const routes = [
   {
     path: '/',
     meta: { title: 'Dashboard' },
-    component: Dashboard,
+    component: Dashboard
   },
   {
     path: '/studies/:studyId',
-    meta: { title: 'Overview' },
-    name: 'Overview',
-    component: Study,
-  },
-  {
-    path: '/studies/:studyId/participants',
-    meta: { title: 'Participants' },
-    name: 'Participants',
-    component: Participants,
-  },
-  {
-    path: '/studies/:studyId/observations',
-    meta: { title: 'Observations' },
-    name: 'Observations',
-    component: Observations,
-  },
-  {
-    path: '/studies/:studyId/interventions',
-    meta: { title: 'Interventions' },
-    name: 'Interventions',
-    component: Interventions,
-  },
-  {
-    path: '/studies/:studyId/data',
-    meta: { title: 'Data' },
-    name: 'Data',
-    component: Data,
+    beforeEnter: studyResolver,
+    children: [
+      {
+        path: '',
+        name: 'Overview',
+        component: Study
+      },
+      {
+        path: 'participants',
+        name: 'Participants',
+        component: Participants,
+      },
+      {
+        path: 'observations',
+        meta: { title: 'Observations' },
+        name: 'Observations',
+        component: Observations,
+      },
+      {
+        path: 'interventions',
+        meta: { title: 'Interventions' },
+        name: 'Interventions',
+        component: Interventions,
+      },
+      {
+        path: 'data',
+        meta: { title: 'Data' },
+        name: 'Data',
+        component: Data,
+      },
+    ]
   },
   {
     path: '/:page',
@@ -56,3 +68,7 @@ export const Router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+Router.beforeEach((to:any, from:any) => {
+  to.meta['study'] = from.meta['study']
+});

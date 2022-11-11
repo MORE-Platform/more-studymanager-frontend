@@ -8,7 +8,7 @@
 import {inject} from 'vue';
 import Button from 'primevue/button'
 
-const dialogRef = inject("dialogRef");
+const dialogRef:any = inject("dialogRef");
 
 function save() {
   dialogRef.value.close();

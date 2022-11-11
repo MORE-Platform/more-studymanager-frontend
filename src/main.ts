@@ -29,8 +29,6 @@ import DialogService from 'primevue/dialogservice';
 
 // Router
 import { Router } from './router'
-import {StudyGroupsApi, Configuration, StudiesApi} from './generated-sources/openapi';
-
 
 const app = createApp(App)
 
@@ -43,11 +41,3 @@ app.use(DialogService);
 app.mount('#app')
 
 app.directive('tooltip', Tooltip);
-
-const apiConfig = {
-  basePath: '/api/v1',
-} as Configuration;
-const studiesApi = new StudiesApi(apiConfig)
-app.provide('studiesApiClient', studiesApi)
-const studiesGroupsApi = new StudyGroupsApi(apiConfig)
-app.provide('studyGroupsApiClient', studiesGroupsApi)

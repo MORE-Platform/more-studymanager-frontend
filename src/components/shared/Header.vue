@@ -1,4 +1,5 @@
-<script lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <template>
   <header class="py-5 shadow-md">
