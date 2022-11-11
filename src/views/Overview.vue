@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import MoreTabNav from "../components/shared/MoreTabNav.vue";
-import {useStudiesApi, useStudyGroupsApi} from '../composable/useApi';
+import {useStudyGroupsApi} from '../composable/useApi';
 import {useRoute} from 'vue-router';
 import {ref, Ref} from 'vue';
 import {Study, StudyGroup} from '../generated-sources/openapi';
