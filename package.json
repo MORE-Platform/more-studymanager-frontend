@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "package:quick": "vite build",
-    "package": "vue-tsc --noEmit && vite build",
+    "package:quick": "npm run createApi && vite build",
+    "package": "npm run createApi && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .ts,vue,js --ignore-path .gitignore . --max-warnings=0",
     "lint:fix": "eslint --ext .ts,vue,js --ignore-path .gitignore . --fix",
