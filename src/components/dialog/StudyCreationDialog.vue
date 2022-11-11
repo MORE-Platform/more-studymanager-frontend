@@ -7,7 +7,7 @@
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Language</h5>
-        <Dropdown style="width: 100%;" v-model="language" :options="languages" optionLabel="name" optionValue="value" placeholder="Select a language" />
+        <Dropdown v-model="language" style="width: 100%;" :options="languages" option-label="name" option-value="value" placeholder="Select a language" />
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Study Start</h5>
@@ -19,11 +19,11 @@
       </div>
       <div class="col-start-0 col-span-6">
         <h5>Purpose</h5>
-        <Textarea v-model="purpose" :autoResize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="purpose" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
     <div class="buttons text-right mt-8">
-      <Button @click="cancel()" class="p-button-secondary">Cancel</Button>
+      <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
       <Button @click="create()">Create</Button>
     </div>
   </div>
