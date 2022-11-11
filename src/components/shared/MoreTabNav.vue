@@ -21,7 +21,9 @@ import {useRoute, useRouter} from 'vue-router';
   const tabs:Tab[] = [
     {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}},
     {title: 'Data', name: 'Data', params: {studyId: props.studyId}},
-    {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}}
+    {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}},
+    {title: 'Observations', name: 'Observations', params: {studyId: props.studyId}},
+    {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}}
   ] as Tab[]
 
   function equals(obj1:unknown, obj2:unknown) {
