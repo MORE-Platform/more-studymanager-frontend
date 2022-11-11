@@ -6,11 +6,14 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult, MoreTableActionResult
 } from '../../models/MoreTableModel'
+import {StudyStatus} from "../../generated-sources/openapi";
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
+import Dropdown from "primevue/dropdown";
+import MultiSelect from 'primevue/multiselect';
 import {useConfirm} from 'primevue/useconfirm';
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
@@ -84,7 +87,9 @@ const emit = defineEmits<{
 }>()
 
 function selectHandler(rowKey: string) {
-  emit('onselect', rowKey)
+  if (!isEditMode) {
+    emit('onselect', rowKey)
+  }
 }
 
 function actionHandler(action: MoreTableAction) {
@@ -103,7 +108,6 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
   } else {
     emit('onaction', {id: action.id, row})
   }
-
 }
 
 function isEditMode(row:any) {
@@ -153,6 +157,7 @@ function clean(row:any) {
   })
   return row;
 }
+
 </script>
 
 <template>
@@ -188,16 +193,28 @@ function clean(row:any) {
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
       >
-        <template v-if="column.editable" #editor="{ data, field }">
-          <InputText v-if="column.type !== undefined || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
-          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
+        <template  #editor="{ data, field }" #content="{data, field}" v-if="column.editable" >
+          <div v-if="(data['status'] === (StudyStatus.Draft || StudyStatus.Paused))">
+            <InputText v-if="(column.type !== undefined && column.type !== MoreTableFieldType.choice && column.type !== MoreTableFieldType.multiselect) ||
+            (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" autofocus />
+            <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
+            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" optionLabel="label" optionValue="value" :placeholder="$t(column.choiceOptions.placeholder)">
+              <template #option="optionProps">
+                <div class="p-dropdown-car-option">
+                  <span>{{optionProps.option.label}}</span>
+                </div>
+              </template>
+            </Dropdown>
+            <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" optionLabel="label" :placeholder="$t(column.choiceOptions.placeholder)"/>
+            <div v-else-if="column.type === undefined">{{data[field]}}</div>
+          </div>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
-          <InputText  v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
+          <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
         <template v-else #body="{ data, field }">
           <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
-          <span v-if="column.type === MoreTableFieldType.calendar">{{data[field]}}</span>
+          <span v-if="column.type === MoreTableFieldType.calendar">{{data[field]}} {{ columns.data }}</span>
         </template>
       </Column>
 
@@ -208,13 +225,16 @@ function clean(row:any) {
         class="row-actions"
       >
         <template #body="slotProps">
-          <div v-if="!isEditMode(slotProps.data)">
+          <div v-if="!isEditMode(slotProps.data) && slotProps.data.status === StudyStatus.Draft">
             <Button v-for="action in rowActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data)"></Button>
             <Button type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
           </div>
-          <div v-else>
+          <div v-else-if="isEditMode(slotProps.data) && slotProps.data.status === StudyStatus.Draft">
             <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
             <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+          </div>
+          <div>
+            <Button v-if="((!isEditMode(slotProps.data)) && (slotProps.data.status !== (StudyStatus.Draft)))" type="button" icon="pi pi-download" :title="$t('tooltips.downloadBtn')"></Button>
           </div>
         </template>
       </Column>

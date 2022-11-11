@@ -2,11 +2,7 @@
 import {ref, Ref} from 'vue'
 import {useStudiesApi} from '../composable/useApi'
 import {useRouter} from 'vue-router'
-import {
-  MoreTableAction,
-  MoreTableColumn,
-  MoreTableFieldType, MoreTableRowActionResult
-} from '../models/MoreTableModel'
+import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult} from '../models/MoreTableModel'
 import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -14,6 +10,7 @@ import DynamicDialog from 'primevue/dynamicdialog';
 import StudyCreationDialog from './StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
+import {UserRolesEnum} from "../models/UserModel";
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
@@ -23,10 +20,29 @@ const dialog = useDialog();
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    { field: 'status', header: 'status', sortable: true},
     { field: 'purpose', header: 'purpose', editable: true },
-    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'status', header: 'status', sortable: true},
+    {field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
+      choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
+          {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
+          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'roleMultiselect'}
+    }
+  ]
+
+  const studyColumnsDraft: MoreTableColumn[] = [
+    ...studyColumns,
+    { field: 'plannedStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+  ]
+  const studyColumnsActive: MoreTableColumn[] = [
+    ...studyColumns,
+    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+  ]
+  const studyColumnsCompleted: MoreTableColumn[] = [
+    ...studyColumns,
+    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'actualEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -84,7 +100,7 @@ const dialog = useDialog();
     <MoreTable
       row-id="studyId"
       :title="$t('studies')"
-      :columns="studyColumns"
+      :columns="studyColumnsDraft"
       :rows="studyList"
       :row-actions="rowActions"
       :table-actions="tableActions"

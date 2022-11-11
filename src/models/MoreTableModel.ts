@@ -4,7 +4,17 @@ export interface MoreTableColumn {
   header: string
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
-  filterable?: boolean | MoreTableFilterOption
+  filterable?: boolean | MoreTableFilterOption,
+  choiceOptions?: MoreTableChoiceOptions
+}
+
+export interface MoreTableChoiceOptions {
+  statuses: Array<MoreTableChoice>,
+  placeholder: string
+}
+export interface MoreTableChoice {
+  label: string,
+  value: string
 }
 
 export interface MoreTableFilters {
@@ -46,7 +56,8 @@ export interface MoreTableActionConfirm {
 export enum MoreTableFieldType {
   string,
   choice,
-  calendar
+  calendar,
+  multiselect = 3
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
