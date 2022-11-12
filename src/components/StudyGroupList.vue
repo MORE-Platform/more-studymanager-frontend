@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
-import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn, MoreTableRowActionResult,
@@ -12,7 +11,6 @@ import ConfirmDialog from 'primevue/confirmdialog';
 
 const { studyGroupsApi } = useStudyGroupsApi()
 const studyGroupList: Ref<StudyGroup[]> = ref([])
-const router = useRouter()
 
 const props = defineProps({
   studyId: {

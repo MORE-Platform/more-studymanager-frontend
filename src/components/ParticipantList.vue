@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useParticipantsApi} from '../composable/useApi'
-import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Participant, StudyGroup} from '../generated-sources/openapi';
+import {Participant} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 
 const { participantsApi } = useParticipantsApi()
 const participantsList: Ref<Participant[]> = ref([])
-const router = useRouter()
 
 const props = defineProps({
   studyId: {

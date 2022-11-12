@@ -211,8 +211,8 @@ function toClassName(value:string):string {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-          <InputText style="width:100%" v-if="column.type === undefined || column.type === MoreTableFieldType.string" v-model="data[field]" autofocus />
-          <Calendar style="width:100%" v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
+          <InputText v-if="column.type === undefined || column.type === MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
+          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText  v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>

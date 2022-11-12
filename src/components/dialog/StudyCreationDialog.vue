@@ -3,7 +3,7 @@
     <div class="grid grid-cols-6 gap-4 items-center">
       <div class="col-start-0 col-span-1"><h5>Study Title</h5></div>
       <div class="col-start-2 col-span-5">
-        <InputText placeholder="Enter the study title." v-model="title" style="width: 100%"></InputText>
+        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Language</h5>
@@ -11,15 +11,15 @@
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Study Start</h5>
-        <Calendar placeholder="dd/mm/yyyy" v-model="start" autocomplete="off" style="width: 100%"/>
+        <Calendar v-model="start" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%"/>
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Study End</h5>
-        <Calendar placeholder="dd/mm/yyyy" v-model="end" autocomplete="off" style="width: 100%"/>
+        <Calendar v-model="end" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%"/>
       </div>
       <div class="col-start-0 col-span-6">
         <h5>Purpose</h5>
-        <Textarea placeholder="Enter the main purpose and intention of the study." v-model="purpose" :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
     <div class="buttons text-right mt-8">
