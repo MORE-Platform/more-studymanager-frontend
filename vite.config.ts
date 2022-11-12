@@ -17,9 +17,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        //target: 'https://studymanager.platform-test.more.redlink.io/api', // insomnia localhost server
-        target: 'http://localhost:8080/api', // mockoon
-        //target: 'http://localhost:4010/api', // open api prism
+        target: 'https://studymanager.platform-test.more.redlink.io/api',
+        //target: 'http://localhost:8080/api', // local
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),

@@ -20,6 +20,8 @@ const { studiesApi } = useStudiesApi()
   const router = useRouter()
   const dialog = useDialog();
 
+  const loading = ref(true)
+
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
@@ -30,16 +32,15 @@ const { studiesApi } = useStudiesApi()
   ]
 
   const tableActions: MoreTableAction[] = [
-    { id:'create', label:'Create Study' }
+    { id:'create', icon:'pi pi-plus', label:'Add new study' }
   ]
 
   const rowActions: MoreTableAction[] = [
-    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: {{title}}'}}
+    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'}}
   ]
 
   async function listStudies(): Promise<void> {
     try {
-      studyList.value = []; //TODO necessary?
       studyList.value = await studiesApi.listStudies()
         .then((response:AxiosResponse) => response.data)
     } catch (e) {
@@ -99,7 +100,7 @@ const { studiesApi } = useStudiesApi()
     })
   }
 
-  listStudies()
+  listStudies().finally(() => loading.value = false)
 </script>
 
 <template>
@@ -107,11 +108,14 @@ const { studiesApi } = useStudiesApi()
     <MoreTable
       row-id="studyId"
       :title="$t('studies')"
+      subtitle="This is the list of my own studies and studies where I am added as collaborator."
       :columns="studyColumns"
       :rows="studyList"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
+      empty-message="No studies yet"
+      :loading="loading"
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
