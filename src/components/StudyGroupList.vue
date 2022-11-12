@@ -42,10 +42,6 @@ async function listStudyGroups(): Promise<void> {
   }
 }
 
-function goToStudyGroup(groupId: string) {
-  router.push({ name: 'StudyGroup', params: { studyId: props.studyId, groupId } })
-}
-
 function execute(action: MoreTableRowActionResult<StudyGroup>) {
   switch (action.id) {
     case 'delete': return deleteStudyGroup(action.row)
@@ -83,7 +79,6 @@ listStudyGroups()
       :row-actions="rowActions"
       :table-actions="tableActions"
       empty-message="No groups yet"
-      @onselect="goToStudyGroup($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

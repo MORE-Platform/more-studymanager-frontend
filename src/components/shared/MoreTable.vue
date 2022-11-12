@@ -164,6 +164,13 @@ function clean(row:any) {
   })
   return row;
 }
+
+function toClassName(value:string):string {
+  if(value) {
+    return value.toLowerCase().replace(/\.|%[0-9a-z]{2}/gi, '');
+  }
+  return value;
+}
 </script>
 
 <template>
@@ -211,7 +218,7 @@ function clean(row:any) {
           <InputText  v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
         <template v-else #body="{ data, field }">
-          <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
+          <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
           <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
         </template>
       </Column>
