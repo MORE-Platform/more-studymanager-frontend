@@ -26,6 +26,7 @@ export interface MoreTableAction {
   id: string,
   label: string,
   icon?: string,
+  options?: MoreTableActionOptions[]
   confirm?: MoreTableActionConfirm
 }
 
@@ -36,6 +37,13 @@ export interface MoreTableRowActionResult<D> {
 
 export interface MoreTableActionResult {
   id: string
+  properties?: any
+}
+
+export interface MoreTableActionOptions {
+  label: string,
+  value?: any,
+  icon?: string
 }
 
 export interface MoreTableActionConfirm {

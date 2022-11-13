@@ -9,6 +9,7 @@ import {
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
+import SplitButton from 'primevue/splitbutton'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import ProgressSpinner from 'primevue/progressspinner';
@@ -101,8 +102,9 @@ function selectHandler(rowKey: string) {
   emit('onselect', rowKey)
 }
 
-function actionHandler(action: MoreTableAction) {
-  emit('onaction', {id: action.id})
+function actionHandler(action: MoreTableAction, properties?: any) {
+  console.log(action, properties);
+  emit('onaction', {id: action.id, properties})
 }
 
 function rowActionHandler(action: MoreTableAction, row: unknown) {
@@ -154,6 +156,14 @@ function prepare(rows:any) {
   });
 }
 
+props.tableActions.forEach(action => {
+  if(action.options) {
+    action.options.forEach(option => {
+      (option as any)['command'] = () => {actionHandler(action, option.value)}
+    })
+  }
+})
+
 function clean(row:any) {
   props.columns.forEach(column => {
     if(column.type === MoreTableFieldType.calendar) {
@@ -167,7 +177,7 @@ function clean(row:any) {
 
 function toClassName(value:string):string {
   if(value) {
-    return value.toLowerCase().replace(/\.|%[0-9a-z]{2}/gi, '');
+    return value.toString().toLowerCase().replace(/\.|%[0-9a-z]{2}/gi, '');
   }
   return value;
 }
@@ -181,7 +191,10 @@ function toClassName(value:string):string {
         <h4 v-if="subtitle">{{subtitle}}</h4>
       </div>
       <div class="actions flex flex-1 justify-end">
-        <Button v-for="action in tableActions" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+        <div v-for="action in tableActions" :key="action.id" class="action">
+          <Button v-if="!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+          <SplitButton v-if="!!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" :model="action.options" @click="actionHandler(action)"></SplitButton>
+        </div>
       </div>
     </div>
 
@@ -268,7 +281,7 @@ function toClassName(value:string):string {
     }
 
     .actions {
-      button {
+      .action {
         margin-left: 10px;
       }
     }

@@ -2,12 +2,14 @@
 import {ref, Ref} from 'vue'
 import {useParticipantsApi} from '../composable/useApi'
 import {
-  MoreTableAction,
+  MoreTableAction, MoreTableActionResult,
   MoreTableColumn, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
 import {Participant} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
+// @ts-ignore
+import * as names from 'starwars-names';
 
 const { participantsApi } = useParticipantsApi()
 const participantsList: Ref<Participant[]> = ref([])
@@ -20,10 +22,10 @@ const props = defineProps({
 });
 
 const participantsColumns: MoreTableColumn[] = [
-  { field: 'alias', header: 'Alias', editable: true },
-  { field: 'registrationToken', header: 'Token' },
-  { field: 'status', header: 'Status' },
-  { field: 'studyGroupId', header: 'Group' }
+  { field: 'alias', header: 'alias', editable: true },
+  { field: 'registrationToken', header: 'token' },
+  { field: 'status', header: 'status' },
+  { field: 'studyGroupId', header: 'group' }
 ]
 
 const rowActions: MoreTableAction[] = [
@@ -31,7 +33,8 @@ const rowActions: MoreTableAction[] = [
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Add Participant', icon:'pi pi-plus'}
+  { id:'create', label:'Add Participant', icon:'pi pi-plus',
+    options: [{label: "Add 3", value: 3},{label: "Add 10", value: 10},{label: "Add 25", value: 25},{label: "Add 50", value: 50}]}
 ]
 
 async function listParticipant(): Promise<void> {
@@ -42,17 +45,18 @@ async function listParticipant(): Promise<void> {
   }
 }
 
-function execute(action: MoreTableRowActionResult<Participant>) {
+function execute(action: MoreTableRowActionResult<Participant>|MoreTableActionResult) {
   switch (action.id) {
-    case 'delete': return deleteParticipant(action.row)
-    case 'create': return createParticipant()
+    case 'delete': return deleteParticipant((action as MoreTableRowActionResult<Participant>).row)
+    case 'create': return createParticipant(action as MoreTableActionResult)
     default: console.error('no handler for action', action)
   }
 }
 
-function createParticipant() {
-  //TODO
-  participantsApi.createParticipants(props.studyId,[{studyId: props.studyId}]).then(listParticipant)
+function createParticipant(actionResult: MoreTableActionResult) {
+  const i = actionResult.properties || 1;
+  const participants = names.random(i).map((alias:string) => ({alias, studyId: props.studyId}))
+  participantsApi.createParticipants(props.studyId,participants).then(listParticipant)
 }
 
 function changeValue(participant:Participant) {
