@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import {createApp, inject} from 'vue'
 import App from './App.vue'
 import './index.css'
 import '../src/style.pcss'
@@ -23,11 +23,40 @@ import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
 
-
 // Router
 import { Router } from './router'
+import AuthService from './service/AuthService';
+import axios from 'axios';
+
+const authService = new AuthService({url: 'https://auth.more.redlink.io', realm: 'Auth-Client-Test', clientId: 'oauth2-pkce-client'})
+const loggedIn = await authService.init();
+if(!loggedIn) {
+  window.location.reload();
+}
+
+const axiosInstance = axios.create({
+  baseURL: "/",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+axiosInstance.interceptors.request.use(
+  (config:any) => {
+    const token = authService.getToken()
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`; // for Node.js Express back-end
+    }
+    return config;
+  },
+  (error:any) => {
+    return Promise.reject(error);
+  }
+)
+
+window.axios = axiosInstance;
 
 const app = createApp(App)
+app.provide("authService", authService);
 
 app.use(Router)
 app.use(i18n)

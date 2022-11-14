@@ -9,11 +9,10 @@ import Participants from '../views/Participants.vue'
 import Observations from '../views/Observations.vue'
 import Data from '../views/Data.vue'
 import {useStudiesApi} from '../composable/useApi';
-
-const {studiesApi} = useStudiesApi()
+import {inject} from 'vue';
 
 const studyResolver = async (to:any, from:any, next: any) => {
-  to.meta['study'] = await studiesApi.getStudy(to.params.studyId).then((response) => response.data)
+  to.meta['study'] = await useStudiesApi().studiesApi.getStudy(to.params.studyId).then((response) => response.data)
   next()
 }
 

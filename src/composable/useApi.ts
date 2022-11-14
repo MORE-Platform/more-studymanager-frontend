@@ -1,15 +1,19 @@
 import {Configuration, ParticipantsApi, StudiesApi, StudyGroupsApi} from '../generated-sources/openapi';
+import {AxiosInstance} from 'axios';
+import {inject} from 'vue';
 
 const apiConfig = {
   basePath: '/api/v1',
 } as Configuration;
-const studiesApi = new StudiesApi(apiConfig)
-const studyGroupsApi = new StudyGroupsApi(apiConfig)
-const participantsApi = new ParticipantsApi(apiConfig)
+
+let studyGroupsApi:StudyGroupsApi;
+let studiesApi:StudiesApi;
+let participantsApi:ParticipantsApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi
 } {
+  studiesApi = studiesApi || new StudiesApi(apiConfig, undefined, window.axios);
   return {
     studiesApi,
   }
@@ -18,6 +22,7 @@ export function useStudiesApi(): {
 export function useStudyGroupsApi(): {
   studyGroupsApi: StudyGroupsApi
 } {
+  studyGroupsApi = studyGroupsApi || new StudyGroupsApi(apiConfig, undefined, window.axios)
   return {
     studyGroupsApi,
   }
@@ -26,6 +31,7 @@ export function useStudyGroupsApi(): {
 export function useParticipantsApi(): {
   participantsApi: ParticipantsApi
 } {
+  participantsApi = participantsApi || new ParticipantsApi(apiConfig, undefined, window.axios)
   return {
     participantsApi,
   }
