@@ -10,10 +10,12 @@
 </script>
 
 <template>
-  <div class="container m-auto mt-10">
-    <User :user="user"></User>
-  </div>
-  <div class="container m-auto mt-10">
-    <StudyList />
+  <div class="container bg-white rounded-lg m-auto p-10 mt-10">
+    <div>
+      <User :user="user"></User>
+    </div>
+    <div class="mt-10">
+      <StudyList />
+    </div>
   </div>
 </template>

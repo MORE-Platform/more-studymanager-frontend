@@ -13,6 +13,6 @@ defineProps({
 <template>
   <div>
     <h2>{{user.name}}</h2>
-    <h2><span>Organisation:</span>{{user.organisation}}</h2>
+    <h3><span>Organisation:</span>{{user.organisation}}</h3>
   </div>
 </template>

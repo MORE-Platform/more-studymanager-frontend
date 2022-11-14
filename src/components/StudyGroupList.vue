@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
-import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn, MoreTableRowActionResult,
@@ -12,7 +11,6 @@ import ConfirmDialog from 'primevue/confirmdialog';
 
 const { studyGroupsApi } = useStudyGroupsApi()
 const studyGroupList: Ref<StudyGroup[]> = ref([])
-const router = useRouter()
 
 const props = defineProps({
   studyId: {
@@ -30,24 +28,28 @@ const rowActions: MoreTableAction[] = [
   { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete study group?'}}
 ]
 
+const tableActions: MoreTableAction[] = [
+  { id:'create', label:'Create Group'}
+]
+
 async function listStudyGroups(): Promise<void> {
   try {
-    studyGroupList.value = []; //TODO necessary?
     studyGroupList.value = await studyGroupsApi.listStudyGroups(props.studyId).then((response) => response.data);
   } catch (e) {
     console.error('cannot list studies', e)
   }
 }
 
-function goToStudyGroup(groupId: string) {
-  router.push({ name: 'StudyGroup', params: { studyId: props.studyId, groupId } })
-}
-
 function execute(action: MoreTableRowActionResult<StudyGroup>) {
   switch (action.id) {
     case 'delete': return deleteStudyGroup(action.row)
+    case 'create': return createStudyGroup()
     default: console.error('no handler for action', action)
   }
+}
+
+function createStudyGroup() {
+  studyGroupsApi.createStudyGroup(props.studyId,{studyId: props.studyId}).then(listStudyGroups)
 }
 
 function changeValue(studyGroup:StudyGroup) {
@@ -73,7 +75,8 @@ listStudyGroups()
       :columns="studyGroupColumns"
       :rows="studyGroupList"
       :row-actions="rowActions"
-      @onselect="goToStudyGroup($event)"
+      :table-actions="tableActions"
+      empty-message="No groups yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

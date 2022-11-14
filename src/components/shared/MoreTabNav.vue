@@ -26,13 +26,9 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
     {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}}
   ] as Tab[]
 
-  function equals(obj1:unknown, obj2:unknown) {
-    return JSON.stringify(obj1) === JSON.stringify(obj2)
-  }
-
   function setActiveTab() {
     tabs.forEach((tab:Tab) => {
-      tab.active = (tab.name === route.name && equals(tab.params, route.params));
+      tab.active = (tab.name === route.name);
     })
   }
 

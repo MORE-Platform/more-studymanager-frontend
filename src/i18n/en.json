@@ -1,7 +1,7 @@
 {
   "id": "Id",
   "message": "testing message",
-  "studies":  "Studies",
+  "studies":  "Study List",
   "studyGroups":  "Study Groups",
   "studyId": "Study ID",
   "title": "Title",
@@ -16,6 +16,8 @@
   "roles": "Role(s)",
 
   "participants": "Participants",
+  "token": "Token",
+  "group": "Study Group",
   "participantId": "Participant Id",
   "editParticipant": "Edit Participant",
   "createParticipant": "Create Participant",

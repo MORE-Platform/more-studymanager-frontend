@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "package:quick": "vite build",
-    "package": "vue-tsc --noEmit && vite build",
+    "package:quick": "npm run createApi && vite build",
+    "package": "npm run createApi && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .ts,vue,js --ignore-path .gitignore . --max-warnings=0",
     "lint:fix": "eslint --ext .ts,vue,js --ignore-path .gitignore . --fix",
@@ -23,12 +23,14 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.4.0",
     "axios": "^0.27.2",
+    "dayjs": "^1.11.6",
     "jsdom": "^20.0.0",
     "licensee": "^9.0.0",
     "normalize.css": "^8.0.1",
     "pg": "^8.8.0",
     "primeicons": "^5.0.0",
     "primevue": "^3.15.0",
+    "starwars-names": "^1.6.0",
     "storybook-i18n": "^1.1.2",
     "vue": "^3.2.25",
     "vue-i18n": "^9.1.10",
@@ -39,6 +41,7 @@
     "@headlessui/vue": "^1.4.3",
     "@heroicons/vue": "^1.0.5",
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
+    "@openapitools/openapi-generator-cli": "^2.2.8",
     "@storybook/addon-actions": "^6.5.10",
     "@storybook/addon-essentials": "^6.4.22",
     "@storybook/addon-interactions": "^6.5.9",
@@ -78,7 +81,6 @@
     "vite": "^2.7.2",
     "vitest": "^0.18.1",
     "vue-loader": "^16.8.3",
-    "vue-tsc": "0.40.13",
-    "@openapitools/openapi-generator-cli": "^2.2.8"
+    "vue-tsc": "0.40.13"
   }
 }

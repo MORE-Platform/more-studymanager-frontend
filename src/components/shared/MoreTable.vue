@@ -10,18 +10,26 @@ import {StudyStatus} from "../../generated-sources/openapi";
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
+import SplitButton from 'primevue/splitbutton'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
 import MultiSelect from 'primevue/multiselect';
+import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
+import * as dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
+import {dateToDateString} from '../../utils/dateUtils';
 
 const props = defineProps({
   title: {
     type: String,
-    default: '',
+    default: undefined,
+  },
+  subtitle: {
+    type: String,
+    default: undefined,
   },
   rowId: {
     type: String,
@@ -46,6 +54,14 @@ const props = defineProps({
   sortOptions: {
     type: Object as PropType <MoreTableSortOptions>,
     default:  () => undefined,
+  },
+  emptyMessage: {
+    type: String,
+    default: 'No records',
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   }
 })
 
@@ -56,7 +72,6 @@ function createTableFilter(): Ref<DataTableFilterMeta> {
   props.columns.forEach(column => {
     if(column.filterable) {
       filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
-      console.log(filterObject)
     }
   })
    return ref(filterObject)
@@ -92,8 +107,9 @@ function selectHandler(rowKey: string) {
   }
 }
 
-function actionHandler(action: MoreTableAction) {
-  emit('onaction', {id: action.id})
+function actionHandler(action: MoreTableAction, properties?: any) {
+  console.log(action, properties);
+  emit('onaction', {id: action.id, properties})
 }
 
 function rowActionHandler(action: MoreTableAction, row: unknown) {
@@ -137,7 +153,6 @@ function prepare(rows:any) {
   return rows.map((row:any) => {
     props.columns.forEach(column => {
       if(column.type === MoreTableFieldType.calendar) {
-        console.log(row[column.field])
         row['__internalValue_' + column.field] = column.field ? new Date(row[column.field]) : undefined;
       }
     })
@@ -145,27 +160,45 @@ function prepare(rows:any) {
   });
 }
 
+props.tableActions.forEach(action => {
+  if(action.options) {
+    action.options.forEach(option => {
+      (option as any)['command'] = () => {actionHandler(action, option.value)}
+    })
+  }
+})
+
 function clean(row:any) {
   props.columns.forEach(column => {
     if(column.type === MoreTableFieldType.calendar) {
       const date = row['__internalValue_' + column.field];
-      const tzoffset = new Date(date).getTimezoneOffset()/60;
-      date.setHours(date.getHours()-tzoffset);
-      row[column.field] = date.toISOString().substring(0, 10);
+      row[column.field] = dateToDateString(date)
       delete row['__internalValue_' + column.field];
     }
   })
   return row;
 }
 
+function toClassName(value:string):string {
+  if(value) {
+    return value.toString().toLowerCase().replace(/\.|%[0-9a-z]{2}/gi, '');
+  }
+  return value;
+}
 </script>
 
 <template>
-  <div>
+  <div class="more-table">
     <div class="flex mb-8">
-      <h3>{{ title }}</h3>
+      <div class="title">
+        <h3 v-if="title">{{ title }}</h3>
+        <h4 v-if="subtitle">{{subtitle}}</h4>
+      </div>
       <div class="actions flex flex-1 justify-end">
-        <Button v-for="action in tableActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="actionHandler(action)">{{action.label}}</Button>
+        <div v-for="action in tableActions" :key="action.id" class="action">
+          <Button v-if="!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+          <SplitButton v-if="!!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" :model="action.options" @click="actionHandler(action)"></SplitButton>
+        </div>
       </div>
     </div>
 
@@ -176,6 +209,7 @@ function clean(row:any) {
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
       :edit-mode="editable ? 'row' : undefined"
+      :loading="loading"
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
@@ -195,9 +229,9 @@ function clean(row:any) {
       >
         <template  #editor="{ data, field }" #content="{data, field}" v-if="column.editable" >
           <div v-if="(data['status'] === (StudyStatus.Draft || StudyStatus.Paused))">
-            <InputText v-if="(column.type !== undefined && column.type !== MoreTableFieldType.choice && column.type !== MoreTableFieldType.multiselect) ||
-            (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" autofocus />
-            <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" input-id="dateformat" autocomplete="off" date-format="yy-mm-dd"/>
+            <InputText v-if="(column.type === undefined && column.type !== MoreTableFieldType.choice && column.type === MoreTableFieldType.multiselect) ||
+            (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" style="width:100%" autofocus />
+            <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" optionLabel="label" optionValue="value" :placeholder="$t(column.choiceOptions.placeholder)">
               <template #option="optionProps">
                 <div class="p-dropdown-car-option">
@@ -213,8 +247,8 @@ function clean(row:any) {
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
         <template v-else #body="{ data, field }">
-          <span v-if="!column.type || column.type === MoreTableFieldType.string">{{data[field]}}</span>
-          <span v-if="column.type === MoreTableFieldType.calendar">{{data[field]}} {{ columns.data }}</span>
+          <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
+          <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
         </template>
       </Column>
 
@@ -238,20 +272,46 @@ function clean(row:any) {
           </div>
         </template>
       </Column>
+      <template #empty>
+        {{ emptyMessage }}
+      </template>
+      <template #loading>
+        <ProgressSpinner />
+      </template>
     </DataTable>
   </div>
 </template>
 
 <style lang="postcss">
-  .row-actions {
-    button {
-      margin: 0 3px
-    }
-  }
 
-  .actions {
-    button {
-      margin-left: 10px;
+  .more-table {
+    h3 {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    h4 {
+      font-weight: 300;
+    }
+    .row-actions {
+      button {
+        margin: 0 3px
+      }
+    }
+
+    .actions {
+      .action {
+        margin-left: 10px;
+      }
+    }
+
+    tr td:last-child {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    .p-datatable-loading-overlay {
+      background-color: transparent;
     }
   }
 </style>

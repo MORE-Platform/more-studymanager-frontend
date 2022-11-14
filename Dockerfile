@@ -1,11 +1,11 @@
 # build stage
 FROM node:lts-alpine as build-stage
+RUN apk add openjdk8-jre
 WORKDIR /app
 COPY package*.json ./
-COPY MORE-Platform-tm-openapi-client-typescript-1.0.0.tgz ./
 RUN npm install
 COPY . .
-RUN npm run package
+RUN npm run package:quick
 
 # production stage
 FROM nginx:stable-alpine as production-stage
