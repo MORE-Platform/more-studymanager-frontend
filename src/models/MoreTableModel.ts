@@ -37,7 +37,15 @@ export interface MoreTableAction {
   label: string,
   icon?: string,
   options?: MoreTableActionOptions[]
-  confirm?: MoreTableActionConfirm
+  confirm?: MoreTableActionConfirm,
+  visible?: MoreRowActionVisible
+}
+
+export interface MoreRowActionVisible {
+  draft?: boolean,
+  active?: boolean,
+  paused?: boolean,
+  closed?: boolean
 }
 
 export interface MoreTableRowActionResult<D> {
@@ -70,6 +78,7 @@ export enum MoreTableFieldType {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MoreTableEditableProperties {
+  visible: MoreRowActionVisible
 }
 
 export interface MoreTableEditableChoiceProperties extends MoreTableEditableProperties{
@@ -80,4 +89,17 @@ export interface MoreTableEditableChoiceProperties extends MoreTableEditableProp
 export interface MoreTableEditableChoicePropertyValues {
   displayValue?:string
   value: string
+}
+
+export interface MoreTableShowBtn {
+  row: any,
+  btn: MoreTableActionBtnTypes
+}
+
+export enum MoreTableActionBtnTypes {
+  edit = 0,
+  delete = 1,
+  downloadSettings = 2,
+  downloadData = 3,
+  showData = 4
 }

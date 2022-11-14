@@ -4,9 +4,12 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableActionResult
+  MoreTableRowActionResult,
+  MoreTableActionResult,
+  MoreTableActionBtnTypes,
+  MoreTableShowBtn, MoreRowActionVisible
 } from '../../models/MoreTableModel'
-import {StudyStatus} from "../../generated-sources/openapi";
+import {StudyStatus, Study} from "../../generated-sources/openapi";
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
@@ -62,6 +65,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  studyStatus: {
+    type: Object as PropType<StudyStatus>,
+    default: () => undefined
   }
 })
 
@@ -99,6 +106,7 @@ const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
   (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
+  (e: 'onshowbtn', data: MoreTableShowBtn) : void
 }>()
 
 function selectHandler(rowKey: string) {
@@ -108,7 +116,6 @@ function selectHandler(rowKey: string) {
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
-  console.log(action, properties);
   emit('onaction', {id: action.id, properties})
 }
 
@@ -124,6 +131,38 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
   } else {
     emit('onaction', {id: action.id, row})
   }
+}
+
+function showBtn(actionId: String, actionVisible: MoreRowActionVisible, row: unknown) {
+  const status: Ref<StudyStatus | undefined> = ref(StudyStatus.Draft)
+
+  if(props.studyStatus === undefined) {
+    const r:Study = row as Study;
+    status.value = r.status;
+  } else {
+    status.value = props.studyStatus;
+  }
+
+  if (status && actionVisible) {
+    if (status.value == StudyStatus.Draft && actionVisible.draft) {
+      if(actionId === 'edit' || actionId === 'delete' || actionId === 'downloadSetup') {
+        return true
+      }
+    } else if (status.value === StudyStatus.Active && actionVisible.active ||
+      status.value === StudyStatus.Closed && actionVisible.closed) {
+      if(actionId === 'downloadData' || actionId === 'downloadSetup') {
+        return true
+      }
+    } else if (status.value === StudyStatus.Paused && actionVisible.paused) {
+      if(actionId === 'edit' || actionId === 'downloadData' || actionId === 'downloadSetupu') {
+        return true
+      }
+    }
+  }
+
+  return false;
+
+
 }
 
 function isEditMode(row:any) {
@@ -228,7 +267,6 @@ function toClassName(value:string):string {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template  #editor="{ data, field }" #content="{data, field}" v-if="column.editable" >
-          <div v-if="(data['status'] === (StudyStatus.Draft || StudyStatus.Paused))">
             <InputText v-if="(column.type === undefined && column.type !== MoreTableFieldType.choice && column.type === MoreTableFieldType.multiselect) ||
             (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
@@ -241,7 +279,6 @@ function toClassName(value:string):string {
             </Dropdown>
             <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" optionLabel="label" :placeholder="$t(column.choiceOptions.placeholder)"/>
             <div v-else-if="column.type === undefined">{{data[field]}}</div>
-          </div>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -259,16 +296,17 @@ function toClassName(value:string):string {
         class="row-actions"
       >
         <template #body="slotProps">
-          <div v-if="!isEditMode(slotProps.data) && slotProps.data.status === StudyStatus.Draft">
-            <Button v-for="action in rowActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data)"></Button>
-            <Button type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
+          <div v-if="!isEditMode(slotProps.data)">
+            <div v-for="action in rowActions" :key="action.id" class="inline">
+              <Button v-if="showBtn(action.id, action.visible, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+            </div>
+
+            <Button v-if="showBtn('edit', {draft: true, paused: true}, slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            </Button>
           </div>
-          <div v-else-if="isEditMode(slotProps.data) && slotProps.data.status === StudyStatus.Draft">
+          <div v-else-if="isEditMode(slotProps.data)">
             <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
             <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
-          </div>
-          <div>
-            <Button v-if="((!isEditMode(slotProps.data)) && (slotProps.data.status !== (StudyStatus.Draft)))" type="button" icon="pi pi-download" :title="$t('tooltips.downloadBtn')"></Button>
           </div>
         </template>
       </Column>

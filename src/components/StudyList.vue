@@ -2,15 +2,21 @@
 import {ref, Ref} from 'vue'
 import {useStudiesApi} from '../composable/useApi'
 import {useRouter} from 'vue-router'
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult} from '../models/MoreTableModel'
-import {Study} from '../generated-sources/openapi';
+import {
+  MoreTableAction,
+  MoreTableActionBtnTypes,
+  MoreTableColumn,
+  MoreTableFieldType,
+  MoreTableRowActionResult,
+  MoreTableShowBtn
+} from '../models/MoreTableModel'
+import {Study, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import StudyCreationDialog from './dialog/StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
-import {UserRolesEnum} from "../models/UserModel";
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
@@ -18,23 +24,24 @@ const { studiesApi } = useStudiesApi()
   const dialog = useDialog();
 
   const loading = ref(true)
+  const showEditBtn = ref(false);
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     { field: 'purpose', header: 'purpose', editable: true },
     { field: 'status', header: 'status', sortable: true},
-    {field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
+    /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
       choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
           {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
-          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'roleMultiselect'}
-    }
+          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'placeholder.roleMultiselect'}
+    }*/
   ]
 
   const studyColumnsDraft: MoreTableColumn[] = [
     ...studyColumns,
-    { field: 'plannedStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-    { field: 'plannedEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
   const studyColumnsActive: MoreTableColumn[] = [
     ...studyColumns,
@@ -52,8 +59,10 @@ const { studiesApi } = useStudiesApi()
   ]
 
   const rowActions: MoreTableAction[] = [
-    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'}}
+    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
+      visible: {draft:true, paused:true}}
   ]
+
 
   async function listStudies(): Promise<void> {
     try {
@@ -135,6 +144,8 @@ const { studiesApi } = useStudiesApi()
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
+      @onshowbtn="showButton($event)"
+      :show-edit-btn="showEditBtn"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
