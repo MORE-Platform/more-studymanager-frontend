@@ -14,6 +14,9 @@ export default defineConfig({
       include: path.resolve('./src/i18n/en'),
     }),
   ],
+  build: {
+    target: 'esnext'
+  },
   server: {
     proxy: {
       '/api': {
