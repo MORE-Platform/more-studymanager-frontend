@@ -104,15 +104,13 @@ const editMode = ref([]);
 
 const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
-  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
+  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult<unknown>): void
   (e: 'onchange', row: unknown): void
   (e: 'onshowbtn', data: MoreTableShowBtn) : void
 }>()
 
 function selectHandler(rowKey: string) {
-  if (!isEditMode) {
     emit('onselect', rowKey)
-  }
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
