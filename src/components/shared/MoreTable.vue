@@ -50,6 +50,10 @@ const props = defineProps({
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
   },
+  frontRowActions: {
+    type: Array as PropType<Array<MoreTableAction>>,
+    default: () => []
+  },
   tableActions: {
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
@@ -104,7 +108,7 @@ const editMode = ref([]);
 
 const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
-  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult<unknown>): void
+  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
   (e: 'onshowbtn', data: MoreTableShowBtn) : void
 }>()
@@ -143,16 +147,16 @@ function showBtn(actionId: String, actionVisible: MoreRowActionVisible, row: unk
 
   if (status && actionVisible) {
     if (status.value == StudyStatus.Draft && actionVisible.draft) {
-      if(actionId === 'edit' || actionId === 'delete' || actionId === 'downloadSetup') {
+      if(actionId === 'edit' || actionId === 'delete' || actionId === 'downloadSetup' || actionId === 'copyId') {
         return true
       }
     } else if (status.value === StudyStatus.Active && actionVisible.active ||
       status.value === StudyStatus.Closed && actionVisible.closed) {
-      if(actionId === 'downloadData' || actionId === 'downloadSetup') {
+      if(actionId === 'downloadData' || actionId === 'downloadSetup' || actionId === 'copyId') {
         return true
       }
     } else if (status.value === StudyStatus.Paused && actionVisible.paused) {
-      if(actionId === 'edit' || actionId === 'downloadData' || actionId === 'downloadSetupu') {
+      if(actionId === 'edit' || actionId === 'downloadData' || actionId === 'downloadSetupu' || actionId === 'copyId') {
         return true
       }
     }
@@ -239,6 +243,8 @@ function toClassName(value:string):string {
       </div>
     </div>
 
+    {{frontRowActions}}
+
     <DataTable
       v-model:editingRows="editingRows"
       v-model:filters="tableFilter"
@@ -252,6 +258,20 @@ function toClassName(value:string):string {
       responsive-layout="scroll"
       @row-click="selectHandler($event.data[rowId])"
     >
+
+      <Column
+        key="actions"
+        :header="$t('frontAction')"
+        :row-hover="true"
+        class="row-actions"
+      >
+        <template #body="slotProps">
+          <div v-for="action in frontRowActions" :key="action.id" class="inline">
+            <Button v-if="showBtn(action.id, action.visible, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+          </div>
+        </template>
+
+      </Column>
 
       <Column
         v-for="column in columns"

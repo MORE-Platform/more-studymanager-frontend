@@ -11,6 +11,7 @@
   "plannedStart": "Planed Start",
   "plannedEnd": "Planned End",
   "actions": "Actions",
+  "frontAction": "Copy Id",
   "status": "Status",
   "description": "Description",
   "roles": "Role(s)",

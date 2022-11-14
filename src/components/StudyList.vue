@@ -62,7 +62,9 @@ const { studiesApi } = useStudiesApi()
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
       visible: {draft:true, paused:true}}
   ]
-
+ const frontRowActions: MoreTableAction[] = [
+   {id:'copyId', label:'CopyId', icon: 'pi pi-copy', visible: {draft:true, active:true, paused:true, closed:true}}
+ ]
 
   async function listStudies(): Promise<void> {
     try {
@@ -85,6 +87,7 @@ const { studiesApi } = useStudiesApi()
     switch (action.id) {
       case 'delete': return deleteStudy(action.row)
       case 'create': return openCreateDialog()
+      case 'copyId': return onCopyId(action.row.studyId, action.row.title)
       default: console.error('no handler for action', action)
     }
   }
@@ -125,6 +128,17 @@ const { studiesApi } = useStudiesApi()
     })
   }
 
+  function onCopyId(studyId: number | undefined, title: string) {
+    if (studyId) {
+      let id = studyId.toString();
+      navigator.clipboard.writeText(id)
+        .then(function() {
+          console.log('Copied Study Id of "' + title + '": ' + id);
+        })
+      alert('Copied Study Id of "' + title + '": ' + id)
+    }
+  }
+
   listStudies().finally(() => loading.value = false)
 </script>
 
@@ -137,6 +151,7 @@ const { studiesApi } = useStudiesApi()
       :columns="studyColumnsDraft"
       :rows="studyList"
       :row-actions="rowActions"
+      :front-row-actions="frontRowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
       empty-message="No studies yet"
