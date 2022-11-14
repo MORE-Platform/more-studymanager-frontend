@@ -6,7 +6,6 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableActionBtnTypes,
   MoreTableShowBtn, MoreRowActionVisible
 } from '../../models/MoreTableModel'
 import {StudyStatus, Study} from "../../generated-sources/openapi";
@@ -146,7 +145,7 @@ function showBtn(actionId: String, actionVisible: MoreRowActionVisible, row: unk
   }
 
   if (status && actionVisible) {
-    if (status.value == StudyStatus.Draft && actionVisible.draft) {
+    if (status.value === StudyStatus.Draft && actionVisible.draft) {
       if(actionId === 'edit' || actionId === 'delete' || actionId === 'downloadSetup' || actionId === 'copyId') {
         return true
       }
@@ -282,7 +281,7 @@ function toClassName(value:string):string {
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
       >
-        <template  #editor="{ data, field }" #content="{data, field}" v-if="column.editable" >
+        <template  v-if="column.editable" #editor="{ data, field }">
             <InputText v-if="(column.type === undefined && column.type !== MoreTableFieldType.choice && column.type === MoreTableFieldType.multiselect) ||
             (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>

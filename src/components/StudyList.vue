@@ -4,13 +4,11 @@ import {useStudiesApi} from '../composable/useApi'
 import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
-  MoreTableActionBtnTypes,
   MoreTableColumn,
   MoreTableFieldType,
   MoreTableRowActionResult,
-  MoreTableShowBtn
 } from '../models/MoreTableModel'
-import {Study, StudyStatus} from '../generated-sources/openapi';
+import {Study} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
@@ -43,6 +41,7 @@ const { studiesApi } = useStudiesApi()
     { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
     { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
+/*
   const studyColumnsActive: MoreTableColumn[] = [
     ...studyColumns,
     { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
@@ -53,6 +52,7 @@ const { studiesApi } = useStudiesApi()
     { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
     { field: 'actualEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
+ */
 
   const tableActions: MoreTableAction[] = [
     { id:'create', icon:'pi pi-plus', label:'Add new study' }
@@ -130,7 +130,7 @@ const { studiesApi } = useStudiesApi()
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
-      let id = studyId.toString();
+      const id = studyId.toString();
       navigator.clipboard.writeText(id)
         .then(function() {
           console.log('Copied Study ' + title + ': ' + id);
@@ -160,7 +160,6 @@ const { studiesApi } = useStudiesApi()
       @onaction="execute($event)"
       @onchange="changeValue($event)"
       @onshowbtn="showButton($event)"
-      :show-edit-btn="showEditBtn"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
