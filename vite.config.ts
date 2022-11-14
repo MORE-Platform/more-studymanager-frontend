@@ -15,6 +15,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    //TODO maybe remove on cleanup session
     target: 'esnext'
   },
   server: {
