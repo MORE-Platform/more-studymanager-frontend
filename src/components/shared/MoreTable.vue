@@ -243,8 +243,6 @@ function toClassName(value:string):string {
       </div>
     </div>
 
-    {{frontRowActions}}
-
     <DataTable
       v-model:editingRows="editingRows"
       v-model:filters="tableFilter"

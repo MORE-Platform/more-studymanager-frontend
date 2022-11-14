@@ -128,14 +128,14 @@ const { studiesApi } = useStudiesApi()
     })
   }
 
-  function onCopyId(studyId: number | undefined, title: string) {
+  function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
       let id = studyId.toString();
       navigator.clipboard.writeText(id)
         .then(function() {
-          console.log('Copied Study Id of "' + title + '": ' + id);
+          console.log('Copied Study ' + title + ': ' + id);
         })
-      alert('Copied Study Id of "' + title + '": ' + id)
+      alert('Copied Study ' + title + ': ' + id)
     }
   }
 
