@@ -1,6 +1,4 @@
 import {Configuration, ParticipantsApi, StudiesApi, StudyGroupsApi} from '../generated-sources/openapi';
-import {AxiosInstance} from 'axios';
-import {inject} from 'vue';
 
 const apiConfig = {
   basePath: '/api/v1',
