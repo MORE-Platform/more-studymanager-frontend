@@ -26,7 +26,7 @@ export default class AuthService {
   }
 
   public logout():void {
-    this.keycloak.logout({redirectUri: window.location.host});
+    this.keycloak.logout({redirectUri: window.location.href});
   }
 
   public getToken():string|undefined {
