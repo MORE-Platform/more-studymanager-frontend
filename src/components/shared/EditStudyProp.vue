@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, Ref, reactive} from 'vue';
+import {ref, Ref} from 'vue';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 
@@ -10,14 +10,11 @@ import Button from 'primevue/button';
     styleModifier: {type: String, default: ''}
   })
 
-  const editMode: Ref<Boolean> = ref(false);
-  const updatedStudyProp: Ref<String | undefined> = ref(props.studyProp);
-  const test = ref();
-
-  const purpose = ref();
+  const editMode: Ref<boolean> = ref(false);
+  const updatedStudyProp: Ref<string | undefined> = ref(props.studyProp);
 
     const emit = defineEmits<{
-      (e: 'onSaveProp', value: String) : void
+      (e: 'onSaveProp', value: string) : void
     }>()
 
   function onSaveProp() {
@@ -37,7 +34,7 @@ import Button from 'primevue/button';
 <template>
   <div class="edit-study-prop" :class="styleModifier">
     <section>
-      <div class="flex mb-1" v-if="studyProp">
+      <div v-if="studyProp" class="flex mb-1" >
         <h5 class="mr-1">{{ title }}</h5>
         <div><Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button></div>
       </div>

@@ -26,8 +26,6 @@ async function listStudyGroups(studyId:number): Promise<void> {
 async function updateStudy(study: Study) {
   console.log('updateStudy')
   console.log(study);
-  let s = study;
-  console.log(s);
 
   try {
     studiesApi.updateStudy(studyId, study)
@@ -69,7 +67,7 @@ listStudyGroups(studyId);
         <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
       </div>
 
-      <OverviewEditDetails :study="study" :style-modifier="'mb-6'" @on-update-study="updateStudy($event)" :styleModifier="'mb-16'"/>
+      <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" />
 
       <StudyGroupList :study-id="studyId"></StudyGroupList>
     </div>

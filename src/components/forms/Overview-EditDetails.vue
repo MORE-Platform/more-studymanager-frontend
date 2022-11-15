@@ -43,11 +43,23 @@
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
-    <EditStudyProp :title="$t('purpose')" :prop-field="'purpose'" :study-prop="updatedStudy.purpose"
-                   @on-save-prop="onFieldSave($event, 'purpose')" :style-modifier="'mb-6'"/>
-    <EditStudyProp :title="$t('participantInfo')" :prop-field="'participantInfo'" :study-prop="updatedStudy.participantInfo"
-                   @on-save-prop="onFieldSave($event, 'participantInfo') " :style-modifier="'mb-6'"/>
-    <EditStudyProp :title="$t('consentInfo')" :prop-field="'consentInfo'" :study-prop="updatedStudy.consentInfo"
-                   @on-save-prop="onFieldSave($event, 'consentInfo')" :style-modifier="'mb-6'"/>
+    <EditStudyProp
+      :style-modifier="'mb-6'"
+      :title="$t('purpose')"
+      :prop-field="'purpose'"
+      :study-prop="updatedStudy.purpose"
+      @on-save-prop="onFieldSave($event, 'purpose')" />
+    <EditStudyProp
+      :style-modifier="'mb-6'"
+      :title="$t('participantInfo')"
+      :prop-field="'participantInfo'"
+      :study-prop="updatedStudy.participantInfo"
+      @on-save-prop="onFieldSave($event, 'participantInfo') " />
+    <EditStudyProp
+      :style-modifier="'mb-6'"
+      :title="$t('consentInfo')"
+      :prop-field="'consentInfo'"
+      :study-prop="updatedStudy.consentInfo"
+      @on-save-prop="onFieldSave($event, 'consentInfo')" />
   </div>
 </template>
