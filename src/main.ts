@@ -11,7 +11,9 @@ const i18n = createI18n({
   legacy: false,
   globalInjection: true,
   locale: 'en',
+  defaultLanguage: 'en',
   fallbackLocale: 'en', // set fallback locale
+  availableLocales: ['en'],
   messages: Object.assign({ en: en }), // set locale messages
   // If you need to specify other options, you can set other options
   // ...
