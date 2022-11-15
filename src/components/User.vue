@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import {UserModel} from '../models/UserModel';
-import {PropType, ref, Ref} from 'vue';
+import {PropType} from 'vue';
 import {UserInfo} from '../generated-sources/openapi/models/user-info';
 
 defineProps({

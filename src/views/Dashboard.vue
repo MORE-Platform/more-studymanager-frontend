@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import StudyList from '../components/StudyList.vue'
   import User from '../components/User.vue'
-  import {UserModel} from '../models/UserModel';
   import {useUsersApi} from "../composable/useApi";
   import {ref, Ref} from "vue";
   import {UserInfo} from '../generated-sources/openapi/models/user-info';
