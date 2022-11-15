@@ -1,4 +1,12 @@
 <script setup lang="ts">
+import {inject} from 'vue';
+import AuthService from '../../service/AuthService';
+
+const auth = inject('authService') as AuthService
+
+function logout() {
+  auth.logout();
+}
 </script>
 
 <template>
@@ -70,7 +78,7 @@ d="M244.6,78.4c-0.4-0.4-0.8-0.6-1.4-0.6h-6.1c-1,0-1.8,0.5-2.3,1.5l-15.2,28.1l-16
       </div>
 
       <div class="user flex">
-        <button class='logout font-bold mr-2 bg-transparent border-0'>Log Out</button>
+        <button class='logout font-bold mr-2 bg-transparent border-0' @click="logout()">Log Out</button>
         <div><svg width="20pt" height="20pt" version="1.1" viewBox="0 0 1200 1200" xmlns="http://www.w3.org/2000/svg">
           <g>
             <path d="m787.2 433.2c0 103.39-83.812 187.2-187.2 187.2s-187.2-83.812-187.2-187.2 83.812-187.2 187.2-187.2 187.2 83.812 187.2 187.2"/>
@@ -85,6 +93,7 @@ d="M244.6,78.4c-0.4-0.4-0.8-0.6-1.4-0.6h-6.1c-1,0-1.8,0.5-2.3,1.5l-15.2,28.1l-16
 <style lang="postcss">
 
 header {
+  background-color: white;
   .logo {
     cursor: pointer;
   }

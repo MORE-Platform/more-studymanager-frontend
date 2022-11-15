@@ -14,6 +14,10 @@ export default defineConfig({
       include: path.resolve('./src/i18n/en'),
     }),
   ],
+  build: {
+    //TODO maybe remove on cleanup session
+    target: 'esnext'
+  },
   server: {
     proxy: {
       '/api': {
