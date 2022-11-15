@@ -19,9 +19,15 @@ server {
         root   /usr/share/nginx/html;
     }
 
-    # Proxy API
-    location /api/ {
-        proxy_pass ${MORE_API_ENDPOINT};
+    # Proxy API and other backend services
+    location /api {
+        proxy_pass ${MORE_BACKEND_URL}/api;
+    }
+    location /login {
+        proxy_pass ${MORE_BACKEND_URL}/login;
+    }
+    location /logout {
+        proxy_pass ${MORE_BACKEND_URL}/logout;
     }
 
 }

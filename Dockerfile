@@ -13,6 +13,6 @@ COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY docker/nginx/*.conf.template /etc/nginx/templates/
 EXPOSE 80
 
-ENV MORE_API_ENDPOINT=https://mmb.more.redlink.io/api
+ENV MORE_BACKEND_URL=https://studymanager.more.redlink.io/
 
 CMD ["nginx", "-g", "daemon off;"]
