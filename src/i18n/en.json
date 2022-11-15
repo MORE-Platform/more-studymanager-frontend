@@ -66,6 +66,10 @@
   "noModulesMsg": "Studies has no modules yet.",
   "deleteMsg": "Are you sure you want to delete ",
 
+  "participantInfo": "Participant Information",
+  "consentInfo": "Consent Information",
+  "language": "Language",
+
   "tooltips": {
     "deleteBtn": "Delete",
     "editBtn": "Edit",

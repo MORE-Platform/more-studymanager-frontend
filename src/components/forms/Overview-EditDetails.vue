@@ -1,0 +1,53 @@
+<script setup lang="ts">
+  import {ref, Ref, PropType} from 'vue';
+  import { Study } from '../../generated-sources/openapi/'
+  import EditStudyProp from '../shared/EditStudyProp.vue'
+
+
+  const props = defineProps({
+    study: {type: Object as PropType<Study>, required: true},
+    styleModifier: {type: String, default: ''}
+  })
+
+  const updatedStudy: Ref<Study> = ref({
+    title: props.study.title,
+    purpose: props.study.purpose,
+    participantInfo: props.study.participantInfo,
+    consentInfo: props.study.consentInfo,
+    plannedStart: props.study.plannedStart,
+    plannedEnd: props.study.plannedEnd
+  })
+
+  const emit = defineEmits<{
+    (e: 'onUpdateStudy', study: Study) : void
+  }>()
+
+  function onFieldSave(value: string, type: string) {
+    console.log("onFieldSave");
+    if(type === 'purpose') {
+      updatedStudy.value.purpose = value;
+    } else if (type === 'participantInfo') {
+      updatedStudy.value.participantInfo = value
+    } else if (type === 'consentInfo') {
+      updatedStudy.value.consentInfo = value
+    }  else {
+      return
+    }
+    console.log("onFieldSave");
+    console.log(updatedStudy.value)
+    emit('onUpdateStudy', updatedStudy.value);
+  }
+
+
+</script>
+
+<template>
+  <div class="overview-edit-details" :class="styleModifier">
+    <EditStudyProp :title="$t('purpose')" :prop-field="'purpose'" :study-prop="updatedStudy.purpose"
+                   @on-save-prop="onFieldSave($event, 'purpose')" :style-modifier="'mb-6'"/>
+    <EditStudyProp :title="$t('participantInfo')" :prop-field="'participantInfo'" :study-prop="updatedStudy.participantInfo"
+                   @on-save-prop="onFieldSave($event, 'participantInfo') " :style-modifier="'mb-6'"/>
+    <EditStudyProp :title="$t('consentInfo')" :prop-field="'consentInfo'" :study-prop="updatedStudy.consentInfo"
+                   @on-save-prop="onFieldSave($event, 'consentInfo')" :style-modifier="'mb-6'"/>
+  </div>
+</template>
