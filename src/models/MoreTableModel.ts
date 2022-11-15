@@ -38,7 +38,7 @@ export interface MoreTableAction {
   icon?: string,
   options?: MoreTableActionOptions[]
   confirm?: MoreTableActionConfirm,
-  visible?: MoreRowActionVisible
+  visible?: (data:any) => boolean
 }
 
 export interface MoreRowActionVisible {

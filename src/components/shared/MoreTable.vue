@@ -6,9 +6,8 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableShowBtn, MoreRowActionVisible
+  MoreTableShowBtn
 } from '../../models/MoreTableModel'
-import {StudyStatus, Study} from "../../generated-sources/openapi";
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
@@ -61,6 +60,10 @@ const props = defineProps({
     type: Object as PropType <MoreTableSortOptions>,
     default:  () => undefined,
   },
+  editable: {
+    type: Function,
+    default: (data:any) => true
+  },
   emptyMessage: {
     type: String,
     default: 'No records',
@@ -68,10 +71,6 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
-  },
-  studyStatus: {
-    type: Object as PropType<StudyStatus>,
-    default: () => undefined
   }
 })
 
@@ -95,9 +94,9 @@ function filterMatchMode(column: MoreTableColumn): boolean {
    }
 }
 
-const editable = ref(false);
+const _editable = ref(false);
 onBeforeMount(() => {
-  editable.value = !!props.columns.find(c => c.editable)
+  _editable.value = !!props.columns.find(c => c.editable)
 })
 
 const confirm = useConfirm();
@@ -134,36 +133,8 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
   }
 }
 
-function showBtn(actionId: String, actionVisible: MoreRowActionVisible, row: unknown) {
-  const status: Ref<StudyStatus | undefined> = ref(StudyStatus.Draft)
-
-  if(props.studyStatus === undefined) {
-    const r:Study = row as Study;
-    status.value = r.status;
-  } else {
-    status.value = props.studyStatus;
-  }
-
-  if (status && actionVisible) {
-    if (status.value === StudyStatus.Draft && actionVisible.draft) {
-      if(actionId === 'edit' || actionId === 'delete' || actionId === 'downloadSetup' || actionId === 'copyId') {
-        return true
-      }
-    } else if (status.value === StudyStatus.Active && actionVisible.active ||
-      status.value === StudyStatus.Closed && actionVisible.closed) {
-      if(actionId === 'downloadData' || actionId === 'downloadSetup' || actionId === 'copyId') {
-        return true
-      }
-    } else if (status.value === StudyStatus.Paused && actionVisible.paused) {
-      if(actionId === 'edit' || actionId === 'downloadData' || actionId === 'downloadSetupu' || actionId === 'copyId') {
-        return true
-      }
-    }
-  }
-
-  return false;
-
-
+function isVisible(action: MoreTableAction, row: unknown) {
+  return action.visible === undefined || action.visible(row);
 }
 
 function isEditMode(row:any) {
@@ -187,6 +158,16 @@ function cancel(row: any) {
 function save(row: unknown) {
   emit('onchange', clean(row))
   cancel(row);
+}
+
+function isEditable(row:any) {
+  return props.editable(row);
+}
+
+function onRowClick($event: any) {
+  if(editMode.value.length === 0) {
+    selectHandler($event.data[props.rowId])
+  }
 }
 
 function prepare(rows:any) {
@@ -248,23 +229,23 @@ function toClassName(value:string):string {
       :value="prepare(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
-      :edit-mode="editable ? 'row' : undefined"
+      :edit-mode="_editable ? 'row' : undefined"
       :loading="loading"
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
-      @row-click="selectHandler($event.data[rowId])"
+      @row-click="onRowClick($event)"
     >
 
       <Column
+        v-if="frontRowActions.length"
         key="actions"
-        :header="$t('frontAction')"
         :row-hover="true"
         class="row-actions"
       >
         <template #body="slotProps">
           <div v-for="action in frontRowActions" :key="action.id" class="inline">
-            <Button v-if="showBtn(action.id, action.visible, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+            <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
           </div>
         </template>
 
@@ -281,9 +262,8 @@ function toClassName(value:string):string {
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
       >
-        <template  v-if="column.editable" #editor="{ data, field }">
-            <InputText v-if="(column.type === undefined && column.type !== MoreTableFieldType.choice && column.type === MoreTableFieldType.multiselect) ||
-            (column.type === MoreTableFieldType.string && column.type !== MoreTableFieldType.choice  && column.type !== MoreTableFieldType.multiselect)" v-model="data[field]" style="width:100%" autofocus />
+        <template v-if="column.editable" #editor="{ data, field }">
+            <InputText v-if="column.type === undefined && column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" optionLabel="label" optionValue="value" :placeholder="$t(column.choiceOptions.placeholder)">
               <template #option="optionProps">
@@ -306,22 +286,20 @@ function toClassName(value:string):string {
 
       <Column
         key="actions"
-        :header="$t('actions')"
         :row-hover="true"
         class="row-actions"
       >
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
-              <Button v-if="showBtn(action.id, action.visible, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
             </div>
-
-            <Button v-if="showBtn('edit', {draft: true, paused: true}, slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">
-            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
-            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+            <Button type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
+            <Button type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
           </div>
         </template>
       </Column>

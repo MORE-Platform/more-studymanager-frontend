@@ -14,9 +14,6 @@ export default class AuthService {
         this.keycloak.updateToken(70).then((refreshed) => {
           if (refreshed) {
             console.log('Token refreshed' + refreshed);
-          } else {
-            console.log('Token not refreshed, valid for '
-              + Math.round(this.keycloak.tokenParsed.exp + this.keycloak.timeSkew - new Date().getTime() / 1000) + ' seconds');
           }
         }).catch(() => {
           console.error('Failed to refresh token');

@@ -8,13 +8,14 @@ import {
   MoreTableFieldType,
   MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Study} from '../generated-sources/openapi';
+import {Study, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import StudyCreationDialog from './dialog/StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
+//import {UserRolesEnum} from '../models/UserModel';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
@@ -22,7 +23,6 @@ const { studiesApi } = useStudiesApi()
   const dialog = useDialog();
 
   const loading = ref(true)
-  const showEditBtn = ref(false);
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
@@ -60,10 +60,11 @@ const { studiesApi } = useStudiesApi()
 
   const rowActions: MoreTableAction[] = [
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
-      visible: {draft:true, paused:true}}
+      visible: (data) => data.status === StudyStatus.Draft
+    }
   ]
  const frontRowActions: MoreTableAction[] = [
-   {id:'copyId', label:'CopyId', icon: 'pi pi-copy', visible: {draft:true, active:true, paused:true, closed:true}}
+   {id:'copyId', label:'CopyId', icon: 'pi pi-copy'}
  ]
 
   async function listStudies(): Promise<void> {
@@ -154,12 +155,12 @@ const { studiesApi } = useStudiesApi()
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
+      :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       empty-message="No studies yet"
       :loading="loading"
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
-      @onshowbtn="showButton($event)"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
