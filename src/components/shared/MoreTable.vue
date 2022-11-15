@@ -4,7 +4,9 @@ import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
-  MoreTableRowActionResult, MoreTableActionResult
+  MoreTableRowActionResult,
+  MoreTableActionResult,
+  MoreTableShowBtn
 } from '../../models/MoreTableModel'
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -12,6 +14,8 @@ import Button from 'primevue/button'
 import SplitButton from 'primevue/splitbutton'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
+import Dropdown from "primevue/dropdown";
+import MultiSelect from 'primevue/multiselect';
 import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
 import * as dayjs from 'dayjs'
@@ -44,6 +48,10 @@ const props = defineProps({
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
   },
+  frontRowActions: {
+    type: Array as PropType<Array<MoreTableAction>>,
+    default: () => []
+  },
   tableActions: {
     type: Array as PropType<Array<MoreTableAction>>,
     default: () => [],
@@ -51,6 +59,11 @@ const props = defineProps({
   sortOptions: {
     type: Object as PropType <MoreTableSortOptions>,
     default:  () => undefined,
+  },
+  editable: {
+    type: Function,
+    // eslint-disable-next-line
+    default: (data:any) => true
   },
   emptyMessage: {
     type: String,
@@ -82,9 +95,9 @@ function filterMatchMode(column: MoreTableColumn): boolean {
    }
 }
 
-const editable = ref(false);
+const _editable = ref(false);
 onBeforeMount(() => {
-  editable.value = !!props.columns.find(c => c.editable)
+  _editable.value = !!props.columns.find(c => c.editable)
 })
 
 const confirm = useConfirm();
@@ -96,14 +109,14 @@ const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
   (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
+  (e: 'onshowbtn', data: MoreTableShowBtn) : void
 }>()
 
 function selectHandler(rowKey: string) {
-  emit('onselect', rowKey)
+    emit('onselect', rowKey)
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
-  console.log(action, properties);
   emit('onaction', {id: action.id, properties})
 }
 
@@ -119,7 +132,10 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
   } else {
     emit('onaction', {id: action.id, row})
   }
+}
 
+function isVisible(action: MoreTableAction, row: unknown) {
+  return action.visible === undefined || action.visible(row);
 }
 
 function isEditMode(row:any) {
@@ -143,6 +159,16 @@ function cancel(row: any) {
 function save(row: unknown) {
   emit('onchange', clean(row))
   cancel(row);
+}
+
+function isEditable(row:any) {
+  return props.editable(row);
+}
+
+function onRowClick($event: any) {
+  if(editMode.value.length === 0) {
+    selectHandler($event.data[props.rowId])
+  }
 }
 
 function prepare(rows:any) {
@@ -204,13 +230,27 @@ function toClassName(value:string):string {
       :value="prepare(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
-      :edit-mode="editable ? 'row' : undefined"
+      :edit-mode="_editable ? 'row' : undefined"
       :loading="loading"
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
-      @row-click="selectHandler($event.data[rowId])"
+      @row-click="onRowClick($event)"
     >
+
+      <Column
+        v-if="frontRowActions.length"
+        key="actions"
+        :row-hover="true"
+        class="row-actions"
+      >
+        <template #body="slotProps">
+          <div v-for="action in frontRowActions" :key="action.id" class="inline">
+            <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+          </div>
+        </template>
+
+      </Column>
 
       <Column
         v-for="column in columns"
@@ -224,11 +264,20 @@ function toClassName(value:string):string {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-          <InputText v-if="column.type === undefined || column.type === MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
-          <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
+            <InputText v-if="column.type === undefined && column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
+            <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
+            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
+              <template #option="optionProps">
+                <div class="p-dropdown-car-option">
+                  <span>{{optionProps.option.label}}</span>
+                </div>
+              </template>
+            </Dropdown>
+            <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>
+            <div v-else-if="column.type === undefined">{{data[field]}}</div>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
-          <InputText  v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
+          <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
         <template v-else #body="{ data, field }">
           <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
@@ -238,18 +287,20 @@ function toClassName(value:string):string {
 
       <Column
         key="actions"
-        :header="$t('actions')"
         :row-hover="true"
         class="row-actions"
       >
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
-            <Button v-for="action in rowActions" :key="action.id" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data)"></Button>
-            <Button type="button" icon="pi pi-pencil" @click="edit(slotProps.data)"></Button>
+            <div v-for="action in rowActions" :key="action.id" class="inline">
+              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+            </div>
+            <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            </Button>
           </div>
-          <div v-else>
-            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
-            <Button v-if="isEditMode(slotProps.data)" type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+          <div v-else-if="isEditMode(slotProps.data)">
+            <Button type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
+            <Button type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
           </div>
         </template>
       </Column>

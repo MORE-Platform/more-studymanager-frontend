@@ -5,15 +5,17 @@ import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn,
-  MoreTableFieldType, MoreTableRowActionResult
+  MoreTableFieldType,
+  MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Study} from '../generated-sources/openapi';
+import {Study, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import StudyCreationDialog from './dialog/StudyCreationDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
+//import {UserRolesEnum} from '../models/UserModel';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
@@ -25,19 +27,45 @@ const { studiesApi } = useStudiesApi()
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'id'},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    { field: 'status', header: 'status', sortable: true},
     { field: 'purpose', header: 'purpose', editable: true },
+    { field: 'status', header: 'status', sortable: true},
+    /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
+      choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
+          {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
+          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'placeholder.roleMultiselect'}
+    }*/
+  ]
+
+  const studyColumnsDraft: MoreTableColumn[] = [
+    ...studyColumns,
     { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
     { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
+/*
+  const studyColumnsActive: MoreTableColumn[] = [
+    ...studyColumns,
+    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+  ]
+  const studyColumnsCompleted: MoreTableColumn[] = [
+    ...studyColumns,
+    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'actualEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+  ]
+ */
 
   const tableActions: MoreTableAction[] = [
     { id:'create', icon:'pi pi-plus', label:'Add new study' }
   ]
 
   const rowActions: MoreTableAction[] = [
-    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'}}
+    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
+      visible: (data) => data.status === StudyStatus.Draft
+    }
   ]
+ const frontRowActions: MoreTableAction[] = [
+   {id:'copyId', label:'CopyId', icon: 'pi pi-copy'}
+ ]
 
   async function listStudies(): Promise<void> {
     try {
@@ -60,6 +88,7 @@ const { studiesApi } = useStudiesApi()
     switch (action.id) {
       case 'delete': return deleteStudy(action.row)
       case 'create': return openCreateDialog()
+      case 'copyId': return onCopyId(action.row.studyId, action.row.title)
       default: console.error('no handler for action', action)
     }
   }
@@ -100,6 +129,17 @@ const { studiesApi } = useStudiesApi()
     })
   }
 
+  function onCopyId(studyId: number | undefined, title: string | undefined) {
+    if (studyId) {
+      const id = studyId.toString();
+      navigator.clipboard.writeText(id)
+        .then(function() {
+          console.log('Copied Study ' + title + ': ' + id);
+        })
+      alert('Copied Study ' + title + ': ' + id)
+    }
+  }
+
   listStudies().finally(() => loading.value = false)
 </script>
 
@@ -109,11 +149,13 @@ const { studiesApi } = useStudiesApi()
       row-id="studyId"
       :title="$t('studies')"
       subtitle="This is the list of my own studies and studies where I am added as collaborator."
-      :columns="studyColumns"
+      :columns="studyColumnsDraft"
       :rows="studyList"
       :row-actions="rowActions"
+      :front-row-actions="frontRowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
+      :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       empty-message="No studies yet"
       :loading="loading"
       @onselect="goToStudy($event)"

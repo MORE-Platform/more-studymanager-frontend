@@ -11,8 +11,10 @@
   "plannedStart": "Planed Start",
   "plannedEnd": "Planned End",
   "actions": "Actions",
+  "frontAction": "Copy Id",
   "status": "Status",
   "description": "Description",
+  "roles": "Role(s)",
 
   "participants": "Participants",
   "token": "Token",
@@ -62,5 +64,14 @@
   "heartRateMeter": "Heart Rate Meter",
 
   "noModulesMsg": "Studies has no modules yet.",
-  "deleteMsg": "Are you sure you want to delete "
+  "deleteMsg": "Are you sure you want to delete ",
+
+  "tooltips": {
+    "deleteBtn": "Delete",
+    "editBtn": "Edit",
+    "downloadBtn": "Download"
+  },
+  "placeholder": {
+    "roleMultiselect": "Select one to two roles"
+  }
 }

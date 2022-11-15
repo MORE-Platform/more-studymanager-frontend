@@ -4,7 +4,17 @@ export interface MoreTableColumn {
   header: string
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
-  filterable?: boolean | MoreTableFilterOption
+  filterable?: boolean | MoreTableFilterOption,
+  choiceOptions?: MoreTableChoiceOptions
+}
+
+export interface MoreTableChoiceOptions {
+  statuses: Array<MoreTableChoice>,
+  placeholder: string
+}
+export interface MoreTableChoice {
+  label: string,
+  value: string
 }
 
 export interface MoreTableFilters {
@@ -27,7 +37,15 @@ export interface MoreTableAction {
   label: string,
   icon?: string,
   options?: MoreTableActionOptions[]
-  confirm?: MoreTableActionConfirm
+  confirm?: MoreTableActionConfirm,
+  visible?: (data:any) => boolean
+}
+
+export interface MoreRowActionVisible {
+  draft?: boolean,
+  active?: boolean,
+  paused?: boolean,
+  closed?: boolean
 }
 
 export interface MoreTableRowActionResult<D> {
@@ -54,11 +72,13 @@ export interface MoreTableActionConfirm {
 export enum MoreTableFieldType {
   string,
   choice,
-  calendar
+  calendar,
+  multiselect = 3
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MoreTableEditableProperties {
+  visible: MoreRowActionVisible
 }
 
 export interface MoreTableEditableChoiceProperties extends MoreTableEditableProperties{
@@ -69,4 +89,17 @@ export interface MoreTableEditableChoiceProperties extends MoreTableEditableProp
 export interface MoreTableEditableChoicePropertyValues {
   displayValue?:string
   value: string
+}
+
+export interface MoreTableShowBtn {
+  row: any,
+  btn: MoreTableActionBtnTypes
+}
+
+export enum MoreTableActionBtnTypes {
+  edit = 0,
+  delete = 1,
+  downloadSettings = 2,
+  downloadData = 3,
+  showData = 4
 }
