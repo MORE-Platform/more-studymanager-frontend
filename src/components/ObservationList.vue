@@ -68,31 +68,42 @@
     console.log('to-do cloneObservation')
   }
   async function createObservation() {
-    const observation: Ref<Observation> = ref({
+    const observation: Observation = {
       studyGroupId: 0,
       title: "Some observation",
       purpose: "some purpose",
       participantInfo: "some participant info",
       type: "Accelerometer",
       properties: {}
-    })
+    }
 
+    console.log("create observation");
 
       try {
-        await observationsApi.addObservation(props.studyId, observation.value)
-          .then((response:AxiosResponse) => response.data)
+        await observationsApi.addObservation(props.studyId, {
+          studyGroupId: 0,
+          title: "Some observation",
+          purpose: "some purpose",
+          participantInfo: "some participant info",
+          type: "Accelerometer",
+          properties: {}
+        })
+          .then((response) => {
+            console.log(response.data);
+            console.log("observation api addObservation")
+          })
       } catch (e) {
-        console.error('cannot list studies', e)
+        console.error('cannot create observation', e)
       }
 
   }
 
   createObservation();
-  listObservations();
+  //listObservations();
 </script>
 
 <template>
-  <div class="observation-list">
+  <div class="observation-list"><!--
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"
@@ -103,6 +114,6 @@
       empty-message="No groups yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
-    />
+    />    -->
   </div>
 </template>
