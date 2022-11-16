@@ -314,7 +314,6 @@ function toClassName(value:string):string {
 </template>
 
 <style lang="postcss">
-
   .more-table {
     h3 {
       color: var(--primary-color);
@@ -336,13 +335,13 @@ function toClassName(value:string):string {
       }
     }
 
-    tr td:last-child {
-      width: 1%;
-      white-space: nowrap;
-    }
+    table tbody tr {
+      font-size: 14.5px!important;
 
-    .p-datatable-loading-overlay {
-      background-color: transparent;
+      &:last-child {
+        width: 1%;
+        white-space: nowrap;
+      }
     }
   }
 </style>
