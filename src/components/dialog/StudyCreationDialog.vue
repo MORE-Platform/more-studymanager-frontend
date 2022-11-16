@@ -42,7 +42,7 @@ import {dateToDateString} from '../../utils/dateUtils';
 const dialogRef:any = inject("dialogRef");
 
 const title = ref();
-const language = ref();
+const language = ref('en');
 const start = ref();
 const end = ref();
 const purpose = ref();
