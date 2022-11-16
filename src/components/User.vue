@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import {UserModel} from '../models/UserModel';
 import {PropType} from 'vue';
+import {UserInfo} from '../generated-sources/openapi/models/user-info';
 
 defineProps({
   user: {
-    type: Object as PropType<UserModel>,
+    type: Object as PropType<UserInfo>,
     required: true
   }
 })
+
+
 </script>
 
 <template>
   <div>
-    <h2>{{user.name}}</h2>
-    <h3><span>Organisation:</span>{{user.organisation}}</h3>
+    <h2 v-if="user && user.name">{{user.name}}</h2>
+    <h3 v-if="user && user.institution"><span>{{ $t('user.institution') }}:</span>{{user.institution}}</h3>
   </div>
 </template>
