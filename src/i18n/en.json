@@ -8,7 +8,7 @@
   "purpose": "Purpose",
   "start": "Start",
   "end": "End",
-  "plannedStart": "Planed Start",
+  "plannedStart": "Planned Start",
   "plannedEnd": "Planned End",
   "actions": "Actions",
   "frontAction": "Copy Id",
@@ -66,6 +66,12 @@
   "noModulesMsg": "Studies has no modules yet.",
   "deleteMsg": "Are you sure you want to delete ",
 
+  "participantInfo": "Participant Information",
+  "consentInfo": "Consent Information",
+  "language": "Language",
+
+  "dashboardTitle": "My dashboard of studies",
+
   "observations": "Observations",
   "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
 
@@ -76,5 +82,8 @@
   },
   "placeholder": {
     "roleMultiselect": "Select one to two roles"
+  },
+  "user": {
+    "institution": "Institution"
   }
 }

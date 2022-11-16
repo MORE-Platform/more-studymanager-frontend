@@ -18,7 +18,7 @@ import Dropdown from "primevue/dropdown";
 import MultiSelect from 'primevue/multiselect';
 import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
@@ -264,7 +264,7 @@ function toClassName(value:string):string {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-            <InputText v-if="column.type === undefined && column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
+            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
               <template #option="optionProps">
@@ -274,7 +274,6 @@ function toClassName(value:string):string {
               </template>
             </Dropdown>
             <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>
-            <div v-else-if="column.type === undefined">{{data[field]}}</div>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -315,7 +314,6 @@ function toClassName(value:string):string {
 </template>
 
 <style lang="postcss">
-
   .more-table {
     h3 {
       color: var(--primary-color);
@@ -337,13 +335,13 @@ function toClassName(value:string):string {
       }
     }
 
-    tr td:last-child {
-      width: 1%;
-      white-space: nowrap;
-    }
+    table tbody tr {
+      font-size: 14.5px!important;
 
-    .p-datatable-loading-overlay {
-      background-color: transparent;
+      &:last-child {
+        width: 1%;
+        white-space: nowrap;
+      }
     }
   }
 </style>

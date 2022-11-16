@@ -73,7 +73,7 @@ d="M244.6,78.4c-0.4-0.4-0.8-0.6-1.4-0.6h-6.1c-1,0-1.8,0.5-2.3,1.5l-15.2,28.1l-16
   </svg>
       </div>
       </router-link>
-      <div class="beta-tag text-2xl px-5 py-2 font-bold uppercase border-4 rounded border-black">
+      <div class="beta-tag text-l px-3 py-2 font-bold uppercase text-gray-400 border-2 rounded border-gray-400">
         Private Beta
       </div>
 
