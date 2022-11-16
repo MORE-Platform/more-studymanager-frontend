@@ -67,6 +67,7 @@
   "deleteMsg": "Are you sure you want to delete ",
 
   "observations": "Observations",
+  "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
 
   "tooltips": {
     "deleteBtn": "Delete",

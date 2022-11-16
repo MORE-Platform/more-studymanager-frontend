@@ -5,7 +5,8 @@ export interface MoreTableColumn {
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
   filterable?: boolean | MoreTableFilterOption,
-  choiceOptions?: MoreTableChoiceOptions
+  choiceOptions?: MoreTableChoiceOptions ,
+  placeholder?: string
 }
 
 export interface MoreTableChoiceOptions {

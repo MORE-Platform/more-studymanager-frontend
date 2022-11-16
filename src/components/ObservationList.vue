@@ -18,7 +18,7 @@
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'group', header: 'group', editable: true, sortable: true, filterable: {showFilterMatchModes: false}}
+    {field: 'group', header: 'group', editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available'}
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -91,7 +91,7 @@
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"
-      subtitle="This is the list of my studies observations."
+      :subtitle="$t('observationListDescr')"
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
