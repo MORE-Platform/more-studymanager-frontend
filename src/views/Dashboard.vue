@@ -24,7 +24,7 @@
 
 <template>
   <div class="container bg-white rounded-lg m-auto p-10 mt-10">
-    <div>
+    <div v-if="user">
       <User :user="user"></User>
     </div>
     <div class="mt-10">

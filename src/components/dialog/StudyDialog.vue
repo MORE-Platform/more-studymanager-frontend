@@ -32,7 +32,7 @@
     </div>
     <div class="buttons text-right mt-8">
       <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-      <Button @click="save()"><span v-if="title">Edit</span><span v-else>Create</span></Button>
+      <Button @click="save()">Save</Button>
     </div>
   </div>
 </template>
@@ -48,12 +48,7 @@ import {Study} from '../../generated-sources/openapi';
 import {dateToDateString} from '../../utils/dateUtils';
 
 const dialogRef:any = inject("dialogRef");
-const study:Study = dialogRef.value.data.study || {};
-
-console.log(dialogRef.value.data);
-console.log(dialogRef.value.data.study);
-console.log(study);
-console.log('study');
+const study:Study = dialogRef.value.data?.study || {};
 
 const title = ref(study.title);
 const language = ref('en');
@@ -70,7 +65,6 @@ const languages = [
 ]
 
 function save(){
-  console.log(title.value, language.value, start.value, end.value, purpose.value, consentInfo.value, participantInfo.value);
   const returnStudy = {
     studyId: study.studyId,
     title: title.value,

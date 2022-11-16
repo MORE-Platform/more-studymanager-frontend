@@ -340,7 +340,7 @@ function toClassName(value:string):string {
     table tbody tr {
       font-size: 14.5px!important;
 
-      &:last-child {
+      td:last-child {
         width: 1%;
         white-space: nowrap;
       }
