@@ -11,7 +11,7 @@ export interface MoreTableColumn {
 
 export interface MoreTableChoiceOptions {
   statuses: Array<MoreTableChoice>,
-  placeholder: string
+  placeholder?: string
 }
 export interface MoreTableChoice {
   label: string,

@@ -292,7 +292,9 @@ function toClassName(value:string):string {
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
-              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) ">
+                <span v-if="!action.icon">{{ action.label }}</span>
+              </Button>
             </div>
             <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
@@ -342,6 +344,10 @@ function toClassName(value:string):string {
         width: 1%;
         white-space: nowrap;
       }
+    }
+
+    td.row-actions {
+      justify-content: flex-end;
     }
   }
 </style>
