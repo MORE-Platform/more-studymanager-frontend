@@ -18,7 +18,7 @@ import Dropdown from "primevue/dropdown";
 import MultiSelect from 'primevue/multiselect';
 import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
