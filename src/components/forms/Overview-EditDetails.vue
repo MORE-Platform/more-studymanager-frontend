@@ -1,10 +1,11 @@
 <script setup lang="ts">
   import {PropType} from 'vue';
-  import { Study } from '../../generated-sources/openapi/'
+  import {Study, StudyStatus} from '../../generated-sources/openapi/'
   import StudyDialog from '../../components/dialog/StudyDialog.vue'
   import {useDialog} from "primevue/usedialog";
   import Button from "primevue/button";
   import DynamicDialog from 'primevue/dynamicdialog';
+  import StudyStatusChange from './StudyStatusChange.vue';
 
   const dialog = useDialog();
 
@@ -14,13 +15,19 @@
   })
 
   const emit = defineEmits<{
-    (e: 'onUpdateStudy', study: Study) : void
+    (e: 'onUpdateStudy', study: Study) : void,
+    (e: 'onUpdateStudyStatus', status: StudyStatus) : void
   }>()
 
 
   function updateStudy(study:Study) {
      emit('onUpdateStudy', study)
   }
+
+  function updateStudyStatus(status:StudyStatus) {
+    emit('onUpdateStudyStatus', status)
+  }
+
   function openEditDialog() {
     dialog.open(StudyDialog,{
       data: {
@@ -64,9 +71,10 @@
         </div>
         <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
       </div>
+      <StudyStatusChange :status="study.status" @onchange="updateStudyStatus"></StudyStatusChange>
       <Button
-        type="button" class="text-white bg-blue-500 white col-span-1 rounded justify-center"
-        style="width: 11%;" @click="openEditDialog()">Edit Study Details</Button>
+        type="button" icon="pi pi-pencil"
+        title="Edit Study Details" @click="openEditDialog()"></Button>
     </div>
 
     <div class="mb-6">
