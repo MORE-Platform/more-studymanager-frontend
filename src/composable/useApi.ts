@@ -1,4 +1,4 @@
-import {Configuration, ParticipantsApi, StudiesApi, StudyGroupsApi} from '../generated-sources/openapi';
+import {Configuration, ParticipantsApi, StudiesApi, StudyGroupsApi, ObservationsApi} from '../generated-sources/openapi';
 
 const apiConfig = {
   basePath: '/api/v1',
@@ -7,6 +7,7 @@ const apiConfig = {
 let studyGroupsApi:StudyGroupsApi;
 let studiesApi:StudiesApi;
 let participantsApi:ParticipantsApi;
+let observationsApi:ObservationsApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi
@@ -32,5 +33,14 @@ export function useParticipantsApi(): {
   participantsApi = participantsApi || new ParticipantsApi(apiConfig, undefined, window.axios)
   return {
     participantsApi,
+  }
+}
+
+export function useObservationsApi(): {
+  observationsApi: ObservationsApi
+} {
+  observationsApi = observationsApi || new ObservationsApi(apiConfig, undefined, window.axios)
+  return {
+    observationsApi,
   }
 }
