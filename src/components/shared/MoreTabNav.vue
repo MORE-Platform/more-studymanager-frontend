@@ -40,13 +40,13 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
 </script>
 
 <template>
-  <div>
-    <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
-      <li v-for="tab in tabs" :key="tab.name" class="tab mr-2">
+  <div class="mb-16 more-tab-nav">
+    <ul class="flex flex-wrap justify-end text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400">
+      <li v-for="tab in tabs" :key="tab.name" class="tab mr-0.5">
         <a
           href="#"
           class="inline-block p-4 rounded-t-lg"
-          :class="{'cursor-default': tab.active, 'text-blue-600': tab.active, 'bg-gray-100': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
+          :class="{'cursor-default': tab.active, 'text-white': tab.active, 'bg-blue-500': tab.active, 'scale-110 origin-bottom z-50': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
           @click="goto(tab)"
         >{{tab.title}}</a>
       </li>
@@ -55,4 +55,18 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
 </template>
 
 <style lang="postcss">
+
+  .more-tab-nav {
+    margin-top: -15px;
+    ul {
+      font-size: 1.125rem;
+
+      li {
+        a {
+          padding: 1rem 1.375rem;
+          border: 1px solid lightgrey;;
+        }
+      }
+    }
+  }
 </style>

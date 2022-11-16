@@ -21,10 +21,18 @@
         <h5>Purpose</h5>
         <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
+      <div class="col-start-0 col-span-6">
+        <h5>{{ $t('participantInfo') }}</h5>
+        <Textarea v-model="participantInfo" placeholder="Enter the participant information, which will be displayed on the app." :auto-resize="true" style="width: 100%"></Textarea>
+      </div>
+      <div class="col-start-0 col-span-6">
+        <h5>{{$t('consentInfo')}}</h5>
+        <Textarea v-model="consentInfo" placeholder="Enter the consent Information, which will be displayed on the app." :auto-resize="true" style="width: 100%"></Textarea>
+      </div>
     </div>
     <div class="buttons text-right mt-8">
       <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-      <Button @click="create()">Create</Button>
+      <Button @click="save()"><span v-if="title">Edit</span><span v-else>Create</span></Button>
     </div>
   </div>
 </template>
@@ -40,27 +48,39 @@ import {Study} from '../../generated-sources/openapi';
 import {dateToDateString} from '../../utils/dateUtils';
 
 const dialogRef:any = inject("dialogRef");
+const study:Study = dialogRef.value.data.study || {};
 
-const title = ref();
+console.log(dialogRef.value.data);
+console.log(dialogRef.value.data.study);
+console.log(study);
+console.log('study');
+
+const title = ref(study.title);
 const language = ref('en');
-const start = ref();
-const end = ref();
-const purpose = ref();
+const start = ref(study.start ?  new Date(study.start): new Date());
+const end = ref(study.end ? new Date(study.end): new Date());
+const purpose = ref(study.purpose);
+const consentInfo = ref(study.consentInfo);
+const participantInfo = ref(study.participantInfo);
+
 
 const languages = [
   {name: 'German', value: 'de'},
   {name: 'English', value: 'en'}
 ]
 
-function create() {
-  console.log(title.value, language.value, start.value, end.value, purpose.value);
-  const study = {
+function save(){
+  console.log(title.value, language.value, start.value, end.value, purpose.value, consentInfo.value, participantInfo.value);
+  const returnStudy = {
+    studyId: study.studyId,
     title: title.value,
     purpose: purpose.value,
     plannedStart: dateToDateString(start.value),
-    plannedEnd: dateToDateString(end.value)
+    plannedEnd: dateToDateString(end.value),
+    consentInfo: consentInfo.value,
+    participantInfo: participantInfo.value
   } as Study;
-  dialogRef.value.close(study);
+  dialogRef.value.close(returnStudy);
 }
 
 function cancel() {
