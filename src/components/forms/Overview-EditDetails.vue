@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import {ref, Ref, PropType} from 'vue';
+  import {PropType} from 'vue';
   import { Study } from '../../generated-sources/openapi/'
   import StudyDialog from '../../components/dialog/StudyDialog.vue'
   import {useDialog} from "primevue/usedialog";
@@ -65,8 +65,9 @@
         </div>
         <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
       </div>
-      <Button type="button" class="text-white bg-blue-500 white col-span-1 rounded justify-center"
-              style="width: 11%;" @click="openEditDialog()">Edit Study Details</Button>
+      <Button
+        type="button" class="text-white bg-blue-500 white col-span-1 rounded justify-center"
+        style="width: 11%;" @click="openEditDialog()">Edit Study Details</Button>
     </div>
 
     <div class="mb-6">

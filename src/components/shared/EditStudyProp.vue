@@ -2,7 +2,6 @@
 import {ref, Ref} from 'vue';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
-import {StudyStatus} from '../../generated-sources/openapi';
 
   const props = defineProps({
     studyProp: {type: String, default: undefined},
