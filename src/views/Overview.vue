@@ -26,6 +26,7 @@ async function listStudyGroups(studyId:number): Promise<void> {
 async function updateStudy(study: Study) {
   console.log('updateStudy')
   console.log(study);
+  console.log(studyId);
 
   try {
     studiesApi.updateStudy(studyId, study)

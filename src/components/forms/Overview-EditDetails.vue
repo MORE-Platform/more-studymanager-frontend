@@ -10,6 +10,7 @@
   })
 
   const updatedStudy: Ref<Study> = ref({
+    studyId: props.study.studyId,
     title: props.study.title,
     purpose: props.study.purpose,
     participantInfo: props.study.participantInfo,
@@ -33,8 +34,6 @@
     }  else {
       return
     }
-    console.log("onFieldSave");
-    console.log(updatedStudy.value)
     emit('onUpdateStudy', updatedStudy.value);
   }
 
@@ -48,18 +47,21 @@
       :title="$t('purpose')"
       :prop-field="'purpose'"
       :study-prop="updatedStudy.purpose"
+      :study-status="study.status"
       @on-save-prop="onFieldSave($event, 'purpose')" />
     <EditStudyProp
       :style-modifier="'mb-6'"
       :title="$t('participantInfo')"
       :prop-field="'participantInfo'"
       :study-prop="updatedStudy.participantInfo"
+      :study-status="study.status"
       @on-save-prop="onFieldSave($event, 'participantInfo') " />
     <EditStudyProp
       :style-modifier="'mb-6'"
       :title="$t('consentInfo')"
       :prop-field="'consentInfo'"
       :study-prop="updatedStudy.consentInfo"
+      :study-status="study.status"
       @on-save-prop="onFieldSave($event, 'consentInfo')" />
   </div>
 </template>

@@ -2,10 +2,12 @@
 import {ref, Ref} from 'vue';
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
+import {StudyStatus} from '../../generated-sources/openapi';
 
   const props = defineProps({
     studyProp: {type: String, default: undefined},
     propField: {type: String, required: true},
+    studyStatus: {type: String, required: true},
     title: {type: String, required: true},
     styleModifier: {type: String, default: ''}
   })
@@ -36,7 +38,7 @@ import Button from 'primevue/button';
     <section>
       <div v-if="studyProp" class="flex mb-1" >
         <h5 class="mr-1">{{ title }}</h5>
-        <div><Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button></div>
+        <div v-if="studyStatus === StudyStatus.Draft || studyStatus === StudyStatus.Paused"><Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button></div>
       </div>
       <div v-else><Button type="button">{{$t('add')}} {{title}}</Button></div>
       <div v-if="editMode">
