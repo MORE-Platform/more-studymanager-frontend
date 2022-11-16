@@ -74,6 +74,7 @@
 
   "observations": "Observations",
   "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
+  "groupChoice": "Choos a group",
 
   "tooltips": {
     "deleteBtn": "Delete",

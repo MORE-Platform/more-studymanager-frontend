@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useObservationsApi, useStudyGroupsApi} from "../composable/useApi";
-import {Observation, StudyGroup, StudyStatus} from '../generated-sources/openapi';
+import {Observation, StudyGroup} from '../generated-sources/openapi';
 import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
@@ -27,7 +27,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
       await studyGroupsApi.listStudyGroups(props.studyId)
         .then((response) => {
           studyGroupList.value = response.data
-
           studyGroupList.value.forEach((item) => {
             if(item.title && item.studyGroupId) {
               const e:MoreTableChoice =  {
@@ -44,23 +43,22 @@ const { studyGroupsApi } = useStudyGroupsApi();
   }
   getStudyGroups();
 
-  const observationColumns: Ref<MoreTableColumn[]> = ref([
+  const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'group', header: 'group', editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
-      type: MoreTableFieldType.choice, choiceOptions: {statuses: groupStatuses.value, placeholder: 'Choose a group'}}
-  ])
+    {field: 'studyGroupId', header: 'group', editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
+      type: MoreTableFieldType.choice, choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+  ]
 
   const tableActions: MoreTableAction[] = [
     {id: 'create', icon: 'pi pi-plus', label: 'Add Observations'}
   ]
 
   const rowActions: MoreTableAction[] = [
-    {id: 'clone', label: 'Clone', visible: (data) => props.studyStatus === StudyStatus.Draft || props.studyStatus === StudyStatus.Paused},
+    {id: 'clone', label: 'Clone'},
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study',
-        message: 'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...'},
-      visible: (data) => props.studyStatus === StudyStatus.Draft
+        message: 'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...'}
     }
   ]
 
@@ -92,13 +90,14 @@ const { studyGroupsApi } = useStudyGroupsApi();
     }
   }
 
-  function changeValue(observation:Observation) {
-    const i = observationList.value.findIndex(v => v.observationId === observation.observationId);
-    if(i>-1) {
-      observationList.value[i] = observation;
-      observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
-        .then(listObservations);
+  async function changeValue(observation:Observation) {
+    try {
+      await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
+        .then(listObservations)
+    }catch(e) {
+      console.error("Couldn't update opservation " + observation.title);
     }
+
   }
 
   async function deleteObservation(requestObservation: Observation) {
@@ -114,6 +113,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
     console.log('to-do cloneObservation')
   }
   async function createObservation(newObservation: Observation) {
+
       try {
         await observationsApi.addObservation(props.studyId, newObservation)
           .then((response) => {
@@ -126,20 +126,26 @@ const { studyGroupsApi } = useStudyGroupsApi();
       }
   }
 
+  const observation: Observation = {
+    title: "string",
+    purpose: "string",
+    participantInfo: "string",
+    type: "acc-mobile-observation",
+    properties: {},
+    schedule: {}
+  }
+
   function openEditObservation(e: any) {
     console.log(e);
   }
 
 
   listObservations();
+  console.log(observationList.value)
 </script>
 
 <template>
   <div class="observation-list">
-    <div>observationlist: {{observationList}}<br></div>
-    <div>studyGroupList: {{studyGroupList}}<br></div>
-    <div>groupStatuses: {{groupStatuses}}<br><br></div>
-    <div>observationColumns: {{observationColumns}}</div>
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"
@@ -149,7 +155,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
-      :editable="function(){studyStatus === StudyStatus.Draft || studyStatus === StudyStatus.Paused}"
       empty-message="No studies yet"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"

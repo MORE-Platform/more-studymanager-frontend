@@ -157,6 +157,7 @@ function cancel(row: any) {
 }
 
 function save(row: unknown) {
+  console.log(row);
   emit('onchange', clean(row))
   cancel(row);
 }
@@ -266,7 +267,7 @@ function toClassName(value:string):string {
         <template v-if="column.editable" #editor="{ data, field }">
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
-            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
+            <Dropdown v-if="column.type === MoreTableFieldType.choice || column.type === MoreTableFieldType.choiceId" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
               <template #option="optionProps">
                 <div class="p-dropdown-car-option">
                   <span>{{optionProps.option.label}}</span>
