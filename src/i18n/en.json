@@ -1,14 +1,14 @@
 {
   "id": "Id",
   "message": "testing message",
-  "studies":  "Study List",
+  "studies":  "My dashboard of studies",
   "studyGroups":  "Study Groups",
   "studyId": "Study ID",
   "title": "Title",
   "purpose": "Purpose",
   "start": "Start",
   "end": "End",
-  "plannedStart": "Planed Start",
+  "plannedStart": "Planned Start",
   "plannedEnd": "Planned End",
   "actions": "Actions",
   "frontAction": "Copy Id",
@@ -65,6 +65,8 @@
 
   "noModulesMsg": "Studies has no modules yet.",
   "deleteMsg": "Are you sure you want to delete ",
+
+  "dashboardTitle": "My dashboard of studies",
 
   "tooltips": {
     "deleteBtn": "Delete",

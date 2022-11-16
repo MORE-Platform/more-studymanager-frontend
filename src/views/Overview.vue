@@ -29,7 +29,7 @@ listStudyGroups(studyId);
   <div class="container m-auto mt-10">
     <MoreTabNav :study-id="studyId"></MoreTabNav>
     <div v-if="study">
-      <h1>Study: {{study.title}}</h1>
+      <h1>{{study.title}}</h1>
       <StudyGroupList :study-id="studyId"></StudyGroupList>
     </div>
   </div>

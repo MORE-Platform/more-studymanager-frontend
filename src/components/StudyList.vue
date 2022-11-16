@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useStudiesApi} from '../composable/useApi'
-import {useRouter} from 'vue-router'
+import {useRouter, useRoute} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn,
@@ -20,15 +20,19 @@ import {useDialog} from 'primevue/usedialog';
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
+  const route = useRoute()
+
+
+
   const dialog = useDialog();
 
   const loading = ref(true)
 
   const studyColumns: MoreTableColumn[] = [
-    { field: 'studyId', header: 'id'},
+    { field: 'studyId', header: 'studyId', sortable: true},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     { field: 'purpose', header: 'purpose', editable: true },
-    { field: 'status', header: 'status', sortable: true},
+    { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
     /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
       choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
           {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
@@ -64,7 +68,7 @@ const { studiesApi } = useStudiesApi()
     }
   ]
  const frontRowActions: MoreTableAction[] = [
-   {id:'copyId', label:'CopyId', icon: 'pi pi-copy'}
+   {id:'copyId', label:'Copy Url', icon: 'pi pi-copy'}
  ]
 
   async function listStudies(): Promise<void> {
@@ -131,12 +135,12 @@ const { studiesApi } = useStudiesApi()
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
-      const id = studyId.toString();
-      navigator.clipboard.writeText(id)
+      const studyUrl = location.host + '/studies/' + studyId
+      navigator.clipboard.writeText(studyUrl)
         .then(function() {
-          console.log('Copied Study ' + title + ': ' + id);
+          console.log('Copied Study ' + title + ': ' + studyUrl);
         })
-      alert('Copied Study ' + title + ': ' + id)
+      alert('Copied Study ' + title + ': ' + studyUrl)
     }
   }
 
@@ -147,7 +151,7 @@ const { studiesApi } = useStudiesApi()
   <div>
     <MoreTable
       row-id="studyId"
-      :title="$t('studies')"
+      :title="$t('dashboardTitle')"
       subtitle="This is the list of my own studies and studies where I am added as collaborator."
       :columns="studyColumnsDraft"
       :rows="studyList"
