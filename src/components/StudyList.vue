@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
 import {useStudiesApi} from '../composable/useApi'
-import {useRouter, useRoute} from 'vue-router'
+import {useRouter} from 'vue-router'
 import {
   MoreTableAction,
   MoreTableColumn,
@@ -20,12 +20,8 @@ import {useDialog} from 'primevue/usedialog';
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
-  const route = useRoute()
-
-
 
   const dialog = useDialog();
-
   const loading = ref(true)
 
   const studyColumns: MoreTableColumn[] = [
