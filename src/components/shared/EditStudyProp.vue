@@ -36,11 +36,12 @@ import {StudyStatus} from '../../generated-sources/openapi';
 <template>
   <div class="edit-study-prop" :class="styleModifier">
     <section>
-      <div v-if="studyProp" class="flex mb-1" >
+      <div class="flex mb-1" >
         <h5 class="mr-1">{{ title }}</h5>
-        <div v-if="studyStatus === StudyStatus.Draft || studyStatus === StudyStatus.Paused"><Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button></div>
+        <div>
+          <Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button>
+        </div>
       </div>
-      <div v-else><Button type="button" @click="function(){editMode = !editMode}">{{$t('add')}} {{title}}</Button></div>
       <div v-if="editMode">
         <Textarea v-model="updatedStudyProp" :placeholder="'Enter information about the ' + title" :auto-resize="true" style="width: 100%"></Textarea>
         <div class="buttons text-right mt-8">
@@ -48,7 +49,14 @@ import {StudyStatus} from '../../generated-sources/openapi';
           <Button @click="onSaveProp()">Save</Button>
         </div>
       </div>
-      <div v-else>{{updatedStudyProp}}</div>
+      <div v-else>
+        <div v-if="studyProp">
+          {{updatedStudyProp}}
+        </div>
+        <div v-else>
+          <em>Enter text for {{$t(title)}}</em>
+        </div>
+      </div>
     </section>
   </div>
 </template>

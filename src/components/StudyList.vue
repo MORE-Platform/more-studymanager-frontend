@@ -12,7 +12,7 @@ import {Study, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
-import StudyCreationDialog from './dialog/StudyCreationDialog.vue'
+import StudyDialog from './dialog/StudyDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
 //import {UserRolesEnum} from '../models/UserModel';
@@ -107,7 +107,7 @@ const { studiesApi } = useStudiesApi()
   }
 
   function openCreateDialog() {
-    dialog.open(StudyCreationDialog,{
+    dialog.open(StudyDialog,{
       props: {
         header: 'Create Study',
         style: {
@@ -119,7 +119,6 @@ const { studiesApi } = useStudiesApi()
         },
         modal: true,
         dismissableMask: true,
-
       },
       onClose: (options) => {
         if(options) {

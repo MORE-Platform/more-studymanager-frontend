@@ -11,7 +11,7 @@ const { studyGroupsApi } = useStudyGroupsApi()
 const { studiesApi } = useStudiesApi()
 const route = useRoute()
 
-const study = route.meta['study'] as Study;
+const study: Ref<Study> = ref(route.meta['study'] as Study);
 const studyGroupList: Ref<StudyGroup[]> = ref([])
 
 async function listStudyGroups(studyId:number): Promise<void> {
@@ -23,16 +23,12 @@ async function listStudyGroups(studyId:number): Promise<void> {
   }
 }
 
-async function updateStudy(study: Study) {
-  console.log('updateStudy')
-  console.log(study);
-  console.log(studyId);
+async function updateStudy(studyResponse: Study) {
 
   try {
-    studiesApi.updateStudy(studyId, study)
+    studiesApi.updateStudy(studyId, studyResponse)
       .then(response => {
-        console.log(response.data)
-        console.log("studiesApi update")
+        study.value = response.data
       })
   } catch (e) {
     console.error("Couldn't update study " + studyId, e);
@@ -55,18 +51,6 @@ listStudyGroups(studyId);
         </div>
       </div>
       <MoreTabNav :study-id="studyId"></MoreTabNav>
-
-      <div class="study-info-fixed grid grid-cols-3 lg:grid-cols-5 gap-x-6 mb-14">
-        <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{study.plannedStart}}</div>
-        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{study.plannedEnd}}</div>
-        <div><span class="font-bold">{{$t('start')}}: </span>
-          <span v-if="study.start">{{study.start}}</span><span v-else>-</span>
-        </div>
-        <div> <span class="font-bold">{{$t('end')}}: </span>
-          <span v-if="study.end">{{study.end}}</span><span v-else>-</span>
-        </div>
-        <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
-      </div>
 
       <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" />
 
