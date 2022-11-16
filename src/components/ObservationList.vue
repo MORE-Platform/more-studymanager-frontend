@@ -3,6 +3,7 @@
   import {useObservationsApi} from "../composable/useApi";
   import {Observation, StudyGroup, StudyStatus} from '../generated-sources/openapi';
   import {MoreTableAction, MoreTableColumn, MoreTableRowActionResult} from "../models/MoreTableModel";
+  import {AxiosResponse} from "axios";
 
   const { observationsApi } = useObservationsApi();
   const observationList: Ref<Observation[]> = ref([])
@@ -66,10 +67,27 @@
   function cloneObservation(observation: Observation) {
     console.log('to-do cloneObservation')
   }
-  function createObservation() {
-    console.log('to-do createObservation')
+  async function createObservation() {
+    const observation: Ref<Observation> = ref({
+      studyGroupId: 0,
+      title: "Some observation",
+      purpose: "some purpose",
+      participantInfo: "some participant info",
+      type: "Accelerometer",
+      properties: {}
+    })
+
+
+      try {
+        await observationsApi.addObservation(props.studyId, observation.value)
+          .then((response:AxiosResponse) => response.data)
+      } catch (e) {
+        console.error('cannot list studies', e)
+      }
+
   }
 
+  createObservation();
   listObservations();
 </script>
 
