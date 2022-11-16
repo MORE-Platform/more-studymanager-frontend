@@ -41,18 +41,6 @@ const { studiesApi } = useStudiesApi()
     { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
     { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
-/*
-  const studyColumnsActive: MoreTableColumn[] = [
-    ...studyColumns,
-    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-    { field: 'plannedEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-  ]
-  const studyColumnsCompleted: MoreTableColumn[] = [
-    ...studyColumns,
-    { field: 'actualStart', header: 'start', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-    { field: 'actualEnd', header: 'end', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-  ]
- */
 
   const tableActions: MoreTableAction[] = [
     { id:'create', icon:'pi pi-plus', label:'Add new study' }

@@ -25,10 +25,9 @@
     dialog.open(StudyDialog,{
       data: {
         study: props.study,
-        test: 'test'
       },
       props: {
-        header: 'Edit Study' + props.study.title,
+        header: 'Edit Study',
         style: {
           width: '50vw',
         },
