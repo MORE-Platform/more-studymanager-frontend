@@ -6,14 +6,14 @@ import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowAction
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
-import {useDialog} from "primevue/usedialog";
+//import {useDialog} from "primevue/usedialog";
 
 const { observationsApi } = useObservationsApi();
 const { studyGroupsApi } = useStudyGroupsApi();
 
   const observationList: Ref<Observation[]> = ref([])
-  const dialog = useDialog()
-  const loading = ref(true)
+  //const dialog = useDialog()
+  //const loading = ref(true)
   const studyGroupList: Ref<StudyGroup[]> = ref([])
   const groupStatuses: Ref<MoreTableChoice[]> =ref([])
 
@@ -72,20 +72,21 @@ const { studyGroupsApi } = useStudyGroupsApi();
     }
   }
 
-  async function createObservations(observation: Observation): Promise<void> {
+  /*async function createObservations(observation: Observation): Promise<void> {
     await observationsApi.addObservation(props.studyId, observation)
       .then(listObservations)
   }
 
   function showObservation(id: string|unknown) {
-    /*open edit dialog*/
+   console.log(open edit dialog)
   }
+  */
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
       case 'create': return createObservation(action.row)
-      case 'clone': return cloneObservation(action.row)
+      //case 'clone': return cloneObservation(action.row)
       default: console.error('no handler for action', action)
     }
   }
@@ -109,9 +110,12 @@ const { studyGroupsApi } = useStudyGroupsApi();
     }
   }
 
+  /*
   function cloneObservation(observation: Observation) {
     console.log('to-do cloneObservation')
   }
+  */
+
   async function createObservation(newObservation: Observation) {
 
       try {
@@ -126,6 +130,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
       }
   }
 
+  /*
   const observation: Observation = {
     title: "string",
     purpose: "string",
@@ -133,7 +138,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
     type: "acc-mobile-observation",
     properties: {},
     schedule: {}
-  }
+  }  */
 
   function openEditObservation(e: any) {
     console.log(e);
