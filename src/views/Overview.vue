@@ -42,6 +42,7 @@ listStudyGroups(studyId);
 <template>
   <div class="container m-auto mt-10 overview-view">
     <div v-if="study">
+      <h1>{{study.title}}</h1>
 
       <div class="flex flex-row">
         <div class="mr-5 status flex items-center" :class="[[study.status === 'active' ? 'active' : ''], [study.status === 'paused' ? 'paused' : '']]">{{study.status}}</div>

@@ -8,7 +8,7 @@
   "purpose": "Purpose",
   "start": "Start",
   "end": "End",
-  "plannedStart": "Planed Start",
+  "plannedStart": "Planned Start",
   "plannedEnd": "Planned End",
   "actions": "Actions",
   "frontAction": "Copy Id",
@@ -69,6 +69,8 @@
   "participantInfo": "Participant Information",
   "consentInfo": "Consent Information",
   "language": "Language",
+
+  "dashboardTitle": "My dashboard of studies",
 
   "tooltips": {
     "deleteBtn": "Delete",

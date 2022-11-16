@@ -15,6 +15,6 @@ defineProps({
 <template>
   <div>
     <h2 v-if="user && user.name">{{user.name}}</h2>
-    <h3 v-if="user && user.institution"><span>{{ $t('user.institution') }}:</span>{{user.institution}}</h3>
+    <h3 v-if="user && user.institution">{{user.institution}}</h3>
   </div>
 </template>
