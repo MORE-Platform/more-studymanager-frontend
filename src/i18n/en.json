@@ -77,5 +77,8 @@
   },
   "placeholder": {
     "roleMultiselect": "Select one to two roles"
+  },
+  "user": {
+    "institution": "Institution"
   }
 }
