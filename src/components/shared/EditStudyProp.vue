@@ -40,7 +40,7 @@ import {StudyStatus} from '../../generated-sources/openapi';
         <h5 class="mr-1">{{ title }}</h5>
         <div v-if="studyStatus === StudyStatus.Draft || studyStatus === StudyStatus.Paused"><Button type="button" class="edit-btn" icon="pi pi-pencil" @click="function(){editMode = !editMode}"></Button></div>
       </div>
-      <div v-else><Button type="button">{{$t('add')}} {{title}}</Button></div>
+      <div v-else><Button type="button" @click="function(){editMode = !editMode}">{{$t('add')}} {{title}}</Button></div>
       <div v-if="editMode">
         <Textarea v-model="updatedStudyProp" :placeholder="'Enter information about the ' + title" :auto-resize="true" style="width: 100%"></Textarea>
         <div class="buttons text-right mt-8">
