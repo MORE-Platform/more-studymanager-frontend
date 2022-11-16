@@ -12,9 +12,6 @@ const study = route.meta['study'] as Study;
 <template>
   <div class="container m-auto mt-10">
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
-    <h1>Observations</h1>
-    <p>An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.</p>
-
     <ObservationList :study-status="study.status" :study-id="study.studyId" />
   </div>
 </template>

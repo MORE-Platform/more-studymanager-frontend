@@ -4,6 +4,7 @@
   import {Observation, StudyGroup, StudyStatus} from '../generated-sources/openapi';
   import {MoreTableAction, MoreTableColumn, MoreTableRowActionResult} from "../models/MoreTableModel";
   import {AxiosResponse} from "axios";
+  import MoreTable from '../components/shared/MoreTable.vue'
 
   const { observationsApi } = useObservationsApi();
   const observationList: Ref<Observation[]> = ref([])
@@ -33,11 +34,8 @@
   async function listObservations(): Promise<void> {
     console.log("listObservations");
     try {
-      await observationsApi.listObservations(props.studyId)
-        .then((response) => {
-          console.log(response.data);
-          console.log("list observations")
-        })
+      observationList.value = await observationsApi.listObservations(props.studyId)
+        .then((response) => response.data)
     } catch(e) {
       console.error('cannot list observations', e);
     }
@@ -46,7 +44,7 @@
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
-      case 'create': return createObservation()
+      case 'create': return createObservation(action.row)
       case 'clone': return cloneObservation(action.row)
       default: console.error('no handler for action', action)
     }
@@ -67,53 +65,43 @@
   function cloneObservation(observation: Observation) {
     console.log('to-do cloneObservation')
   }
-  async function createObservation() {
-    const observation: Observation = {
-      studyGroupId: 0,
-      title: "Some observation",
-      purpose: "some purpose",
-      participantInfo: "some participant info",
-      type: "Accelerometer",
-      properties: {}
-    }
-
-    console.log("create observation");
-
+  async function createObservation(newObservation: Observation) {
       try {
-        await observationsApi.addObservation(props.studyId, {
-          studyGroupId: 0,
-          title: "Some observation",
-          purpose: "some purpose",
-          participantInfo: "some participant info",
-          type: "Accelerometer",
-          properties: {}
-        })
+        await observationsApi.addObservation(props.studyId, newObservation)
           .then((response) => {
             console.log(response.data);
             console.log("observation api addObservation")
+            listObservations()
           })
       } catch (e) {
         console.error('cannot create observation', e)
       }
-
   }
 
-  createObservation();
-  //listObservations();
+  function openEditObservation(e: any) {
+    console.log(e);
+  }
+
+  listObservations();
 </script>
 
 <template>
-  <div class="observation-list"><!--
+  <div class="observation-list">
+    {{observationList}}
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"
+      subtitle="This is the list of my studies observations."
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      empty-message="No groups yet"
+      :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
+      :editable="function(){studyStatus === StudyStatus.Draft || studyStatus === StudyStatus.Paused}"
+      empty-message="No studies yet"
+      @onselect="openEditObservation($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
-    />    -->
+    />
   </div>
 </template>

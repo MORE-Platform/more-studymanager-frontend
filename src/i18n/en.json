@@ -66,6 +66,8 @@
   "noModulesMsg": "Studies has no modules yet.",
   "deleteMsg": "Are you sure you want to delete ",
 
+  "observations": "Observations",
+
   "tooltips": {
     "deleteBtn": "Delete",
     "editBtn": "Edit",
