@@ -5,12 +5,13 @@ export interface MoreTableColumn {
   editable?: MoreTableEditableProperties | boolean
   sortable?: boolean
   filterable?: boolean | MoreTableFilterOption,
-  choiceOptions?: MoreTableChoiceOptions
+  choiceOptions?: MoreTableChoiceOptions ,
+  placeholder?: string
 }
 
 export interface MoreTableChoiceOptions {
   statuses: Array<MoreTableChoice>,
-  placeholder: string
+  placeholder?: string
 }
 export interface MoreTableChoice {
   label: string,
