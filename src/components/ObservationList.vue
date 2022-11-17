@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref, Ref} from 'vue'
-import {useObservationsApi, useStudyGroupsApi, useComponentsApi} from "../composable/useApi";
+import {ref, Ref, PropType} from 'vue'
+import {useObservationsApi, useStudyGroupsApi} from "../composable/useApi";
 import {Observation, Study, StudyGroup} from '../generated-sources/openapi';
 import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions, MoreTableActionResult} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -24,7 +24,7 @@ const { componentsApi } = useComponentsApi();
 
   const props = defineProps({
     studyId: { type: Number, required: true },
-    studyStatus: { type: String, required: true}
+    studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
 
   async function getObservationTypes(): Promise<void> {
@@ -44,7 +44,7 @@ const { componentsApi } = useComponentsApi();
   }
 
   getObservationTypes();
-
+  /*
   async function getStudyGroups(): Promise<void> {
       try {
       await studyGroupsApi.listStudyGroups(props.studyId)
@@ -65,12 +65,17 @@ const { componentsApi } = useComponentsApi();
       }
   }
   getStudyGroups();
+  */
+
+  const groupStatuses: Ref<MoreTableChoice[]> = ref(
+    props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
+  );
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
+    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
        choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
   ]
 
@@ -115,11 +120,18 @@ const { componentsApi } = useComponentsApi();
 
   async function changeValue(observation:Observation) {
     try {
+      //do change immediately (ux)
+      const i = observationList.value.findIndex((o:Observation) => o.observationId === observation.observationId)
+      if(i>-1) {
+        observationList.value[i] = observation;
+      }
+
       await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
         .then(listObservations)
     }catch(e) {
       console.error("Couldn't update opservation " + observation.title);
     }
+
   }
 
   async function deleteObservation(requestObservation: Observation) {
@@ -212,6 +224,5 @@ function openCreateDialog(actionResult: MoreTableActionResult) {
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
-
   </div>
 </template>
