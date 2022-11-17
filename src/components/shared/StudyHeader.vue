@@ -9,14 +9,15 @@ defineProps({
 });
 </script>
 <template>
-  <div class="flex flex-row study-header">
-    <div class="mr-5 status flex items-center" :class="[[study.status === 'active' ? 'active' : ''], [study.status === 'paused' ? 'paused' : '']]">{{study.status}}</div>
+  <div class="flex flex-row items-center study-header mb-10">
     <div class="title-block">
-      <h1>Study: {{study.title}}</h1>
-      <div class="study-id"><span class="font-bold">Study ID:</span> {{study.studyId}}</div>
+      <h1><span class="status-inline mr-2" :class="[[study.status === 'active' ? 'active' : ''], [study.status === 'paused' ? 'paused' : '']]">{{study.status}}</span>
+        {{study.title}}</h1>
     </div>
   </div>
 </template>
+
+
 <style lang="postcss">
 .study-header {
   .status {
@@ -26,6 +27,24 @@ defineProps({
     padding: 14px 33px;
     text-transform: uppercase;
     font-weight: 600;
+
+    &.active {
+      color: var(--green-300);
+      border-color: var(--green-300);
+    }
+    &.paused {
+      color: var(--gray-500);
+      border-color: var(--gray-500);
+    }
+  }
+
+  .status-inline {
+    text-transform: uppercase;
+    border: 2px solid black;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 24px;
+    color: black;
 
     &.active {
       color: var(--green-300);

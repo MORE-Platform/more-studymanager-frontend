@@ -10,8 +10,9 @@ const study = route.meta['study'] as Study;
 
 <template>
   <div class="container m-auto mt-10">
-    <StudyHeader :study="study"></StudyHeader>
+
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
+    <StudyHeader :study="study"></StudyHeader>
     <ParticipantList class="mt-10" :study-id="study?.studyId"></ParticipantList>
   </div>
 </template>
