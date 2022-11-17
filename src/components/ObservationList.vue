@@ -6,6 +6,7 @@ import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowAction
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
+import {AxiosResponse} from "axios";
 //import {useDialog} from "primevue/usedialog";
 
 const { observationsApi } = useObservationsApi();
@@ -47,8 +48,8 @@ const { studyGroupsApi } = useStudyGroupsApi();
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
-      type: MoreTableFieldType.choice, choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
+       choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -56,19 +57,18 @@ const { studyGroupsApi } = useStudyGroupsApi();
   ]
 
   const rowActions: MoreTableAction[] = [
-    {id: 'clone', label: 'Clone'},
+    //{id: 'clone', label: 'Clone'},
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study',
         message: 'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...'}
     }
   ]
 
   async function listObservations(): Promise<void> {
-    console.log("listObservations");
     try {
       observationList.value = await observationsApi.listObservations(props.studyId)
-        .then((response) => response.data)
-    } catch(e) {
-      console.error('cannot list observations', e);
+        .then((response:AxiosResponse) => response.data)
+    } catch (e) {
+      console.error('cannot list studies', e)
     }
   }
 
@@ -106,7 +106,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
       await observationsApi.deleteObservation(props.studyId, requestObservation.observationId as number)
         .then(listObservations)
     } catch (e) {
-      console.error('Cannot delete observation', e)
+      console.error('Cannot delete observation ' + requestObservation.observationId, e)
     }
   }
 
@@ -117,10 +117,9 @@ const { studyGroupsApi } = useStudyGroupsApi();
   */
 
   async function createObservation(newObservation: Observation) {
-
       try {
         await observationsApi.addObservation(props.studyId, newObservation)
-          .then((response) => {
+          .then((response: AxiosResponse) => {
             console.log(response.data);
             console.log("observation api addObservation")
             listObservations()
@@ -146,7 +145,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
 
 
   listObservations();
-  console.log(observationList.value)
 </script>
 
 <template>
@@ -159,8 +157,8 @@ const { studyGroupsApi } = useStudyGroupsApi();
       :rows="observationList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
-      empty-message="No studies yet"
+      :sort-options="{sortField: 'title', sortOrder: -1}"
+      empty-message="No observations yet"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
