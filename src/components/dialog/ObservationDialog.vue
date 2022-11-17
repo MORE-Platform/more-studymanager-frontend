@@ -7,7 +7,7 @@ import Dropdown from 'primevue/dropdown';
 import {Observation} from '../../generated-sources/openapi';
 
 const dialogRef:any = inject("dialogRef")
-const observation:Observation = dialogRef.value.data?.observation || {};
+//const observation:Observation = dialogRef.value.data?.observation || {};
 //grouplist example: {statuses: [{label: 'string', value: 'string'}, {label: 'mine', value: 'mine'}], placeholder: 'test'}
 const observationType = dialogRef.value.data?.observationType || undefined;
 const groupStates = dialogRef.value.data?.groupStates || undefined;

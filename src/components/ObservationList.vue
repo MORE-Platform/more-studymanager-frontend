@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref, Ref, PropType} from 'vue'
-import {useObservationsApi, useStudyGroupsApi, useComponentsApi} from "../composable/useApi";
-import {Observation, Study, StudyGroup} from '../generated-sources/openapi';
+import {useObservationsApi, useComponentsApi} from "../composable/useApi";
+import {Observation, StudyGroup} from '../generated-sources/openapi';
 import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions, MoreTableActionResult} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
@@ -9,17 +9,13 @@ import MoreTable from '../components/shared/MoreTable.vue'
 import {AxiosResponse} from "axios";
 import {useDialog} from "primevue/usedialog";
 import ObservationDialog from '../components/dialog/ObservationDialog.vue'
-import StudyDialog from "./dialog/StudyDialog.vue";
 
 const { observationsApi } = useObservationsApi();
-const { studyGroupsApi } = useStudyGroupsApi();
 const { componentsApi } = useComponentsApi();
 
   const observationList: Ref<Observation[]> = ref([])
   const dialog = useDialog()
-  const loading = ref(true)
-  const studyGroupList: Ref<StudyGroup[]> = ref([])
-  //const groupStatuses: Ref<MoreTableChoice[]> =ref([])
+  //const loading = ref(true)
   const observationTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
