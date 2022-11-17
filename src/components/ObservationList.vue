@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, Ref, PropType} from 'vue'
-import {useObservationsApi, useStudyGroupsApi} from "../composable/useApi";
+import {useObservationsApi, useStudyGroupsApi, useComponentsApi} from "../composable/useApi";
 import {Observation, Study, StudyGroup} from '../generated-sources/openapi';
 import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions, MoreTableActionResult} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -19,7 +19,7 @@ const { componentsApi } = useComponentsApi();
   const dialog = useDialog()
   const loading = ref(true)
   const studyGroupList: Ref<StudyGroup[]> = ref([])
-  const groupStatuses: Ref<MoreTableChoice[]> =ref([])
+  //const groupStatuses: Ref<MoreTableChoice[]> =ref([])
   const observationTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
