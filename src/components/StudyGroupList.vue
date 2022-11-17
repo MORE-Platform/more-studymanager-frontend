@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, Ref} from 'vue'
+import {Ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
 import {
   MoreTableAction,
