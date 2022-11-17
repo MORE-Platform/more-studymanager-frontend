@@ -3,7 +3,7 @@ import MoreTabNav from "../components/shared/MoreTabNav.vue";
 import {useStudiesApi, useStudyGroupsApi} from '../composable/useApi';
 import {useRoute} from 'vue-router';
 import {ref, Ref} from 'vue';
-import {StatusChange, Study, StudyGroup, StudyStatus} from '../generated-sources/openapi';
+import {Study, StudyGroup, StudyStatus} from '../generated-sources/openapi';
 import StudyGroupList from '../components/StudyGroupList.vue';
 import OverviewEditDetails from '../components/forms/Overview-EditDetails.vue'
 import StudyHeader from '../components/shared/StudyHeader.vue';

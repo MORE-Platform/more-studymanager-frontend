@@ -6,7 +6,7 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableShowBtn
+  MoreTableShowBtn, MoreTableChoice
 } from '../../models/MoreTableModel'
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -207,6 +207,11 @@ function toClassName(value:string):string {
   }
   return value;
 }
+
+function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
+  const v = value.toString()
+  return statuses.find((s: any) => s.value === v)?.label;
+}
 </script>
 
 <template>
@@ -266,7 +271,8 @@ function toClassName(value:string):string {
         <template v-if="column.editable" #editor="{ data, field }">
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
-            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
+            <Dropdown
+              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value" :placeholder="$t(column.choiceOptions.placeholder)">
               <template #option="optionProps">
                 <div class="p-dropdown-car-option">
                   <span>{{optionProps.option.label}}</span>
@@ -278,8 +284,13 @@ function toClassName(value:string):string {
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
         </template>
-        <template v-else #body="{ data, field }">
+        <template #body="{ data, field }">
+         <!--{{data}} {{field}}-->
           <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
+          <span v-if="column.type === MoreTableFieldType.choice">
+            <span v-if="data[field]">{{getLabelForChoiceValue(data[field], column.choiceOptions.statuses)}}</span>
+            <span v-else>{{column.choiceOptions.placeholder}} t</span>
+          </span>
           <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
         </template>
       </Column>
@@ -292,7 +303,9 @@ function toClassName(value:string):string {
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
-              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) ">
+                <span v-if="!action.icon">{{ action.label }}</span>
+              </Button>
             </div>
             <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
@@ -342,6 +355,10 @@ function toClassName(value:string):string {
         width: 1%;
         white-space: nowrap;
       }
+    }
+
+    td.row-actions {
+      justify-content: flex-end;
     }
   }
 </style>
