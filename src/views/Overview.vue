@@ -45,8 +45,9 @@ const studyId = +route.params.studyId;
 
 <template>
   <div class="container m-auto mt-10 overview-view">
-    <StudyHeader :study="study"></StudyHeader>
+
     <MoreTabNav :study-id="studyId"></MoreTabNav>
+    <StudyHeader :study="study"></StudyHeader>
     <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
     <StudyGroupList :study-id="studyId"></StudyGroupList>
   </div>
