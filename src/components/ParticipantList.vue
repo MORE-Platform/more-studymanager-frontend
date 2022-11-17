@@ -54,6 +54,7 @@ function execute(action: MoreTableRowActionResult<Participant>|MoreTableActionRe
 }
 
 function createParticipant(actionResult: MoreTableActionResult) {
+  console.log(actionResult);
   const i = actionResult.properties || 1;
   const participants = names.random(i).map((alias:string) => ({alias, studyId: props.studyId}))
   participantsApi.createParticipants(props.studyId,participants).then(listParticipant)

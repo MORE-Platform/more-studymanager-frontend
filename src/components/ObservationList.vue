@@ -1,27 +1,49 @@
 <script setup lang="ts">
 import {ref, Ref} from 'vue'
-import {useObservationsApi, useStudyGroupsApi} from "../composable/useApi";
-import {Observation, StudyGroup} from '../generated-sources/openapi';
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
+import {useObservationsApi, useStudyGroupsApi, useComponentsApi} from "../composable/useApi";
+import {Observation, Study, StudyGroup} from '../generated-sources/openapi';
+import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions, MoreTableActionResult} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
 import {AxiosResponse} from "axios";
-//import {useDialog} from "primevue/usedialog";
+import {useDialog} from "primevue/usedialog";
+import ObservationDialog from '../components/dialog/ObservationDialog.vue'
+import StudyDialog from "./dialog/StudyDialog.vue";
 
 const { observationsApi } = useObservationsApi();
 const { studyGroupsApi } = useStudyGroupsApi();
+const { componentsApi } = useComponentsApi();
 
   const observationList: Ref<Observation[]> = ref([])
-  //const dialog = useDialog()
-  //const loading = ref(true)
+  const dialog = useDialog()
+  const loading = ref(true)
   const studyGroupList: Ref<StudyGroup[]> = ref([])
   const groupStatuses: Ref<MoreTableChoice[]> =ref([])
+  const observationTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyStatus: { type: String, required: true}
   })
+
+  async function getObservationTypes(): Promise<void> {
+    try {
+      componentsApi.listComponents("observation")
+        .then((response) => {
+          response.data.forEach((item) => {
+            if(item.title && item.componentId) {
+              const e: MoreTableChoice = {label: item.title, value: item.componentId}
+              observationTypes.value.push(e);
+            }
+          })
+        })
+    } catch(e) {
+      console.error("Couldn't fetch component types", e);
+    }
+  }
+
+  getObservationTypes();
 
   async function getStudyGroups(): Promise<void> {
       try {
@@ -53,7 +75,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
   ]
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations'}
+    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: [{label: "Accelerometer Mobile", value: "acc-mobile-observation"}]}
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -85,7 +107,7 @@ const { studyGroupsApi } = useStudyGroupsApi();
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
-      case 'create': return createObservation(action.row)
+      case 'create': return openCreateDialog(action as MoreTableActionResult)
       //case 'clone': return cloneObservation(action.row)
       default: console.error('no handler for action', action)
     }
@@ -98,7 +120,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
     }catch(e) {
       console.error("Couldn't update opservation " + observation.title);
     }
-
   }
 
   async function deleteObservation(requestObservation: Observation) {
@@ -116,6 +137,43 @@ const { studyGroupsApi } = useStudyGroupsApi();
   }
   */
 
+function openCreateDialog(actionResult: MoreTableActionResult) {
+  console.log('openCreateDialog-------');
+  const type: Ref<MoreTableActionOptions> = ref({} as MoreTableActionOptions)
+  observationTypes.value.forEach((item) => {
+    if(item.value === actionResult.properties) {
+      type.value = item;
+    }
+  })
+
+  console.log(groupStatuses.value)
+
+  dialog.open(ObservationDialog,{
+    data: {
+      actionResult: actionResult,
+      groupStates: groupStatuses.value,
+      observationType: type.value
+    },
+    props: {
+      header: 'Create Observation',
+      style: {
+        width: '50vw',
+      },
+      breakpoints:{
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true,
+      dismissableMask: true,
+    },
+    onClose: (options) => {
+      if(options) {
+        createObservation(options.data as Observation)
+      }
+    }
+  })
+}
+
   async function createObservation(newObservation: Observation) {
       try {
         await observationsApi.addObservation(props.studyId, newObservation)
@@ -128,17 +186,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
         console.error('cannot create observation', e)
       }
   }
-
-  /*
-  const observation: Observation = {
-    title: "string",
-    purpose: "string",
-    participantInfo: "string",
-    type: "acc-mobile-observation",
-    properties: {},
-    schedule: {}
-  }  */
-
   function openEditObservation(e: any) {
     console.log(e);
   }
@@ -165,5 +212,6 @@ const { studyGroupsApi } = useStudyGroupsApi();
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
+
   </div>
 </template>
