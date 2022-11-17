@@ -13,6 +13,7 @@ import * as names from 'starwars-names';
 
 const { participantsApi } = useParticipantsApi()
 const participantsList: Ref<Participant[]> = ref([])
+const loading = ref(true)
 
 const props = defineProps({
   studyId: {
@@ -22,7 +23,7 @@ const props = defineProps({
 });
 
 const participantsColumns: MoreTableColumn[] = [
-  { field: 'alias', header: 'alias', editable: true },
+  { field: 'alias', header: 'alias', editable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status' },
   { field: 'studyGroupId', header: 'group' }
@@ -38,10 +39,13 @@ const tableActions: MoreTableAction[] = [
 ]
 
 async function listParticipant(): Promise<void> {
+  loading.value = true;
   try {
     participantsList.value = await participantsApi.listParticipants(props.studyId).then((response) => response.data);
   } catch (e) {
     console.error('cannot list participants', e)
+  } finally {
+    loading.value = false;
   }
 }
 
@@ -83,6 +87,7 @@ listParticipant()
       :rows="participantsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
+      :loading="loading"
       empty-message="No participants yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
