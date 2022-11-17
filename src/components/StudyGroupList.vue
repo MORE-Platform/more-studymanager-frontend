@@ -22,7 +22,7 @@ const props = defineProps({
 });
 
 const studyGroupColumns: MoreTableColumn[] = [
-  { field: 'title', header: 'title', editable: true },
+  { field: 'title', placeholder: 'Set a title', header: 'title', editable: true },
   { field: 'purpose', header: 'purpose', editable: true }
 ]
 

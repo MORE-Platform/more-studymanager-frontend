@@ -15,7 +15,7 @@ export interface MoreTableChoiceOptions {
 }
 export interface MoreTableChoice {
   label: string,
-  value: string
+  value: string|null
 }
 
 export interface MoreTableFilters {

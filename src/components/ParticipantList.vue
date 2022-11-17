@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {ref, Ref} from 'vue'
+import {PropType, ref, Ref} from 'vue'
 import {useParticipantsApi} from '../composable/useApi'
 import {
-  MoreTableAction, MoreTableActionResult,
-  MoreTableColumn, MoreTableRowActionResult,
+  MoreTableAction, MoreTableActionResult, MoreTableChoice,
+  MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Participant} from '../generated-sources/openapi';
+import {Participant, StudyGroup} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
@@ -20,13 +20,19 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
 });
 
+const groupStatuses: Ref<MoreTableChoice[]> = ref(
+  props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
+);
+
 const participantsColumns: MoreTableColumn[] = [
-  { field: 'alias', header: 'alias', editable: true, filterable: {showFilterMatchModes: false}},
+  { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status' },
-  { field: 'studyGroupId', header: 'group' }
+  {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
+    choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
 ]
 
 const rowActions: MoreTableAction[] = [
@@ -82,6 +88,7 @@ listParticipant()
   <div>
     <MoreTable
       row-id="participantId"
+      :sort-options="{sortField: 'alias', sortOrder: 1}"
       :title="$t('participants')"
       :columns="participantsColumns"
       :rows="participantsList"
