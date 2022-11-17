@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, Ref} from 'vue'
+import {Ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
 import {
   MoreTableAction,
@@ -8,9 +8,11 @@ import {
 import {StudyGroup} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
+import {useRoute} from 'vue-router';
 
 const { studyGroupsApi } = useStudyGroupsApi()
-const studyGroupList: Ref<StudyGroup[]> = ref([])
+const route = useRoute()
+const studyGroupList: Ref<StudyGroup[]> = route.meta['studyGroups'] as Ref<StudyGroup[]>;
 
 const props = defineProps({
   studyId: {
@@ -20,7 +22,7 @@ const props = defineProps({
 });
 
 const studyGroupColumns: MoreTableColumn[] = [
-  { field: 'title', header: 'title', editable: true },
+  { field: 'title', placeholder: 'Set a title', header: 'title', editable: true },
   { field: 'purpose', header: 'purpose', editable: true }
 ]
 
@@ -63,8 +65,6 @@ function changeValue(studyGroup:StudyGroup) {
 function deleteStudyGroup(studyGroup: StudyGroup) {
   studyGroupsApi.deleteStudyGroup(studyGroup.studyId as number, studyGroup.studyGroupId as number).then(listStudyGroups)
 }
-
-listStudyGroups()
 </script>
 
 <template>

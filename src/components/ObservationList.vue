@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import {ref, Ref} from 'vue'
-import {useObservationsApi, useStudyGroupsApi} from "../composable/useApi";
+import {PropType, ref, Ref} from 'vue'
+import {useObservationsApi} from "../composable/useApi";
 import {Observation, StudyGroup} from '../generated-sources/openapi';
 import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
@@ -10,45 +10,25 @@ import {AxiosResponse} from "axios";
 //import {useDialog} from "primevue/usedialog";
 
 const { observationsApi } = useObservationsApi();
-const { studyGroupsApi } = useStudyGroupsApi();
 
   const observationList: Ref<Observation[]> = ref([])
   //const dialog = useDialog()
   //const loading = ref(true)
-  const studyGroupList: Ref<StudyGroup[]> = ref([])
-  const groupStatuses: Ref<MoreTableChoice[]> =ref([])
 
   const props = defineProps({
     studyId: { type: Number, required: true },
-    studyStatus: { type: String, required: true}
+    studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
 
-  async function getStudyGroups(): Promise<void> {
-      try {
-      await studyGroupsApi.listStudyGroups(props.studyId)
-        .then((response) => {
-          studyGroupList.value = response.data
-          studyGroupList.value.forEach((item) => {
-            if(item.title && item.studyGroupId) {
-              const e:MoreTableChoice =  {
-                label: item.title,
-                value: item.studyGroupId.toString()
-              }
-              groupStatuses.value.push(e)
-            }
-          })
-        })
-      } catch(e) {
-        console.error("'couldn't get list of study groups (observationList)", e);
-      }
-  }
-  getStudyGroups();
+  const groupStatuses: Ref<MoreTableChoice[]> = ref(
+    props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
+  );
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No groups available',
+    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
        choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
   ]
 
@@ -93,6 +73,12 @@ const { studyGroupsApi } = useStudyGroupsApi();
 
   async function changeValue(observation:Observation) {
     try {
+      //do change immediately (ux)
+      const i = observationList.value.findIndex((o:Observation) => o.observationId === observation.observationId)
+      if(i>-1) {
+        observationList.value[i] = observation;
+      }
+
       await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
         .then(listObservations)
     }catch(e) {

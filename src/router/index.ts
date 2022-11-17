@@ -8,14 +8,16 @@ import Interventions from '../views/Interventions.vue'
 import Participants from '../views/Participants.vue'
 import Observations from '../views/Observations.vue'
 import Data from '../views/Data.vue'
-import {useStudiesApi} from '../composable/useApi';
+import {useStudiesApi, useStudyGroupsApi} from '../composable/useApi';
 import {ref} from 'vue';
 
 const studyResolver = async (to:any, from:any, next: any) => {
   to.meta['study'] = await useStudiesApi()
     .studiesApi.getStudy(to.params.studyId).then((response) => response.data)
     .then(study => ref(study))
-  next()
+  to.meta['studyGroups'] = await useStudyGroupsApi().studyGroupsApi.listStudyGroups(to.meta['study'].value.studyId)
+    .then((response) => response.data).then(studyGroups => ref(studyGroups))
+    next()
 }
 
 const routes = [
@@ -74,4 +76,5 @@ export const Router = createRouter({
 
 Router.beforeEach((to:any, from:any) => {
   to.meta['study'] = from.meta['study']
+  to.meta['studyGroups'] = from.meta['studyGroups']
 });
