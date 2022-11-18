@@ -13,8 +13,8 @@ const studyGroups = route.meta['studyGroups'] as StudyGroup[];
 
 <template>
   <div class="container m-auto mt-10">
-    <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
     <StudyHeader :study="study"></StudyHeader>
+    <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
     <ObservationList :study-groups="studyGroups" :study-id="study.studyId" />
   </div>
 </template>
