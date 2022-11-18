@@ -5,7 +5,7 @@ import {
   MoreTableAction, MoreTableActionResult, MoreTableChoice,
   MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Participant, StudyGroup} from '../generated-sources/openapi';
+import {Participant, StudyGroup, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
@@ -18,6 +18,10 @@ const loading = ref(true)
 const props = defineProps({
   studyId: {
     type: Number,
+    required: true
+  },
+  statusStatus: {
+    type: Object as PropType<StudyStatus>,
     required: true
   },
   studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
@@ -40,6 +44,9 @@ const rowActions: MoreTableAction[] = [
 ]
 
 const tableActions: MoreTableAction[] = [
+  { id: 'distribute', label:'Distribute Groups', visible: () => {
+    return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused
+    }},
   { id:'create', label:'Add Participant', icon:'pi pi-plus',
     options: [{label: "Add 3", value: 3},{label: "Add 10", value: 10},{label: "Add 25", value: 25},{label: "Add 50", value: 50}]}
 ]
@@ -55,16 +62,45 @@ async function listParticipant(): Promise<void> {
   }
 }
 
+function distributeGroups():void {
+  // copy participants and shuffle list
+  const participantCopy = shuffleArray(participantsList.value.map((p) => JSON.parse(JSON.stringify(p))));
+  // set group
+  for (let i = 0; i < participantCopy.length; i++) {
+    for(let j = 0; j < props.studyGroups.length; j++) {
+        if(i < participantCopy.length) {
+          participantCopy[i].studyGroupId = props.studyGroups[j].studyGroupId
+          if(j < props.studyGroups.length-1) i++;
+        } else break;
+    }
+  }
+  participantsApi.updateParticipantList(props.studyId, participantCopy)
+    .then(response => response.data)
+    .then(ps => participantsList.value = ps);
+}
+
+// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
+function shuffleArray(a: Participant[]) {
+  let j, x, i;
+  for (i = a.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    x = a[i];
+    a[i] = a[j];
+    a[j] = x;
+  }
+  return a;
+}
+
 function execute(action: MoreTableRowActionResult<Participant>|MoreTableActionResult) {
   switch (action.id) {
     case 'delete': return deleteParticipant((action as MoreTableRowActionResult<Participant>).row)
     case 'create': return createParticipant(action as MoreTableActionResult)
+    case 'distribute': return distributeGroups()
     default: console.error('no handler for action', action)
   }
 }
 
 function createParticipant(actionResult: MoreTableActionResult) {
-  console.log(actionResult);
   const i = actionResult.properties || 1;
   const participants = names.random(i).map((alias:string) => ({alias, studyId: props.studyId}))
   participantsApi.createParticipants(props.studyId,participants).then(listParticipant)

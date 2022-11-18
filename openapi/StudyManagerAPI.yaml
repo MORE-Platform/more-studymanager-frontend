@@ -308,6 +308,33 @@ paths:
                   $ref: '#/components/schemas/Participant'
         '500':
           description: Error
+    put:
+      tags:
+        - participants
+      description: Update participants for study
+      operationId: updateParticipantList
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Participant'
+        required: true
+      responses:
+        '201':
+          description: updated participants
+          content:
+            application/json:
+              schema:
+                type: array
+                description: list all participants
+                items:
+                  $ref: '#/components/schemas/Participant'
+        '500':
+          description: Error
     get:
       tags:
         - participants
@@ -1027,3 +1054,4 @@ components:
           scopes:
             read: read studies
             write: write studies
+
