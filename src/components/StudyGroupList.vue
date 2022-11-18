@@ -9,9 +9,11 @@ import {StudyGroup} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import {useRoute} from 'vue-router';
+import {useI18n} from 'vue-i18n';
 
 const { studyGroupsApi } = useStudyGroupsApi()
 const route = useRoute()
+const {t} = useI18n();
 const studyGroupList: Ref<StudyGroup[]> = route.meta['studyGroups'] as Ref<StudyGroup[]>;
 
 const props = defineProps({
@@ -23,7 +25,7 @@ const props = defineProps({
 
 const studyGroupColumns: MoreTableColumn[] = [
   { field: 'title', placeholder: 'Set a title', header: 'title', editable: true },
-  { field: 'purpose', header: 'purpose', editable: true }
+  { field: 'purpose', header: 'purpose', editable: true, placeholder: 'Set a proper purpose for this group' }
 ]
 
 const rowActions: MoreTableAction[] = [
@@ -50,8 +52,21 @@ function execute(action: MoreTableRowActionResult<StudyGroup>) {
   }
 }
 
+function getTitle() {
+  let title = undefined;
+  let count = studyGroupList.value.length;
+  while(title === undefined) {
+    count += 1;
+    const _title = t('group') + ' ' + count;
+    if(!studyGroupList.value.find(g => g.title === _title)) {
+      title = _title;
+    }
+  }
+  return title;
+}
+
 function createStudyGroup() {
-  studyGroupsApi.createStudyGroup(props.studyId,{studyId: props.studyId}).then(listStudyGroups)
+  studyGroupsApi.createStudyGroup(props.studyId,{studyId: props.studyId, title: getTitle()}).then(listStudyGroups)
 }
 
 function changeValue(studyGroup:StudyGroup) {
