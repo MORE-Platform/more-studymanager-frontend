@@ -134,7 +134,7 @@ function rowActionHandler(action: MoreTableAction, row: unknown) {
   }
 }
 
-function isVisible(action: MoreTableAction, row: unknown) {
+function isVisible(action: MoreTableAction, row: unknown = undefined) {
   return action.visible === undefined || action.visible(row);
 }
 
@@ -223,8 +223,8 @@ function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
       </div>
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
-          <Button v-if="!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
-          <SplitButton v-if="!!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" :model="action.options" @click="actionHandler(action)"></SplitButton>
+          <Button v-if="isVisible(action) && !action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+          <SplitButton v-if="isVisible(action) && !!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" :model="action.options" @click="actionHandler(action)"></SplitButton>
         </div>
       </div>
     </div>
