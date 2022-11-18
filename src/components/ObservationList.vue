@@ -2,7 +2,7 @@
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
 import {Observation, StudyGroup} from '../generated-sources/openapi';
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions, MoreTableActionResult} from "../models/MoreTableModel";
+import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
@@ -29,12 +29,11 @@ const { componentsApi } = useComponentsApi();
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
-       choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group'}
   ]
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: [{label: "Accelerometer Mobile", value: "acc-mobile-observation"}]}
+    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: {type: 'menu', values: [{label: "Accelerometer Mobile", value: "acc-mobile-observation"}]}}
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -72,7 +71,7 @@ console.log(open edit dialog)
   function execute(action: any) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
-      case 'create': return action.properties ? openObservationDialog(action as MoreTableActionResult, 'Create Observation') : undefined
+      case 'create': return openObservationDialog('Create Observation', {type: action.properties})
       //case 'clone': return cloneObservation(action.row)
       default: console.error('no handler for action', action)
     }
@@ -108,19 +107,10 @@ console.log(open edit dialog)
   }
   */
 
-  function openObservationDialog(actionResult: MoreTableActionResult, headerText: string, observation?: Observation) {
-    const type: Ref<MoreTableActionOptions> = ref({} as MoreTableActionOptions)
-    /*observationTypes.value.forEach((item) => {
-      if(item.value === actionResult.properties) {
-        type.value = item;
-      }
-    })*/
-    type.value = {label: "Accelerometer Mobile", value: "acc-mobile-observation"}
+  function openObservationDialog(headerText: string, observation?: Observation) {
     dialog.open(ObservationDialog,{
       data: {
-        actionResult: actionResult,
         groupStates: groupStatuses.value,
-        observationType: type.value,
         observation: observation,
       },
       props: {
@@ -137,8 +127,11 @@ console.log(open edit dialog)
       },
       onClose: (options) => {
         if(options?.data) {
-
+          if(options.data?.observationId) {
+            updateObservation(options.data as Observation)
+          } else {
             createObservation(options.data as Observation)
+          }
         }
       }
     })
@@ -160,17 +153,22 @@ console.log(open edit dialog)
 
   async function updateObservation(observation: Observation) {
     try {
-      await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
-        .then((response)=> {
-          console.log(response.data)
-        })
+      const i = observationList.value.findIndex(v => v.observationId === observation.observationId);
+      if(i>-1) {
+        observationList.value[i] = observation;
+        await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
+          .then(listObservations)
+      }
     } catch(e) {
        console.error("Couldn't update observation", e);
     }
   }
 
-  function openEditObservation(e: any) {
-    console.log(e);
+  function openEditObservation(observationId: number) {
+    const observation = observationList.value.find(o => o.observationId === observationId);
+    if(observation) {
+      openObservationDialog('Edit observation', observation);
+    }
   }
 
   listObservations();

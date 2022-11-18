@@ -7,44 +7,53 @@ import Dropdown from 'primevue/dropdown';
 import {Observation} from '../../generated-sources/openapi';
 
 const dialogRef:any = inject("dialogRef")
-//const observation:Observation = dialogRef.value.data?.observation || {};
-//grouplist example: {statuses: [{label: 'string', value: 'string'}, {label: 'mine', value: 'mine'}], placeholder: 'test'}
-const observationType = dialogRef.value.data?.observationType || undefined;
-const groupStates = dialogRef.value.data?.groupStates || undefined;
-const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'groupChoice';
+const observation = dialogRef.value.data.observation as Observation;
+const groupStates = dialogRef.value.data.groupStates || [];
 
-const title = ref();
-const purpose = ref();
-const participantInfo = ref()
-const properties = ref();
+const title = ref(observation.title);
+const purpose = ref(observation.purpose);
+const participantInfo = ref(observation.participantInfo)
+const properties = ref(observation.properties ? JSON.stringify(observation.properties) : '{}');
 const scheduler = ref()
-const studyGroupId = ref()
+const studyGroupId = ref(observation.studyGroupId)
 
 
 function save(){
-  const returnObservation = {
-    title: title.value,
-    purpose: purpose.value,
-    participantInfo: participantInfo.value,
-    type: observationType.value,
-    properties: properties.value,
-    scheduler: scheduler.value,
-  } as Observation;
+  try {
+    const props = JSON.parse(properties.value.toString())
 
-  dialogRef.value.close(returnObservation);
+    const returnObservation = {
+      observationId: observation.observationId,
+      title: title.value,
+      purpose: purpose.value,
+      participantInfo: participantInfo.value,
+      type: observation.type,
+      properties: props,
+      scheduler: scheduler.value,
+      studyGroupId: studyGroupId.value
+    } as Observation;
+
+    dialogRef.value.close(returnObservation);
+  } catch (e) {
+    //TODO
+    alert('Properties must be a valid json')
+  }
 }
 
+function typeNameForId(id: string) {
+  //TODO
+  return id;
+}
 
 function cancel() {
  dialogRef.value.close();
 }
-
 </script>
 
 <template>
   <div class="obervation-dialog">
     <div class="error mb-6">All required* fields need to be set.</div>
-    <div class="mb-4"><span class="font-bold">Type: </span> {{ observationType.label }} ({{observationType.value}})</div>
+    <div class="mb-4"><span class="font-bold">Type: </span> {{ typeNameForId(observation.type)}}</div>
 
    <div class="grid grid-cols-8 gap-4 items-center">
 
@@ -69,12 +78,7 @@ function cancel() {
     </div>
 
      <div class="col-start-0 col-span-8">
-       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="$t(groupPlaceholder)">
-         <template #option="optionProps">
-           <div class="p-dropdown-car-option">
-             <span>{{optionProps.option.label}}</span>
-           </div>
-         </template>
+       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="$t('noGroup')">
        </Dropdown>
      </div>
 
