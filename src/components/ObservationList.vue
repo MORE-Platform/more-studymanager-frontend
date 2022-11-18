@@ -15,53 +15,11 @@ const { componentsApi } = useComponentsApi();
 
   const observationList: Ref<Observation[]> = ref([])
   const dialog = useDialog()
-  //const loading = ref(true)
-  const observationTypes: Ref<MoreTableActionOptions[]> = ref([])
-
+  const loading = ref(true)
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
-
-  async function getObservationTypes(): Promise<void> {
-    try {
-      componentsApi.listComponents("observation")
-        .then((response) => {
-          response.data.forEach((item) => {
-            if(item.title && item.componentId) {
-              const e: MoreTableChoice = {label: item.title, value: item.componentId}
-              observationTypes.value.push(e);
-            }
-          })
-        })
-    } catch(e) {
-      console.error("Couldn't fetch component types", e);
-    }
-  }
-
-  getObservationTypes();
-  /*
-  async function getStudyGroups(): Promise<void> {
-      try {
-      await studyGroupsApi.listStudyGroups(props.studyId)
-        .then((response) => {
-          studyGroupList.value = response.data
-          studyGroupList.value.forEach((item) => {
-            if(item.title && item.studyGroupId) {
-              const e:MoreTableChoice =  {
-                label: item.title,
-                value: item.studyGroupId.toString()
-              }
-              groupStatuses.value.push(e)
-            }
-          })
-        })
-      } catch(e) {
-        console.error("'couldn't get list of study groups (observationList)", e);
-      }
-  }
-  getStudyGroups();
-  */
 
   const groupStatuses: Ref<MoreTableChoice[]> = ref(
     props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
@@ -86,29 +44,35 @@ const { componentsApi } = useComponentsApi();
     }
   ]
 
-  async function listObservations(): Promise<void> {
-    try {
-      observationList.value = await observationsApi.listObservations(props.studyId)
-        .then((response:AxiosResponse) => response.data)
-    } catch (e) {
-      console.error('cannot list studies', e)
-    }
-  }
 
-  /*async function createObservations(observation: Observation): Promise<void> {
-    await observationsApi.addObservation(props.studyId, observation)
-      .then(listObservations)
+  /*async function getObservationTypes() {
+    return  componentsApi.listComponents("observation")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
   }
+  const observationTypes: Ref<MoreTableActionOptions[]> = ref(await getObservationTypes());
+  console.log(observationTypes); */
 
-  function showObservation(id: string|unknown) {
-   console.log(open edit dialog)
-  }
-  */
 
-  function execute(action: MoreTableRowActionResult<StudyGroup>) {
+
+async function listObservations(): Promise<void> {
+ try {
+   observationList.value = await observationsApi.listObservations(props.studyId)
+     .then((response:AxiosResponse) => response.data)
+ } catch (e) {
+   console.error('cannot list studies', e)
+ }
+}
+
+/*
+function showObservation(id: string|unknown) {
+console.log(open edit dialog)
+}
+*/
+
+  function execute(action: any) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
-      case 'create': return openCreateDialog(action as MoreTableActionResult)
+      case 'create': return action.properties ? openObservationDialog(action as MoreTableActionResult, 'Create Observation') : undefined
       //case 'clone': return cloneObservation(action.row)
       default: console.error('no handler for action', action)
     }
@@ -127,7 +91,6 @@ const { componentsApi } = useComponentsApi();
     }catch(e) {
       console.error("Couldn't update opservation " + observation.title);
     }
-
   }
 
   async function deleteObservation(requestObservation: Observation) {
@@ -145,42 +108,42 @@ const { componentsApi } = useComponentsApi();
   }
   */
 
-function openCreateDialog(actionResult: MoreTableActionResult) {
-  console.log('openCreateDialog-------');
-  const type: Ref<MoreTableActionOptions> = ref({} as MoreTableActionOptions)
-  observationTypes.value.forEach((item) => {
-    if(item.value === actionResult.properties) {
-      type.value = item;
-    }
-  })
-
-  console.log(groupStatuses.value)
-
-  dialog.open(ObservationDialog,{
-    data: {
-      actionResult: actionResult,
-      groupStates: groupStatuses.value,
-      observationType: type.value
-    },
-    props: {
-      header: 'Create Observation',
-      style: {
-        width: '50vw',
-      },
-      breakpoints:{
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      modal: true,
-      dismissableMask: true,
-    },
-    onClose: (options) => {
-      if(options) {
-        createObservation(options.data as Observation)
+  function openObservationDialog(actionResult: MoreTableActionResult, headerText: string, observation?: Observation) {
+    const type: Ref<MoreTableActionOptions> = ref({} as MoreTableActionOptions)
+    /*observationTypes.value.forEach((item) => {
+      if(item.value === actionResult.properties) {
+        type.value = item;
       }
-    }
-  })
-}
+    })*/
+    type.value = {label: "Accelerometer Mobile", value: "acc-mobile-observation"}
+    dialog.open(ObservationDialog,{
+      data: {
+        actionResult: actionResult,
+        groupStates: groupStatuses.value,
+        observationType: type.value,
+        observation: observation,
+      },
+      props: {
+        header: headerText,
+        style: {
+          width: '50vw',
+        },
+        breakpoints:{
+          '960px': '75vw',
+          '640px': '90vw'
+        },
+        modal: true,
+        dismissableMask: true,
+      },
+      onClose: (options) => {
+        if(options?.data) {
+
+            createObservation(options.data as Observation)
+        }
+      }
+    })
+  }
+
 
   async function createObservation(newObservation: Observation) {
       try {
@@ -194,16 +157,29 @@ function openCreateDialog(actionResult: MoreTableActionResult) {
         console.error('cannot create observation', e)
       }
   }
+
+  async function updateObservation(observation: Observation) {
+    try {
+      await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
+        .then((response)=> {
+          console.log(response.data)
+        })
+    } catch(e) {
+       console.error("Couldn't update observation", e);
+    }
+  }
+
   function openEditObservation(e: any) {
     console.log(e);
   }
-
 
   listObservations();
 </script>
 
 <template>
   <div class="observation-list">
+    observation list
+
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"
@@ -220,5 +196,6 @@ function openCreateDialog(actionResult: MoreTableActionResult) {
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
+
   </div>
 </template>

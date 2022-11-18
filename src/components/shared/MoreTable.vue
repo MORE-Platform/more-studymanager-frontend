@@ -291,7 +291,7 @@ function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
             <span v-if="column.type === MoreTableFieldType.choice"><span v-if="data[field]">{{getLabelForChoiceValue(data[field], column.choiceOptions.statuses)}}</span>
-            <span v-else>{{column.choiceOptions.placeholder}}</span></span>
+            <span v-else>{{$t(column.choiceOptions.placeholder)}}</span></span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
           </div>
         </template>

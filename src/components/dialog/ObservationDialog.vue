@@ -11,13 +11,13 @@ const dialogRef:any = inject("dialogRef")
 //grouplist example: {statuses: [{label: 'string', value: 'string'}, {label: 'mine', value: 'mine'}], placeholder: 'test'}
 const observationType = dialogRef.value.data?.observationType || undefined;
 const groupStates = dialogRef.value.data?.groupStates || undefined;
-const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choos a group';
+const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'groupChoice';
 
 const title = ref();
 const purpose = ref();
 const participantInfo = ref()
-const properties = ref({});
-const scheduler = ref({})
+const properties = ref();
+const scheduler = ref()
 const studyGroupId = ref()
 
 
@@ -43,19 +43,19 @@ function cancel() {
 
 <template>
   <div class="obervation-dialog">
+    <div class="error mb-6">All required* fields need to be set.</div>
     <div class="mb-4"><span class="font-bold">Type: </span> {{ observationType.label }} ({{observationType.value}})</div>
 
    <div class="grid grid-cols-8 gap-4 items-center">
 
-     <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
+     <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}*</h5></div>
      <div class="col-start-3 col-span-6">
        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
      </div>
     <div class="col-start-0 col-span-8">
-      <h5 class="mb-2">{{ $t('purpose') }}</h5>
+      <h5 class="mb-2">{{ $t('purpose') }}*</h5>
       <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
     </div>
-
     <div class="col-start-0 col-span-8">
       <h5 class="mb-2">{{ $t('participantInfo') }}</h5>
       <Textarea v-model="participantInfo" placeholder="Enter the participant information, which will be displayed on the app." :auto-resize="true" style="width: 100%"></Textarea>
@@ -77,7 +77,6 @@ function cancel() {
          </template>
        </Dropdown>
      </div>
-
 
   <div class=" col-start-0 col-span-8 buttons text-right mt-8 justify-end">
     <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
