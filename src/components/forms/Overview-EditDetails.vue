@@ -62,11 +62,11 @@
     <div class="flex justify-start mb-8">
       <div class="study-info-fixed grid grid-cols-3  2xl:grid-cols-5 gap-x-6 py-3" style="width:89%;">
         <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{study.plannedStart}}</div>
-        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{study.plannedEnd}}</div>
-        <div><span class="font-bold">{{$t('start')}}: </span>
+        <div><span class="font-bold">{{$t('actualStart')}}: </span>
           <span v-if="study.start">{{study.start}}</span><span v-else>-</span>
         </div>
-        <div> <span class="font-bold">{{$t('end')}}: </span>
+        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{study.plannedEnd}}</div>
+        <div> <span class="font-bold">{{$t('actualEnd')}}: </span>
           <span v-if="study.end">{{study.end}}</span><span v-else>-</span>
         </div>
         <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
