@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import {inject, ref} from 'vue';
+import {inject, ref, Ref} from 'vue';
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import {Observation} from '../../generated-sources/openapi';
+import {MoreTableChoice} from "../../models/MoreTableModel";
 
 const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
@@ -17,6 +18,15 @@ const properties = ref(observation.properties ? JSON.stringify(observation.prope
 const scheduler = ref()
 const studyGroupId = ref(observation.studyGroupId)
 
+const jsonError: Ref<String>= ref('')
+
+function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  if(value) {
+    const v = value.toString()
+    return values.find((s: any) => s.value === v)?.label;
+  }
+    return undefined;
+}
 
 function save(){
   try {
@@ -35,8 +45,7 @@ function save(){
 
     dialogRef.value.close(returnObservation);
   } catch (e) {
-    //TODO
-    alert('Properties must be a valid json')
+    jsonError.value = 'Please enter a valid json inside the Config (Json) field.'
   }
 }
 
@@ -52,12 +61,9 @@ function cancel() {
 
 <template>
   <div class="obervation-dialog">
-    <div class="error mb-6">All required* fields need to be set.</div>
     <div class="mb-4"><span class="font-bold">Type: </span> {{ typeNameForId(observation.type)}}</div>
-
    <div class="grid grid-cols-8 gap-4 items-center">
-
-     <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}*</h5></div>
+     <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
      <div class="col-start-3 col-span-6">
        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
      </div>
@@ -71,6 +77,7 @@ function cancel() {
     </div>
     <div class="col-start-0 col-span-8">
       <h5 class="mb-2">Configuration</h5>
+      <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
         <h6 class="mb-1">Config(Json)</h6>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
@@ -78,7 +85,7 @@ function cancel() {
     </div>
 
      <div class="col-start-0 col-span-8">
-       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="$t('noGroup')">
+       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('noGroup')">
        </Dropdown>
      </div>
 
@@ -93,9 +100,17 @@ function cancel() {
 
 
 <style lang="postcss">
-.buttons {
-  button {
-    margin-left: 10px;
+.obervation-dialog {
+  .buttons {
+    button {
+      margin-left: 10px;
+    }
+  }
+
+  .error {
+    color: #D57575;
+
   }
 }
+
 </style>

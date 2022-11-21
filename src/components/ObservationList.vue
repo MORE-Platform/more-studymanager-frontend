@@ -2,7 +2,7 @@
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
 import {Observation, StudyGroup} from '../generated-sources/openapi';
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice} from "../models/MoreTableModel";
+import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice, MoreTableActionOptions} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
@@ -24,12 +24,13 @@ const { componentsApi } = useComponentsApi();
   const groupStatuses: Ref<MoreTableChoice[]> = ref(
     props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
   );
+  groupStatuses.value.push({label: 'No Group', value: 'null'})
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group'}
+    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'noGroup'}
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -37,19 +38,19 @@ const { componentsApi } = useComponentsApi();
   ]
 
   const rowActions: MoreTableAction[] = [
-    //{id: 'clone', label: 'Clone'},
+    {id: 'clone', label: 'Clone'},
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study',
         message: 'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...'}
     }
   ]
 
 
-  /*async function getObservationTypes() {
+  async function getObservationTypes() {
     return  componentsApi.listComponents("observation")
       .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
   }
-  const observationTypes: Ref<MoreTableActionOptions[]> = ref(await getObservationTypes());
-  console.log(observationTypes); */
+  //const observationTypes: Ref<MoreTableActionOptions[]> = ref(await getObservationTypes());
+  //console.log(observationTypes.value);
 
 
 
@@ -62,17 +63,11 @@ async function listObservations(): Promise<void> {
  }
 }
 
-/*
-function showObservation(id: string|unknown) {
-console.log(open edit dialog)
-}
-*/
-
   function execute(action: any) {
     switch (action.id) {
       case 'delete': return deleteObservation(action.row)
       case 'create': return openObservationDialog('Create Observation', {type: action.properties})
-      //case 'clone': return cloneObservation(action.row)
+      case 'clone': return openObservationDialog('Clone Observation', action.row, 'clone')
       default: console.error('no handler for action', action)
     }
   }
@@ -101,13 +96,8 @@ console.log(open edit dialog)
     }
   }
 
-  /*
-  function cloneObservation(observation: Observation) {
-    console.log('to-do cloneObservation')
-  }
-  */
-
-  function openObservationDialog(headerText: string, observation?: Observation) {
+  function openObservationDialog(headerText: string, observation?: Observation, typeText?: String) {
+    console.log(observation);
     dialog.open(ObservationDialog,{
       data: {
         groupStates: groupStatuses.value,
@@ -128,7 +118,11 @@ console.log(open edit dialog)
       onClose: (options) => {
         if(options?.data) {
           if(options.data?.observationId) {
-            updateObservation(options.data as Observation)
+            if(typeText) {
+              createObservation(options.data as Observation)
+            } else {
+              updateObservation(options.data as Observation)
+            }
           } else {
             createObservation(options.data as Observation)
           }
@@ -176,8 +170,6 @@ console.log(open edit dialog)
 
 <template>
   <div class="observation-list">
-    observation list
-
     <MoreTable
       row-id="observationId"
       :title="$t('observations')"

@@ -217,8 +217,11 @@ function toClassName(value:string):string {
 }
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
-  const v = value.toString()
-  return values.find((s: any) => s.value === v)?.label || v;
+  if(value!==0 ){
+    const v = value.toString()
+    return values.find((s: any) => s.value === v)?.label || v;
+  }
+   return 'noGroup';
 }
 </script>
 
@@ -283,7 +286,8 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
         <template v-if="column.editable" #editor="{ data, field }">
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
-            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="[{value: null, label: $t(column.placeholder || 'no-value')}, ...column.editable.values]" option-label="label" option-value="value"></Dropdown>
+            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="[{value: data[field], label: $t(getLabelForChoiceValue(data[field], column.editable.values)) || $t('no-value')}, ...column.editable.values]"
+                      option-label="label" option-value="value"></Dropdown>
             <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
@@ -295,7 +299,7 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
           </div>
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
-            <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
+            <span v-if="column.type === MoreTableFieldType.choice">{{$t(getLabelForChoiceValue(data[field], column.editable.values))}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
           </div>
         </template>
