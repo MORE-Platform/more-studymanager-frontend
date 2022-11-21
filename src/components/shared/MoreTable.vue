@@ -6,7 +6,7 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableChoice, MoreTableEditableProperties, MoreTableEditableChoiceProperties
+  MoreTableChoice
 } from '../../models/MoreTableModel'
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -16,7 +16,7 @@ import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
-import MultiSelect from 'primevue/multiselect';
+//import MultiSelect from 'primevue/multiselect';
 import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
 import dayjs from 'dayjs'
@@ -286,7 +286,8 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
         <template v-if="column.editable" #editor="{ data, field }">
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
-            <Dropdown v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="[{value: data[field], label: $t(getLabelForChoiceValue(data[field], column.editable.values)) || $t('no-value')}, ...column.editable.values]"
+            <Dropdown
+              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="[{value: data[field], label: $t(getLabelForChoiceValue(data[field], column.editable.values)) || $t('no-value')}, ...column.editable.values]"
                       option-label="label" option-value="value"></Dropdown>
             <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
         </template>

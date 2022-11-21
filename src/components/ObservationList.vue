@@ -2,7 +2,7 @@
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
 import {Observation, StudyGroup} from '../generated-sources/openapi';
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice, MoreTableActionOptions} from "../models/MoreTableModel";
+import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
@@ -15,7 +15,7 @@ const { componentsApi } = useComponentsApi();
 
   const observationList: Ref<Observation[]> = ref([])
   const dialog = useDialog()
-  const loading = ref(true)
+  //const loading = ref(true)
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
@@ -96,7 +96,7 @@ async function listObservations(): Promise<void> {
     }
   }
 
-  function openObservationDialog(headerText: string, observation?: Observation, typeText?: String) {
+  function openObservationDialog(headerText: string, observation?: Observation, typeText?: string) {
     console.log(observation);
     dialog.open(ObservationDialog,{
       data: {

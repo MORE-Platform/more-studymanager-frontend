@@ -18,7 +18,7 @@ const properties = ref(observation.properties ? JSON.stringify(observation.prope
 const scheduler = ref()
 const studyGroupId = ref(observation.studyGroupId)
 
-const jsonError: Ref<String>= ref('')
+const jsonError: Ref<string>= ref('')
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   if(value) {
