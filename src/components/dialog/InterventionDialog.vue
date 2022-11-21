@@ -58,8 +58,7 @@
     actions.value.splice(index, 1);
   }
 
-  function actionsStringify(actions: Object[]) {
-    const a: Ref<Array<any>> = ref([{}])
+  function actionsStringify(actions: Array<any[]>) {
     if (actions) {
       return actions.map((item: any) => (JSON.stringify(item)))
     }
@@ -102,7 +101,7 @@
 
       <div class="col-start-0 col-span-8 grid grid-cols-9">
         <h5 class="mb-2 col-span-7">{{$t('action')}}</h5>
-        <SplitButton @click="addNewAction($event)" class="splitButton w-full col-span-2" :key="actions.length" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionItems'></SplitButton>
+        <SplitButton :key="actions.length" class="splitButton w-full col-span-2" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionItems' @click="addNewAction($event)" ></SplitButton>
         <div v-for="(action, index) in actions" :key="index" class="col-start-0 col-span-9 js-action grid mb-4" >
           <div class="mb-3">
             <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>

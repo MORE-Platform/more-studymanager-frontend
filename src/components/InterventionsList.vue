@@ -1,8 +1,8 @@
 <script setup lang="ts">
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
-  import {Intervention, Observation, StudyGroup} from '../generated-sources/openapi';
-  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionResult} from "../models/MoreTableModel";
+  import {Intervention, StudyGroup} from '../generated-sources/openapi';
+  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import MoreTable from '../components/shared/MoreTable.vue'
@@ -128,12 +128,12 @@
     }
   }
 
-  function openEditIntervetion(interventionId: number) {
+  /*function openEditIntervetion(interventionId: number) {
     const intervention = interventionList.value.find(i => i.interventionId === interventionId);
     if(intervention) {
       openInterventionDialog('Edit intervention', intervention);
     }
-  }
+  }*/
 
   function openInterventionDialog(headerText: string, intervention?: Intervention, typeText?: string) {
     console.log('openInterventionDialog')
