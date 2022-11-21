@@ -1,8 +1,14 @@
-<script setup lang="ts">
+<script async setup lang="ts">
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
 import {Observation, StudyGroup} from '../generated-sources/openapi';
-import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableChoice} from "../models/MoreTableModel";
+import {
+  MoreTableAction,
+  MoreTableColumn,
+  MoreTableFieldType,
+  MoreTableChoice,
+  MoreTableActionOption
+} from "../models/MoreTableModel";
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
 import MoreTable from '../components/shared/MoreTable.vue'
@@ -21,20 +27,25 @@ const { componentsApi } = useComponentsApi();
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
 
-  const groupStatuses: Ref<MoreTableChoice[]> = ref(
-    props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
-  );
-  groupStatuses.value.push({label: 'No Group', value: 'null'})
+  const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
+  groupStatuses.push({label: 'No Group', value: null})
+
+  async function getObservationTypes() {
+    return  componentsApi.listComponents("observation")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  }
+
+  const observationTypes: MoreTableActionOption[] = await getObservationTypes();
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'noGroup'}
+    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'noGroup'}
   ]
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: {type: 'menu', values: [{label: "Accelerometer Mobile", value: "acc-mobile-observation"}]}}
+    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: {type: 'menu', values: observationTypes}}
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -44,24 +55,14 @@ const { componentsApi } = useComponentsApi();
     }
   ]
 
-
-  async function getObservationTypes() {
-    return  componentsApi.listComponents("observation")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  async function listObservations(): Promise<void> {
+   try {
+     observationList.value = await observationsApi.listObservations(props.studyId)
+       .then((response:AxiosResponse) => response.data)
+   } catch (e) {
+     console.error('cannot list studies', e)
+   }
   }
-  //const observationTypes: Ref<MoreTableActionOptions[]> = ref(await getObservationTypes());
-  //console.log(observationTypes.value);
-
-
-
-async function listObservations(): Promise<void> {
- try {
-   observationList.value = await observationsApi.listObservations(props.studyId)
-     .then((response:AxiosResponse) => response.data)
- } catch (e) {
-   console.error('cannot list studies', e)
- }
-}
 
   function execute(action: any) {
     switch (action.id) {
@@ -96,12 +97,17 @@ async function listObservations(): Promise<void> {
     }
   }
 
+  function nameForType(type?: string) {
+    return observationTypes.find(t => t.value === type)?.label || type;
+  }
+
   function openObservationDialog(headerText: string, observation?: Observation, typeText?: string) {
     console.log(observation);
     dialog.open(ObservationDialog,{
       data: {
-        groupStates: groupStatuses.value,
+        groupStates: groupStatuses,
         observation: observation,
+        typeName: nameForType(observation?.type)
       },
       props: {
         header: headerText,

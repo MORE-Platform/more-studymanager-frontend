@@ -10,6 +10,7 @@ import {MoreTableChoice} from "../../models/MoreTableModel";
 const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
 const groupStates = dialogRef.value.data.groupStates || [];
+const typeName = dialogRef.value.data.typeName || observation.type;
 
 const title = ref(observation.title);
 const purpose = ref(observation.purpose);
@@ -49,11 +50,6 @@ function save(){
   }
 }
 
-function typeNameForId(id: string) {
-  //TODO
-  return id;
-}
-
 function cancel() {
  dialogRef.value.close();
 }
@@ -61,7 +57,7 @@ function cancel() {
 
 <template>
   <div class="obervation-dialog">
-    <div class="mb-4"><span class="font-bold">Type: </span> {{ typeNameForId(observation.type)}}</div>
+    <div class="mb-4"><span class="font-bold">Type: </span> {{ typeName }}</div>
    <div class="grid grid-cols-8 gap-4 items-center">
      <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
      <div class="col-start-3 col-span-6">
