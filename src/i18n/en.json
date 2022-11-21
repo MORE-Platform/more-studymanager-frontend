@@ -13,10 +13,13 @@
   "plannedEnd": "Planned End",
   "actualEnd": "Actual End",
   "actions": "Actions",
+  "action": "Action",
   "frontAction": "Copy Id",
   "status": "Status",
   "description": "Description",
   "roles": "Role(s)",
+  "trigger": "Trigger",
+  "intervention": "Intervention",
 
   "participants": "Participants",
   "token": "Token",
