@@ -16,6 +16,8 @@ import {AxiosResponse} from "axios";
 import {useDialog} from "primevue/usedialog";
 import ObservationDialog from '../components/dialog/ObservationDialog.vue'
 
+import Scheduler from '../components/shared/Scheduler.vue'
+
 const { observationsApi } = useObservationsApi();
 const { componentsApi } = useComponentsApi();
 

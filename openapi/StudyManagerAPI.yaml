@@ -885,7 +885,7 @@ components:
         properties:
           type: object
         schedule:
-          type: object
+          $ref: './TimeRange.yaml/#/components/schemas/Event'
         created:
           type: string
           format: date-time
@@ -909,7 +909,7 @@ components:
         purpose:
           type: string
         schedule:
-          type: object
+          $ref: './TimeRange.yaml/#/components/schemas/Event'
         trigger:
           $ref: '#/components/schemas/Trigger'
         actions:
@@ -1054,4 +1054,3 @@ components:
           scopes:
             read: read studies
             write: write studies
-

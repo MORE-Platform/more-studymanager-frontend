@@ -6,6 +6,10 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import {Observation} from '../../generated-sources/openapi';
 import {MoreTableChoice} from "../../models/MoreTableModel";
+import Scheduler from "../shared/Scheduler.vue"
+import {useDialog} from "primevue/usedialog";
+
+const dialog = useDialog()
 
 const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
@@ -27,6 +31,35 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
     return values.find((s: any) => s.value === v)?.label;
   }
     return undefined;
+}
+
+
+function openScheduler() {
+  console.log(observation);
+  dialog.open(Scheduler,{
+    data: {
+      schedule: observation.schedule
+    },
+    props: {
+      header: 'Manage Schedule',
+      style: {
+        width: '50vw',
+      },
+      breakpoints:{
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true,
+      dismissableMask: true,
+    },
+    onClose: (options) => {
+      if(options?.data) {
+        if(options.data?.observationId) {
+          console.log('sent schedule')
+        }
+      }
+    }
+  })
 }
 
 function save(){
@@ -62,6 +95,14 @@ function cancel() {
      <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
      <div class="col-start-3 col-span-6">
        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
+     </div>
+     <div class="col-start-0 col-span-8 grid grid-cols-8">
+       <h5 class="col-start-0 col-span-2">Scheduler</h5>
+       <div class="col-span-6 grid grid-cols-7 justify-center items-center">
+         <div class="col-span-5">Scheduler Info</div>
+         <Button class="col-span-2 justify-center" type="button" @click="openScheduler">Open Scheduler</Button>
+         </div>
+
      </div>
     <div class="col-start-0 col-span-8">
       <h5 class="mb-2">{{ $t('purpose') }}*</h5>
