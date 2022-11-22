@@ -1,9 +1,9 @@
 <script setup lang="ts">
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
-  import {useComponentsApi} from "../composable/useApi";
+  //import {useComponentsApi} from "../composable/useApi";
   import {Intervention, StudyGroup} from '../generated-sources/openapi';
-  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions} from "../models/MoreTableModel";
+  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import MoreTable from '../components/shared/MoreTable.vue'
@@ -12,7 +12,7 @@
   import InterventionDialog from '../components/dialog/InterventionDialog.vue'
 
   const { interventionsApi } = useInterventionsApi();
-  const { componentsApi } = useComponentsApi();
+  //const { componentsApi } = useComponentsApi();
 
   const interventionList: Ref<Intervention[]> = ref([])
   const dialog = useDialog()
@@ -26,6 +26,15 @@
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: 'No Group', value: null})
 
+  /*
+  async function getInterventionTypes() {
+    return  componentsApi.listComponents("intervention")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  }
+
+  const interventionTypes: MoreTableActionOption[] = await getInterventionTypes();
+   */
+
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
@@ -33,7 +42,7 @@
   ]
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Interventions'}
+    {id: 'create', icon: 'pi pi-plus', label: 'Add Intervention'}
   ]
 
   const rowActions: MoreTableAction[] = [
@@ -54,7 +63,7 @@
     switch (action.id) {
       case 'delete': return deleteIntervention(action.row)
       case 'create': return openInterventionDialog('Create Intervention')
-      case 'clone': return openInterventionDialog('Clone Intervention', action.row, 'clone')
+      case 'clone': return openInterventionDialog('Clone Intervention', action.row, true)
       default: console.error('no handler for action', action)
     }
   }
@@ -87,30 +96,12 @@
     try {
       await interventionsApi.addIntervention(props.studyId, newIntervention)
         .then((response: AxiosResponse) => {
-          console.log(response.data);
-          console.log("interventions api addIntervention")
           listInterventions()
         })
       } catch(e) {
         console.error("Cannot create intervention", e);
     }
   }
-
-  /*
-  const intervention: Intervention = {
-    title: "test intervention",
-    purpose: "test purpose",
-    schedule: {},
-    trigger: {},
-    actions: [
-      {
-        type: "acc-mobile-observation",
-        properties: {}
-      }
-    ]
-  }
-  createIntervention(intervention);
-   */
 
   async function updateIntervention(intervention: Intervention) {
     try {
@@ -125,14 +116,18 @@
     }
   }
 
-  /*function openEditIntervetion(interventionId: number) {
+  function openEditIntervetion(interventionId: number) {
     const intervention = interventionList.value.find(i => i.interventionId === interventionId);
     if(intervention) {
       openInterventionDialog('Edit intervention', intervention);
     }
-  }*/
+  }
 
-  function openInterventionDialog(headerText: string, intervention?: Intervention, typeText?: string) {
+  /*function nameForType(type?: string) {
+    return observationTypes.find(t => t.value === type)?.label || type;
+  } */
+
+  function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
     console.log('openInterventionDialog')
     dialog.open(InterventionDialog, {
       data: {
@@ -152,9 +147,11 @@
         dismissableMask: true,
       },
       onClose: (options) => {
+        console.log(options);
+        console.log("options");
         if(options?.data) {
           if(options.data?.interventionId) {
-            if(typeText) {
+            if(clone) {
               createIntervention(options.data as Intervention)
             } else {
               updateIntervention(options.data as Intervention)
@@ -183,7 +180,7 @@
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
       empty-message="No interventions yet"
-      @onselect="openInterventionDialog($event)"
+      @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

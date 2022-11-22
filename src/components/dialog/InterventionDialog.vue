@@ -5,82 +5,74 @@
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import Dropdown from 'primevue/dropdown';
-  import {Intervention, Observation} from '../../generated-sources/openapi';
-  import {Action} from '../../generated-sources/openapi';
-  import {MoreTableChoice} from "../../models/MoreTableModel";
+  import {Intervention} from '../../generated-sources/openapi';
+  //import {Action} from '../../generated-sources/openapi';
+  //import {MoreTableActionOption} from "../../models/MoreTableModel";
 
   const dialogRef:any = inject("dialogRef")
   const intervention:Intervention = dialogRef.value.data?.intervention || {};
   const groupStates = dialogRef.value.data?.groupStates || undefined;
-  const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choos a group';
+  const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choose a group';
+  //const interventionTypes = dialogRef.value.data?.interventionTypes;
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
-  const trigger = ref(intervention.trigger);
-  const actions: Ref<Action[]> = ref(intervention.actions || [{
-    type: "acc-mobile-observation",
-    properties: {}
-  }]);
-  //const actionsString: Ref<Action[]> = ref(actionsStringify(actions.value))
+  const trigger = ref(ref(intervention.trigger ? JSON.stringify(intervention.trigger.properties) : '{}'));
+  const actionsP: Ref<any[]> = ref(intervention.actions || []);
   const studyGroupId = ref(intervention.studyGroupId)
+  const jsonError: Ref<string> = ref('')
 
-  console.log(actions);
+  if(actionsP.value.length) {
+    actionsP.value = actionsP.value.map((item) => ({type: item.type, properties: JSON.stringify(item.properties)}))
+  }
 
-  //const actionsString = actions.value.map((item) => ({, value: item.studyGroupId?.toString()} as MoreTableChoice));
+  console.log(intervention);
+  console.log("intervention open");
 
-
+  // no action types available -> action types need to be defined first
   const actionItems = [
     {
       label: "Accelerometer Mobile",
       value: "acc-mobile-observation",
       command: () => {
-        actions.value.push({type: 'acc-mobile-observation', properties: {}})
+        actionsP.value.push({type: 'acc-mobile-observation', properties: JSON.stringify({})})
       }
     }
   ]
 
   function save(){
-    const returnObservation = {
+    console.log(intervention);
+    try {
+      const triggerProps = JSON.parse(trigger.value.toString())
+      const actionProps = actionsP.value.map((item) => ({type: item.type, properties: JSON.parse(item.properties)}));
+
+    const returnIntervention = {
+      interventionId: intervention.interventionId,
       title: title.value,
       purpose: purpose.value,
-      trigger: trigger.value,
-      actions: actions.value,
+      trigger: triggerProps,
+      actions: actionProps,
       studyGroupId: studyGroupId.value,
       scheduler: intervention.schedule
-    } as Observation;
+    } as Intervention;
 
-    dialogRef.value.close(returnObservation);
+      console.log(returnIntervention);
+      console.log("returnIntervention");
+
+      jsonError.value = '';
+      dialogRef.value.close(returnIntervention);
+    } catch(e) {
+      console.error(e);
+      jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
+    }
   }
   function cancel() {
     dialogRef.value.close();
   }
 
-  function addNewAction(e: any) {
-    console.log(e);
-    //actions.value.push({type: 'acc-mobile-observation', properties: {}})
-  }
   function deleteAction(index: number) {
-    console.log(index);
-    actions.value.splice(index, 1);
+    actionsP.value.splice(index, 1);
   }
-
-  function actionsStringify(actions: Array<any[]>) {
-    if (actions) {
-      return actions.map((item: any) => (JSON.stringify(item)))
-    }
-    /*if(actions.value) {
-      actions.value.forEach((item) => {
-        a.value.push(JSON.stringify(item))
-      })
-    }*/
-
-
-  }
-
-  console.log("actionString");
-  //console.log(actionsString.value)
-
-
 </script>
 
 
@@ -105,18 +97,21 @@
         </div>
       </div>
 
-      <div class="col-start-0 col-span-8 grid grid-cols-9">
+     <div class="col-start-0 col-span-8 grid grid-cols-9">
         <h5 class="mb-2 col-span-7">{{$t('action')}}</h5>
-        <SplitButton :key="actions.length" class="splitButton w-full col-span-2" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionItems' @click="addNewAction($event)" ></SplitButton>
-        <div v-for="(action, index) in actions" :key="index" class="col-start-0 col-span-9 js-action grid mb-4" >
-          <div class="mb-3">
-            <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>
-            <div class="col-span-3 inline font-medium">{{action.type}}</div>
-          </div>
-          <div class="col-span-4 justify-end"></div>
-          <Textarea v-model="actions[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
-          <div class="buttons justify-end mt-2 col-span-9">
-             <Button :icon="'pi pi-trash'" @click="deleteAction(index)"/>
+        <SplitButton class="splitButton w-full col-span-2" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionItems' @click="addNewAction($event)" ></SplitButton>
+       <div v-if="jsonError" class="col-span-9 error mb-4">{{jsonError}}</div>
+        <div v-if="actionsP.length" class="col-span-9">
+          <div v-for="(action, index) in actionsP" :key="index" class="col-start-0 col-span-9 js-action grid mb-4" >
+            <div class="mb-3">
+              <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>
+              <div class="col-span-3 inline font-medium">{{action.type}}</div>
+            </div>
+            <div class="col-span-4 justify-end"></div>
+            <Textarea v-model="actions[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
+            <div class="buttons justify-end mt-2 col-span-9">
+               <Button :icon="'pi pi-trash'" @click="deleteAction(index)"/>
+            </div>
           </div>
         </div>
       </div>
@@ -153,6 +148,9 @@
     padding: 0 6px;
     justify-content: center;
     align-items: center;
+  }
+  .error {
+    color: #D57575;
   }
 }
 
