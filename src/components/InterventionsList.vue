@@ -95,9 +95,7 @@
   async function createIntervention(newIntervention: Intervention) {
     try {
       await interventionsApi.addIntervention(props.studyId, newIntervention)
-        .then((response: AxiosResponse) => {
-          listInterventions()
-        })
+        .then(() => listInterventions())
       } catch(e) {
         console.error("Cannot create intervention", e);
     }
