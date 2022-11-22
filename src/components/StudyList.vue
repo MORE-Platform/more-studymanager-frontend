@@ -20,7 +20,6 @@ import {useDialog} from 'primevue/usedialog';
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
-
   const dialog = useDialog();
   const loading = ref(true)
 
