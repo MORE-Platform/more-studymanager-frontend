@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
-  import {Intervention, Observation, StudyGroup} from '../generated-sources/openapi';
+  import {Intervention, StudyGroup} from '../generated-sources/openapi';
   import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -39,17 +39,15 @@
 
   const rowActions: MoreTableAction[] = [
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study',
-        message: 'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...'}
+        message: 'Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ...'}
     }
   ]
 
-  async function listInterventions(): Promise<void> {
-    try {
-      interventionList.value = await interventionsApi.listInterventions(props.studyId)
-        .then((response:AxiosResponse) => response.data)
-    } catch (e) {
-      console.error('cannot list studies', e)
-    }
+   function listInterventions(): void {
+    interventionsApi.listInterventions(props.studyId)
+      .then((response:AxiosResponse) => {
+        interventionList.value = response.data;
+      })
   }
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
@@ -63,7 +61,7 @@
   async function changeValue(intervention:Intervention) {
     try {
       //do change immediately (ux)
-      const i = interventionList.value.findIndex((o:Observation) => o.observationId === intervention.interventionId)
+      const i = interventionList.value.findIndex((i:Intervention) => i.interventionId === intervention.interventionId)
       if(i>-1) {
         interventionList.value[i] = intervention;
       }
@@ -107,7 +105,7 @@
       await interventionsApi.deleteIntervention(props.studyId, requestIntervention.interventionId as number)
         .then(listInterventions)
     } catch (e) {
-      console.error('Cannot delete observation ' + requestIntervention.interventionId, e)
+      console.error('Cannot delete intervention ' + requestIntervention.interventionId, e)
     }
   }
 
@@ -130,7 +128,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
-      empty-message="No observations yet"
+      empty-message="No interventions yet"
       @onselect="openInterventionDialog($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
