@@ -1,8 +1,9 @@
 <script setup lang="ts">
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
+  import {useComponentsApi} from "../composable/useApi";
   import {Intervention, StudyGroup} from '../generated-sources/openapi';
-  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
+  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice, MoreTableActionOptions} from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import MoreTable from '../components/shared/MoreTable.vue'
@@ -11,6 +12,7 @@
   import InterventionDialog from '../components/dialog/InterventionDialog.vue'
 
   const { interventionsApi } = useInterventionsApi();
+  const { componentsApi } = useComponentsApi();
 
   const interventionList: Ref<Intervention[]> = ref([])
   const dialog = useDialog()
@@ -21,16 +23,21 @@
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
 
-  const groupStatuses: Ref<MoreTableChoice[]> = ref(
-    props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
-  );
-  groupStatuses.value.push({label: 'No Groups', value: null});
+  const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
+  groupStatuses.push({label: 'No Group', value: null})
+
+  /*async function getObservationTypes() {
+    return  componentsApi.listComponents("observation")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  }
+
+  const observationTypes: MoreTableActionOptions[] = await getObservationTypes();*/
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
     {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
-      choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+      choiceOptions: {statuses: groupStatuses, placeholder: 'groupChoice'}}
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -139,7 +146,7 @@
     console.log('openInterventionDialog')
     dialog.open(InterventionDialog, {
       data: {
-        groupStates: groupStatuses.value,
+        groupStates: groupStatuses,
         intervention: intervention
       },
       props: {

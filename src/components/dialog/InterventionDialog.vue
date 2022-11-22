@@ -7,6 +7,7 @@
   import Dropdown from 'primevue/dropdown';
   import {Intervention, Observation} from '../../generated-sources/openapi';
   import {Action} from '../../generated-sources/openapi';
+  import {MoreTableChoice} from "../../models/MoreTableModel";
 
   const dialogRef:any = inject("dialogRef")
   const intervention:Intervention = dialogRef.value.data?.intervention || {};
@@ -20,8 +21,13 @@
     type: "acc-mobile-observation",
     properties: {}
   }]);
-  const actionsString: Ref<Action[]> = ref(actionsStringify(actions.value))
+  //const actionsString: Ref<Action[]> = ref(actionsStringify(actions.value))
   const studyGroupId = ref(intervention.studyGroupId)
+
+  console.log(actions);
+
+  //const actionsString = actions.value.map((item) => ({, value: item.studyGroupId?.toString()} as MoreTableChoice));
+
 
   const actionItems = [
     {
@@ -72,7 +78,7 @@
   }
 
   console.log("actionString");
-  console.log(actionsString.value)
+  //console.log(actionsString.value)
 
 
 </script>
