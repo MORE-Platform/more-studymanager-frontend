@@ -26,18 +26,10 @@
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: 'No Group', value: null})
 
-  /*async function getObservationTypes() {
-    return  componentsApi.listComponents("observation")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
-  }
-
-  const observationTypes: MoreTableActionOptions[] = await getObservationTypes();*/
-
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
-      choiceOptions: {statuses: groupStatuses, placeholder: 'groupChoice'}}
+    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'noGroup'}
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -51,13 +43,11 @@
     }
   ]
 
-  async function listInterventions(): Promise<void> {
-    try {
-      interventionList.value = await interventionsApi.listInterventions(props.studyId)
-        .then((response:AxiosResponse) => response.data)
-    } catch (e) {
-      console.error('cannot list interventions of study ' + props.studyId, e)
-    }
+   function listInterventions(): void {
+    interventionsApi.listInterventions(props.studyId)
+      .then((response:AxiosResponse) => {
+        interventionList.value = response.data;
+      })
   }
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {

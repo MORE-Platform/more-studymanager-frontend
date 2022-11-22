@@ -35,8 +35,7 @@ const participantsColumns: MoreTableColumn[] = [
   { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status' },
-  {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
-    choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+  { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group'}
 ]
 
 const rowActions: MoreTableAction[] = [
@@ -48,7 +47,10 @@ const tableActions: MoreTableAction[] = [
     return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused
     }},
   { id:'create', label:'Add Participant', icon:'pi pi-plus',
-    options: [{label: "Add 3", value: 3},{label: "Add 10", value: 10},{label: "Add 25", value: 25},{label: "Add 50", value: 50}]}
+    options: {
+      type: 'split',
+      values: [{label: "Add 3", value: 3},{label: "Add 10", value: 10},{label: "Add 25", value: 25},{label: "Add 50", value: 50}]
+    }}
 ]
 
 async function listParticipant(): Promise<void> {

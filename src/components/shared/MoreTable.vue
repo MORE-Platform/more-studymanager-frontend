@@ -6,16 +6,17 @@ import {
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableShowBtn, MoreTableChoice
+  MoreTableChoice
 } from '../../models/MoreTableModel'
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import SplitButton from 'primevue/splitbutton'
+import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
-import MultiSelect from 'primevue/multiselect';
+//import MultiSelect from 'primevue/multiselect';
 import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
 import dayjs from 'dayjs'
@@ -41,7 +42,7 @@ const props = defineProps({
     required: true,
   },
   rows: {
-    type: Array as PropType<Array<unknown>>,
+    type: Array as PropType<Array<any>>,
     required: true,
   },
   rowActions: {
@@ -109,7 +110,6 @@ const emit = defineEmits<{
   (e: 'onselect', row: unknown): void
   (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
   (e: 'onchange', row: unknown): void
-  (e: 'onshowbtn', data: MoreTableShowBtn) : void
 }>()
 
 function selectHandler(rowKey: string) {
@@ -182,13 +182,21 @@ function prepare(rows:any) {
   });
 }
 
+const menus:any = {}
 props.tableActions.forEach(action => {
   if(action.options) {
-    action.options.forEach(option => {
+    action.options.values.forEach(option => {
       (option as any)['command'] = () => {actionHandler(action, option.value)}
     })
+    if(action.options.type === 'menu') {
+      menus[action.id] = ref()
+    }
   }
 })
+
+function toggle(action:MoreTableAction, event:any) {
+  menus[action.id].value[0].toggle(event)
+}
 
 function clean(row:any) {
   props.columns.forEach(column => {
@@ -208,10 +216,10 @@ function toClassName(value:string):string {
   return value;
 }
 
-function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
-  const v = value.toString()
-  return statuses.find((s: any) => s.value === v)?.label;
+function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  return values.find((s: any) => s.value === value.toString())?.label || value;
 }
+
 </script>
 
 <template>
@@ -223,8 +231,12 @@ function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
       </div>
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
-          <Button v-if="isVisible(action) && !action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
-          <SplitButton v-if="isVisible(action) && !!action.options" :key="action.id" type="button" :label="action.label" :icon="action.icon" :model="action.options" @click="actionHandler(action)"></SplitButton>
+          <Button v-if="isVisible(action) && !action.options" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+          <SplitButton v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values" @click="actionHandler(action)"></SplitButton>
+          <div v-if="isVisible(action) && !!action.options && action.options.type === 'menu'">
+            <Button  type="button" :label="action.label" :icon="action.icon" @click="toggle(action,$event)"></Button>
+            <Menu :ref="menus[action.id]" :model="action.options.values" :popup="true" />
+          </div>
         </div>
       </div>
     </div>
@@ -272,14 +284,8 @@ function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
-              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" option-value="value">
-              <template #option="optionProps">
-                <div class="p-dropdown-car-option">
-                  <span>{{optionProps.option.label}}</span>
-                </div>
-              </template>
-            </Dropdown>
-            <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>
+              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.editable.values" option-label="label" option-value="value"></Dropdown>
+            <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -290,8 +296,7 @@ function getLabelForChoiceValue(value: any, statuses: MoreTableChoice[]) {
           </div>
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
-            <span v-if="column.type === MoreTableFieldType.choice"><span v-if="data[field]">{{getLabelForChoiceValue(data[field], column.choiceOptions.statuses)}}</span>
-            <span v-else>{{column.choiceOptions.placeholder}}</span></span>
+            <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
           </div>
         </template>
