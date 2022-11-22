@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import MoreTabNav from "../components/shared/MoreTabNav.vue";
 import StudyHeader from '../components/shared/StudyHeader.vue';
-import {Study} from '../generated-sources/openapi';
+import {Study, StudyGroup} from '../generated-sources/openapi';
 import {useRoute} from 'vue-router';
+import InterventionsList from "../components/InterventionsList.vue";
 const route = useRoute()
 const study = route.meta['study'] as Study;
+const studyGroups = route.meta['studyGroups'] as StudyGroup[];
 </script>
 
 <template>
@@ -12,5 +14,7 @@ const study = route.meta['study'] as Study;
     <StudyHeader :study="study"></StudyHeader>
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
     <h1>Interventions</h1>
+
+    <InterventionsList :study-groups="studyGroups" :study-id="study.studyId"/>
   </div>
 </template>
