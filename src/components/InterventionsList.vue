@@ -21,16 +21,13 @@
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
   })
 
-  const groupStatuses: Ref<MoreTableChoice[]> = ref(
-    props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
-  );
-  groupStatuses.value.push({label: 'No Groups', value: null});
+  const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
+  groupStatuses.push({label: 'No Group', value: null})
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
     {field: 'purpose', header: 'purpose', editable: true},
-    {field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: true, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group',
-      choiceOptions: {statuses: groupStatuses.value, placeholder: 'groupChoice'}}
+    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'noGroup'}
   ]
 
   const tableActions: MoreTableAction[] = [
