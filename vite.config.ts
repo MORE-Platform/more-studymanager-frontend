@@ -21,8 +21,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.LOCAL_BACKEND ? 'http://localhost:8080/api' : 'https://studymanager.platform-test.more.redlink.io/api',
-        //target: 'http://localhost:8080/api', // local
+        //target: process.env.LOCAL_BACKEND ? 'http://localhost:8080/api' : 'https://studymanager.platform-test.more.redlink.io/api',
+        target: 'http://localhost:8080/api', // local
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
