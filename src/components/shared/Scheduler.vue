@@ -1,16 +1,14 @@
 <script setup lang="ts">
-  import {dateToDateString} from '../../utils/dateUtils';
   import {inject, ref, Ref} from "vue";
   import Calendar from 'primevue/calendar'
   import Button from 'primevue/button'
-  import TabMenu from 'primevue/tabmenu';
   import InputText from 'primevue/inputtext';
   import Dropdown from 'primevue/dropdown';
   import SelectButton from 'primevue/selectbutton';
   import {Frequency, Weekday} from '../../generated-sources/openapi';
   const dialogRef:any = inject("dialogRef")
 
-  const schedule:any = dialogRef.value.data.schedule;
+  //const schedule:any = dialogRef.value.data.schedule;
 
   const start = ref(new Date());
   const end = ref(new Date());
@@ -76,7 +74,7 @@
     {label: 'On Date', value: 'onDate'}
   ]);
 
-  const repeatFreq: Ref<String> = ref('')
+  const repeatFreq: Ref<string> = ref('')
   const repeatInterval: Ref<number | undefined> = ref(undefined);       // hourly/daily/weekly/monthly/yearly
   const repeatCount: Ref<number | undefined> = ref(undefined);          // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
   const repeatUntil: Ref<Date | undefined> = ref(undefined)             // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
@@ -136,41 +134,41 @@
         <div class="col-span-1">{{$t('repeat')}}</div>
         <!-- Frequency: never to yearly -->
         <div class="col-span-5 grid grid-cols-5 gap-4">
-          <SelectButton v-model="repeatFreq" :options="repeatFreqArray" optionLabel="label" optionValue="value" class="col-span-5 w-full" @click="setRepeatCountLabel(repeatFreq)" @change="resetRepeatFreqOptions"></SelectButton>
-          <div class="col-span-5" v-if="repeatFreq">
-            <InputText type="text" v-model="repeatInterval" :placeholder="'Enter repeat interval.'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
+          <SelectButton v-model="repeatFreq" :options="repeatFreqArray" option-label="label" option-value="value" class="col-span-5 w-full" @click="setRepeatCountLabel(repeatFreq)" @change="resetRepeatFreqOptions"></SelectButton>
+          <div v-if="repeatFreq" class="col-span-5">
+            <InputText v-model="repeatInterval" type="text" :placeholder="'Enter repeat interval.'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
           </div>
         </div>
 
-        <hr class="col-start-0 col-span-6 mb-4 mt-4" v-if="repeatFreq === Frequency.Weekly">
+        <hr v-if="repeatFreq === Frequency.Weekly" class="col-start-0 col-span-6 mb-4 mt-4">
         <!-- weekday select -->
-        <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4" v-if="repeatFreq === Frequency.Weekly">
+        <div v-if="repeatFreq === Frequency.Weekly" class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
 
-          <SelectButton v-model="repeatByDay" :options="repeatWeekdayArray" optionLabel="label" optionValue="value" class="col-span-3 w-full" :multiple="true"></SelectButton>
+          <SelectButton v-model="repeatByDay" :options="repeatWeekdayArray" option-label="label" option-value="value" class="col-span-3 w-full" :multiple="true"></SelectButton>
         </div>
 
         <!-- monthly/yearly select -->
-        <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4" v-if="repeatFreq === Frequency.Yearly || repeatFreq === Frequency.Monthly">
-          <Dropdown v-model="repeatYearOption" :options="repeatYearOptionArray" :optionLabel="'label'" :optionValue="'value'" class="col-span-3" @change="resetYearlyInterval()">
+        <div v-if="repeatFreq === Frequency.Yearly || repeatFreq === Frequency.Monthly" class="col-start-2 col-span-5 grid grid-cols-5 gap-4" >
+          <Dropdown v-model="repeatYearOption" :options="repeatYearOptionArray" :option-label="'label'" :option-value="'value'" class="col-span-3" @change="resetYearlyInterval()">
           </Dropdown>
 
-          <div class="col-start-0 col-span-5 grid grid-cols-3 gap-4 items-center" v-if="repeatYearOption === repeatYearOptionArray[0].value">
-            <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :optionLabel="'label'" :optionValue="'value'"  :placeholder="'Choose Month'"/>
+          <div v-if="repeatYearOption === repeatYearOptionArray[0].value" class="col-start-0 col-span-5 grid grid-cols-3 gap-4 items-center">
+            <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose Month'"/>
             <InputText v-model="repeatByMonthDay" :placeholder="'Enter Day of Month'" />
           </div>
-          <div class="col-start-0 col-span-5 grid grid-cols-3 gap-4" v-if="repeatYearOption === repeatYearOptionArray[1].value">
-            <Dropdown v-model="repeatBySetPos" :options="repeatBySetPosOptionArray" :optionLabel="'label'" :optionValue="'value'"  :placeholder="'Choose General Interval'"/>
-            <Dropdown v-model="repeatByDay" :options="repeatByDayForYearArray" :optionLabel="'label'" :optionValue="'value'"  :placeholder="'Choose Day Interval'"/>
-            <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :optionLabel="'label'" :optionValue="'value'"  :placeholder="'Choose Month'"/>
+          <div v-if="repeatYearOption === repeatYearOptionArray[1].value" class="col-start-0 col-span-5 grid grid-cols-3 gap-4">
+            <Dropdown v-model="repeatBySetPos" :options="repeatBySetPosOptionArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose General Interval'"/>
+            <Dropdown v-model="repeatByDay" :options="repeatByDayForYearArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose Day Interval'"/>
+            <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose Month'"/>
           </div>
         </div>
         <hr class="col-start-0 col-span-6 mb-4 mt-4">
         <div class="col-start-2 col-span-5 grid grid-cols-3 gap-4">
-          <Dropdown v-model="repeatEndOption" :options="repeatEndOptionArray" :optionLabel="'label'" :optionValue="'value'" class="col-span-1" @change="resetRepeatEndOptions"/>
-          <div class="col-span-2" v-if="repeatEndOption === 'after'">
-            <InputText type="text" v-model="repeatCount" :placeholder="'Enter repeat count'" /> <span class="ml-2">{{repeatCountLabel}}</span>
+          <Dropdown v-model="repeatEndOption" :options="repeatEndOptionArray" :option-label="'label'" :option-value="'value'" class="col-span-1" @change="resetRepeatEndOptions"/>
+          <div v-if="repeatEndOption === 'after'" class="col-span-2">
+            <InputText v-model="repeatCount" type="text" :placeholder="'Enter repeat count'" /> <span class="ml-2">{{repeatCountLabel}}</span>
           </div>
-          <div class="col-span-2" v-else-if="repeatEndOption === 'onDate'">
+          <div v-else-if="repeatEndOption === 'onDate'" class="col-span-2" >
             <Calendar v-model="repeatUntil" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
           </div>
         </div>
