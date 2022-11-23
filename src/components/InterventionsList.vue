@@ -1,9 +1,17 @@
 <script setup lang="ts">
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
-  //import {useComponentsApi} from "../composable/useApi";
-  import {Intervention, StudyGroup} from '../generated-sources/openapi';
-  import {MoreTableAction, MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult, MoreTableChoice} from "../models/MoreTableModel";
+  import {useComponentsApi} from "../composable/useApi";
+  import {Intervention, StudyGroup, Action, Trigger} from '../generated-sources/openapi';
+  import {
+    MoreTableAction,
+    MoreTableColumn,
+    MoreTableFieldType,
+    MoreTableRowActionResult,
+    MoreTableChoice,
+    MoreTableActionOption,
+    MoreTableActionOptions
+  } from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import MoreTable from '../components/shared/MoreTable.vue'
@@ -12,7 +20,7 @@
   import InterventionDialog from '../components/dialog/InterventionDialog.vue'
 
   const { interventionsApi } = useInterventionsApi();
-  //const { componentsApi } = useComponentsApi();
+  const { componentsApi } = useComponentsApi();
 
   const interventionList: Ref<Intervention[]> = ref([])
   const dialog = useDialog()
@@ -26,14 +34,30 @@
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: 'No Group', value: null})
 
-  /*
-  async function getInterventionTypes() {
-    return  componentsApi.listComponents("intervention")
+  async function getObservationTypes() {
+    return  componentsApi.listComponents("observation")
       .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
   }
+  const observationTypes: MoreTableActionOption[] = await getObservationTypes();
 
-  const interventionTypes: MoreTableActionOption[] = await getInterventionTypes();
-   */
+  async function getActionTypes() {
+    return  componentsApi.listComponents("action")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  }
+  const interventionTypes: MoreTableActionOption[] = await getActionTypes();
+
+  async function getTriggerTypes() {
+    return componentsApi.listComponents("trigger")
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+  }
+  const triggerTypes: MoreTableActionOptions[] = await getTriggerTypes();
+
+  console.log("observationTypes");
+  console.log(observationTypes);
+  console.log("interventionTypes");
+  console.log(interventionTypes);
+  console.log("triggerTypes");
+  console.log(triggerTypes);
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
@@ -57,6 +81,25 @@
       .then((response:AxiosResponse) => {
         interventionList.value = response.data;
       })
+  }
+
+  async function listActions(interventionId?: number) {
+    if(interventionId) {
+      return interventionsApi.listActions(props.studyId, interventionId)
+        .then((response:any) => response.data)
+    } else {
+      return undefined
+    }
+
+  }
+  async function getTrigger(interventionId?: number) {
+    if(interventionId) {
+      return interventionsApi.getTrigger(props.studyId, interventionId)
+        .then((response: any) => response.data)
+    } else {
+      return undefined;
+    }
+
   }
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
@@ -92,14 +135,22 @@
     }
   }
 
-  async function createIntervention(newIntervention: Intervention) {
+  async function createIntervention(object: any) {
+    console.log(object)
+
+
+    /*
     try {
       await interventionsApi.addIntervention(props.studyId, newIntervention)
         .then(() => listInterventions())
       } catch(e) {
         console.error("Cannot create intervention", e);
     }
+    */
+
   }
+
+
 
   async function updateIntervention(intervention: Intervention) {
     try {
@@ -125,12 +176,16 @@
     return observationTypes.find(t => t.value === type)?.label || type;
   } */
 
-  function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
+  async function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
     console.log('openInterventionDialog')
     dialog.open(InterventionDialog, {
       data: {
         groupStates: groupStatuses,
-        intervention: intervention
+        intervention: intervention,
+        actions: await listActions(intervention?.interventionId),
+        trigger: await getTrigger(intervention?.interventionId),
+        actionTypes: await getActionTypes(),
+        triggerTypes: await getTriggerTypes()
       },
       props: {
         header: headerText,
@@ -150,12 +205,12 @@
         if(options?.data) {
           if(options.data?.interventionId) {
             if(clone) {
-              createIntervention(options.data as Intervention)
+              createIntervention(options.data)
             } else {
-              updateIntervention(options.data as Intervention)
+              updateIntervention(options.data)
             }
           } else {
-            createIntervention(options.data as Intervention)
+            createIntervention(options.data)
           }
         }
       }

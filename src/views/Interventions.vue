@@ -15,6 +15,8 @@ const studyGroups = route.meta['studyGroups'] as StudyGroup[];
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
     <h1>Interventions</h1>
 
-    <InterventionsList :study-groups="studyGroups" :study-id="study.studyId"/>
+    <suspense>
+      <InterventionsList :study-groups="studyGroups" :study-id="study.studyId"/>
+    </suspense>
   </div>
 </template>

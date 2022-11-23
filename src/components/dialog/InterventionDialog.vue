@@ -6,30 +6,66 @@
   import SplitButton from 'primevue/splitbutton';
   import Dropdown from 'primevue/dropdown';
   import {Intervention} from '../../generated-sources/openapi';
-  //import {Action} from '../../generated-sources/openapi';
+  import {Action, Trigger} from '../../generated-sources/openapi';
   //import {MoreTableActionOption} from "../../models/MoreTableModel";
 
   const dialogRef:any = inject("dialogRef")
   const intervention:Intervention = dialogRef.value.data?.intervention || {};
+  const actionsData:Action[] = dialogRef.value.data?.actions;
+  const actionTypes: any = dialogRef.value.data?.actionTypes;
+  const triggerData:Trigger = dialogRef.value.data?.trigger;
+  const triggerTypes: any = dialogRef.value.data?.triggerTypes;
   const groupStates = dialogRef.value.data?.groupStates || undefined;
   const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choose a group';
   //const interventionTypes = dialogRef.value.data?.interventionTypes;
 
+  console.log(actionsData);
+  console.log(triggerData)
+  console.log("actions trigger");
+
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
-  const trigger = ref(ref(intervention.trigger ? JSON.stringify(intervention.trigger.properties) : '{}'));
-  const actionsP: Ref<any[]> = ref(intervention.actions || []);
+  const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
+  const triggerType = ref();
+  const actionsP: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId)
   const jsonError: Ref<string> = ref('')
+  const actionsEmptyError: Ref<String> = ref('')
+  const triggerEmptyError: Ref<String> = ref('')
+
+  const actionTypesArray: Ref<any[]> = ref([])
+  const triggerTypesArray: Ref<any[]> = ref([])
 
   if(actionsP.value.length) {
     actionsP.value = actionsP.value.map((item) => ({type: item.type, properties: JSON.stringify(item.properties)}))
   }
 
+  if(actionTypes.length) {
+    actionTypesArray.value = actionTypes.map((item: any) => (
+      {
+        label: item.type,
+        value: item.type,
+        command: () => {
+          actionsP.value.push({type: item.type, properties: JSON.stringify({})})
+        }
+      }))
+  } else {
+    actionTypesArray.value = [{label: 'No action types available',value: null}
+    ]
+  }
+  if(triggerTypes.length) {
+    triggerTypesArray.value = triggerTypes.map((item: any) => (
+      {
+        label: item.type,
+        value: item.type,
+      }))
+  } else {
+    triggerTypesArray.value = [{label: 'No trigger types available', value: null}]
+  }
+
   console.log(intervention);
   console.log("intervention open");
 
-  // no action types available -> action types need to be defined first
   const actionItems = [
     {
       label: "Accelerometer Mobile",
@@ -43,24 +79,44 @@
   function save(){
     console.log(intervention);
     try {
-      const triggerProps = JSON.parse(trigger.value.toString())
-      const actionProps = actionsP.value.map((item) => ({type: item.type, properties: JSON.parse(item.properties)}));
+      const triggerProps = {type: triggerType.value, properties: JSON.parse(triggerProp.value.toString())}
+      const actionsProps = actionsP.value.map((item) => ({type: item.type, properties: JSON.parse(item.properties)}));
 
     const returnIntervention = {
       interventionId: intervention.interventionId,
       title: title.value,
       purpose: purpose.value,
-      trigger: triggerProps,
-      actions: actionProps,
       studyGroupId: studyGroupId.value,
       scheduler: intervention.schedule
     } as Intervention;
 
-      console.log(returnIntervention);
-      console.log("returnIntervention");
 
-      jsonError.value = '';
-      dialogRef.value.close(returnIntervention);
+      const returnObject = {
+        intervention: returnIntervention,
+        trigger: triggerProps,
+        actions: actionsProps
+      }
+      console.log(returnObject);
+
+      if(triggerProps.type !== undefined || actionsProps.length) {
+        jsonError.value = '';
+        triggerEmptyError.value = '';
+        actionsEmptyError.value = '';
+        dialogRef.value.close(returnObject);
+      } else {
+        if (!triggerProps.type) {
+          triggerEmptyError.value = 'Please enter a trigger.'
+        } else {
+          triggerEmptyError.value = '';
+        }
+        if (!actionsProps.length) {
+          actionsEmptyError.value = 'Please enter at least one action.'
+        } else {
+          actionsEmptyError.value = '';
+        }
+      }
+
+
     } catch(e) {
       console.error(e);
       jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
@@ -89,18 +145,23 @@
         <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
 
-      <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">{{$t('trigger')}}</h5>
+      <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
+      <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
+        <h5 class="mb-2 lg:col-span-2">{{$t('trigger')}}</h5>
+        <Dropdown v-model="triggerType" :options="triggerTypesArray" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" />
+        <div v-if="triggerEmptyError" class="error col-start-0 col-span-8 lg:col-span-3">{{triggerEmptyError}}</div>
         <div class="col-start-0 col-span-8">
           <h6 class="mb-1">Config(Json)</h6>
-          <Textarea v-model="trigger" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
+          <Textarea v-model="triggerProp" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
         </div>
       </div>
 
      <div class="col-start-0 col-span-8 grid grid-cols-9">
-        <h5 class="mb-2 col-span-7">{{$t('action')}}</h5>
-        <SplitButton class="splitButton w-full col-span-2" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionItems' @click="addNewAction($event)" ></SplitButton>
-       <div v-if="jsonError" class="col-span-9 error mb-4">{{jsonError}}</div>
+       <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
+        <h5 class="mb-2 lg:col-span-2">{{$t('action')}}</h5>
+        <SplitButton class="splitButton w-full lg:cols-pan-1" type="button" :label="'New Action'" :icon="'pi pi-plus'" :model='actionTypesArray' ></SplitButton>
+       </div>
+       <div v-if="actionsEmptyError" class="col-span-8 error"> {{actionsEmptyError}}</div>
         <div v-if="actionsP.length" class="col-span-9">
           <div v-for="(action, index) in actionsP" :key="index" class="col-start-0 col-span-9 js-action grid mb-4" >
             <div class="mb-3">
@@ -108,7 +169,7 @@
               <div class="col-span-3 inline font-medium">{{action.type}}</div>
             </div>
             <div class="col-span-4 justify-end"></div>
-            <Textarea v-model="actions[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
+            <Textarea v-model="actionsP[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
             <div class="buttons justify-end mt-2 col-span-9">
                <Button :icon="'pi pi-trash'" @click="deleteAction(index)"/>
             </div>

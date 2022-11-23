@@ -89,7 +89,10 @@
     "downloadBtn": "Download"
   },
   "placeholder": {
-    "roleMultiselect": "Select one to two roles"
+    "roleMultiselect": "Select one to two roles",
+    "trigger": "Choose a trigger type",
+    "group": "Choose a group",
+    "action": "Choose an action"
   },
   "user": {
     "institution": "Institution"
