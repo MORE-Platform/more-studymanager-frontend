@@ -261,7 +261,7 @@
     <MoreTable
       row-id="interventionId"
       :title="$t('interventions')"
-      :subtitle="$t('interrventionDescr')"
+      :subtitle="$t('interventionListDescr')"
       :columns="interventionColumns"
       :rows="interventionList"
       :row-actions="rowActions"
