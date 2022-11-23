@@ -9,8 +9,6 @@
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
-    MoreTableActionOption,
-    MoreTableActionOptions
   } from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -34,30 +32,14 @@
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: 'No Group', value: null})
 
-  async function getObservationTypes() {
-    return  componentsApi.listComponents("observation")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
-  }
-  const observationTypes: MoreTableActionOption[] = await getObservationTypes();
-
   async function getActionTypes() {
     return  componentsApi.listComponents("action")
       .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
   }
-  const interventionTypes: MoreTableActionOption[] = await getActionTypes();
-
   async function getTriggerTypes() {
     return componentsApi.listComponents("trigger")
       .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
   }
-  const triggerTypes: MoreTableActionOptions[] = await getTriggerTypes();
-
-  console.log("observationTypes");
-  console.log(observationTypes);
-  console.log("interventionTypes");
-  console.log(interventionTypes);
-  console.log("triggerTypes");
-  console.log(triggerTypes);
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
@@ -90,7 +72,6 @@
     } else {
       return undefined
     }
-
   }
   async function getTrigger(interventionId?: number) {
     if(interventionId) {
@@ -99,7 +80,6 @@
     } else {
       return undefined;
     }
-
   }
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
@@ -136,21 +116,74 @@
   }
 
   async function createIntervention(object: any) {
-    console.log(object)
+    const interventionId: Ref<number | undefined> = ref(await addIntervention(object.intervention))
+    console.log("trigger-----------");
+    console.log(object.trigger)
+    console.log("action-----------");
+    console.log(object.actions)
 
+    if(interventionId.value) {
+      await updateTrigger(interventionId.value, object.trigger)
+        .then(() => {
+          console.log(object.actions);
+          listInterventions()
+        })
 
-    /*
-    try {
-      await interventionsApi.addIntervention(props.studyId, newIntervention)
-        .then(() => listInterventions())
-      } catch(e) {
-        console.error("Cannot create intervention", e);
+      console.log(object.actions);
+
+      object.actions.forEach((action: Action) => {
+        console.log(action);
+        if(action.actionId) {
+          updateAction(interventionId.value as number, action.actionId, action)
+        } else {
+          createAction(interventionId.value as number, action)
+        }
+      })
+
+      const intervention = await getIntervention(interventionId.value as number);
+      console.log("intervention-----------");
+      console.log(intervention);
     }
-    */
-
   }
 
+  async function addIntervention(intervention: Intervention) {
+    try {
+      return interventionsApi.addIntervention(props.studyId, intervention)
+        .then((response) => response.data.interventionId)
+    } catch(e) {
+      console.error("Cannot create intervention", e);
+    }
+  }
 
+  async function createAction(interventionId: number, action: Action) {
+    try {
+      await interventionsApi.createAction(props.studyId, interventionId, action)
+        .then(listInterventions)
+    } catch(e) {
+      console.error('Cannot create action on: ' + interventionId, e)
+    }
+  }
+
+  async function updateAction(interventionId: number, actionId: number, action: Action) {
+    try {
+      await interventionsApi.updateAction(props.studyId, interventionId, actionId, action)
+    } catch(e) {
+      console.error('Cannot update action: ' + action.actionId, e);
+    }
+  }
+
+  async function updateTrigger(interventionId: number, trigger: Trigger) {
+    try {
+      await interventionsApi.updateTrigger(props.studyId, interventionId, trigger)
+    }catch(e) {
+      console.error('Cannot create trigger on: ' + interventionId, e)
+    }
+  }
+
+  async function getIntervention(interventionId: number) {
+    return await interventionsApi.getIntervention(props.studyId, interventionId)
+      .then(response => response.data)
+  }
 
   async function updateIntervention(intervention: Intervention) {
     try {
@@ -172,49 +205,51 @@
     }
   }
 
-  /*function nameForType(type?: string) {
-    return observationTypes.find(t => t.value === type)?.label || type;
-  } */
-
-  async function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
+   function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
     console.log('openInterventionDialog')
-    dialog.open(InterventionDialog, {
-      data: {
-        groupStates: groupStatuses,
-        intervention: intervention,
-        actions: await listActions(intervention?.interventionId),
-        trigger: await getTrigger(intervention?.interventionId),
-        actionTypes: await getActionTypes(),
-        triggerTypes: await getTriggerTypes()
-      },
-      props: {
-        header: headerText,
-        style: {
-          width: '50vw',
-        },
-        breakpoints:{
-          '960px': '75vw',
-          '640px': '90vw'
-        },
-        modal: true,
-        dismissableMask: true,
-      },
-      onClose: (options) => {
-        console.log(options);
-        console.log("options");
-        if(options?.data) {
-          if(options.data?.interventionId) {
-            if(clone) {
-              createIntervention(options.data)
-            } else {
-              updateIntervention(options.data)
+    console.log (getTrigger(intervention?.interventionId))
+
+    Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionTypes(), getTriggerTypes()])
+      .then(([actionsRes, triggerRes, actionTypesRes, triggerTypesRes]) => {
+        dialog.open(InterventionDialog, {
+          data: {
+            groupStates: groupStatuses,
+            intervention: intervention,
+            studyId: props.studyId,
+            actionsData: actionsRes,
+            actionTypes: actionTypesRes,
+            triggerData: triggerRes,
+            triggerType: triggerTypesRes
+          },
+          props: {
+            header: headerText,
+            style: {
+              width: '50vw',
+            },
+            breakpoints:{
+              '960px': '75vw',
+              '640px': '90vw'
+            },
+            modal: true,
+            dismissableMask: true,
+          },
+          onClose: (options) => {
+            if(options?.data) {
+              if(options.data?.interventionId) {
+                if(clone) {
+                  createIntervention(options.data)
+                } else {
+                  updateIntervention(options.data)
+                }
+              } else {
+                createIntervention(options.data)
+              }
             }
-          } else {
-            createIntervention(options.data)
           }
-        }
-      }
-    })
+        })
+     }).catch(console.error)
+
+
   }
 
   listInterventions();
