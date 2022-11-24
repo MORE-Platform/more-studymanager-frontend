@@ -1,21 +1,24 @@
 <script setup lang="ts">
-
+  function test() {
+    console.log("test")
+  }
 </script>
 
 <template>
   <footer class="footer w-full">
     <div class="content-block flex justify-end py-6">
-      <a href="#" class="uppercase text-base">About More</a>
+      <a href="https://dhp.lbg.ac.at/more/" target="_blank" class="uppercase text-base link">About More</a>
     </div>
   </footer>
 </template>
 
 <style lang="postcss">
-  footer {
+  .footer {
     position: fixed;
-    bottom: 0;
     left: 0;
+    bottom: 0;
     background-color: white;
+    width: 100%;
 
     &:before {
       content: '';
@@ -26,6 +29,11 @@
       position: absolute;
       top: 0;
       left: 0;
+    }
+
+    .link {
+      position: relative;
+      z-index: 100;
     }
   }
 </style>
