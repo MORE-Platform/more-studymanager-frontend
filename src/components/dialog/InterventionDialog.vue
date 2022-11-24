@@ -5,8 +5,7 @@
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import Dropdown from 'primevue/dropdown';
-  import {Intervention} from '../../generated-sources/openapi';
-  import {Action, Trigger} from '../../generated-sources/openapi';
+  import {Action, Trigger, Intervention} from '../../generated-sources/openapi';
 
 
   const dialogRef:any = inject("dialogRef")
@@ -17,12 +16,17 @@
   const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choose a group';
   const actionTypes = dialogRef.value.data?.actionTypes;
   const actionTypesOptions: Ref<any[]> = ref([])
-  const triggerTypesOptions = dialogRef.value.data?.actionTypes;
+  const triggerTypesOptions = dialogRef.value.data?.triggerTypes;
+
+  console.log(intervention);
+  console.log(intervention.interventionId)
+  console.log("intervention dialog")
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
   const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
-  const triggerType = ref();
+  const triggerType = ref(triggerData ? triggerData.type : undefined);
+  const triggerDescription = ref(triggerData ? triggerTypesOptions.find((t:any) => t.value === triggerData.type)?.description : 'Choose a trigger type')
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId)
   const jsonError: Ref<string> = ref('')
@@ -65,25 +69,23 @@
         actions: actionsProps
       }
 
-      if(triggerProps.type !== undefined || actionsProps.length) {
+      if(triggerProps.type && triggerProps.properties.cronSchedule && triggerProps.properties.query && triggerProps.properties.window && actionsProps.length) {
         jsonError.value = '';
         triggerEmptyError.value = '';
         actionsEmptyError.value = '';
         dialogRef.value.close(returnObject);
       } else {
-        if (!triggerProps.type) {
-          triggerEmptyError.value = 'Please enter a trigger.'
+        if (triggerProps.type || !triggerProps.properties.query || !triggerProps.properties.window  || !triggerProps.properties.cronSchedule) {
+          triggerEmptyError.value = 'Please choose trigger type and enter trigger config {"query":"q","window":100,"cronSchedule":"abc"}.'
         } else {
           triggerEmptyError.value = '';
         }
         if (!actionsProps.length) {
-          actionsEmptyError.value = 'Please enter at least one action.'
+          actionsEmptyError.value = 'Please choose at least one action and enter action config {"message": "m"}.'
         } else {
           actionsEmptyError.value = '';
         }
       }
-
-
     } catch(e) {
       console.error(e);
       jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
@@ -99,6 +101,12 @@
 
   function nameForActionType(actionType?: string) {
     return actionTypes.find((a:any) => a.value === actionType)?.label || actionType;
+  }
+  function getTriggerDescription(tType?: string) {
+    triggerDescription.value = triggerTypesOptions.find((t:any) => t.value === tType)?.description || 'Choose a trigger type';
+  }
+  function getActionDescription(actionType?: string) {
+    return actionTypes.find((a:any) => a.value === actionType)?.description || 'No description available';
   }
 </script>
 
@@ -119,10 +127,11 @@
       <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="mb-2 lg:col-span-2">{{$t('trigger')}}</h5>
-        <Dropdown v-model="triggerType" :options="triggerTypesOptions" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" />
+        <Dropdown v-model="triggerType" :options="triggerTypesOptions" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" @change="getTriggerDescription(triggerType)"/>
         <div v-if="triggerEmptyError" class="error col-start-0 col-span-8 lg:col-span-3">{{triggerEmptyError}}</div>
-        <div class="col-start-0 col-span-8">
+        <div class="col-start-0 col-span-3">
           <h6 class="mb-1">Config(Json)</h6>
+          <div class="mb-4" v-html="triggerDescription"></div>
           <Textarea v-model="triggerProp" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
         </div>
       </div>
@@ -134,11 +143,12 @@
        </div>
        <div v-if="actionsEmptyError" class="col-span-8 error"> {{actionsEmptyError}}</div>
         <div v-if="actionsArray.length" class="col-span-9">
-          <div v-for="(action, index) in actionsArray" :key="index" class="col-start-0 col-span-9 js-action grid mb-4" >
-            <div class="mb-3">
+          <div v-for="(action, index) in actionsArray" :key="index" class="col-start-0 col-span-9 js-action mb-4" >
+            <div class="mb-3  mt-4">
               <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>
               <div class="col-span-3 inline font-medium">{{nameForActionType(action.type)}}</div>
             </div>
+            <div v-html="getActionDescription(action.type)" class="mb-4"> </div>
             <div class="col-span-4 justify-end"></div>
             <Textarea v-model="actionsArray[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
             <div class="buttons justify-end mt-2 col-span-9">

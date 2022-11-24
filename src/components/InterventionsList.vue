@@ -34,11 +34,11 @@
 
   async function getActionTypes() {
     return  componentsApi.listComponents("action")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
   }
   async function getTriggerTypes() {
     return componentsApi.listComponents("trigger")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
   }
 
   const interventionColumns: MoreTableColumn[] = [
@@ -117,39 +117,28 @@
 
   async function createIntervention(object: any) {
     const interventionId: Ref<number | undefined> = ref(await addIntervention(object.intervention))
-    console.log("trigger-----------");
-    console.log(object.trigger)
-    console.log("action-----------");
-    console.log(object.actions)
 
     if(interventionId.value) {
+
       await updateTrigger(interventionId.value, object.trigger)
         .then(() => {
-          console.log(object.actions);
           listInterventions()
         })
 
-      console.log(object.actions);
-
       object.actions.forEach((action: Action) => {
-        console.log(action);
         if(action.actionId) {
           updateAction(interventionId.value as number, action.actionId, action)
         } else {
           createAction(interventionId.value as number, action)
         }
       })
-
-      const intervention = await getIntervention(interventionId.value as number);
-      console.log("intervention-----------");
-      console.log(intervention);
     }
   }
 
   async function addIntervention(intervention: Intervention) {
     try {
       return interventionsApi.addIntervention(props.studyId, intervention)
-        .then((response) => response.data.interventionId)
+        .then((response: AxiosResponse) => response.data.interventionId)
     } catch(e) {
       console.error("Cannot create intervention", e);
     }
@@ -182,7 +171,26 @@
 
   async function getIntervention(interventionId: number) {
     return await interventionsApi.getIntervention(props.studyId, interventionId)
-      .then(response => response.data)
+      .then((response: AxiosResponse) => response.data)
+  }
+
+  async function updateInterventionData(object: any) {
+    await updateIntervention(object.intervention)
+
+    if(object.intervention.interventionId) {
+      await updateTrigger(object.intervention.interventionId, object.trigger)
+        .then(() => {
+          listInterventions()
+        })
+
+      object.actions.forEach((action: Action) => {
+        if(action.actionId) {
+          updateAction(object.intervention.interventionId as number, action.actionId, action)
+        } else {
+          createAction(object.intervention.interventionId as number, action)
+        }
+      })
+    }
   }
 
   async function updateIntervention(intervention: Intervention) {
@@ -206,9 +214,6 @@
   }
 
    function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
-    console.log('openInterventionDialog')
-    console.log (getTrigger(intervention?.interventionId))
-
     Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionTypes(), getTriggerTypes()])
       .then(([actionsRes, triggerRes, actionTypesRes, triggerTypesRes]) => {
         dialog.open(InterventionDialog, {
@@ -219,7 +224,7 @@
             actionsData: actionsRes,
             actionTypes: actionTypesRes,
             triggerData: triggerRes,
-            triggerType: triggerTypesRes
+            triggerTypes: triggerTypesRes
           },
           props: {
             header: headerText,
@@ -235,11 +240,11 @@
           },
           onClose: (options) => {
             if(options?.data) {
-              if(options.data?.interventionId) {
+              if(options.data?.intervention.interventionId) {
                 if(clone) {
                   createIntervention(options.data)
                 } else {
-                  updateIntervention(options.data)
+                  updateInterventionData(options.data)
                 }
               } else {
                 createIntervention(options.data)
