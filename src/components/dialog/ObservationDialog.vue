@@ -35,10 +35,9 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
 
 
 function openScheduler() {
-  console.log(observation);
   dialog.open(Scheduler,{
     data: {
-      schedule: scheduler
+      scheduler: scheduler.value
     },
     props: {
       header: 'Manage Schedule',
@@ -54,8 +53,6 @@ function openScheduler() {
     },
     onClose: (options) => {
       if(options?.data) {
-        console.log(options.data);
-        console.log("scheduler sent");
         scheduler.value = options.data;
       }
     }
