@@ -131,6 +131,7 @@
         <div v-if="triggerEmptyError" class="error col-start-0 col-span-8 lg:col-span-3">{{triggerEmptyError}}</div>
         <div class="col-start-0 col-span-3">
           <h6 class="mb-1">Config(Json)</h6>
+          <!-- eslint-disable vue/no-v-html -->
           <div class="mb-4" v-html="triggerDescription"></div>
           <Textarea v-model="triggerProp" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
         </div>
@@ -148,7 +149,8 @@
               <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>
               <div class="col-span-3 inline font-medium">{{nameForActionType(action.type)}}</div>
             </div>
-            <div v-html="getActionDescription(action.type)" class="mb-4"> </div>
+            <!-- eslint-disable vue/no-v-html -->
+            <div class="mb-4" v-html="getActionDescription(action.type)"> </div>
             <div class="col-span-4 justify-end"></div>
             <Textarea v-model="actionsArray[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
             <div class="buttons justify-end mt-2 col-span-9">

@@ -169,11 +169,6 @@
     }
   }
 
-  async function getIntervention(interventionId: number) {
-    return await interventionsApi.getIntervention(props.studyId, interventionId)
-      .then((response: AxiosResponse) => response.data)
-  }
-
   async function updateInterventionData(object: any) {
     await updateIntervention(object.intervention)
 
