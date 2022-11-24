@@ -14,6 +14,7 @@
   const dialogRef:any = inject("dialogRef")
 
   const scheduler:any = dialogRef.value.data.scheduler;
+  console.log("dialog");
 
   const repeatFreqArray = [
     {label: 'Never', value: null, active: true},
@@ -80,9 +81,13 @@
   const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
   const allDayChecked: Ref<boolean> = ref (false);
 
-  if(scheduler.dtstart.length === 10) {
+
+
+  if(scheduler?.dtstart?.length === 10) {
     allDayChecked.value = true
   }
+
+  console.log("dialog2");
 
   const repeatFreq: Ref<Frequency | null> = ref(scheduler.rrule && scheduler.rrule.freq ? scheduler.rrule.freq : null);
   const repeatInterval: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.interval ? scheduler.rrule.interval : null);       // hourly/daily/weekly/monthly/yearly
@@ -97,6 +102,10 @@
   const repeatYearOption: Ref<string> = ref('onSpecific')
   const repeatEndOption : Ref<string> = ref('never');
   const intervalError: Ref<string> = ref('')
+
+  if(repeatCount.value && repeatByDay.value?.length) {
+    repeatCount.value = repeatCount.value / repeatByDay.value.length;
+  }
 
   if(repeatCount.value || repeatUntil.value) {
     if(repeatCount.value) {
@@ -145,6 +154,8 @@
     end.value = new Date(end.value);
   }
 
+
+
   function save(){
     if(repeatFreq.value && !repeatInterval.value) {
       intervalError.value = 'Please set repetition interval.'
@@ -159,6 +170,10 @@
         } else {
           s.value = dateToDateTimeString(s.value);
           e.value = dateToDateTimeString(e.value)
+        }
+
+        if(repeatCount.value && repeatByDay.value?.length) {
+          repeatCount.value = repeatCount.value * repeatByDay.value.length;
         }
 
         try {
@@ -186,6 +201,8 @@
   function cancel() {
     dialogRef.value.close();
   }
+
+
 
 </script>
 

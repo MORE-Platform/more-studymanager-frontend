@@ -130,6 +130,15 @@ function save(){
       case -1: return 'last';
     }
   }
+
+  function calcRepetitionCount(count: number, days?: String[]) {
+    if(days) {
+      console.log(calc / days.length)
+      //return calc%days.length
+    } else {
+      return count;
+    }
+  }
 </script>
 
 <template>
@@ -168,7 +177,7 @@ function save(){
             </div>
 
             <div v-if="scheduler.rrule.count" class="col-span-2">
-              <span class="font-medium">Repetition end:</span> in {{scheduler.rrule.count}} {{getFrequencyLabel(scheduler.rrule.freq)}}
+              <span class="font-medium">Repetition end:</span> after {{scheduler.rrule.count / scheduler.rrule?.byday}} {{getFrequencyLabel(scheduler.rrule.freq)}}
             </div>
             <div v-if="scheduler.rrule.until" class="col-span-2">
               <span class="font-medium">Repetition end: </span> on {{scheduler.rrule.until}}
