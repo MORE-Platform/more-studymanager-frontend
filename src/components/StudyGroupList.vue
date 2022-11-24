@@ -33,7 +33,7 @@ const rowActions: MoreTableAction[] = [
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Create Group'}
+  { id:'create', label:'Create Group', icon: 'pi pi-plus'}
 ]
 
 async function listStudyGroups(): Promise<void> {

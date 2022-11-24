@@ -64,7 +64,7 @@ function cancel() {
        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
      </div>
     <div class="col-start-0 col-span-8">
-      <h5 class="mb-2">{{ $t('purpose') }}*</h5>
+      <h5 class="mb-2">{{ $t('purpose') }}</h5>
       <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
     </div>
     <div class="col-start-0 col-span-8">
