@@ -1,7 +1,4 @@
 <script setup lang="ts">
-  function test() {
-    console.log("test")
-  }
 </script>
 
 <template>
