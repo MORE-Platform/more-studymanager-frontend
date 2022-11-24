@@ -2,7 +2,6 @@ openapi: "3.0.3"
 info:
   title: TimeRange Model
   version: "1.0"
-  description: see https://www.rfc-editor.org/rfc/rfc8984.html#name-recurrence-properties
 
 components:
   schemas:
@@ -27,12 +26,14 @@ components:
           type: string
           format: date-time
         count:
-          type: number
+          type: integer
         interval:
-          type: number
+          type: integer
         byday:
           description: day on which to repeat
-          $ref: '#/components/schemas/Weekday'
+          type: array
+          items:
+            $ref: '#/components/schemas/Weekday'
         bymonth:
           description: month in which to repeat
           $ref: '#/components/schemas/MonthNum'
@@ -41,7 +42,7 @@ components:
           $ref: '#/components/schemas/MonthDayNum'
         bysetpos:
           description: repeat on the first, second, third...
-          type: number
+          type: integer
 
 
     Frequency:
@@ -58,6 +59,7 @@ components:
     Weekday:
       description: days of the week
       type: string
+      nullable: true
       enum:
         - MO
         - TU
@@ -76,3 +78,5 @@ components:
       type: integer
       minimum: 1
       maximum: 12
+
+

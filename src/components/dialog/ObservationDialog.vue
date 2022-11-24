@@ -4,7 +4,7 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
-import {Observation} from '../../generated-sources/openapi';
+import {Observation, Event, Frequency} from '../../generated-sources/openapi';
 import {MoreTableChoice} from "../../models/MoreTableModel";
 import Scheduler from "../shared/Scheduler.vue"
 import {useDialog} from "primevue/usedialog";
@@ -20,7 +20,7 @@ const title = ref(observation.title);
 const purpose = ref(observation.purpose);
 const participantInfo = ref(observation.participantInfo)
 const properties = ref(observation.properties ? JSON.stringify(observation.properties) : '{}');
-const scheduler = ref()
+const scheduler: Ref<Event> = ref(observation.schedule ? observation.schedule : {})
 const studyGroupId = ref(observation.studyGroupId)
 
 const jsonError: Ref<string>= ref('')
@@ -38,7 +38,7 @@ function openScheduler() {
   console.log(observation);
   dialog.open(Scheduler,{
     data: {
-      schedule: observation.schedule
+      schedule: scheduler
     },
     props: {
       header: 'Manage Schedule',
@@ -54,9 +54,9 @@ function openScheduler() {
     },
     onClose: (options) => {
       if(options?.data) {
-        if(options.data?.observationId) {
-          console.log('sent schedule')
-        }
+        console.log(options.data);
+        console.log("scheduler sent");
+        scheduler.value = options.data;
       }
     }
   })
@@ -83,13 +83,60 @@ function save(){
   }
 }
 
-function cancel() {
- dialogRef.value.close();
-}
+  function cancel() {
+   dialogRef.value.close();
+  }
+
+  function getFrequencyLabel(frequency: Frequency) {
+    switch(frequency) {
+      case Frequency.Hourly: return 'hour(s)';
+      case Frequency.Daily: return 'day(s)';
+      case Frequency.Weekly: return 'week(s)';
+      case Frequency.Monthly: return 'month(s)';
+      case Frequency.Yearly: return 'year(s)';
+    }
+  }
+
+  function getByMonthDayLabel(monthDay: number) {
+    if (monthDay > 3 && monthDay < 21) return 'th';
+    switch (monthDay % 10) {
+      case 1:  return "st";
+      case 2:  return "nd";
+      case 3:  return "rd";
+      default: return "th";
+    }
+  }
+
+  function getMonthLabel(month: number) {
+    switch(month) {
+      case 1:  return "January";
+      case 2:  return "February";
+      case 3:  return "March";
+      case 4:  return "April";
+      case 5:  return "Mai";
+      case 6:  return "June";
+      case 7:  return "July";
+      case 8:  return "August";
+      case 9:  return "September";
+      case 10:  return "October";
+      case 11:  return "November";
+      case 12:  return "Dezember";
+    }
+  }
+
+  function getByStepPosLabel(setPos: number) {
+    switch(setPos) {
+      case 1: return 'first';
+      case 2: return 'second';
+      case 3: return 'third';
+      case 4: return 'fourth';
+      case -1: return 'last';
+    }
+  }
 </script>
 
 <template>
-  <div class="obervation-dialog">
+  <div class="observation-dialog">
     <div class="mb-4"><span class="font-bold">Type: </span> {{ typeName }}</div>
    <div class="grid grid-cols-8 gap-4 items-center">
      <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
@@ -97,9 +144,42 @@ function cancel() {
        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
      </div>
      <div class="col-start-0 col-span-8 grid grid-cols-8">
-       <h5 class="col-start-0 col-span-2">Scheduler</h5>
-       <div class="col-span-6 grid grid-cols-7 justify-center items-center">
-         <div class="col-span-5">Scheduler Info</div>
+       <h5 class="col-start-0 col-span-8">Scheduler</h5>
+       <div class="col-start-0 col-span-8 grid grid-cols-7 gap-4 justify-center items-center">
+
+         <div class="col-span-5">
+          <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div><span class="font-medium">{{ $t('end') }}: </span>{{scheduler.dtstart}}</div>
+            <div><span class="font-medium">{{$t('end')}}: </span>{{scheduler.dtend}}</div>
+
+            <div v-if="scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
+              <div><span class="font-medium">Frequency: </span>{{scheduler.rrule.freq}}</div>
+              <div>Each {{scheduler.rrule.interval}} {{getFrequencyLabel(scheduler.rrule.freq)}}</div>
+              <div v-if="scheduler.rrule.bymonthday && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1" >Every {{scheduler.rrule.bymonthday}}{{getByMonthDayLabel(scheduler.rrule.bymonthday)}}</div>
+              <div v-if="scheduler.rrule.bysetpos && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1">Every {{getByStepPosLabel(scheduler.rrule.bysetpos)}} <span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day mr-2">{{day}}</span></div>
+              <div v-if=" scheduler.rrule.freq === Frequency.Yearly" class="col-start-2 col-span-1">Every
+                <span v-if="scheduler.rrule.bymonthday">{{scheduler.rrule.bymonthday}}{{getByMonthDayLabel(scheduler.rrule.bymonthday)}}</span>
+                <span v-if="scheduler.rrule.byday"><span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day">{{day}}</span> in </span>
+                {{getMonthLabel(scheduler.rrule.bymonth)}}</div>
+            </div>
+
+            <div v-if="scheduler.rrule.byday && !scheduler.rrule.bysetpos" class="col-span-2">
+              <span class="font-medium">Days selected: </span>
+              <span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day mr-2">
+                {{day}}
+              </span>
+            </div>
+
+            <div v-if="scheduler.rrule.count" class="col-span-2">
+              <span class="font-medium">Repetition end:</span> in {{scheduler.rrule.count}} {{getFrequencyLabel(scheduler.rrule.freq)}}
+            </div>
+            <div v-if="scheduler.rrule.until" class="col-span-2">
+              <span class="font-medium">Repetition end: </span> on {{scheduler.rrule.until}}
+            </div>
+          </div>
+           <div v-else>Enter Schedule</div>
+         </div>
+
          <Button class="col-span-2 justify-center" type="button" @click="openScheduler">Open Scheduler</Button>
          </div>
 
@@ -137,7 +217,7 @@ function cancel() {
 
 
 <style lang="postcss">
-.obervation-dialog {
+.observation-dialog {
   .buttons {
     button {
       margin-left: 10px;

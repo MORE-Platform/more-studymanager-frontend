@@ -5,13 +5,15 @@
   import InputText from 'primevue/inputtext';
   import Dropdown from 'primevue/dropdown';
   import SelectButton from 'primevue/selectbutton';
-  import {Frequency, Weekday} from '../../generated-sources/openapi';
+  import Checkbox from 'primevue/checkbox';
+  import {Frequency, Weekday, Event, RecurrenceRule} from '../../generated-sources/openapi';
+  import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
+  import {dateToDateString} from "../../utils/dateUtils";
+
+
   const dialogRef:any = inject("dialogRef")
 
   //const schedule:any = dialogRef.value.data.schedule;
-
-  const start = ref(new Date());
-  const end = ref(new Date());
 
   const repeatFreqArray = [
     {label: 'Never', value: null, active: true},
@@ -56,34 +58,38 @@
     {label: 'Dez', value: 12}
   ]
   const repeatByDayForYearArray = [
-    {label: 'Monday', value: Weekday.Mo},
-    {label: 'Tuesday', value: Weekday.Tu},
-    {label: 'Wednesday', value: Weekday.We},
-    {label: 'Thursday', value: Weekday.Th},
-    {label: 'Friday', value: Weekday.Fr},
-    {label: 'Saturday', value: Weekday.Sa},
-    {label: 'Sunday', value: Weekday.Su},
+    {label: 'Monday', value: [Weekday.Mo]},
+    {label: 'Tuesday', value: [Weekday.Tu]},
+    {label: 'Wednesday', value: [Weekday.We]},
+    {label: 'Thursday', value: [Weekday.Th]},
+    {label: 'Friday', value: [Weekday.Fr]},
+    {label: 'Saturday', value: [Weekday.Sa]},
+    {label: 'Sunday', value: [Weekday.Su]},
     {label: 'All days in week', value: [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr, Weekday.Sa, Weekday.Su]},
     {label: 'All weekdays', value: [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr]},
     {label: 'All weekend days', value: [Weekday.Sa, Weekday.Su]}
   ]
 
-  const repeatEndOptionArray : Ref<any[]> = ref([
+  const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
     {label: 'Never', value: 'never'},
     {label: 'After', value: 'after'},
     {label: 'On Date', value: 'onDate'}
   ]);
 
-  const repeatFreq: Ref<string> = ref('')
-  const repeatInterval: Ref<number | undefined> = ref(undefined);       // hourly/daily/weekly/monthly/yearly
-  const repeatCount: Ref<number | undefined> = ref(undefined);          // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
-  const repeatUntil: Ref<Date | undefined> = ref(undefined)             // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
-  const repeatByDay: Ref<any> = ref(undefined)                          // weekly/monthly/yearly
-  const repeatByMonth: Ref<any> = ref(undefined);                       // monthly/yearly
-  const repeatByMonthDay: Ref<any> = ref(undefined)                     // yearly
-  const repeatBySetPos: Ref<any> = ref(undefined)                       // monthly/yearly
+  const start: Ref<Date> = ref(new Date());
+  const end: Ref<Date> = ref(new Date());
+  const allDayChecked: Ref<Boolean> = ref (false);
 
-  const repeatCountLabel: Ref<string | undefined> = ref(undefined)
+  const repeatFreq: Ref<Frequency | null> = ref(null)
+  const repeatInterval: Ref<number | null> = ref(null);       // hourly/daily/weekly/monthly/yearly
+  const repeatCount: Ref<number | null> = ref(null);          // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
+  const repeatUntil: Ref<Date | null> = ref(null)             // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
+  const repeatByDay: Ref<Weekday[] | null> = ref(null)                          // weekly/monthly/yearly
+  const repeatByMonth: Ref<number | null> = ref(null);                       // monthly/yearly
+  const repeatByMonthDay: Ref<number | null> = ref(null)                     // yearly
+  const repeatBySetPos: Ref<number | null> = ref(null)                       // monthly/yearly
+
+  const repeatCountLabel: Ref<string | undefined> = ref('')
   const repeatYearOption: Ref<string> = ref('onSpecific')
   const repeatEndOption : Ref<string> = ref('never');
 
@@ -94,25 +100,53 @@
 
   function resetYearlyInterval() {
     console.log("resetYearlyInterval");
-    repeatBySetPos.value = undefined;
-    repeatByMonth.value = undefined;
-    repeatByDay.value = undefined;
-    repeatByMonthDay.value = undefined;
-    repeatUntil.value = undefined;
+    repeatBySetPos.value = null;
+    repeatByMonth.value = null;
+    repeatByDay.value = null;
+    repeatByMonthDay.value = null;
+    repeatUntil.value = null;
   }
   function resetRepeatEndOptions() {
-    repeatUntil.value = undefined;
-    repeatCount.value = undefined;
+    repeatUntil.value = null;
+    repeatCount.value = null;
   }
   function resetRepeatFreqOptions() {
-    repeatInterval.value = undefined;
+    repeatInterval.value = null;
     repeatEndOption.value = 'never';
     resetYearlyInterval();
     resetRepeatEndOptions();
   }
 
+  function changeDateType() {
+    start.value = new Date(start.value);
+    end.value = new Date(end.value);
+  }
+
   function save(){
-    console.log('save')
+
+    try {
+      const returnEvent: Event = {
+        dtstart: dateToDateString(start.value),
+        dtend: dateToDateString(end.value),
+        rrule: {
+          freq: repeatFreq.value,
+          until: repeatUntil.value ? dateToDateString(repeatUntil.value) : null,
+          count: repeatCount.value,
+          interval: repeatInterval.value,
+          byday: repeatByDay.value,
+          bymonth: repeatByMonth.value,
+          bymonthday: repeatByMonthDay.value,
+          bysetpos: repeatBySetPos.value
+        }
+      }
+
+      dialogRef.value.close(returnEvent);
+    } catch(e) {
+      console.error('Cannot send schedule event ', e)
+    }
+
+
+
   }
 
   function cancel() {
@@ -123,12 +157,33 @@
 
 <template>
   <div class="scheduler relative">
-    <div class="grid grid-cols-6 items-center">
-      <div class="col-span-1 mb-4">{{$t('start')}}</div>
-      <Calendar v-model="start" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5 mb-4'"/>
 
+    <div class="mb-10">
+      start: {{start}} <br>
+      end: {{end}} <br>
+      allDayChecked: {{allDayChecked}} <br>
+       repeatFreq: {{repeatFreq}} <br>
+       repeatInterval: {{repeatInterval}} <br>
+         repeatCount: {{repeatCount}}<br>
+           repeatUntil: {{repeatUntil}}<br>
+             repeatByDay: {{repeatByDay}}  <br>
+               repeatByMonth: {{repeatByMonth}}    <br>
+                 repeatByMonthDay: {{repeatByMonthDay}}    <br>
+                   repeatBySetPos: {{repeatBySetPos}}  <br>
+
+                    const repeatCountLabel: {{repeatCountLabel}}   <br>
+                      const repeatYearOption: {{repeatYearOption}}  <br>
+                        const repeatEndOption : {{repeatEndOption}}  <br>
+    </div>
+
+    <div class="grid grid-cols-6 items-center gap-4">
+      <div class="col-span-1">{{$t('start')}}</div>
+      <Calendar v-model="start" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
       <div class="col-span-1">{{$t('end')}}</div>
-      <Calendar v-model="end" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
+      <Calendar v-model="end" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
+      <div class="col-span-1">All Day Event:</div>
+      <Checkbox v-model="allDayChecked" :binary="true" @change="changeDateType()"/>
+
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
       <div class="col-span-6 grid grid-cols-6 gap-4  mt-4">
         <div class="col-span-1">{{$t('repeat')}}</div>
@@ -175,7 +230,7 @@
       </div>
     </div>
 
-
+    <div style="height: 100px"></div>
     <div class="grid grid-cols-6 pos-bottom">
       <div class=" col-start-0 col-span-6 buttons text-right mt-8 justify-end">
         <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
