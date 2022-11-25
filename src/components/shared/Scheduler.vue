@@ -80,9 +80,7 @@
   const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
   const allDayChecked: Ref<boolean> = ref (false);
 
-
-
-  if(scheduler?.dtstart?.length === 10) {
+  if(scheduler?.dtstart?.substring(11,19) === '00:00:00' && scheduler?.dtend?.substring(11,19) === '23:59:59') {
     allDayChecked.value = true
   }
 
@@ -151,8 +149,6 @@
     end.value = new Date(end.value);
   }
 
-
-
   function save(){
     if(repeatFreq.value && !repeatInterval.value) {
       intervalError.value = 'Please set repetition interval.'
@@ -162,22 +158,26 @@
         const e: Ref<any> = ref(end.value);
 
         if(allDayChecked.value) {
-          s.value = dateToDateString(s.value);
-          e.value = dateToDateString(e.value);
+          s.value = dateToDateString(s.value) + 'T00:00:00Z';
+          e.value = dateToDateString(e.value) + 'T23:59:59Z';
         } else {
           s.value = dateToDateTimeString(s.value);
           e.value = dateToDateTimeString(e.value)
         }
 
+
         if(repeatCount.value && repeatByDay.value?.length) {
-          repeatCount.value = repeatCount.value * repeatByDay.value.length;
+          repeatCount.value = repeatCount.value * repeatByDay.value?.length;
         }
 
         try {
-          const returnEvent: Event = {
+          const returnEvent: Ref<Event> = ref({
             dtstart: s.value,
             dtend: e.value,
-            rrule: {
+            rrule: undefined
+          })
+          if(repeatFreq.value) {
+            returnEvent.value.rrule = {
               freq: repeatFreq.value,
               until: repeatUntil.value ? dateToDateString(repeatUntil.value) : undefined,
               count: repeatCount.value,
@@ -188,7 +188,7 @@
               bysetpos: repeatBySetPos.value
             }
           }
-          dialogRef.value.close(returnEvent);
+          dialogRef.value.close(returnEvent.value);
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
@@ -248,7 +248,7 @@
           </div>
         </div>
         <hr class="col-start-0 col-span-6 mb-4 mt-4">
-        <div class="col-start-2 col-span-5 grid grid-cols-3 gap-4">
+        <div v-if="repeatFreq" class="col-start-2 col-span-5 grid grid-cols-3 gap-4">
           <Dropdown v-model="repeatEndOption" :options="repeatEndOptionArray" :option-label="'label'" :option-value="'value'" class="col-span-1" @change="resetRepeatEndOptions"/>
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
             <InputText v-model="repeatCount" type="text" :placeholder="'Enter repeat count'" /> <span class="ml-2">{{repeatCountLabel}}</span>
