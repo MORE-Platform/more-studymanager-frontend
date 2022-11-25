@@ -4,8 +4,8 @@
 </script>
 
 <template>
-  <Header />
-  <main>
+  <Header/>
+  <main  class="pt-20">
     <router-view />
   </main>
   <Footer />

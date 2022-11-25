@@ -45,7 +45,7 @@ const { componentsApi } = useComponentsApi();
   ]
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Observations', options: {type: 'menu', values: observationTypes}}
+    {id: 'create', icon: 'pi pi-plus', label: 'Add Observation', options: {type: 'menu', values: observationTypes}}
   ]
 
   const rowActions: MoreTableAction[] = [
