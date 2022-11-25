@@ -2,6 +2,7 @@ openapi: "3.0.3"
 info:
   title: TimeRange Model
   version: "1.0"
+  description: see https://www.rfc-editor.org/rfc/rfc8984.html#name-recurrence-properties
 
 components:
   schemas:
@@ -78,5 +79,3 @@ components:
       type: integer
       minimum: 1
       maximum: 12
-
-

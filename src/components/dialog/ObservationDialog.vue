@@ -70,10 +70,9 @@ function save(){
       participantInfo: participantInfo.value,
       type: observation.type,
       properties: props,
-      scheduler: scheduler.value,
+      schedule: scheduler.value,
       studyGroupId: studyGroupId.value
     } as Observation;
-
     dialogRef.value.close(returnObservation);
   } catch (e) {
     jsonError.value = 'Please enter a valid json inside the Config (Json) field.'
@@ -130,6 +129,17 @@ function save(){
       case -1: return 'last';
     }
   }
+
+  function formatDateTime(setDate: string) {
+    const formattedDate: Ref<string> = ref(setDate.substring(8,10) + '.' + setDate.substring(6,7) + '.' + setDate.substring(0,4));
+
+    if(setDate.length > 10) {
+      const time: string = setDate.substring(11,16);
+      formattedDate.value = formattedDate.value + ', ' + setDate.substring(11,16);
+    }
+
+    return formattedDate.value;
+  }
 </script>
 
 <template>
@@ -146,12 +156,12 @@ function save(){
 
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
-            <div><span class="font-medium">{{ $t('end') }}: </span>{{scheduler.dtstart}}</div>
-            <div><span class="font-medium">{{$t('end')}}: </span>{{scheduler.dtend}}</div>
+            <div><span class="font-medium">{{ $t('end') }}: </span>{{formatDateTime(scheduler.dtstart)}}</div>
+            <div><span class="font-medium">{{$t('end')}}: </span>{{formatDateTime(scheduler.dtend)}}</div>
 
             <div v-if="scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
               <div><span class="font-medium">Frequency: </span>{{scheduler.rrule.freq}}</div>
-              <div>Each {{scheduler.rrule.interval}} {{getFrequencyLabel(scheduler.rrule.freq)}}</div>
+              <div>For {{scheduler.rrule.interval}} {{getFrequencyLabel(scheduler.rrule.freq)}}</div>
               <div v-if="scheduler.rrule.bymonthday && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1" >Every {{scheduler.rrule.bymonthday}}{{getByMonthDayLabel(scheduler.rrule.bymonthday)}}</div>
               <div v-if="scheduler.rrule.bysetpos && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1">Every {{getByStepPosLabel(scheduler.rrule.bysetpos)}} <span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day mr-2">{{day}}</span></div>
               <div v-if=" scheduler.rrule.freq === Frequency.Yearly" class="col-start-2 col-span-1">Every
@@ -168,7 +178,7 @@ function save(){
             </div>
 
             <div v-if="scheduler.rrule.count" class="col-span-2">
-              <span class="font-medium">Repetition end:</span> after {{scheduler.rrule.count / scheduler.rrule?.byday}} {{getFrequencyLabel(scheduler.rrule.freq)}}
+              <span class="font-medium">Repetition end:</span> after {{scheduler.rrule.count / scheduler.rrule?.byday.length}} {{getFrequencyLabel(scheduler.rrule.freq)}}
             </div>
             <div v-if="scheduler.rrule.until" class="col-span-2">
               <span class="font-medium">Repetition end: </span> on {{scheduler.rrule.until}}
@@ -220,9 +230,17 @@ function save(){
       margin-left: 10px;
     }
   }
-
   .error {
     color: #D57575;
+
+  }
+  .day {
+    &:after {
+      content: ", "
+    }
+    &:last-of-type:after {
+      content: ""
+    }
 
   }
 }

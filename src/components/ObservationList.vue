@@ -103,6 +103,8 @@ const { componentsApi } = useComponentsApi();
 
   function openObservationDialog(headerText: string, observation?: Observation, typeText?: string) {
     console.log(observation);
+    console.log(observation?.schedule)
+    console.log("openObservationDialog-------------------");
     dialog.open(ObservationDialog,{
       data: {
         groupStates: groupStatuses,
@@ -142,8 +144,6 @@ const { componentsApi } = useComponentsApi();
       try {
         await observationsApi.addObservation(props.studyId, newObservation)
           .then((response: AxiosResponse) => {
-            console.log(response.data);
-            console.log("observation api addObservation")
             listObservations()
           })
       } catch (e) {

@@ -14,10 +14,9 @@
   const dialogRef:any = inject("dialogRef")
 
   const scheduler:any = dialogRef.value.data.scheduler;
-  console.log("dialog");
 
   const repeatFreqArray = [
-    {label: 'Never', value: null, active: true},
+    {label: 'Never', value: undefined, active: true},
     {label: 'Hourly', value: Frequency.Hourly, active: true, unit: 'hour(s)'},
     {label: 'Daily', value: Frequency.Daily, active: true, unit: 'day(s)'},
     {label: 'Weekly', value: Frequency.Weekly, active: true, unit: 'week(s)'},
@@ -87,16 +86,14 @@
     allDayChecked.value = true
   }
 
-  console.log("dialog2");
-
-  const repeatFreq: Ref<Frequency | null> = ref(scheduler.rrule && scheduler.rrule.freq ? scheduler.rrule.freq : null);
-  const repeatInterval: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.interval ? scheduler.rrule.interval : null);       // hourly/daily/weekly/monthly/yearly
-  const repeatCount: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.count ? scheduler.rrule.count : null);          // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
-  const repeatUntil: Ref<Date | null> = ref(scheduler.rrule && scheduler.rrule.until ? scheduler.rrule.until : null);             // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
-  const repeatByDay: Ref<Weekday[] | null> = ref(scheduler.rrule && scheduler.rrule.byday ? scheduler.rrule.byday : null);                          // weekly/monthly/yearly
-  const repeatByMonth: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.bymonth ? scheduler.rrule.bymonth : null);                       // monthly/yearly
-  const repeatByMonthDay: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.bymonthday ? scheduler.rrule.bymonthday : null);                     // yearly
-  const repeatBySetPos: Ref<number | null> = ref(scheduler.rrule && scheduler.rrule.bysetpos ? scheduler.rrule.bysetpos : null);                       // monthly/yearly
+  const repeatFreq: Ref<Frequency | undefined> = ref(scheduler.rrule && scheduler.rrule.freq ? scheduler.rrule.freq : undefined);
+  const repeatInterval: Ref<number | undefined> = ref(scheduler.rrule && scheduler.rrule.interval ? scheduler.rrule.interval : undefined);       // hourly/daily/weekly/monthly/yearly
+  const repeatCount: Ref<number | undefined> = ref(scheduler.rrule && scheduler.rrule.count ? scheduler.rrule.count : undefined);          // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
+  const repeatUntil: Ref<Date | undefined> = ref(scheduler.rrule && scheduler.rrule.until ? scheduler.rrule.until : undefined);             // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
+  const repeatByDay: Ref<Weekday[] | undefined> = ref(scheduler.rrule && scheduler.rrule.byday ? scheduler.rrule.byday : undefined);                          // weekly/monthly/yearly
+  const repeatByMonth: Ref<number | undefined> = ref(scheduler.rrule && scheduler.rrule.bymonth ? scheduler.rrule.bymonth : undefined);                       // monthly/yearly
+  const repeatByMonthDay: Ref<number | undefined> = ref(scheduler.rrule && scheduler.rrule.bymonthday ? scheduler.rrule.bymonthday : undefined);                     // yearly
+  const repeatBySetPos: Ref<number | undefined> = ref(scheduler.rrule && scheduler.rrule.bysetpos ? scheduler.rrule.bysetpos : undefined);                       // monthly/yearly
 
   const repeatCountLabel: Ref<string | undefined> = ref(scheduler.rrule && scheduler.rrule.freq ? repeatFreqArray.find((f:any) => f.value === scheduler.rrule.freq)?.unit : '')
   const repeatYearOption: Ref<string> = ref('onSpecific')
@@ -132,18 +129,18 @@
   }
 
   function resetYearlyInterval() {
-    repeatBySetPos.value = null;
-    repeatByMonth.value = null;
-    repeatByDay.value = null;
-    repeatByMonthDay.value = null;
-    repeatUntil.value = null;
+    repeatBySetPos.value = undefined;
+    repeatByMonth.value = undefined;
+    repeatByDay.value = undefined;
+    repeatByMonthDay.value = undefined;
+    repeatUntil.value = undefined;
   }
   function resetRepeatEndOptions() {
-    repeatUntil.value = null;
-    repeatCount.value = null;
+    repeatUntil.value = undefined;
+    repeatCount.value = undefined;
   }
   function resetRepeatFreqOptions() {
-    repeatInterval.value = null;
+    repeatInterval.value = undefined;
     repeatEndOption.value = 'never';
     resetYearlyInterval();
     resetRepeatEndOptions();
@@ -178,11 +175,11 @@
 
         try {
           const returnEvent: Event = {
-            dtstart: s,
-            dtend: e,
+            dtstart: s.value,
+            dtend: e.value,
             rrule: {
               freq: repeatFreq.value,
-              until: repeatUntil.value ? dateToDateString(repeatUntil.value) : null,
+              until: repeatUntil.value ? dateToDateString(repeatUntil.value) : undefined,
               count: repeatCount.value,
               interval: repeatInterval.value,
               byday: repeatByDay.value,
