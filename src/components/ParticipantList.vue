@@ -34,7 +34,7 @@ const groupStatuses: Ref<MoreTableChoice[]> = ref(
 const participantsColumns: MoreTableColumn[] = [
   { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
-  { field: 'status', header: 'status' },
+  { field: 'status', header: 'status', filterable: {showFilterMatchModes: false} },
   { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'No group'}
 ]
 

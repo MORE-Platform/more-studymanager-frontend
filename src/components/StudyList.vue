@@ -140,7 +140,7 @@ const { studiesApi } = useStudiesApi()
       :row-actions="rowActions"
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
-      :sort-options="{sortField: 'plannedStart', sortOrder: -1}"
+      :sort-options="{sortField: 'studyId', sortOrder: -1}"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       empty-message="No studies yet"
       :loading="loading"

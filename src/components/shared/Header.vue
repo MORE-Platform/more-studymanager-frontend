@@ -93,7 +93,12 @@ d="M244.6,78.4c-0.4-0.4-0.8-0.6-1.4-0.6h-6.1c-1,0-1.8,0.5-2.3,1.5l-15.2,28.1l-16
 <style lang="postcss">
 
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   background-color: white;
+  z-index: 1000;
   .logo {
     cursor: pointer;
   }
