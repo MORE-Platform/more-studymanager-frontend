@@ -3,6 +3,7 @@ import MoreTabNav from "../components/shared/MoreTabNav.vue";
 import StudyHeader from '../components/shared/StudyHeader.vue';
 import {Study} from '../generated-sources/openapi';
 import {useRoute} from 'vue-router';
+import DataView from '../components/DataView.vue'
 const route = useRoute()
 const study = route.meta['study'] as Study;
 </script>
@@ -11,6 +12,24 @@ const study = route.meta['study'] as Study;
   <div class="container m-auto mt-10">
     <StudyHeader :study="study"></StudyHeader>
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
-    <h1>Data</h1>
+    <div class="data-header-textblock">
+      <h3>Data</h3>
+      <h4>Data collected during the study will be visualized at this within this dashboard.</h4>
+    </div>
   </div>
+  <DataView />
+
+
 </template>
+
+<style lang="pcss">
+  .data-header-textblock {
+    h3 {
+      font-weight: 600;
+    }
+    h4 {
+      font-size: 1rem;
+    }
+  }
+
+</style>
