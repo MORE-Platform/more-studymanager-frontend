@@ -13,10 +13,13 @@
   "plannedEnd": "Planned End",
   "actualEnd": "Actual End",
   "actions": "Actions",
+  "action": "Action",
   "frontAction": "Copy Id",
   "status": "Status",
   "description": "Description",
   "roles": "Role(s)",
+  "trigger": "Trigger",
+  "intervention": "Intervention",
 
   "participants": "Participants",
   "token": "Token",
@@ -77,7 +80,8 @@
   "observations": "Observations",
   "observation": "Observation",
   "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
-  "noGroup": "No Group",
+  "interventionListDescr": "An intervention describes an action delivered to the app triggered by rules on data.",
+  "noGroup": "No group",
   "no-value": "-",
 
   "tooltips": {
@@ -86,7 +90,10 @@
     "downloadBtn": "Download"
   },
   "placeholder": {
-    "roleMultiselect": "Select one to two roles"
+    "roleMultiselect": "Select one to two roles",
+    "trigger": "Choose a trigger type",
+    "group": "Choose a group",
+    "action": "Choose an action"
   },
   "user": {
     "institution": "Institution"
