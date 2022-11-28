@@ -3,7 +3,7 @@
     <div class="grid grid-cols-6 gap-4 items-center">
       <div class="col-start-0 col-span-1"><h5>Study Title</h5></div>
       <div class="col-start-2 col-span-5">
-        <InputText v-model="title" placeholder="Enter the study title." style="width: 100%"></InputText>
+        <InputText v-model="title" :placeholder="$t('placeholder.title')" style="width: 100%"></InputText>
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Language</h5>
@@ -19,15 +19,15 @@
       </div>
       <div class="col-start-0 col-span-6">
         <h5>Purpose</h5>
-        <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="purpose" :placeholder="$t('placeholder.purpose')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
         <h5>{{ $t('participantInfo') }}</h5>
-        <Textarea v-model="participantInfo" placeholder="Enter the participant information, which will be displayed on the app." :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="participantInfo" :placeholder="$t('placeholder.participantInfo')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
         <h5>{{$t('consentInfo')}}</h5>
-        <Textarea v-model="consentInfo" placeholder="Enter the consent Information, which will be displayed on the app." :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="consentInfo" :placeholder="$t('placeholder.consentInfo')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
     <div class="buttons text-right mt-8">

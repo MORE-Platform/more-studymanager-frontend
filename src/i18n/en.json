@@ -20,6 +20,7 @@
   "roles": "Role(s)",
   "trigger": "Trigger",
   "intervention": "Intervention",
+  "interventions": "Interventions",
 
   "participants": "Participants",
   "token": "Token",
@@ -93,7 +94,14 @@
     "roleMultiselect": "Select one to two roles",
     "trigger": "Choose a trigger type",
     "group": "Choose a group",
-    "action": "Choose an action"
+    "action": "Choose an action",
+    "purpose": "Please provide short description of your research purpose for your collaborators.",
+    "participantInfo": "Please provide information for study participants. This description will be visible at the participant's app.",
+    "title": "Please provide a short title.",
+    "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app."
+  },
+  "listDescription": {
+    "participantList": "This is the list of participants of your study. You can add or import participants."
   },
   "user": {
     "institution": "Institution"
