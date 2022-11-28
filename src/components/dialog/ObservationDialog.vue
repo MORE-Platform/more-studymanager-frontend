@@ -8,6 +8,7 @@ import {Observation, Event, Frequency} from '../../generated-sources/openapi';
 import {MoreTableChoice} from "../../models/MoreTableModel";
 import Scheduler from "../shared/Scheduler.vue"
 import {useDialog} from "primevue/usedialog";
+import dayjs from 'dayjs'
 
 const dialog = useDialog()
 
@@ -52,6 +53,7 @@ function openScheduler() {
       dismissableMask: true,
     },
     onClose: (options) => {
+      console.log(options?.data);
       if(options?.data) {
         scheduler.value = options.data;
       }
@@ -139,16 +141,6 @@ function save(){
       scheduler.value = {}
     }
   }
-
-  function formatDateTime(formatDate: string, startDate: string, endDate: string) {
-  console.log("formatDate")
-  console.log(formatDate)
-    const formattedDate: Ref<string> = ref(formatDate.substring(8,10) + '/' + formatDate.substring(5,7) + '/' + formatDate.substring(0,4))
-    if(!(startDate.substring(11,19) === '00:00:00' && endDate.substring(11,19) === '23:59:59')) {
-      formattedDate.value = formattedDate.value + ', ' + formatDate.substring(11,16);
-    }
-    return formattedDate.value;
-  }
 </script>
 
 <template>
@@ -165,8 +157,8 @@ function save(){
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
 
-            <div><span class="font-medium">{{ $t('start') }}: </span>{{formatDateTime(scheduler.dtstart, scheduler.dtstart, scheduler.dtend)}}</div>
-            <div><span class="font-medium">{{$t('end')}}: </span>{{formatDateTime(scheduler.dtend, scheduler.dtstart, scheduler.dtend)}}</div>
+            <div><span class="font-medium">{{ $t('start') }}: </span>{{dayjs(scheduler.dtstart).format("DD/MM/YYYY, HH:mm")}}</div>
+            <div><span class="font-medium">{{$t('end')}}: </span>{{dayjs(scheduler.dtend).format("DD/MM/YYYY HH:mm")}}</div>
 
 
            <div v-if="scheduler.rrule && scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">

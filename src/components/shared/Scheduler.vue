@@ -161,30 +161,8 @@
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        const s: Ref<any> = ref(start.value);
-        const e: Ref<any> = ref(end.value);
-
-        if(allDayChecked.value) {
-          s.value = dateToDateString(s.value) + 'T00:00:00Z';
-          e.value = dateToDateString(e.value) + 'T23:59:59Z';
-          console.log("type------------")
-          console.log(s.value);
-          console.log(e.value);
-
-          console.log(typeof e.value);
-          console.log(typeof s.value);
-        } else {
-          s.value = dateToDateTimeString(s.value);
-          e.value = dateToDateTimeString(e.value)
-          console.log("type------------")
-          console.log(s.value);
-          console.log(e.value);
-
-          console.log(typeof e.value);
-          console.log(typeof s.value);
-        }
-
-
+        const dtstart = allDayChecked.value ? dateToDateString(start.value) + 'T00:00:00Z' : dateToDateTimeString(start.value);
+        const dtend = allDayChecked.value ? dateToDateString(end.value) + 'T00:00:00Z' : dateToDateTimeString(end.value);
 
         if(repeatCount.value && repeatByDay.value?.length) {
           repeatCount.value = repeatCount.value * repeatByDay.value?.length;
@@ -192,8 +170,8 @@
 
         try {
           const returnEvent: Ref<Event> = ref({
-            dtstart: s.value,
-            dtend: e.value,
+            dtstart,
+            dtend,
             rrule: undefined
           })
           if(repeatFreq.value) {
