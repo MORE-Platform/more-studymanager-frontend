@@ -7,7 +7,7 @@
   import SelectButton from 'primevue/selectbutton';
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
-  import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
+  //import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
   import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
 
 
@@ -70,15 +70,18 @@
     {label: 'All weekend days', value: [Weekday.Sa, Weekday.Su]}
   ]
 
+  /*
   const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
     {label: 'Never', value: 'never'},
     {label: 'After', value: 'after'},
     {label: 'On Date', value: 'onDate'}
   ]);
+  */
 
   const start: Ref<Date> = ref(scheduler.dtstart ? new Date(scheduler.dtstart) : new Date());
   const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
   const allDayChecked: Ref<boolean> = ref (false);
+  const repeatChecked: Ref<boolean> = ref(false);
 
   if(scheduler?.dtstart?.substring(11,19) === '00:00:00' && scheduler?.dtend?.substring(11,19) === '23:59:59') {
     allDayChecked.value = true
@@ -97,6 +100,10 @@
   const repeatYearOption: Ref<string> = ref('onSpecific')
   const repeatEndOption : Ref<string> = ref('never');
   const intervalError: Ref<string> = ref('')
+
+  if(repeatFreq.value) {
+    repeatChecked.value = true;
+  }
 
   if(repeatCount.value && repeatByDay.value?.length) {
     repeatCount.value = repeatCount.value / repeatByDay.value.length;
@@ -160,10 +167,23 @@
         if(allDayChecked.value) {
           s.value = dateToDateString(s.value) + 'T00:00:00Z';
           e.value = dateToDateString(e.value) + 'T23:59:59Z';
+          console.log("type------------")
+          console.log(s.value);
+          console.log(e.value);
+
+          console.log(typeof e.value);
+          console.log(typeof s.value);
         } else {
           s.value = dateToDateTimeString(s.value);
           e.value = dateToDateTimeString(e.value)
+          console.log("type------------")
+          console.log(s.value);
+          console.log(e.value);
+
+          console.log(typeof e.value);
+          console.log(typeof s.value);
         }
+
 
 
         if(repeatCount.value && repeatByDay.value?.length) {
@@ -188,12 +208,17 @@
               bysetpos: repeatBySetPos.value
             }
           }
+          console.log("SCHEDULER------")
+          console.log(returnEvent.value);
+          console.log(typeof returnEvent.value.dtstart)
           dialogRef.value.close(returnEvent.value);
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
     }
   }
+
+  console.log("test")
 
   function cancel() {
     dialogRef.value.close();
@@ -214,7 +239,9 @@
       <Checkbox v-model="allDayChecked" :binary="true" @change="changeDateType()"/>
 
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
-      <div class="col-span-6 grid grid-cols-6 gap-4  mt-4">
+      <div class="col-span-1">Repeat: </div>
+      <Checkbox v-model="repeatChecked" :binary="true" @change="changeDateType()"/>
+      <div v-if="repeatChecked" class="col-span-6 grid grid-cols-6 gap-4  mt-4">
         <div class="col-span-1">{{$t('repeat')}}</div>
         <!-- Frequency: never to yearly -->
         <div class="col-span-5 grid grid-cols-5 gap-4">
@@ -247,7 +274,7 @@
             <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose Month'"/>
           </div>
         </div>
-        <hr class="col-start-0 col-span-6 mb-4 mt-4">
+        <!--<hr class="col-start-0 col-span-6 mb-4 mt-4">
         <div v-if="repeatFreq" class="col-start-2 col-span-5 grid grid-cols-3 gap-4">
           <Dropdown v-model="repeatEndOption" :options="repeatEndOptionArray" :option-label="'label'" :option-value="'value'" class="col-span-1" @change="resetRepeatEndOptions"/>
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
@@ -256,7 +283,7 @@
           <div v-else-if="repeatEndOption === 'onDate'" class="col-span-2" >
             <Calendar v-model="repeatUntil" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
           </div>
-        </div>
+        </div>    -->
       </div>
     </div>
 
