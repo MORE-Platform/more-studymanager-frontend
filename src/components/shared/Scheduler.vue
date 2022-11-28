@@ -7,7 +7,7 @@
   import SelectButton from 'primevue/selectbutton';
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
-  import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
+  //import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
   import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
 
 
@@ -70,11 +70,13 @@
     {label: 'All weekend days', value: [Weekday.Sa, Weekday.Su]}
   ]
 
+  /*
   const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
     {label: 'Never', value: 'never'},
     {label: 'After', value: 'after'},
     {label: 'On Date', value: 'onDate'}
   ]);
+  */
 
   const start: Ref<Date> = ref(scheduler.dtstart ? new Date(scheduler.dtstart) : new Date());
   const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
