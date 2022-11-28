@@ -147,6 +147,7 @@ const { componentsApi } = useComponentsApi();
   }
 
   async function updateObservation(observation: Observation) {
+    console.log("updateObservation");
     try {
       const i = observationList.value.findIndex(v => v.observationId === observation.observationId);
       if(i>-1) {

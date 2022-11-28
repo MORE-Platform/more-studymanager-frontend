@@ -60,11 +60,10 @@ function openScheduler() {
 }
 
 function save(){
+  console.log("save function dialog")
   try {
       const props: Ref<Event> = ref({})
-      if(scheduler.value?.dtstart) {
-        props.value = JSON.parse(properties.value.toString())
-      }
+      props.value = JSON.parse(properties.value.toString())
       const returnObservation = {
         observationId: observation.observationId,
         title: title.value,
@@ -75,6 +74,8 @@ function save(){
         schedule: scheduler.value,
         studyGroupId: studyGroupId.value
       } as Observation;
+      console.log(returnObservation);
+      console.log("returnObservation");
       dialogRef.value.close(returnObservation);
 
   } catch (e) {
@@ -140,7 +141,9 @@ function save(){
   }
 
   function formatDateTime(formatDate: string, startDate: string, endDate: string) {
-    const formattedDate: Ref<string> = ref(formatDate.substring(8,10) + '.' + formatDate.substring(6,7) + '.' + formatDate.substring(0,4))
+  console.log("formatDate")
+  console.log(formatDate)
+    const formattedDate: Ref<string> = ref(formatDate.substring(8,10) + '/' + formatDate.substring(5,7) + '/' + formatDate.substring(0,4))
     if(!(startDate.substring(11,19) === '00:00:00' && endDate.substring(11,19) === '23:59:59')) {
       formattedDate.value = formattedDate.value + ', ' + formatDate.substring(11,16);
     }
@@ -162,8 +165,9 @@ function save(){
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
 
-            <div><span class="font-medium">{{ $t('end') }}: </span>{{formatDateTime(scheduler.dtstart, scheduler.dtstart, scheduler.dtend)}}</div>
+            <div><span class="font-medium">{{ $t('start') }}: </span>{{formatDateTime(scheduler.dtstart, scheduler.dtstart, scheduler.dtend)}}</div>
             <div><span class="font-medium">{{$t('end')}}: </span>{{formatDateTime(scheduler.dtend, scheduler.dtstart, scheduler.dtend)}}</div>
+
 
            <div v-if="scheduler.rrule && scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
              <div><span class="font-medium">Frequency: </span>{{scheduler.rrule.freq}}</div>
@@ -199,9 +203,7 @@ function save(){
            <Button class="justify-center" type="button" @click="openScheduler">Open Scheduler</Button>
            <Button v-if="scheduler.dtstart" class="justify-center" type="button" @click="removeScheduler">Remove Schedule</Button>
          </div>
-
-
-         </div>
+       </div>
 
      </div>
     <div class="col-start-0 col-span-8">
@@ -217,6 +219,7 @@ function save(){
       <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
         <h6 class="mb-1">Config(Json)</h6>
+        <div class=""></div>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
