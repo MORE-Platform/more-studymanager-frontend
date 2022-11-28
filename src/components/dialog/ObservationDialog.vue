@@ -212,7 +212,8 @@ function save(){
       <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
         <h6 class="mb-1">Config(Json)</h6>
-        <div v-html="descriptionForType(typeName)" class="mb-2"></div>
+        <!-- eslint-disable vue/no-v-html -->
+        <div class="mb-2" v-html="descriptionForType(typeName)"></div>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
