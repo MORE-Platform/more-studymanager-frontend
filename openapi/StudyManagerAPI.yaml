@@ -725,6 +725,25 @@ paths:
         '400':
           description: bad request
 
+  /studies/{studyId}/export/participants:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - importExport
+      description: Export Participants
+      operationId: exportParticipants
+      responses:
+        200:
+          description: foo
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: bad request
+
   /users/me:
     get:
       tags:
@@ -790,6 +809,14 @@ components:
           type: string
           format: date-time
           readOnly: true
+        userRoles:
+          type: array
+          description: the roles the _current user_ has within _this_ study.
+          items:
+            $ref: '#/components/schemas/StudyRole'
+          uniqueItems: true
+          readOnly: true
+          minItems: 1
 
     StatusChange:
       type: object
@@ -885,7 +912,7 @@ components:
         properties:
           type: object
         schedule:
-          type: object
+          $ref: './Event.yaml/#/components/schemas/Event'
         created:
           type: string
           format: date-time
@@ -909,7 +936,7 @@ components:
         purpose:
           type: string
         schedule:
-          type: object
+          $ref: './Event.yaml/#/components/schemas/Event'
         trigger:
           $ref: '#/components/schemas/Trigger'
         actions:
@@ -987,20 +1014,41 @@ components:
           type: string
           format: email
           readOnly: true
-        permissions:
+        roles:
           type: array
           items:
-            $ref: '#/components/schemas/PlatformPermission'
+            $ref: '#/components/schemas/PlatformRole'
           uniqueItems: true
           readOnly: true
       readOnly: true
 
-    PlatformPermission:
+    PlatformRole:
+      description: |
+        We differentiate between the following roles within a study:
+        * `MORE_ADMIN` (_System Administrator_, _Platform Administrator_): Rights to manage users, emergency functions, **no rights to see data or manipulate studies**.
+        * `MORE_OPERATOR`: Can create/initiate a new Study
+        * `MORE_VIEWER`: Can access existing studies (based on assigned study-level roles)
       type: string
       enum:
-        - READ_STUDIES
-        - CREATE_STUDIES
+        - MORE_ADMIN
+        - MORE_OPERATOR
+        - MORE_VIEWER
+      externalDocs:
+        url: https://more-platform.atlassian.net/browse/MORE-213
 
+    StudyRole:
+      description: |
+        We differentiate between the following roles within a study:
+        * `STUDY_ADMIN` (_Study Administrator_): **All** rights to create and manage studies, configure components and assign participants, invite and manage operators and viewers and see study data.
+        * `STUDY_OPERATOR` (_Study Operator_): Rights to manage studies, configure components and assign participants, **no rights to see data**.
+        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study data only.
+      type: string
+      enum:
+        - STUDY_ADMIN
+        - STUDY_OPERATOR
+        - STUDY_VIEWER
+      externalDocs:
+        url: https://more-platform.atlassian.net/browse/MORE-213
 
   parameters:
     StudyId:
@@ -1054,4 +1102,3 @@ components:
           scopes:
             read: read studies
             write: write studies
-
