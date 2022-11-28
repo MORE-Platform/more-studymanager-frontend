@@ -18,10 +18,6 @@
   const actionTypesOptions: Ref<any[]> = ref([])
   const triggerTypesOptions = dialogRef.value.data?.triggerTypes;
 
-  console.log(intervention);
-  console.log(intervention.interventionId)
-  console.log("intervention dialog")
-
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
   const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
@@ -32,6 +28,7 @@
   const jsonError: Ref<string> = ref('')
   const actionsEmptyError: Ref<string> = ref('')
   const triggerEmptyError: Ref<string> = ref('')
+  const removeActions: Ref<number[]> = ref([])
 
   if(actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({actionId: item.actionId, type: item.type, properties: JSON.stringify(item.properties)}))
@@ -51,7 +48,7 @@
   function save(){
     try {
       const triggerProps = {type: triggerType.value, properties: JSON.parse(triggerProp.value.toString())}
-      const actionsProps = actionsArray.value.map((item) => ({type: item.type, properties: JSON.parse(item.properties)}));
+      const actionsProps = actionsArray.value.map((item) => ({actionId: item?.actionId, type: item.type, properties: JSON.parse(item.properties)}));
 
     const returnIntervention = {
       interventionId: intervention.interventionId,
@@ -66,7 +63,8 @@
       const returnObject = {
         intervention: returnIntervention,
         trigger: triggerProps,
-        actions: actionsProps
+        actions: actionsProps,
+        removeActions: removeActions.value
       }
 
       if(triggerProps.type && triggerProps.properties.cronSchedule && triggerProps.properties.query && triggerProps.properties.window && actionsProps.length) {
@@ -95,7 +93,8 @@
     dialogRef.value.close();
   }
 
-  function deleteAction(index: number) {
+  function deleteAction(actionId: number, index: number) {
+    removeActions.value.push(actionId);
     actionsArray.value.splice(index, 1);
   }
 
@@ -113,6 +112,7 @@
 
 <template>
   <div class="intervention-dialog">
+    {{intervention.interventionId}}
     <div class="grid grid-cols-8 gap-4 items-center">
       <div class="col-start-0 col-span-2"><h5>{{ $t('intervention') }} {{ $t('title') }}</h5></div>
       <div class="col-start-3 col-span-6">
@@ -154,7 +154,7 @@
             <div class="col-span-4 justify-end"></div>
             <Textarea v-model="actionsArray[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
             <div class="buttons justify-end mt-2 col-span-9">
-               <Button :icon="'pi pi-trash'" @click="deleteAction(index)"/>
+               <Button :icon="'pi pi-trash'" @click="deleteAction(actionsArray[index].actionId, index)"/>
             </div>
           </div>
         </div>
