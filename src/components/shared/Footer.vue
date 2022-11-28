@@ -3,7 +3,7 @@
 
 <template>
   <footer class="footer w-full">
-    <div class="content-block flex justify-end py-6">
+    <div class="content-block flex justify-end my-6 mx-24">
       <a href="https://dhp.lbg.ac.at/more/" target="_blank" class="uppercase text-base link">About More</a>
     </div>
   </footer>

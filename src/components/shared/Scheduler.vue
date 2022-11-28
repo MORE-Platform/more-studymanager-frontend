@@ -297,12 +297,12 @@
 
 <style lang="postcss">
   .scheduler {
-    min-height: 600px;
+    min-height: 37.5rem;
 
     .pos-bottom {
       position: absolute;
-      bottom: 20px;
-      right: 20px;
+      bottom: 1.25rem;
+      right: 1.25rem;
     }
   }
 
