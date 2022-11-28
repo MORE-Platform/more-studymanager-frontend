@@ -103,7 +103,7 @@
   }
 
   if(repeatCount.value && repeatByDay.value?.length) {
-    repeatCount.value = repeatCount.value / repeatByDay.value.length;
+    repeatCount.value = repeatCount.value / repeatByDay.value?.length || 1;
   }
 
   if(repeatCount.value || repeatUntil.value) {
@@ -195,7 +195,7 @@
   }
 
   function repeatCheckedData() {
-    if(repeatChecked.value) {
+    if(!repeatChecked.value) {
       repeatBySetPos.value = undefined;
       repeatByMonth.value = undefined;
       repeatByDay.value = undefined;
