@@ -137,9 +137,9 @@ const { componentsApi } = useComponentsApi();
   }
 
 
-  async function createObservation(newObservation: Observation) {
-      try {
-        await observationsApi.addObservation(props.studyId, newObservation)
+  function createObservation(newObservation: Observation) {
+    try {
+      observationsApi.addObservation(props.studyId, newObservation)
           .then(listObservations)
       } catch (e) {
         console.error('cannot create observation', e)

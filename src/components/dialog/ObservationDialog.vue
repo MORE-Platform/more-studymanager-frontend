@@ -24,7 +24,6 @@ const scheduler: Ref<Event> = ref(observation.schedule ? observation.schedule : 
 const studyGroupId = ref(observation.studyGroupId)
 
 const jsonError: Ref<string>= ref('')
-const schedulerEmptyError: Ref<string> = ref('')
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   if(value) {
@@ -62,23 +61,21 @@ function openScheduler() {
 
 function save(){
   try {
-    if(scheduler.value.dtstart) {
-      const props = JSON.parse(properties.value.toString())
-
+      const props: Ref<Event> = ref({})
+      if(scheduler.value?.dtstart) {
+        props.value = JSON.parse(properties.value.toString())
+      }
       const returnObservation = {
         observationId: observation.observationId,
         title: title.value,
         purpose: purpose.value,
         participantInfo: participantInfo.value,
         type: observation.type,
-        properties: props,
+        properties: props.value,
         schedule: scheduler.value,
         studyGroupId: studyGroupId.value
       } as Observation;
       dialogRef.value.close(returnObservation);
-    } else {
-      schedulerEmptyError.value = 'Please choose time schedule for observation.'
-    }
 
   } catch (e) {
     jsonError.value = 'Please enter a valid json inside the Config (Json) field.'
@@ -136,6 +133,11 @@ function save(){
     }
   }
 
+  function removeScheduler() {
+    if(scheduler.value) {
+      scheduler.value = {}
+    }
+  }
 
   function formatDateTime(formatDate: string, startDate: string, endDate: string) {
     const formattedDate: Ref<string> = ref(formatDate.substring(8,10) + '.' + formatDate.substring(6,7) + '.' + formatDate.substring(0,4))
@@ -156,9 +158,7 @@ function save(){
      </div>
      <div class="col-start-0 col-span-8 grid grid-cols-8">
        <h5 class="col-start-0 col-span-8">Scheduler</h5>
-       <div v-if="schedulerEmptyError" class="error col-span-8">{{schedulerEmptyError}}</div>
        <div class="col-start-0 col-span-8 grid grid-cols-7 gap-4 justify-start items-start">
-
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
 
@@ -193,9 +193,14 @@ function save(){
            </div>
 
           </div>
-           <div v-else>Enter Schedule</div>
+           <div v-else class="text-gray-400">Schedule is not set</div>
          </div>
-         <Button class="col-span-2 justify-center" type="button" @click="openScheduler">Open Scheduler</Button>
+         <div class="col-span-2 grid grid-cols-1 gap-1" >
+           <Button class="justify-center" type="button" @click="openScheduler">Open Scheduler</Button>
+           <Button v-if="scheduler.dtstart" class="justify-center" type="button" @click="removeScheduler">Remove Schedule</Button>
+         </div>
+
+
          </div>
 
      </div>
