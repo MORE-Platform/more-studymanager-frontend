@@ -118,21 +118,13 @@
   async function createIntervention(object: any) {
     const interventionId: Ref<number | undefined> = ref(await addIntervention(object.intervention))
 
-    if(interventionId.value) {
-
-      await updateTrigger(interventionId.value, object.trigger)
-        .then(() => {
-          listInterventions()
-        })
-
-      object.actions.forEach((action: Action) => {
-        if(action.actionId) {
-          updateAction(interventionId.value as number, action.actionId, action)
-        } else {
-          createAction(interventionId.value as number, action)
-        }
-      })
-    }
+     if(interventionId.value) {
+       await updateTrigger(interventionId.value as number, object.trigger);
+       object.actions.forEach((action: Action) => {
+         createAction(interventionId.value as number, action)
+       })
+       listInterventions()
+     }
   }
 
   async function addIntervention(intervention: Intervention) {
@@ -161,6 +153,14 @@
     }
   }
 
+  async function deleteAction(interventionId: number, actionId: number) {
+    try {
+      await interventionsApi.deleteAction(props.studyId, interventionId, actionId)
+    } catch(e) {
+      console.error('Cannot delete action: ' + actionId, e);
+    }
+  }
+
   async function updateTrigger(interventionId: number, trigger: Trigger) {
     try {
       await interventionsApi.updateTrigger(props.studyId, interventionId, trigger)
@@ -185,6 +185,9 @@
           createAction(object.intervention.interventionId as number, action)
         }
       })
+      object.removeActions.forEach((actionId: number) => {
+        deleteAction(object.intervention.interventionId as number, actionId)
+      })
     }
   }
 
@@ -195,6 +198,7 @@
         interventionList.value[i] = intervention;
         await interventionsApi.updateIntervention(props.studyId, intervention.interventionId as number, intervention)
           .then(listInterventions)
+        return i;
       }
     } catch(e) {
       console.error('Cannot update intervention: ' + intervention.interventionId, e);
