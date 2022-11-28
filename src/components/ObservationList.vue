@@ -32,10 +32,11 @@ const { componentsApi } = useComponentsApi();
 
   async function getObservationTypes() {
     return  componentsApi.listComponents("observation")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId})));
+      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
   }
 
   const observationTypes: MoreTableActionOption[] = await getObservationTypes();
+  console.log(observationTypes);
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
@@ -106,7 +107,8 @@ const { componentsApi } = useComponentsApi();
       data: {
         groupStates: groupStatuses,
         observation: observation,
-        typeName: nameForType(observation?.type)
+        typeName: nameForType(observation?.type),
+        observationTypes: observationTypes
       },
       props: {
         header: headerText,

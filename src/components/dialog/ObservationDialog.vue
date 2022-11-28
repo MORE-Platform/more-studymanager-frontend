@@ -16,6 +16,7 @@ const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
 const groupStates = dialogRef.value.data.groupStates || [];
 const typeName = dialogRef.value.data.typeName || observation.type;
+const observationTypes = dialogRef.value.data.observationTypes;
 
 const title = ref(observation.title);
 const purpose = ref(observation.purpose);
@@ -53,7 +54,6 @@ function openScheduler() {
       dismissableMask: true,
     },
     onClose: (options) => {
-      console.log(options?.data);
       if(options?.data) {
         scheduler.value = options.data;
       }
@@ -61,8 +61,11 @@ function openScheduler() {
   })
 }
 
+function descriptionForType(type: string) {
+  return observationTypes.find((t: any) => t.label === type)?.description || 'No description available.';
+}
+
 function save(){
-  console.log("save function dialog")
   try {
       const props: Ref<Event> = ref({})
       props.value = JSON.parse(properties.value.toString())
@@ -76,8 +79,6 @@ function save(){
         schedule: scheduler.value,
         studyGroupId: studyGroupId.value
       } as Observation;
-      console.log(returnObservation);
-      console.log("returnObservation");
       dialogRef.value.close(returnObservation);
 
   } catch (e) {
@@ -157,8 +158,8 @@ function save(){
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
 
-            <div><span class="font-medium">{{ $t('start') }}: </span>{{dayjs(scheduler.dtstart).format("DD/MM/YYYY, HH:mm")}}</div>
-            <div><span class="font-medium">{{$t('end')}}: </span>{{dayjs(scheduler.dtend).format("DD/MM/YYYY HH:mm")}}</div>
+            <div><span class="font-medium">{{ $t('start') }}: </span>{{dayjs(scheduler.dtstart).format("DD/MM/YYYY, HH:mm", true)}}</div>
+            <div><span class="font-medium">{{$t('end')}}: </span>{{dayjs(scheduler.dtend).format("DD/MM/YYYY, HH:mm", true)}}</div>
 
 
            <div v-if="scheduler.rrule && scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
@@ -211,12 +212,13 @@ function save(){
       <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
         <h6 class="mb-1">Config(Json)</h6>
-        <div class=""></div>
+        <!-- eslint-disable vue/no-v-html -->
+        <div class="mb-2" v-html="descriptionForType(typeName)"></div>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
 
-     <div class="col-start-0 col-span-8">
+     <div class="col-start-0 col-span-8" :class="[studyGroupId ? 'groupIdValue': '']">
        <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('noGroup')">
        </Dropdown>
      </div>
@@ -249,7 +251,9 @@ function save(){
     &:last-of-type:after {
       content: ""
     }
-
+  }
+  .groupIdValue {
+    color: var(--text-color);
   }
 }
 
