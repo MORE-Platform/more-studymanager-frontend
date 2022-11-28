@@ -99,6 +99,7 @@ header {
   width: 100%;
   background-color: white;
   z-index: 1000;
+
   .logo {
     cursor: pointer;
   }
@@ -107,10 +108,10 @@ header {
     width: auto
   }
   .logout {
-    color: var(--text-color-default);
+    color: var(--text-color);
 
     &:hover, &:active, &:focus {
-      color: var(--color-primary);
+      color: var(--primary-color);
       text-decoration: underline;
     }
   }

@@ -58,7 +58,7 @@
   --focus-ring: 0 0 0 0.2rem var(--primary-100);
   --maskbg: var(--gray-500--alpha);
   --content-padding: 1rem;
-  --default-font-size: 1rem;
+  --default-font-size: 0.875rem;
 
   --box-shadow--light-blue: 0 0 0 0.2rem var(--primary-100);
   --box-shaodw--primary-300: 0 0 0 0.2rem var(--primary-300);
@@ -2353,7 +2353,7 @@
 
 .p-splitbutton.p-button-secondary.p-button-outlined > .p-button {
   background-color: transparent;
-  color: var(--bluegray-500);
+  color: var(--bluegray-600);
   border: var(--border-weight) var(--border-style);
 }
 .p-splitbutton.p-button-secondary.p-button-outlined > .p-button:enabled:hover, .p-splitbutton.p-button-secondary.p-button-outlined > .p-button:not(button):not(a):not(.p-disabled):hover {
