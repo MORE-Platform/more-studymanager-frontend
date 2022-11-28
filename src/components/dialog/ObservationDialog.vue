@@ -54,7 +54,6 @@ function openScheduler() {
       dismissableMask: true,
     },
     onClose: (options) => {
-      console.log(options?.data);
       if(options?.data) {
         scheduler.value = options.data;
       }
@@ -159,8 +158,8 @@ function save(){
          <div class="col-span-5">
           <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
 
-            <div><span class="font-medium">{{ $t('start') }}: </span>{{dayjs(scheduler.dtstart).format("DD/MM/YYYY, HH:mm")}}</div>
-            <div><span class="font-medium">{{$t('end')}}: </span>{{dayjs(scheduler.dtend).format("DD/MM/YYYY HH:mm")}}</div>
+            <div><span class="font-medium">{{ $t('start') }}: </span>{{dayjs(scheduler.dtstart).format("DD/MM/YYYY, HH:mm", true)}}</div>
+            <div><span class="font-medium">{{$t('end')}}: </span>{{dayjs(scheduler.dtend).format("DD/MM/YYYY, HH:mm", true)}}</div>
 
 
            <div v-if="scheduler.rrule && scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
