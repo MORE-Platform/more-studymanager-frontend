@@ -181,7 +181,7 @@ function save(){
 
             <div v-if="scheduler.rrule && scheduler.rrule.count" class="col-span-2">
              <span class="font-medium">Repetition end:</span> after
-              <span v-if="scheduler.rrule.byday.length">{{scheduler.rrule.count / scheduler.rrule.byday.length}}</span>
+              <span v-if="scheduler.rrule?.byday?.length">{{scheduler.rrule.count / scheduler.rrule.byday.length}}</span>
               <span v-else>{{scheduler.rrule.count}}</span>
                {{getFrequencyLabel(scheduler.rrule.freq)}}
            </div>
