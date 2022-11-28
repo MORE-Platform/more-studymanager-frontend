@@ -15,6 +15,7 @@ const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
 const groupStates = dialogRef.value.data.groupStates || [];
 const typeName = dialogRef.value.data.typeName || observation.type;
+const observationTypes = dialogRef.value.data.observationTypes;
 
 const title = ref(observation.title);
 const purpose = ref(observation.purpose);
@@ -59,8 +60,11 @@ function openScheduler() {
   })
 }
 
+function descriptionForType(type: string) {
+  return observationTypes.find((t: any) => t.label === type)?.description || 'No description available.';
+}
+
 function save(){
-  console.log("save function dialog")
   try {
       const props: Ref<Event> = ref({})
       props.value = JSON.parse(properties.value.toString())
@@ -74,8 +78,6 @@ function save(){
         schedule: scheduler.value,
         studyGroupId: studyGroupId.value
       } as Observation;
-      console.log(returnObservation);
-      console.log("returnObservation");
       dialogRef.value.close(returnObservation);
 
   } catch (e) {
@@ -141,8 +143,6 @@ function save(){
   }
 
   function formatDateTime(formatDate: string, startDate: string, endDate: string) {
-  console.log("formatDate")
-  console.log(formatDate)
     const formattedDate: Ref<string> = ref(formatDate.substring(8,10) + '/' + formatDate.substring(5,7) + '/' + formatDate.substring(0,4))
     if(!(startDate.substring(11,19) === '00:00:00' && endDate.substring(11,19) === '23:59:59')) {
       formattedDate.value = formattedDate.value + ', ' + formatDate.substring(11,16);
@@ -219,12 +219,12 @@ function save(){
       <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
         <h6 class="mb-1">Config(Json)</h6>
-        <div class=""></div>
+        <div v-html="descriptionForType(typeName)" class="mb-2"></div>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
 
-     <div class="col-start-0 col-span-8">
+     <div class="col-start-0 col-span-8" :class="[studyGroupId ? 'groupIdValue': '']">
        <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('noGroup')">
        </Dropdown>
      </div>
@@ -257,7 +257,9 @@ function save(){
     &:last-of-type:after {
       content: ""
     }
-
+  }
+  .groupIdValue {
+    color: var(--text-color);
   }
 }
 
