@@ -280,7 +280,3 @@
     <DynamicDialog />
   </div>
 </template>
-
-<style lang="postcss">
-
-</style>

@@ -57,16 +57,20 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
 <style lang="postcss">
 
   .more-tab-nav {
-    margin-top: -15px;
+    margin-top: -0.938rem;
     ul {
       font-size: 1.125rem;
 
       li {
         a {
           padding: 1rem 1.375rem;
-          border: 1px solid lightgrey;;
+          border: 0.063rem solid var(--bluegray-200);;
         }
       }
+    }
+
+    .bg-blue-500{
+      background-color: var(--primary-color)!important;
     }
   }
 </style>

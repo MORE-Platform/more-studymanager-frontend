@@ -1,0 +1,33 @@
+body {
+  font-family: var(--font-family);
+  color: var(--text-color);
+}
+
+h1,h4 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--primary-color);
+
+  span {
+    font-weight: 600;
+
+    &::after {
+      content:'\00a0'
+    }
+  }
+}
+
+h4 {
+  font-weight: 400;
+}

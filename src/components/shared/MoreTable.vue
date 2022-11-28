@@ -336,27 +336,23 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
 <style lang="postcss">
   .more-table {
     h3 {
-      color: var(--primary-color);
       font-weight: 600;
     }
 
-    h4 {
-      font-weight: 300;
-    }
     .row-actions {
       button {
-        margin: 0 3px
+        margin: 0 0.188rem;
       }
     }
 
     .actions {
       .action {
-        margin-left: 10px;
+        margin-left: 0.625rem;
       }
     }
 
     table tbody tr {
-      font-size: 14.5px!important;
+      font-size: 0.906rem!important;
 
       td:last-child {
         width: 1%;

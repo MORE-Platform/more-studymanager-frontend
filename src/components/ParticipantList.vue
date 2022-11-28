@@ -145,16 +145,22 @@ listParticipant()
 <style lang="postcss">
 .table-value-status-new {
   display: block;
-  margin: 1px 3px 0px 0px;
-  color: blue;
+  margin: 0.063rem 0.188rem 0 0;
+  padding-left: 1.2rem;
+  color: var(--primary-color);
+  position: relative;
 
   &:before {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
     content: "";
     display: inline-block;
-    width: 15px;
-    height: 15px;
-    margin-right: 5px;
-    background: blue;
+    width: 0.938rem;
+    height: 0.938rem;
+    margin-right: 0.313rem;
+    background: var(--primary-color);
   }
 }
 </style>

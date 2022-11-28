@@ -21,10 +21,10 @@ defineProps({
 <style lang="postcss">
 .study-header {
   .status {
-    font-size: 28px;
-    border: 3px solid black;
-    border-radius: 4px;
-    padding: 14px 33px;
+    font-size: 1.75rem;
+    border: 0.188rem var(--border-style) var(--bluegray-800);
+    border-radius: 0.25rem;
+    padding: 0.875rem 2.063rem;
     text-transform: uppercase;
     font-weight: 600;
 
@@ -33,18 +33,18 @@ defineProps({
       border-color: var(--green-300);
     }
     &.paused {
-      color: var(--gray-500);
-      border-color: var(--gray-500);
+      color: var(--bluegray-500);
+      border-color: var(--bluegray-500);
     }
   }
 
   .status-inline {
     text-transform: uppercase;
-    border: 2px solid black;
-    padding: 5px;
-    border-radius: 4px;
-    font-size: 24px;
-    color: black;
+    border: calc(var(--border-weight)*2) var(--border-style) var(--bluegray-800);
+    padding: 0.313rem;
+    border-radius: 0.25rem;
+    font-size: 1.5rem;
+    color: var(--bluegray-800);
 
     &.active {
       color: var(--green-300);
@@ -58,11 +58,11 @@ defineProps({
 
   .title-block {
     h1 {
-      font-size: 28px;
+      font-size: 1.75rem;
       color: var(--primary-color);
     }
     .study-id {
-      font-size: 20px;
+      font-size: 1.25rem;
     }
   }
 
