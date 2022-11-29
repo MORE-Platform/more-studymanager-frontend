@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import {inject, ref, Ref} from "vue";
+  import {inject, ref, Ref, reactive} from "vue";
   import Calendar from 'primevue/calendar'
   import Button from 'primevue/button'
   import InputText from 'primevue/inputtext';
@@ -8,7 +8,7 @@
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
   import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateToDateString} from "../../utils/dateUtils";
+  import {dateTimeStringToDate, dateToDateString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -81,7 +81,7 @@
   const allDayChecked: Ref<boolean> = ref (false);
   const repeatChecked: Ref<boolean> = ref(false);
 
-  if(scheduler?.dtstart?.substring(11,19) === '00:00:00' && scheduler?.dtend?.substring(11,19) === '23:59:59') {
+  if(scheduler?.dtstart?.substring(11,19) === '23:00:00' && scheduler?.dtend?.substring(11,19) === '22:59:59') {
     allDayChecked.value = true
   }
 
@@ -153,28 +153,28 @@
     start.value = new Date(start.value);
     end.value = new Date(end.value);
   }
-
   function save(){
     if(repeatFreq.value && !repeatInterval.value) {
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        const dtstart = start.value;
-        const dtend = end.value;
+        let dtstart = start.value;
+        let dtend = end.value;
 
         if(allDayChecked.value) {
           dtstart.setHours(0, 0, 0)
           dtend.setHours(23,59,59)
+          dtstart = dateTimeStringToDate(dtstart.toISOString()) as Date;
+          dtend = dateTimeStringToDate(end.value.toISOString()) as Date
         }
 
         if(repeatCount.value && repeatByDay.value?.length) {
           repeatCount.value = repeatCount.value * repeatByDay.value?.length;
         }
-
         try {
           const returnEvent: Event = {
-            dtstart: dtstart.toISOString(),
-            dtend: dtend.toISOString() ,
+            dtstart: start.value.toISOString(),
+            dtend: end.value.toISOString() ,
             rrule: undefined
           }
           if(repeatFreq.value) {
