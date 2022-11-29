@@ -124,7 +124,7 @@ listParticipant()
 </script>
 
 <template>
-  <div>
+  <div class="participant-list">
     <MoreTable
       row-id="participantId"
       :sort-options="{sortField: 'alias', sortOrder: 1}"
