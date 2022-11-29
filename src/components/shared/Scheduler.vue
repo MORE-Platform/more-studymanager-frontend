@@ -8,7 +8,7 @@
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
   import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
+  import {dateToDateString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -76,11 +76,12 @@
 
 
   const start: Ref<Date> = ref(scheduler.dtstart ? new Date(scheduler.dtstart) : new Date());
-  const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
+  const end: Ref<Date> = ref(scheduler.dtend ?
+    new Date(scheduler.dtend) : new Date());
   const allDayChecked: Ref<boolean> = ref (false);
   const repeatChecked: Ref<boolean> = ref(false);
 
-  if(scheduler?.dtstart?.substring(11,19) === '00:00:00' && scheduler?.dtend?.substring(11,19) === '23:59:59') {
+  if(scheduler?.dtstart?.substring(11,19) === '23:00:00' && scheduler?.dtend?.substring(11,19) === '22:59:59') {
     allDayChecked.value = true
   }
 
@@ -148,31 +149,34 @@
     resetRepeatEndOptions();
   }
 
-  function changeDateType() {
+  function changeDateTime() {
     start.value = new Date(start.value);
     end.value = new Date(end.value);
   }
-
   function save(){
     if(repeatFreq.value && !repeatInterval.value) {
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        const dtstart = allDayChecked.value ? dateToDateString(start.value) + 'T00:00:00Z' : dateToDateTimeString(start.value);
-        const dtend = allDayChecked.value ? dateToDateString(end.value) + 'T00:00:00Z' : dateToDateTimeString(end.value);
+        const s = start.value;
+        const e = end.value;
+
+        if(allDayChecked.value) {
+          s.setHours(0, 0, 0)
+          e.setHours(23,59,59)
+        }
 
         if(repeatCount.value && repeatByDay.value?.length) {
           repeatCount.value = repeatCount.value * repeatByDay.value?.length;
         }
-
         try {
-          const returnEvent: Ref<Event> = ref({
-            dtstart,
-            dtend,
+          const returnEvent: Event = {
+            dtstart: s.toISOString(),
+            dtend: e.toISOString() ,
             rrule: undefined
-          })
+          }
           if(repeatFreq.value) {
-            returnEvent.value.rrule = {
+            returnEvent.rrule = {
               freq: repeatFreq.value,
               until: repeatUntil.value ? dateToDateString(repeatUntil.value) : undefined,
               count: repeatCount.value,
@@ -183,7 +187,7 @@
               bysetpos: repeatBySetPos.value
             }
           }
-          dialogRef.value.close(returnEvent.value);
+          dialogRef.value.close(returnEvent);
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
@@ -214,7 +218,6 @@
 <template>
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
-      {{scheduler.value}}
       <h6 class="col-span-6">First Event</h6>
       <div class="col-span-1">{{$t('start')}}</div>
       <Calendar v-model="start" date-format="dd/mm/yy" hour-format="hh:mm" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
@@ -222,17 +225,12 @@
       <Calendar v-model="end" date-format="dd/mm/yy" hour-format="hh:mm"  :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
       <div class="col-start-2 col-span-2">
         All Day Event:
-        <Checkbox v-model="allDayChecked" class="ml-2" :binary="true" @change="changeDateType()"/>
+        <Checkbox v-model="allDayChecked" class="ml-2" :binary="true" @change="changeDateTime()"/>
       </div>
-
       <div class="col-span-2">Repeat:
         <Checkbox v-model="repeatChecked" class="ml-2" :binary="true" @change="repeatCheckedData()"/>
       </div>
-
-
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
-
-
       <div v-if="repeatChecked" class="col-span-6 grid grid-cols-6 gap-4  mt-4">
         <!-- Frequency: never to yearly -->
         <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
