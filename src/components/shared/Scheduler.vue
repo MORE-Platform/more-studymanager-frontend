@@ -31,7 +31,7 @@
   ]
   const repeatYearOptionArray = [
     {label: 'On a specific day', value: 'onSpecific'},
-    {label: 'On specific options', value: 'onOptions'}
+    //{label: 'On specific options', value: 'onOptions'}
   ]
   const repeatBySetPosOptionArray = [
     {label: 'First', value: 1},
@@ -71,7 +71,7 @@
   const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
     /*{label: 'Never', value: 'never'},*/
     {label: 'After', value: 'after'},
-    {label: 'On Date', value: 'onDate'}
+    //{label: 'On Date', value: 'onDate'}
   ]);
 
 
@@ -154,7 +154,6 @@
     end.value = new Date(end.value);
   }
   function save(){
-
         const s = start.value;
         const e = end.value;
 
@@ -189,7 +188,6 @@
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
-
   }
 
   function cancel() {
@@ -233,7 +231,7 @@
         <!-- Frequency: never to yearly -->
         <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
           <SelectButton v-model="repeatFreq" :options="repeatFreqArray" option-label="label" option-value="value" class="col-span-5 w-full" @click="setRepeatCountLabel(repeatFreq)" @change="resetRepeatFreqOptions"></SelectButton>
-          <div v-if="intervalError" class="col-span-5 error">{{intervalError}}</div>
+          <!--<div v-if="intervalError" class="col-span-5 error">{{intervalError}}</div>-->
           <!--<div v-if="repeatFreq" class="col-span-5">
             Every <InputText v-model="repeatInterval" type="text" :placeholder="'2'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
           </div> -->

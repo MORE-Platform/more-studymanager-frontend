@@ -11,21 +11,21 @@ const emit = defineEmits<{(e: 'onchange', status: StudyStatus): void}>()
 </script>
 <template>
   <div v-if="status === StudyStatus.Draft" class="buttons">
-    <Button type="button" icon="pi pi-play" title="Start" @click="emit('onchange', StudyStatus.Active)"></Button>
+    <Button type="button" title="Start" @click="emit('onchange', StudyStatus.Active)">Start</Button>  <!--icon="pi pi-play"-->
   </div>
   <div v-if="status === StudyStatus.Active" class="buttons">
-    <Button type="button" icon="pi pi-pause" title="Pause" @click="emit('onchange', StudyStatus.Paused)"></Button>
-    <Button type="button" icon="pi pi-stop-circle" title="Close" @click="emit('onchange', StudyStatus.Closed)"></Button>
+    <Button type="button" title="Pause" @click="emit('onchange', StudyStatus.Paused)">Pause</Button> <!--icon="pi pi-pause"-->
+    <Button type="button" title="Close" @click="emit('onchange', StudyStatus.Closed)">Close</Button> <!--icon="pi pi-stop-circle"-->
   </div>
   <div v-if="status === StudyStatus.Paused" class="buttons">
-    <Button type="button" icon="pi pi-play" title="Resume" @click="emit('onchange', StudyStatus.Active)"></Button>
-    <Button type="button" icon="pi pi-stop-circle" title="Close" @click="emit('onchange', StudyStatus.Closed)"></Button>
+    <Button type="button" title="Resume" @click="emit('onchange', StudyStatus.Active)">Resume</Button> <!--icon="pi pi-play"-->
+    <Button type="button" title="Close" @click="emit('onchange', StudyStatus.Closed)">Close</Button> <!-- icon="pi pi-stop-circle"-->
   </div>
 </template>
 
 <style lang="postcss">
   .buttons {
     display:flex;
-    margin-right: 5px;
+    margin-right: 10px;
   }
 </style>

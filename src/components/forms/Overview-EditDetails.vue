@@ -6,6 +6,7 @@
   import Button from "primevue/button";
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
+  import dayjs from 'dayjs'
 
   const dialog = useDialog();
 
@@ -60,20 +61,23 @@
 
     <div class="flex justify-start mb-8">
       <div class="study-info-fixed grid grid-cols-3  2xl:grid-cols-5 gap-x-6 py-3" style="width:89%;">
-        <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{study.plannedStart}}</div>
+        <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{dayjs(study.plannedStart).format("DD/MM/YYYY")}}</div>
         <div><span class="font-bold">{{$t('actualStart')}}: </span>
-          <span v-if="study.start">{{study.start}}</span><span v-else>-</span>
+          <span v-if="study.start">{{dayjs(study.start).format("DD/MM/YYYY")}}</span><span v-else>-</span>
         </div>
-        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{study.plannedEnd}}</div>
+        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{dayjs(study.plannedEnd).format("DD/MM/YYYY")}}</div>
         <div> <span class="font-bold">{{$t('actualEnd')}}: </span>
-          <span v-if="study.end">{{study.end}}</span><span v-else>-</span>
+          <span v-if="study.end">{{dayjs(study.end).format("DD/MM/YYYY")}}</span><span v-else>-</span>
         </div>
-        <div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>
+        <!--<div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>  -->
       </div>
+      <div class="flex">
       <StudyStatusChange :status="study.status" @onchange="updateStudyStatus"></StudyStatusChange>
       <Button
-        type="button" icon="pi pi-pencil"
-        title="Edit Study Details" @click="openEditDialog()"></Button>
+        class="buttons"
+        type="button"
+        title="Edit Study Details" @click="openEditDialog()"><span>Edit</span></Button>
+      </div>
     </div>
 
     <div class="mb-6">
