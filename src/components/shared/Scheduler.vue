@@ -8,7 +8,7 @@
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
   //import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
+  import {dateToDateString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -70,16 +70,9 @@
     {label: 'All weekend days', value: [Weekday.Sa, Weekday.Su]}
   ]
 
-  /*
-  const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
-    {label: 'Never', value: 'never'},
-    {label: 'After', value: 'after'},
-    {label: 'On Date', value: 'onDate'}
-  ]);
-  */
-
   const start: Ref<Date> = ref(scheduler.dtstart ? new Date(scheduler.dtstart) : new Date());
-  const end: Ref<Date> = ref(scheduler.dtend ? new Date(scheduler.dtend) :new Date());
+  const end: Ref<Date> = ref(scheduler.dtend ?
+    new Date(scheduler.dtend) : new Date());
   const allDayChecked: Ref<boolean> = ref (false);
   const repeatChecked: Ref<boolean> = ref(false);
 
@@ -151,9 +144,10 @@
     resetRepeatEndOptions();
   }
 
-  function changeDateType() {
+  function changeDateTime() {
     start.value = new Date(start.value);
     end.value = new Date(end.value);
+    const date =  new Date('July 1, 1999, 23:59:59');
   }
 
   function save(){
@@ -161,21 +155,26 @@
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        const dtstart = allDayChecked.value ? dateToDateString(start.value) + 'T00:00:00Z' : dateToDateTimeString(start.value);
-        const dtend = allDayChecked.value ? dateToDateString(end.value) + 'T00:00:00Z' : dateToDateTimeString(end.value);
+        const dtstart = start.value;
+        const dtend = end.value;
+
+        if(allDayChecked.value) {
+          dtstart.setHours(0, 0, 0)
+          dtend.setHours(23,59,59)
+        }
 
         if(repeatCount.value && repeatByDay.value?.length) {
           repeatCount.value = repeatCount.value * repeatByDay.value?.length;
         }
 
         try {
-          const returnEvent: Ref<Event> = ref({
-            dtstart,
-            dtend,
+          const returnEvent: Event = {
+            dtstart: dtstart.toISOString(),
+            dtend: dtend.toISOString() ,
             rrule: undefined
-          })
+          }
           if(repeatFreq.value) {
-            returnEvent.value.rrule = {
+            returnEvent.rrule = {
               freq: repeatFreq.value,
               until: repeatUntil.value ? dateToDateString(repeatUntil.value) : undefined,
               count: repeatCount.value,
@@ -186,17 +185,12 @@
               bysetpos: repeatBySetPos.value
             }
           }
-          console.log("SCHEDULER------")
-          console.log(returnEvent.value);
-          console.log(typeof returnEvent.value.dtstart)
-          dialogRef.value.close(returnEvent.value);
+          dialogRef.value.close(returnEvent);
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
     }
   }
-
-  console.log("test")
 
   function cancel() {
     dialogRef.value.close();
@@ -214,11 +208,11 @@
       <div class="col-span-1">{{$t('end')}}</div>
       <Calendar v-model="end" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
       <div class="col-span-1">All Day Event:</div>
-      <Checkbox v-model="allDayChecked" :binary="true" @change="changeDateType()"/>
+      <Checkbox v-model="allDayChecked" :binary="true" @change="changeDateTime()"/>
 
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
       <div class="col-span-1">Repeat: </div>
-      <Checkbox v-model="repeatChecked" :binary="true" @change="changeDateType()"/>
+      <Checkbox v-model="repeatChecked" :binary="true" @change="changeDateTime()"/>
       <div v-if="repeatChecked" class="col-span-6 grid grid-cols-6 gap-4  mt-4">
         <div class="col-span-1">{{$t('repeat')}}</div>
         <!-- Frequency: never to yearly -->
