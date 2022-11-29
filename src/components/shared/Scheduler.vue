@@ -7,8 +7,8 @@
   import SelectButton from 'primevue/selectbutton';
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
-  //import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateToDateString} from "../../utils/dateUtils";
+  import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
+  import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -16,12 +16,9 @@
   const scheduler:any = dialogRef.value.data.scheduler;
 
   const repeatFreqArray = [
-    {label: 'Never', value: undefined, active: true},
-    {label: 'Hourly', value: Frequency.Hourly, active: true, unit: 'hour(s)'},
     {label: 'Daily', value: Frequency.Daily, active: true, unit: 'day(s)'},
     {label: 'Weekly', value: Frequency.Weekly, active: true, unit: 'week(s)'},
-    {label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'},
-    {label: 'Yearly', value: Frequency.Yearly, active: true, unit: 'year(s)'}
+    {label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'}
   ]
   const repeatWeekdayArray = [
     {label: 'MO', value: Weekday.Mo},
@@ -70,6 +67,14 @@
     {label: 'All weekend days', value: [Weekday.Sa, Weekday.Su]}
   ]
 
+
+  const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
+    {label: 'Never', value: 'never'},
+    {label: 'After', value: 'after'},
+    {label: 'On Date', value: 'onDate'}
+  ]);
+
+
   const start: Ref<Date> = ref(scheduler.dtstart ? new Date(scheduler.dtstart) : new Date());
   const end: Ref<Date> = ref(scheduler.dtend ?
     new Date(scheduler.dtend) : new Date());
@@ -99,7 +104,7 @@
   }
 
   if(repeatCount.value && repeatByDay.value?.length) {
-    repeatCount.value = repeatCount.value / repeatByDay.value.length;
+    repeatCount.value = repeatCount.value / repeatByDay.value?.length || 1;
   }
 
   if(repeatCount.value || repeatUntil.value) {
@@ -147,7 +152,6 @@
   function changeDateTime() {
     start.value = new Date(start.value);
     end.value = new Date(end.value);
-    const date =  new Date('July 1, 1999, 23:59:59');
   }
 
   function save(){
@@ -196,39 +200,58 @@
     dialogRef.value.close();
   }
 
-
+  function repeatCheckedData() {
+    if(!repeatChecked.value) {
+      repeatBySetPos.value = undefined;
+      repeatByMonth.value = undefined;
+      repeatByDay.value = undefined;
+      repeatByMonthDay.value = undefined;
+      repeatUntil.value = undefined;
+      repeatCount.value = undefined;
+      repeatInterval.value = undefined;
+      repeatEndOption.value = 'never';
+      repeatCountLabel.value = undefined;
+      repeatFreq.value = undefined;
+    }
+  }
 
 </script>
 
 <template>
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
+      <h6 class="col-span-6">First Event</h6>
       <div class="col-span-1">{{$t('start')}}</div>
-      <Calendar v-model="start" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
+      <Calendar v-model="start" date-format="dd/mm/yy" hour-format="hh:mm" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
       <div class="col-span-1">{{$t('end')}}</div>
-      <Calendar v-model="end" :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
-      <div class="col-span-1">All Day Event:</div>
-      <Checkbox v-model="allDayChecked" :binary="true" @change="changeDateTime()"/>
+      <Calendar v-model="end" date-format="dd/mm/yy" hour-format="hh:mm"  :show-time="!allDayChecked" :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
+      <div class="col-start-2 col-span-2">
+        All Day Event:
+        <Checkbox v-model="allDayChecked" class="ml-2" :binary="true" @change="changeDateTime()"/>
+      </div>
+
+      <div class="col-span-2">Repeat:
+        <Checkbox v-model="repeatChecked" class="ml-2" :binary="true" @change="repeatCheckedData()"/>
+      </div>
+
 
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
       <div class="col-span-1">Repeat: </div>
       <Checkbox v-model="repeatChecked" :binary="true" @change="changeDateTime()"/>
       <div v-if="repeatChecked" class="col-span-6 grid grid-cols-6 gap-4  mt-4">
-        <div class="col-span-1">{{$t('repeat')}}</div>
         <!-- Frequency: never to yearly -->
-        <div class="col-span-5 grid grid-cols-5 gap-4">
+        <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
           <SelectButton v-model="repeatFreq" :options="repeatFreqArray" option-label="label" option-value="value" class="col-span-5 w-full" @click="setRepeatCountLabel(repeatFreq)" @change="resetRepeatFreqOptions"></SelectButton>
           <div v-if="intervalError" class="col-span-5 error">{{intervalError}}</div>
           <div v-if="repeatFreq" class="col-span-5">
-            <InputText v-model="repeatInterval" type="text" :placeholder="'Enter repeat interval.'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
+            Repeat for <InputText v-model="repeatInterval" type="text" :placeholder="'2'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
           </div>
         </div>
 
-        <hr v-if="repeatFreq === Frequency.Weekly" class="col-start-0 col-span-6 mb-4 mt-4">
         <!-- weekday select -->
         <div v-if="repeatFreq === Frequency.Weekly" class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
 
-          <SelectButton v-model="repeatByDay" :options="repeatWeekdayArray" option-label="label" option-value="value" class="col-span-3 w-full" :multiple="true"></SelectButton>
+          <SelectButton v-model="repeatByDay" :options="repeatWeekdayArray" option-label="label" option-value="value" class="col-span-5 w-full" :multiple="true"></SelectButton>
         </div>
 
         <!-- monthly/yearly select -->
@@ -246,7 +269,9 @@
             <Dropdown v-if="repeatFreq === Frequency.Yearly" v-model="repeatByMonth" :options="repeatByMonthOptionArray" :option-label="'label'" :option-value="'value'"  :placeholder="'Choose Month'"/>
           </div>
         </div>
-        <!--<hr class="col-start-0 col-span-6 mb-4 mt-4">
+
+        <hr v-if="repeatFreq === Frequency.Weekly" class="col-start-0 col-span-6 mb-4 mt-4">
+        <div v-if="repeatFreq" class="col-start-0 col-span-1 font-medium">Repetition ends </div>
         <div v-if="repeatFreq" class="col-start-2 col-span-5 grid grid-cols-3 gap-4">
           <Dropdown v-model="repeatEndOption" :options="repeatEndOptionArray" :option-label="'label'" :option-value="'value'" class="col-span-1" @change="resetRepeatEndOptions"/>
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
@@ -255,7 +280,7 @@
           <div v-else-if="repeatEndOption === 'onDate'" class="col-span-2" >
             <Calendar v-model="repeatUntil" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
           </div>
-        </div>    -->
+        </div>
       </div>
     </div>
 
@@ -277,6 +302,15 @@
       position: absolute;
       bottom: 1.25rem;
       right: 1.25rem;
+    }
+
+    input::placeholder {
+      color: var(--bluegray-300);
+    }
+
+    h6 {
+      color: var(--primary-color);
+      font-weight: 500;
     }
   }
 

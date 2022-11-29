@@ -339,6 +339,10 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
       font-weight: 600;
     }
 
+    h4 {
+      font-size: 1rem;
+    }
+
     .row-actions {
       button {
         margin: 0 0.188rem;

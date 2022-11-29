@@ -67,23 +67,11 @@
         removeActions: removeActions.value
       }
 
-      if(triggerProps.type && triggerProps.properties.cronSchedule && triggerProps.properties.query && triggerProps.properties.window && actionsProps.length) {
-        jsonError.value = '';
-        triggerEmptyError.value = '';
-        actionsEmptyError.value = '';
-        dialogRef.value.close(returnObject);
-      } else {
-        if (triggerProps.type || !triggerProps.properties.query || !triggerProps.properties.window  || !triggerProps.properties.cronSchedule) {
-          triggerEmptyError.value = 'Please choose trigger type and enter trigger config {"query":"q","window":100,"cronSchedule":"abc"}.'
-        } else {
-          triggerEmptyError.value = '';
-        }
-        if (!actionsProps.length) {
-          actionsEmptyError.value = 'Please choose at least one action and enter action config {"message": "m"}.'
-        } else {
-          actionsEmptyError.value = '';
-        }
-      }
+      jsonError.value = '';
+      triggerEmptyError.value = '';
+      actionsEmptyError.value = '';
+      dialogRef.value.close(returnObject);
+
     } catch(e) {
       console.error(e);
       jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
@@ -112,16 +100,15 @@
 
 <template>
   <div class="intervention-dialog">
-    {{intervention.interventionId}}
     <div class="grid grid-cols-8 gap-4 items-center">
       <div class="col-start-0 col-span-2"><h5>{{ $t('intervention') }} {{ $t('title') }}</h5></div>
       <div class="col-start-3 col-span-6">
-        <InputText v-model="title" placeholder="Enter intervention title." style="width: 100%"></InputText>
+        <InputText v-model="title" :placeholder="$t('placeholder.title')" style="width: 100%"></InputText>
       </div>
 
       <div class="col-start-0 col-span-8">
         <h5 class="mb-2">{{ $t('purpose') }}</h5>
-        <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="purpose" :placeholder="$t('placeholder.purpose')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
 
       <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
