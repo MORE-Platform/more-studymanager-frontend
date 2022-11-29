@@ -12,12 +12,15 @@ const study = route.meta['study'] as Study;
   <div class="container m-auto mt-10">
     <StudyHeader :study="study"></StudyHeader>
     <MoreTabNav :study-id="study?.studyId"></MoreTabNav>
-    <div class="data-header-textblock">
-      <h3>Data</h3>
-      <h4>Data collected during the study will be visualized at this within this dashboard.</h4>
+    <div class="container bg-white p-10 rounded-lg">
+        <div class="data-header-textblock">
+          <h3>Data</h3>
+          <h4>Data collected during the study will be visualized at this within this dashboard.</h4>
+        </div>
+      <DataView />
     </div>
   </div>
-  <DataView />
+
 
 
 </template>
