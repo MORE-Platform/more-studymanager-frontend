@@ -112,7 +112,6 @@
 
 <template>
   <div class="intervention-dialog">
-    {{intervention.interventionId}}
     <div class="grid grid-cols-8 gap-4 items-center">
       <div class="col-start-0 col-span-2"><h5>{{ $t('intervention') }} {{ $t('title') }}</h5></div>
       <div class="col-start-3 col-span-6">
