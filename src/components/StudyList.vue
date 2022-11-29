@@ -142,7 +142,6 @@ const { studiesApi } = useStudiesApi()
             '640px': '90vw'
           },
           modal: true,
-          dismissableMask: true,
         },
       })
     }

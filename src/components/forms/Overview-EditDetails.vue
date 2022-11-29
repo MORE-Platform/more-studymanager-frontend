@@ -43,7 +43,6 @@
           '640px': '90vw'
         },
         modal: true,
-        dismissableMask: true,
       },
       onClose: (options) => {
         if(options) {
