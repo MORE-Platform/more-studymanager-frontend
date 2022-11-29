@@ -8,7 +8,7 @@
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
   import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateToDateString, dateToDateTimeString} from "../../utils/dateUtils";
+  import {dateToDateString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -229,15 +229,10 @@
         All Day Event:
         <Checkbox v-model="allDayChecked" class="ml-2" :binary="true" @change="changeDateTime()"/>
       </div>
-
       <div class="col-span-2">Repeat:
         <Checkbox v-model="repeatChecked" class="ml-2" :binary="true" @change="repeatCheckedData()"/>
       </div>
-
-
       <hr class="col-start-0 col-span-6 mb-4 mt-4">
-      <div class="col-span-1">Repeat: </div>
-      <Checkbox v-model="repeatChecked" :binary="true" @change="changeDateTime()"/>
       <div v-if="repeatChecked" class="col-span-6 grid grid-cols-6 gap-4  mt-4">
         <!-- Frequency: never to yearly -->
         <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
