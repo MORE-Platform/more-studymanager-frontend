@@ -36,7 +36,6 @@ const { componentsApi } = useComponentsApi();
   }
 
   const observationTypes: MoreTableActionOption[] = await getObservationTypes();
-  console.log(observationTypes);
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
