@@ -67,23 +67,11 @@
         removeActions: removeActions.value
       }
 
-      if(triggerProps.type && triggerProps.properties.cronSchedule && triggerProps.properties.query && triggerProps.properties.window && actionsProps.length) {
-        jsonError.value = '';
-        triggerEmptyError.value = '';
-        actionsEmptyError.value = '';
-        dialogRef.value.close(returnObject);
-      } else {
-        if (triggerProps.type || !triggerProps.properties.query || !triggerProps.properties.window  || !triggerProps.properties.cronSchedule) {
-          triggerEmptyError.value = 'Please choose trigger type and enter trigger config {"query":"q","window":100,"cronSchedule":"abc"}.'
-        } else {
-          triggerEmptyError.value = '';
-        }
-        if (!actionsProps.length) {
-          actionsEmptyError.value = 'Please choose at least one action and enter action config {"message": "m"}.'
-        } else {
-          actionsEmptyError.value = '';
-        }
-      }
+      jsonError.value = '';
+      triggerEmptyError.value = '';
+      actionsEmptyError.value = '';
+      dialogRef.value.close(returnObject);
+
     } catch(e) {
       console.error(e);
       jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
