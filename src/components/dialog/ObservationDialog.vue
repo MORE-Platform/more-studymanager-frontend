@@ -220,7 +220,7 @@ function save(){
     </div>
 
      <div class="col-start-0 col-span-8" :class="[studyGroupId ? 'groupIdValue': '']">
-       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('noGroup')">
+       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('entireStudy')">
        </Dropdown>
      </div>
 

@@ -284,7 +284,7 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
             <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
-              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" :options="column.editable.values" option-label="label" option-value="value"></Dropdown>
+              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
             <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">

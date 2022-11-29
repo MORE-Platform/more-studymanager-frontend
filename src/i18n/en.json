@@ -82,7 +82,8 @@
   "observation": "Observation",
   "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
   "interventionListDescr": "An intervention describes an action delivered to the app triggered by rules on data.",
-  "noGroup": "Entire Study",
+  "noGroup": "No Group",
+  "entireStudy": "Entire Study",
   "no-value": "-",
 
   "tooltips": {
