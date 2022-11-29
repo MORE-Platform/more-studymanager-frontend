@@ -81,7 +81,7 @@
   const allDayChecked: Ref<boolean> = ref (false);
   const repeatChecked: Ref<boolean> = ref(false);
 
-  if(scheduler?.dtstart?.substring(11,19) === '00:00:00' && scheduler?.dtend?.substring(11,19) === '23:59:59') {
+  if(scheduler?.dtstart?.substring(11,19) === '23:00:00' && scheduler?.dtend?.substring(11,19) === '22:59:59') {
     allDayChecked.value = true
   }
 
@@ -153,28 +153,26 @@
     start.value = new Date(start.value);
     end.value = new Date(end.value);
   }
-
   function save(){
     if(repeatFreq.value && !repeatInterval.value) {
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        const dtstart = start.value;
-        const dtend = end.value;
+        const s = start.value;
+        const e = end.value;
 
         if(allDayChecked.value) {
-          dtstart.setHours(0, 0, 0)
-          dtend.setHours(23,59,59)
+          s.setHours(0, 0, 0)
+          e.setHours(23,59,59)
         }
 
         if(repeatCount.value && repeatByDay.value?.length) {
           repeatCount.value = repeatCount.value * repeatByDay.value?.length;
         }
-
         try {
           const returnEvent: Event = {
-            dtstart: dtstart.toISOString(),
-            dtend: dtend.toISOString() ,
+            dtstart: s.toISOString(),
+            dtend: e.toISOString() ,
             rrule: undefined
           }
           if(repeatFreq.value) {
