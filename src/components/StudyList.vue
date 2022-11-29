@@ -15,6 +15,7 @@ import DynamicDialog from 'primevue/dynamicdialog';
 import StudyDialog from './dialog/StudyDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
+import InfoDialog from "./dialog/InfoDialog.vue";
 //import {UserRolesEnum} from '../models/UserModel';
 
 const { studiesApi } = useStudiesApi()
@@ -118,11 +119,32 @@ const { studiesApi } = useStudiesApi()
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
       const studyUrl = location.host + '/studies/' + studyId
+      console.log(studyUrl)
+      console.log("onCopyId");
       navigator.clipboard.writeText(studyUrl)
         .then(function() {
           console.log('Copied Study ' + title + ': ' + studyUrl);
-        })
-      alert('Copied Study ' + title + ': ' + studyUrl)
+        }, function(error){
+           console.error('copy to clipboard error', error)
+      })
+
+      dialog.open(InfoDialog,{
+        data: {
+          message: 'URL for StudyId '+ studyId + ' Study (' + title + ') was copied to your clipboard.'
+        },
+        props: {
+          header: "Copied ID",
+          style: {
+            width: '50vw',
+          },
+          breakpoints:{
+            '960px': '75vw',
+            '640px': '90vw'
+          },
+          modal: true,
+          dismissableMask: true,
+        },
+      })
     }
   }
 
