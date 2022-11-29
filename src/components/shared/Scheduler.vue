@@ -158,14 +158,12 @@
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        let dtstart = start.value;
-        let dtend = end.value;
+        let s = start.value;
+        let e = end.value;
 
         if(allDayChecked.value) {
-          dtstart.setHours(0, 0, 0)
-          dtend.setHours(23,59,59)
-          dtstart = dateTimeStringToDate(dtstart.toISOString()) as Date;
-          dtend = dateTimeStringToDate(end.value.toISOString()) as Date
+          s.setHours(0, 0, 0)
+          e.setHours(23,59,59)
         }
 
         if(repeatCount.value && repeatByDay.value?.length) {
@@ -173,8 +171,8 @@
         }
         try {
           const returnEvent: Event = {
-            dtstart: start.value.toISOString(),
-            dtend: end.value.toISOString() ,
+            dtstart: s.toISOString(),
+            dtend: e.toISOString() ,
             rrule: undefined
           }
           if(repeatFreq.value) {
