@@ -8,7 +8,7 @@
   import Checkbox from 'primevue/checkbox';
   import {Frequency, Weekday, Event} from '../../generated-sources/openapi';
   import {MoreTableEditableChoicePropertyValues} from "../../models/MoreTableModel";
-  import {dateTimeStringToDate, dateToDateString} from "../../utils/dateUtils";
+  import {dateToDateString} from "../../utils/dateUtils";
 
 
   const dialogRef:any = inject("dialogRef")
@@ -158,8 +158,8 @@
       intervalError.value = 'Please set repetition interval.'
     }  else {
       intervalError.value = ''
-        let s = start.value;
-        let e = end.value;
+        const s = start.value;
+        const e = end.value;
 
         if(allDayChecked.value) {
           s.setHours(0, 0, 0)
