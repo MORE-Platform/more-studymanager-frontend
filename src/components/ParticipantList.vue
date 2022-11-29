@@ -43,7 +43,7 @@ const rowActions: MoreTableAction[] = [
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id: 'distribute', label:'Distribute Groups', visible: () => {
+  { id: 'distribute', label:'Distribute Participants', visible: () => {
     return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused
     }},
   { id:'create', label:'Add Participant', icon:'pi pi-plus',
@@ -124,11 +124,12 @@ listParticipant()
 </script>
 
 <template>
-  <div>
+  <div class="participant-list">
     <MoreTable
       row-id="participantId"
       :sort-options="{sortField: 'alias', sortOrder: 1}"
       :title="$t('participants')"
+      :subtitle="$t('listDescription.participantList')"
       :columns="participantsColumns"
       :rows="participantsList"
       :row-actions="rowActions"
@@ -146,11 +147,11 @@ listParticipant()
 .table-value-status-new {
   display: block;
   margin: 0.063rem 0.188rem 0 0;
-  padding-left: 1.2rem;
-  color: var(--primary-color);
+  //padding-left: 1.2rem;
+  //color: var(--primary-color);
   position: relative;
 
-  &:before {
+  /*&:before {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -161,6 +162,6 @@ listParticipant()
     height: 0.938rem;
     margin-right: 0.313rem;
     background: var(--primary-color);
-  }
+  } */
 }
 </style>

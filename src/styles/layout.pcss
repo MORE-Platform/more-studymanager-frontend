@@ -12,3 +12,12 @@ body {
 .error {
   color: #D57575;
 }
+
+a {
+  color: var(--primary-color);
+  font-weight: 600;
+
+  &:hover, &:active, &:focus {
+    color: var(--primary-color--secondary)
+  }
+}

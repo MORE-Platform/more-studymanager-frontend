@@ -100,16 +100,15 @@
 
 <template>
   <div class="intervention-dialog">
-    {{intervention.interventionId}}
     <div class="grid grid-cols-8 gap-4 items-center">
       <div class="col-start-0 col-span-2"><h5>{{ $t('intervention') }} {{ $t('title') }}</h5></div>
       <div class="col-start-3 col-span-6">
-        <InputText v-model="title" placeholder="Enter intervention title." style="width: 100%"></InputText>
+        <InputText v-model="title" :placeholder="$t('placeholder.title')" style="width: 100%"></InputText>
       </div>
 
       <div class="col-start-0 col-span-8">
         <h5 class="mb-2">{{ $t('purpose') }}</h5>
-        <Textarea v-model="purpose" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
+        <Textarea v-model="purpose" :placeholder="$t('placeholder.purpose')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
 
       <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
