@@ -46,7 +46,7 @@ import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
         <a
           href="#"
           class="inline-block p-4 rounded-t-lg"
-          :class="{'cursor-default': tab.active, 'text-white': tab.active, 'bg-blue-500': tab.active, 'scale-110 origin-bottom z-50': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
+          :class="{'cursor-default': tab.active, 'text-white': tab.active, 'bg-blue-500': tab.active, 'scale-110 origin-bottom z-50 hover:text-white': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
           @click="goto(tab)"
         >{{tab.title}}</a>
       </li>

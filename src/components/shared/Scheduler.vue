@@ -18,7 +18,7 @@
   const repeatFreqArray = [
     {label: 'Daily', value: Frequency.Daily, active: true, unit: 'day(s)'},
     {label: 'Weekly', value: Frequency.Weekly, active: true, unit: 'week(s)'},
-    {label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'}
+    //{label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'}
   ]
   const repeatWeekdayArray = [
     {label: 'MO', value: Weekday.Mo},
@@ -69,7 +69,7 @@
 
 
   const repeatEndOptionArray : Ref<MoreTableEditableChoicePropertyValues[]> = ref([
-    {label: 'Never', value: 'never'},
+    /*{label: 'Never', value: 'never'},*/
     {label: 'After', value: 'after'},
     {label: 'On Date', value: 'onDate'}
   ]);
@@ -97,7 +97,7 @@
   const repeatCountLabel: Ref<string | undefined> = ref(scheduler.rrule && scheduler.rrule.freq ? repeatFreqArray.find((f:any) => f.value === scheduler.rrule.freq)?.unit : '')
   const repeatYearOption: Ref<string> = ref('onSpecific')
   const repeatEndOption : Ref<string> = ref('never');
-  const intervalError: Ref<string> = ref('')
+  //const intervalError: Ref<string> = ref('')
 
   if(repeatFreq.value) {
     repeatChecked.value = true;
@@ -154,10 +154,7 @@
     end.value = new Date(end.value);
   }
   function save(){
-    if(repeatFreq.value && !repeatInterval.value) {
-      intervalError.value = 'Please set repetition interval.'
-    }  else {
-      intervalError.value = ''
+
         const s = start.value;
         const e = end.value;
 
@@ -187,11 +184,12 @@
               bysetpos: repeatBySetPos.value
             }
           }
+
           dialogRef.value.close(returnEvent);
         } catch(e) {
           console.error('Cannot send schedule event ', e)
         }
-    }
+
   }
 
   function cancel() {
@@ -236,9 +234,9 @@
         <div class="col-start-2 col-span-5 grid grid-cols-5 gap-4">
           <SelectButton v-model="repeatFreq" :options="repeatFreqArray" option-label="label" option-value="value" class="col-span-5 w-full" @click="setRepeatCountLabel(repeatFreq)" @change="resetRepeatFreqOptions"></SelectButton>
           <div v-if="intervalError" class="col-span-5 error">{{intervalError}}</div>
-          <div v-if="repeatFreq" class="col-span-5">
-            Repeat for <InputText v-model="repeatInterval" type="text" :placeholder="'2'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
-          </div>
+          <!--<div v-if="repeatFreq" class="col-span-5">
+            Every <InputText v-model="repeatInterval" type="text" :placeholder="'2'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
+          </div> -->
         </div>
 
         <!-- weekday select -->
@@ -271,7 +269,7 @@
             <InputText v-model="repeatCount" type="text" :placeholder="'Enter repeat count'" /> <span class="ml-2">{{repeatCountLabel}}</span>
           </div>
           <div v-else-if="repeatEndOption === 'onDate'" class="col-span-2" >
-            <Calendar v-model="repeatUntil" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
+            <Calendar v-model="repeatUntil" placeholder="dd/mm/yyyy"  date-format="dd/mm/yy" autocomplete="off" style="width: 100%" :class="'col-span-5'"/>
           </div>
         </div>
       </div>

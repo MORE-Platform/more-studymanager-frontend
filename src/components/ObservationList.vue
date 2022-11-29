@@ -28,7 +28,7 @@ const { componentsApi } = useComponentsApi();
   })
 
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
-  groupStatuses.push({label: 'No Group', value: null})
+  groupStatuses.push({label: "Entire Study", value: null})
 
   async function getObservationTypes() {
     return  componentsApi.listComponents("observation")
@@ -119,7 +119,6 @@ const { componentsApi } = useComponentsApi();
           '640px': '90vw'
         },
         modal: true,
-        dismissableMask: true,
       },
       onClose: (options) => {
         if(options?.data) {

@@ -30,7 +30,7 @@
   })
 
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
-  groupStatuses.push({label: 'No Group', value: null})
+  groupStatuses.push({label: "Entire Study", value: null})
 
   async function getActionTypes() {
     return  componentsApi.listComponents("action")
@@ -235,7 +235,8 @@
               '640px': '90vw'
             },
             modal: true,
-            dismissableMask: true,
+            closeOnEscape: false,
+
           },
           onClose: (options) => {
             if(options?.data) {
