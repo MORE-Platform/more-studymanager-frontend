@@ -13,7 +13,7 @@
   const actionsData:Action[] = dialogRef.value.data?.actionsData;
   const triggerData:Trigger = dialogRef.value.data?.triggerData;
   const groupStates = dialogRef.value.data?.groupStates || undefined;
-  const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Choose a group';
+  const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Entire Study';
   const actionTypes = dialogRef.value.data?.actionTypes;
   const actionTypesOptions: Ref<any[]> = ref([])
   const triggerTypesOptions = dialogRef.value.data?.triggerTypes;

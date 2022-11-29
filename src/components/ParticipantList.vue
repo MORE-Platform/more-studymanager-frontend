@@ -30,12 +30,14 @@ const props = defineProps({
 const groupStatuses: Ref<MoreTableChoice[]> = ref(
   props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice))
 );
+groupStatuses.value.push({label: "No Group", value: null})
 
 const participantsColumns: MoreTableColumn[] = [
+  {field: 'participantId', header: 'Id', sortable: true},
   { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status', filterable: {showFilterMatchModes: false} },
-  { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: "Entire Study"}
+  { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses.value}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: "noGroup"}
 ]
 
 const rowActions: MoreTableAction[] = [

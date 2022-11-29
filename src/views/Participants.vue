@@ -7,6 +7,7 @@ import {useRoute} from 'vue-router';
 const route = useRoute()
 const study = route.meta['study'] as Study
 const studyGroups = route.meta['studyGroups'] as StudyGroup[];
+
 </script>
 
 <template>

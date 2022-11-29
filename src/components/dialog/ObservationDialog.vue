@@ -51,7 +51,6 @@ function openScheduler() {
         '640px': '90vw'
       },
       modal: true,
-      dismissableMask: true,
     },
     onClose: (options) => {
       if(options?.data) {
@@ -166,7 +165,7 @@ function save(){
 
            <div v-if="scheduler.rrule && scheduler.rrule.freq" class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1">
              <div><span class="font-medium">Frequency: </span>{{scheduler.rrule.freq}}</div>
-             <div>For {{scheduler.rrule.interval}} {{getFrequencyLabel(scheduler.rrule.freq)}}</div>
+             <div v-if="scheduler?.rrule?.interval">For {{scheduler.rrule.interval}} {{getFrequencyLabel(scheduler.rrule.freq)}}</div>
              <div v-if="scheduler.rrule.bymonthday && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1" >Every {{scheduler.rrule.bymonthday}}{{getByMonthDayLabel(scheduler.rrule.bymonthday)}}</div>
              <div v-if="scheduler.rrule.bysetpos && scheduler.rrule.freq === Frequency.Monthly" class="col-start-2 col-span-1">Every {{getByStepPosLabel(scheduler.rrule.bysetpos)}} <span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day mr-2">{{day}}</span></div>
              <div v-if=" scheduler.rrule.freq === Frequency.Yearly" class="col-start-2 col-span-1">Every
@@ -174,7 +173,7 @@ function save(){
                <span v-if="scheduler.rrule.byday"><span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day">{{day}}</span> in </span>
                {{getMonthLabel(scheduler.rrule.bymonth)}}</div>
            </div>
-           <div v-if="scheduler.rrule && scheduler.rrule.byday && !scheduler.rrule.bysetpos" class="col-span-2">
+           <div v-if="scheduler.rrule && scheduler.rrule.byday?.length && !scheduler.rrule.bysetpos" class="col-span-2">
              <span class="font-medium">Days selected: </span>
              <span v-for="(day, index) in scheduler.rrule.byday" :key="index" class="day">
                {{day}}
@@ -221,7 +220,7 @@ function save(){
     </div>
 
      <div class="col-start-0 col-span-8" :class="[studyGroupId ? 'groupIdValue': '']">
-       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('noGroup')">
+       <Dropdown v-model="studyGroupId" :options="groupStates" option-label="label" option-value="value" :placeholder="getLabelForChoiceValue(studyGroupId, groupStates) || $t('entireStudy')">
        </Dropdown>
      </div>
 
