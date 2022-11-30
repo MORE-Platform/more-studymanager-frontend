@@ -327,7 +327,7 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
         {{ emptyMessage }}
       </template>
       <template #loading>
-        <ProgressSpinner />
+
       </template>
     </DataTable>
   </div>
@@ -335,6 +335,11 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
 
 <style lang="postcss">
   .more-table {
+    .p-datatable-loading-overlay {
+      filter: blur(5px);
+      background-color: #ffffff99;
+    }
+
     h3 {
       font-weight: 600;
     }

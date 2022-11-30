@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import {inject} from 'vue';
 import AuthService from '../../service/AuthService';
+import ProgressBar from 'primevue/progressbar';
+import useLoader from '../../composable/useLoader';
 
 const auth = inject('authService') as AuthService
+
+const loading = useLoader().loading;
 
 function logout() {
   auth.logout();
@@ -87,6 +91,9 @@ d="M244.6,78.4c-0.4-0.4-0.8-0.6-1.4-0.6h-6.1c-1,0-1.8,0.5-2.3,1.5l-15.2,28.1l-16
         </svg></div>
       </div>
     </div>
+    <div v-if="loading" class="loader">
+      <ProgressBar mode="indeterminate" style="height: .5em" />
+    </div>
   </header>
 </template>
 
@@ -99,6 +106,17 @@ header {
   width: 100%;
   background-color: white;
   z-index: 1000;
+
+  .loader {
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    top:78px;
+  }
+
+  .p-progressbar {
+    border-radius: 0 !important;
+  }
 
   .logo {
     cursor: pointer;

@@ -11,6 +11,7 @@
 
 <style lang="postcss">
   .footer {
+    z-index: 1000;
     position: fixed;
     left: 0;
     bottom: 0;
