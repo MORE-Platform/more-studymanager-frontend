@@ -17,7 +17,6 @@ import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
 //import MultiSelect from 'primevue/multiselect';
-import ProgressSpinner from 'primevue/progressspinner';
 import {useConfirm} from 'primevue/useconfirm';
 import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
