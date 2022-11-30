@@ -5,7 +5,7 @@
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import Dropdown from 'primevue/dropdown';
-  import {Action, Trigger, Intervention} from '../../generated-sources/openapi';
+  import {Action, Trigger, Intervention, ComponentFactory} from '../../generated-sources/openapi';
 
 
   const dialogRef:any = inject("dialogRef")
@@ -14,15 +14,17 @@
   const triggerData:Trigger = dialogRef.value.data?.triggerData;
   const groupStates = dialogRef.value.data?.groupStates || undefined;
   const groupPlaceholder = dialogRef.value.data?.groupPlaceholder || 'Entire Study';
-  const actionTypes = dialogRef.value.data?.actionTypes;
-  const actionTypesOptions: Ref<any[]> = ref([])
-  const triggerTypesOptions = dialogRef.value.data?.triggerTypes;
+  const actionFactories = dialogRef.value.data?.actionFactories;
+  const triggerFactories = dialogRef.value.data?.triggerFactories;
+
+  const triggerTypesOptions = triggerFactories.map((item:any) => ({label: item.title, value: item.componentId, description: item.description}))
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
   const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
   const triggerType = ref(triggerData ? triggerData.type : undefined);
-  const triggerDescription = ref(triggerData ? triggerTypesOptions.find((t:any) => t.value === triggerData.type)?.description : 'Choose a trigger type')
+  const triggerDescription = ref()
+  setTriggerDescription(triggerData?.type)
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId)
   const jsonError: Ref<string> = ref('')
@@ -34,16 +36,14 @@
     actionsArray.value = actionsArray.value.map((item) => ({actionId: item.actionId, type: item.type, properties: JSON.stringify(item.properties)}))
   }
 
-  if(actionTypes.length) {
-    actionTypesOptions.value = actionTypes.map((item: any) => (
-      {
-        label: item.label,
-        value: item.value,
-        command: () => {
-          actionsArray.value.push({type: item.value, properties: JSON.stringify({})})
-        }
-      }))
-  }
+  const actionTypesOptions = ref(actionFactories.map((item: ComponentFactory) => (
+    {
+      label: item.title,
+      value: item.componentId,
+      command: () => {
+        actionsArray.value.push({type: item.componentId, properties: JSON.stringify(item.defaultProperties)})
+      }
+    })));
 
   function save(){
     try {
@@ -87,13 +87,14 @@
   }
 
   function nameForActionType(actionType?: string) {
-    return actionTypes.find((a:any) => a.value === actionType)?.label || actionType;
+    return actionFactories.find((a:ComponentFactory) => a.componentId === actionType)?.label;
   }
-  function getTriggerDescription(tType?: string) {
-    triggerDescription.value = triggerTypesOptions.find((t:any) => t.value === tType)?.description || 'Choose a trigger type';
+  function setTriggerDescription(tType?: string) {
+    triggerDescription.value = triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.description || 'Choose a trigger type';
+    triggerProp.value = JSON.stringify(triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.defaultProperties)
   }
   function getActionDescription(actionType?: string) {
-    return actionTypes.find((a:any) => a.value === actionType)?.description || 'No description available';
+    return actionFactories.find((a:ComponentFactory) => a.componentId === actionType)?.description || 'No description available';
   }
 </script>
 
@@ -114,10 +115,9 @@
       <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="mb-2 lg:col-span-2">{{$t('trigger')}}</h5>
-        <Dropdown v-model="triggerType" :options="triggerTypesOptions" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" @change="getTriggerDescription(triggerType)"/>
+        <Dropdown v-model="triggerType" :options="triggerTypesOptions" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" @change="setTriggerDescription(triggerType)"/>
         <div v-if="triggerEmptyError" class="error col-start-0 col-span-8 lg:col-span-3">{{triggerEmptyError}}</div>
         <div class="col-start-0 col-span-3">
-          <h6 class="mb-1">Config(Json)</h6>
           <!-- eslint-disable vue/no-v-html -->
           <div class="mb-4" v-html="triggerDescription"></div>
           <Textarea v-model="triggerProp" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
@@ -133,7 +133,6 @@
         <div v-if="actionsArray.length" class="col-span-9">
           <div v-for="(action, index) in actionsArray" :key="index" class="col-start-0 col-span-9 js-action mb-4" >
             <div class="mb-3  mt-4">
-              <h6 class="mb-1 col-span-2 inline">Config(Json): </h6>
               <div class="col-span-3 inline font-medium">{{nameForActionType(action.type)}}</div>
             </div>
             <!-- eslint-disable vue/no-v-html -->

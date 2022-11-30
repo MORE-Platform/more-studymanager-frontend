@@ -1,7 +1,7 @@
 <script async setup lang="ts">
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
-import {Observation, StudyGroup} from '../generated-sources/openapi';
+import {ComponentFactory, Observation, StudyGroup} from '../generated-sources/openapi';
 import {
   MoreTableAction,
   MoreTableColumn,
@@ -30,12 +30,14 @@ const { componentsApi } = useComponentsApi();
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: "Entire Study", value: null})
 
-  async function getObservationTypes() {
+  async function getFactories() {
     return  componentsApi.listComponents("observation")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
+      .then((response:any) => response.data);
   }
 
-  const observationTypes: MoreTableActionOption[] = await getObservationTypes();
+  const factories: ComponentFactory[] = await getFactories();
+  const observationTypes: MoreTableActionOption[] = factories
+    .map((item:any) => ({label: item.title, value: item.componentId, description: item.description}))
 
   const observationColumns: MoreTableColumn[]= [
     {field: 'type', header: 'type', sortable: true, filterable: {showFilterMatchModes: false}},
@@ -97,8 +99,8 @@ const { componentsApi } = useComponentsApi();
     }
   }
 
-  function nameForType(type?: string) {
-    return observationTypes.find(t => t.value === type)?.label || type;
+  function factoryForType(type?: string) {
+    return factories.find(f => f.componentId === type);
   }
 
   function openObservationDialog(headerText: string, observation?: Observation, typeText?: string) {
@@ -106,8 +108,7 @@ const { componentsApi } = useComponentsApi();
       data: {
         groupStates: groupStatuses,
         observation: observation,
-        typeName: nameForType(observation?.type),
-        observationTypes: observationTypes
+        factory: factoryForType(observation?.type),
       },
       props: {
         header: headerText,

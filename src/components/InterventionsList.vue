@@ -2,7 +2,7 @@
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
   import {useComponentsApi} from "../composable/useApi";
-  import {Intervention, StudyGroup, Action, Trigger} from '../generated-sources/openapi';
+  import {Intervention, StudyGroup, Action, Trigger, ComponentFactory} from '../generated-sources/openapi';
   import {
     MoreTableAction,
     MoreTableColumn,
@@ -32,13 +32,14 @@
   const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
   groupStatuses.push({label: "Entire Study", value: null})
 
-  async function getActionTypes() {
+  async function getActionFactories():Promise<ComponentFactory[]> {
     return  componentsApi.listComponents("action")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
+      .then((response:any) => response.data);
   }
-  async function getTriggerTypes() {
+
+  async function getTriggerFactories():Promise<ComponentFactory[]> {
     return componentsApi.listComponents("trigger")
-      .then((response:any) => response.data.map((item:any) => ({label: item.title, value: item.componentId, description: item.description})));
+      .then((response:any) => response.data);
   }
 
   const interventionColumns: MoreTableColumn[] = [
@@ -213,17 +214,17 @@
   }
 
    function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
-    Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionTypes(), getTriggerTypes()])
-      .then(([actionsRes, triggerRes, actionTypesRes, triggerTypesRes]) => {
+    Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionFactories(), getTriggerFactories()])
+      .then(([actionsRes, triggerRes, actionFactoriesRes, triggerFactoriesRes]) => {
         dialog.open(InterventionDialog, {
           data: {
             groupStates: groupStatuses,
             intervention: intervention,
             studyId: props.studyId,
             actionsData: actionsRes,
-            actionTypes: actionTypesRes,
             triggerData: triggerRes,
-            triggerTypes: triggerTypesRes
+            actionFactories: actionFactoriesRes,
+            triggerFactories: triggerFactoriesRes
           },
           props: {
             header: headerText,

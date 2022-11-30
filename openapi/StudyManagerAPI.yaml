@@ -35,6 +35,43 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ComponentFactory'
+
+  /components/{componentType}/{componentId}/validate:
+    post:
+      tags:
+        - components
+      description: check if properties are valid for component
+      operationId: validateProperties
+      parameters:
+        - name: componentType
+          in: path
+          schema:
+            type: string
+            enum:
+              - action
+              - trigger
+              - observation
+          required: true
+        - name: componentId
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Validation report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationReport'
+        '404':
+          description: Not found
+
   /components/{componentType}/{componentId}/web-component.js:
     get:
       tags:
@@ -65,6 +102,7 @@ paths:
                 type: string
         '404':
           description: Not found
+
   /studies:
     post:
       tags:
@@ -175,6 +213,81 @@ paths:
           description: Status changed deleted
         '400':
           description: Bad request
+
+  /studies/{studyId}/collaborators:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - collaborators
+      operationId: listStudyCollaborators
+      description: List the collaborators of a study
+      responses:
+        '200':
+          description: the list of collaborators
+          content:
+            application/json:
+              schema:
+                title: CollaboratorsList
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collaborator'
+
+  /studies/{studyId}/collaborators/{uid}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - name: uid
+        in: path
+        schema:
+          type: string
+    get:
+      tags:
+        - collaborators
+      operationId: getStudyCollaboratorRoles
+      description: Retrieve the collaborator-details
+      responses:
+        '200':
+          description: the collaborator-details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaboratorDetails'
+        '404':
+          description: unknown uid
+    put:
+      tags:
+        - collaborators
+      operationId: setStudyCollaboratorRoles
+      description: Set/Update the collaborator-roles of a user for the study
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/StudyRole'
+              uniqueItems: true
+              minItems: 0
+      responses:
+        '200':
+          description: the updated collaborator-details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollaboratorDetails'
+        '400':
+          description: invalid roles list
+        '404':
+          description: unknown uid
+
+    delete:
+      tags:
+        - collaborators
+      operationId: clearStudyCollaboratorRoles
+      description: Remove the provided User (uid) from the collaborators
+      responses:
+        '204':
+          description: Cleared
 
   /studies/{studyId}/studyGroups:
     post:
@@ -756,7 +869,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserInfo'
+                $ref: '#/components/schemas/CurrentUser'
 
 components:
   schemas:
@@ -770,8 +883,33 @@ components:
           type: string
         description:
           type: string
+        defaultProperties:
+          type: object
         hasWebComponent:
           type: boolean
+
+    ValidationReport:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            $ref: ValidationReportItem
+        warnings:
+          type: array
+          items:
+            $ref: ValidationReportItem
+
+    ValidationReportItem:
+      type: object
+      properties:
+        message:
+          type: string
+        type:
+          type: string
+
     Study:
       type: object
       properties:
@@ -1002,8 +1140,13 @@ components:
       format: int32
 
     UserInfo:
+      description: |
+        Basic user-profile in the MORE Platform
       type: object
       properties:
+        uid:
+          type: string
+          readOnly: true
         name:
           type: string
           readOnly: true
@@ -1014,12 +1157,70 @@ components:
           type: string
           format: email
           readOnly: true
+      required:
+        - uid
+      readOnly: true
+
+    CurrentUser:
+      description: |
+        The currently logged-in user
+      allOf:
+        - $ref: '#/components/schemas/UserInfo'
+        - type: object
+          properties:
+            roles:
+              type: array
+              items:
+                $ref: '#/components/schemas/PlatformRole'
+              uniqueItems: true
+              readOnly: true
+          required:
+            - roles
+          readOnly: true
+
+    Collaborator:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserInfo'
         roles:
           type: array
           items:
-            $ref: '#/components/schemas/PlatformRole'
+            $ref: '#/components/schemas/StudyRole'
           uniqueItems: true
           readOnly: true
+      required:
+        - user
+        - roles
+      readOnly: true
+
+    CollaboratorDetails:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/UserInfo'
+        roles:
+          type: array
+          items:
+            title: CollaboratorRoleDetails
+            type: object
+            properties:
+              role:
+                $ref: '#/components/schemas/StudyRole'
+              assignedBy:
+                $ref: '#/components/schemas/UserInfo'
+              assignedAt:
+                type: string
+                format: date-time
+            required:
+              - role
+              - assignedAt
+            readOnly: true
+          uniqueItems: true
+          readOnly: true
+      required:
+        - user
+        - roles
       readOnly: true
 
     PlatformRole:

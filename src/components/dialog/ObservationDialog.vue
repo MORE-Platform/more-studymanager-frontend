@@ -15,13 +15,12 @@ const dialog = useDialog()
 const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
 const groupStates = dialogRef.value.data.groupStates || [];
-const typeName = dialogRef.value.data.typeName || observation.type;
-const observationTypes = dialogRef.value.data.observationTypes;
+const factory = dialogRef.value.data.factory;
 
 const title = ref(observation.title);
 const purpose = ref(observation.purpose);
 const participantInfo = ref(observation.participantInfo)
-const properties = ref(observation.properties ? JSON.stringify(observation.properties) : '{}');
+const properties = ref(JSON.stringify(observation.properties ? observation.properties : factory.defaultProperties));
 const scheduler: Ref<Event> = ref(observation.schedule ? observation.schedule : {})
 const studyGroupId = ref(observation.studyGroupId)
 
@@ -59,11 +58,6 @@ function openScheduler() {
     }
   })
 }
-
-function descriptionForType(type: string) {
-  return observationTypes.find((t: any) => t.label === type)?.description || 'No description available.';
-}
-
 
 function save(){
   try {
@@ -146,7 +140,11 @@ function save(){
 
 <template>
   <div class="observation-dialog">
-    <div class="mb-4"><span class="font-bold">Type: </span> {{ typeName }}</div>
+    <div class="mb-4">
+      <h5>{{ factory.title }}</h5>
+      <!-- eslint-disable vue/no-v-html -->
+      <h6 v-html="factory.description"></h6>
+    </div>
    <div class="grid grid-cols-8 gap-4 items-center">
      <div class="col-start-0 col-span-2"><h5>{{ $t('observation') }} {{ $t('title') }}</h5></div>
      <div class="col-start-3 col-span-6">
@@ -212,9 +210,6 @@ function save(){
       <h5 class="mb-2">Configuration</h5>
       <div v-if="jsonError" class="error mb-3">{{jsonError}}</div>
       <div class="col-start-0 col-span-8">
-        <h6 class="mb-1">Config(Json)</h6>
-        <!-- eslint-disable vue/no-v-html -->
-        <div class="mb-2" v-html="descriptionForType(typeName)"></div>
         <Textarea v-model="properties" placeholder="Enter the main purpose and intention of the study." :auto-resize="true" style="width: 100%"></Textarea>
       </div>
     </div>
@@ -224,7 +219,7 @@ function save(){
        </Dropdown>
      </div>
 
-  <div class=" col-start-0 col-span-8 buttons text-right mt-8 justify-end">
+  <div class="col-start-0 col-span-8 buttons text-right mt-8 justify-end">
     <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
     <Button @click="save()">Save</Button>
   </div>
