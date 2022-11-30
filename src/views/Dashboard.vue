@@ -7,8 +7,6 @@
   import {AxiosResponse} from "axios";
   import {useDialog} from "primevue/usedialog";
   import DynamicDialog from "primevue/dynamicdialog";
-  import StudyDialog from "../components/dialog/StudyDialog.vue";
-  import {Study} from "../generated-sources/openapi";
   import InfoDialog from "../components/dialog/InfoDialog.vue";
 
   const { usersApi } = useUsersApi()
@@ -29,7 +27,7 @@
   }
 
   function openWelcomeMessage(user: UserInfo | undefined) {
-    let storageItem = localStorage.getItem('welcomeMsg');
+    const storageItem = localStorage.getItem('welcomeMsg');
 
     if (user && !storageItem) {
       const msg = 'Dear ' + user.name + ' ' + (user.institution) + ', welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.'
