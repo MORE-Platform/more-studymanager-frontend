@@ -23,7 +23,7 @@
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
-  const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
+  const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : undefined);
   const triggerType = ref(triggerData ? triggerData.type : undefined);
   const triggerDescription = ref()
   setTriggerDescription(triggerData?.type)
@@ -75,7 +75,7 @@
       ...actionsArray.value.map((item, id) => ({component: 'action', type: item.type, properties: item.properties, id})),
       {component: 'trigger', type: triggerType.value, properties: triggerProp.value, id:-1}
     ].map(v => validate(v.component, v.type, v.properties, v.id))).then(() => {
-      const triggerProps = {type: triggerType.value, properties: JSON.parse(triggerProp.value.toString())}
+      const triggerProps = {type: triggerType.value, properties: triggerProp.value ? JSON.parse(triggerProp.value.toString()) : '{}'}
       const actionsProps = actionsArray.value.map((item) => ({
         actionId: item?.actionId,
         type: item.type,
@@ -125,7 +125,7 @@
   }
   function setTriggerDescription(tType?: string) {
     triggerDescription.value = triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.description || 'Choose a trigger type';
-    triggerProp.value = JSON.stringify(triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.defaultProperties)
+    triggerProp.value = triggerProp.value ? triggerProp.value :  JSON.stringify(triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.defaultProperties)
   }
   function getActionDescription(actionType?: string) {
     return actionFactories.find((a:ComponentFactory) => a.componentId === actionType)?.description || 'No description available';
