@@ -220,6 +220,13 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value.toString())?.label || value;
 }
 
+function shortenFieldText(text: string) {
+  if(text) {
+    return text.substring(0,185) + '...';
+  } else {
+    return undefined
+  }
+}
 </script>
 
 <template>
@@ -294,6 +301,7 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
           <div v-if="data[field] === null" class="placeholder" >
             {{$t(column.placeholder || 'no-value')}}
           </div>
+          <div v-if="field === 'purpose'">{{shortenFieldText(data[field])}}</div>
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
