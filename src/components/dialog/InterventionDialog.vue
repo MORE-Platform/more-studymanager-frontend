@@ -5,8 +5,10 @@
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import Dropdown from 'primevue/dropdown';
-  import {Action, Trigger, Intervention, ComponentFactory} from '../../generated-sources/openapi';
+  import {useComponentsApi} from '../../composable/useApi';
+  import {Action, Trigger, Intervention, ComponentFactory, ValidationReport} from '../../generated-sources/openapi';
 
+  const { componentsApi } = useComponentsApi();
 
   const dialogRef:any = inject("dialogRef")
   const intervention:Intervention = dialogRef.value.data?.intervention || {};
@@ -21,13 +23,14 @@
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
-  const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : '{}');
+  const triggerProp = ref(triggerData ? JSON.stringify(triggerData.properties) : undefined);
   const triggerType = ref(triggerData ? triggerData.type : undefined);
   const triggerDescription = ref()
   setTriggerDescription(triggerData?.type)
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId)
-  const jsonError: Ref<string> = ref('')
+  const triggerJsonError:Ref<string|undefined> = ref()
+  const actionJsonError:Ref<string[]> = ref([])
   const actionsEmptyError: Ref<string> = ref('')
   const triggerEmptyError: Ref<string> = ref('')
   const removeActions: Ref<number[]> = ref([])
@@ -45,20 +48,49 @@
       }
     })));
 
-  function save(){
-    try {
-      const triggerProps = {type: triggerType.value, properties: JSON.parse(triggerProp.value.toString())}
-      const actionsProps = actionsArray.value.map((item) => ({actionId: item?.actionId, type: item.type, properties: JSON.parse(item.properties)}));
+  function validate(component:any, componentType:string, props:any, i?: number) {
+    return new Promise((resolve, reject) => {
+      let parsedProps:any;
+      try {
+        parsedProps = JSON.parse(props.toString());
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        componentsApi.validateProperties(component, componentType, parsedProps)
+          .then((response:any) => response.data)
+          .then((report:ValidationReport) => {
+            if(report.valid) {
+              resolve(parsedProps);
+            } else {
+              const error = report.errors?.concat(report.warnings || []).map(e => e.message).join(", ");
+              reject({msg: error, component, i});
+            }
+          });
+      } catch (e) {
+        reject({msg: "Cannot parse properties, no valid json", component, i});
+      }
+    })
+  }
 
-    const returnIntervention = {
-      interventionId: intervention.interventionId,
-      title: title.value,
-      purpose: purpose.value,
-      trigger: {},
-      actions: [],
-      studyGroupId: studyGroupId.value,
-      scheduler: intervention.schedule
-    } as Intervention;
+  function save() {
+    Promise.all([
+      ...actionsArray.value.map((item, id) => ({component: 'action', type: item.type, properties: item.properties, id})),
+      {component: 'trigger', type: triggerType.value, properties: triggerProp.value, id:-1}
+    ].map(v => validate(v.component, v.type, v.properties, v.id))).then(() => {
+      const triggerProps = {type: triggerType.value, properties: triggerProp.value ? JSON.parse(triggerProp.value.toString()) : '{}'}
+      const actionsProps = actionsArray.value.map((item) => ({
+        actionId: item?.actionId,
+        type: item.type,
+        properties: JSON.parse(item.properties)
+      }));
+
+      const returnIntervention = {
+        interventionId: intervention.interventionId,
+        title: title.value,
+        purpose: purpose.value,
+        trigger: {},
+        actions: [],
+        studyGroupId: studyGroupId.value,
+        scheduler: intervention.schedule
+      } as Intervention;
 
       const returnObject = {
         intervention: returnIntervention,
@@ -66,17 +98,19 @@
         actions: actionsProps,
         removeActions: removeActions.value
       }
-
-      jsonError.value = '';
-      triggerEmptyError.value = '';
-      actionsEmptyError.value = '';
       dialogRef.value.close(returnObject);
-
-    } catch(e) {
-      console.error(e);
-      jsonError.value = 'Please enter valid json inside the Config(Json) fields.'
-    }
+    }).catch(reason => {
+      if(reason.component === 'trigger') {
+        triggerJsonError.value = reason.msg
+      } else {
+        const actionErrors = []
+        actionErrors[reason.i] = reason.msg;
+        actionJsonError.value =  actionErrors;
+        console.log(actionErrors);
+      }
+    })
   }
+
   function cancel() {
     dialogRef.value.close();
   }
@@ -91,7 +125,7 @@
   }
   function setTriggerDescription(tType?: string) {
     triggerDescription.value = triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.description || 'Choose a trigger type';
-    triggerProp.value = JSON.stringify(triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.defaultProperties)
+    triggerProp.value = triggerProp.value ? triggerProp.value :  JSON.stringify(triggerFactories.find((t:ComponentFactory) => t.componentId === tType)?.defaultProperties)
   }
   function getActionDescription(actionType?: string) {
     return actionFactories.find((a:ComponentFactory) => a.componentId === actionType)?.description || 'No description available';
@@ -112,7 +146,6 @@
         <Textarea v-model="purpose" :placeholder="$t('placeholder.purpose')" :auto-resize="true" style="width: 100%"></Textarea>
       </div>
 
-      <div v-if="jsonError" class="col-span-8 error mb-4">{{jsonError}}</div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="mb-2 lg:col-span-2">{{$t('trigger')}}</h5>
         <Dropdown v-model="triggerType" :options="triggerTypesOptions" class="col-span-1" option-label="label" option-value="value" :placeholder="$t('placeholder.trigger')" @change="setTriggerDescription(triggerType)"/>
@@ -120,6 +153,7 @@
         <div class="col-start-0 col-span-3">
           <!-- eslint-disable vue/no-v-html -->
           <div class="mb-4" v-html="triggerDescription"></div>
+          <div v-if="triggerJsonError" class="mb-4 error">{{triggerJsonError}}</div>
           <Textarea v-model="triggerProp" placeholder="Enter the config for the trigger" :auto-resize="true" style="width: 100%"></Textarea>
         </div>
       </div>
@@ -138,6 +172,7 @@
             <!-- eslint-disable vue/no-v-html -->
             <div class="mb-4" v-html="getActionDescription(action.type)"> </div>
             <div class="col-span-4 justify-end"></div>
+            <div v-if="actionJsonError[index]" class="mb-4 error">{{actionJsonError[index]}}</div>
             <Textarea v-model="actionsArray[index].properties" class="col-span-9" placeholder="Enter the config for the action" :auto-resize="true" style="width: 100%" />
             <div class="buttons justify-end mt-2 col-span-9">
                <Button :icon="'pi pi-trash'" @click="deleteAction(actionsArray[index].actionId, index)"/>

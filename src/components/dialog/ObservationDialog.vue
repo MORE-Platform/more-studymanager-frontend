@@ -4,13 +4,15 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea';
 import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
-import {Observation, Event, Frequency} from '../../generated-sources/openapi';
+import {Observation, Event, Frequency, ValidationReport} from '../../generated-sources/openapi';
 import {MoreTableChoice} from "../../models/MoreTableModel";
 import Scheduler from "../shared/Scheduler.vue"
 import {useDialog} from "primevue/usedialog";
 import dayjs from 'dayjs'
+import {useComponentsApi} from '../../composable/useApi';
 
 const dialog = useDialog()
+const { componentsApi } = useComponentsApi();
 
 const dialogRef:any = inject("dialogRef")
 const observation = dialogRef.value.data.observation as Observation;
@@ -24,7 +26,7 @@ const properties = ref(JSON.stringify(observation.properties ? observation.prope
 const scheduler: Ref<Event> = ref(observation.schedule ? observation.schedule : {})
 const studyGroupId = ref(observation.studyGroupId)
 
-const jsonError: Ref<string>= ref('')
+const jsonError = ref()
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   if(value) {
@@ -59,25 +61,37 @@ function openScheduler() {
   })
 }
 
-function save(){
+function validate() {
+  let parsedProps:any;
   try {
-      const props: Ref<Event> = ref({})
-      props.value = JSON.parse(properties.value.toString())
-      const returnObservation = {
-        observationId: observation.observationId,
-        title: title.value,
-        purpose: purpose.value,
-        participantInfo: participantInfo.value,
-        type: observation.type,
-        properties: props.value,
-        schedule: scheduler.value,
-        studyGroupId: studyGroupId.value
-      } as Observation;
-      dialogRef.value.close(returnObservation);
-
+    parsedProps = JSON.parse(properties.value.toString());
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    componentsApi.validateProperties("observation", observation.type!, parsedProps)
+      .then((response:any) => response.data)
+      .then((report:ValidationReport) => {
+        if(report.valid) {
+          save(parsedProps);
+        } else {
+          jsonError.value = (report.errors || []).concat(report.warnings || []).map(e => e.message).join(", ")
+        }
+      });
   } catch (e) {
-    jsonError.value = 'Please enter a valid json inside the Config (Json) field.'
+    jsonError.value = "Cannot parse properties, no valid json"
   }
+}
+
+function save(props: any){
+  const returnObservation = {
+    observationId: observation.observationId,
+    title: title.value,
+    purpose: purpose.value,
+    participantInfo: participantInfo.value,
+    type: observation.type,
+    properties: props,
+    schedule: scheduler.value,
+    studyGroupId: studyGroupId.value
+  } as Observation;
+  dialogRef.value.close(returnObservation);
 }
 
   function cancel() {
@@ -221,7 +235,7 @@ function save(){
 
   <div class="col-start-0 col-span-8 buttons text-right mt-8 justify-end">
     <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-    <Button @click="save()">Save</Button>
+    <Button @click="validate()">Save</Button>
   </div>
 
    </div>

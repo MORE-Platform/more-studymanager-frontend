@@ -16,13 +16,14 @@ import StudyDialog from './dialog/StudyDialog.vue'
 import {AxiosResponse} from 'axios';
 import {useDialog} from 'primevue/usedialog';
 import InfoDialog from "./dialog/InfoDialog.vue";
+import useLoader from '../composable/useLoader';
 //import {UserRolesEnum} from '../models/UserModel';
 
 const { studiesApi } = useStudiesApi()
   const studyList: Ref<Study[]> = ref([])
   const router = useRouter()
   const dialog = useDialog();
-  const loading = ref(true)
+  const loader = useLoader();
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
@@ -144,7 +145,8 @@ const { studiesApi } = useStudiesApi()
     }
   }
 
-  listStudies().finally(() => loading.value = false)
+  loader.enable();
+  listStudies().finally(() => loader.disable());
 </script>
 
 <template>
@@ -160,8 +162,8 @@ const { studiesApi } = useStudiesApi()
       :table-actions="tableActions"
       :sort-options="{sortField: 'studyId', sortOrder: -1}"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
+      :loading="loader.loading.value"
       empty-message="No studies yet"
-      :loading="loading"
       @onselect="goToStudy($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

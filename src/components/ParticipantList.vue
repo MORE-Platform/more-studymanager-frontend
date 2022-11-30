@@ -10,10 +10,11 @@ import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
 import * as names from 'starwars-names';
+import useLoader from '../composable/useLoader';
 
 const { participantsApi } = useParticipantsApi()
 const participantsList: Ref<Participant[]> = ref([])
-const loading = ref(true)
+const loader = useLoader();
 
 const props = defineProps({
   studyId: {
@@ -56,13 +57,13 @@ const tableActions: MoreTableAction[] = [
 ]
 
 async function listParticipant(): Promise<void> {
-  loading.value = true;
+  loader.enable()
   try {
     participantsList.value = await participantsApi.listParticipants(props.studyId).then((response) => response.data);
   } catch (e) {
     console.error('cannot list participants', e)
   } finally {
-    loading.value = false;
+    loader.disable()
   }
 }
 
@@ -136,7 +137,7 @@ listParticipant()
       :rows="participantsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :loading="loading"
+      :loading="loader.loading.value"
       empty-message="No participants yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
@@ -146,6 +147,7 @@ listParticipant()
 </template>
 
 <style lang="postcss">
+
 .table-value-status-new {
   display: block;
   margin: 0.063rem 0.188rem 0 0;

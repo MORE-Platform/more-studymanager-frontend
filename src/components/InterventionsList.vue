@@ -16,7 +16,9 @@
   import {AxiosResponse} from "axios";
   import {useDialog} from "primevue/usedialog";
   import InterventionDialog from '../components/dialog/InterventionDialog.vue'
+  import useLoader from '../composable/useLoader';
 
+  const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
   const { componentsApi } = useComponentsApi();
 
@@ -33,13 +35,17 @@
   groupStatuses.push({label: "Entire Study", value: null})
 
   async function getActionFactories():Promise<ComponentFactory[]> {
+    loader.enable()
     return  componentsApi.listComponents("action")
-      .then((response:any) => response.data);
+      .then((response:any) => response.data)
+      .finally(loader.disable);
   }
 
   async function getTriggerFactories():Promise<ComponentFactory[]> {
+    loader.enable()
     return componentsApi.listComponents("trigger")
-      .then((response:any) => response.data);
+      .then((response:any) => response.data)
+      .finally(loader.disable);
   }
 
   const interventionColumns: MoreTableColumn[] = [
@@ -60,24 +66,30 @@
   ]
 
    function listInterventions(): void {
+    loader.enable()
     interventionsApi.listInterventions(props.studyId)
       .then((response:AxiosResponse) => {
         interventionList.value = response.data;
       })
+      .finally(loader.disable)
   }
 
   async function listActions(interventionId?: number) {
     if(interventionId) {
+      loader.enable()
       return interventionsApi.listActions(props.studyId, interventionId)
         .then((response:any) => response.data)
+        .finally(loader.disable)
     } else {
       return undefined
     }
   }
   async function getTrigger(interventionId?: number) {
     if(interventionId) {
+      loader.enable()
       return interventionsApi.getTrigger(props.studyId, interventionId)
         .then((response: any) => response.data)
+        .finally(loader.disable)
     } else {
       return undefined;
     }
@@ -100,19 +112,25 @@
         interventionList.value[i] = intervention;
       }
 
+      loader.enable()
       await interventionsApi.updateIntervention(props.studyId, intervention.interventionId as number, intervention)
         .then(listInterventions)
+        .finally(loader.disable)
     } catch(e) {
       console.error("Couldn't update opservation " + intervention.title);
+      loader.reset()
     }
   }
 
   async function deleteIntervention(requestIntervention: Intervention) {
     try {
+      loader.enable()
       await interventionsApi.deleteIntervention(props.studyId, requestIntervention.interventionId as number)
         .then(listInterventions)
+        .finally(loader.disable)
     } catch (e) {
       console.error('Cannot delete intervention ' + requestIntervention.interventionId, e)
+      loader.reset()
     }
   }
 
@@ -120,57 +138,75 @@
     const interventionId: Ref<number | undefined> = ref(await addIntervention(object.intervention))
 
      if(interventionId.value) {
+       loader.enable()
        await updateTrigger(interventionId.value as number, object.trigger);
        object.actions.forEach((action: Action) => {
          createAction(interventionId.value as number, action)
        })
+       loader.disable()
        listInterventions()
      }
   }
 
   async function addIntervention(intervention: Intervention) {
     try {
+      loader.enable()
       return interventionsApi.addIntervention(props.studyId, intervention)
         .then((response: AxiosResponse) => response.data.interventionId)
+        .finally(loader.disable)
     } catch(e) {
+      loader.reset()
       console.error("Cannot create intervention", e);
     }
   }
 
   async function createAction(interventionId: number, action: Action) {
     try {
+      loader.enable()
       await interventionsApi.createAction(props.studyId, interventionId, action)
         .then(listInterventions)
+        .finally(loader.disable)
     } catch(e) {
+      loader.reset()
       console.error('Cannot create action on: ' + interventionId, e)
     }
   }
 
   async function updateAction(interventionId: number, actionId: number, action: Action) {
     try {
+      loader.enable()
       await interventionsApi.updateAction(props.studyId, interventionId, actionId, action)
+      loader.disable()
     } catch(e) {
+      loader.reset()
       console.error('Cannot update action: ' + action.actionId, e);
     }
   }
 
   async function deleteAction(interventionId: number, actionId: number) {
     try {
+      loader.enable()
       await interventionsApi.deleteAction(props.studyId, interventionId, actionId)
+      loader.disable()
     } catch(e) {
+      loader.reset()
       console.error('Cannot delete action: ' + actionId, e);
     }
   }
 
   async function updateTrigger(interventionId: number, trigger: Trigger) {
     try {
+      loader.enable()
       await interventionsApi.updateTrigger(props.studyId, interventionId, trigger)
+      loader.disable()
     }catch(e) {
+      loader.reset()
       console.error('Cannot create trigger on: ' + interventionId, e)
     }
   }
 
   async function updateInterventionData(object: any) {
+    loader.enable()
     await updateIntervention(object.intervention)
 
     if(object.intervention.interventionId) {
@@ -190,6 +226,7 @@
         deleteAction(object.intervention.interventionId as number, actionId)
       })
     }
+    loader.disable();
   }
 
   async function updateIntervention(intervention: Intervention) {
@@ -197,11 +234,14 @@
       const i = interventionList.value.findIndex(v => v.interventionId === intervention.interventionId);
       if(i>-1) {
         interventionList.value[i] = intervention;
+        loader.enable()
         await interventionsApi.updateIntervention(props.studyId, intervention.interventionId as number, intervention)
           .then(listInterventions)
+          .finally(loader.disable)
         return i;
       }
     } catch(e) {
+      loader.reset()
       console.error('Cannot update intervention: ' + intervention.interventionId, e);
     }
   }
@@ -214,6 +254,7 @@
   }
 
    function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
+    loader.enable()
     Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionFactories(), getTriggerFactories()])
       .then(([actionsRes, triggerRes, actionFactoriesRes, triggerFactoriesRes]) => {
         dialog.open(InterventionDialog, {
@@ -254,6 +295,7 @@
           }
         })
      }).catch(console.error)
+      .finally(loader.disable)
 
 
   }
@@ -273,6 +315,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
+      :loading="loader.loading.value"
       empty-message="No interventions yet"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
