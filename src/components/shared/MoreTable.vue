@@ -290,7 +290,7 @@ function shortenFieldText(text: string) {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
+            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string || column.type === MoreTableFieldType.longtext" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
               v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
