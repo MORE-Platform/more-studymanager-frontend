@@ -95,32 +95,29 @@ const { studiesApi } = useStudiesApi()
   }
 
   function openCreateDialog() {
-    dialog.open(StudyDialog,{
-      props: {
-        header: 'Create Study',
-        style: {
-          width: '50vw',
-        },
-        breakpoints:{
-          '960px': '75vw',
-          '640px': '90vw'
-        },
-        modal: true,
-        dismissableMask: true,
+  dialog.open(StudyDialog,{
+    props: {
+      header: 'Create Study',
+      style: {
+        width: '50vw',
       },
-      onClose: (options) => {
-        if(options) {
-          createStudy(options.data as Study)
-        }
+      breakpoints:{
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true,
+    },
+    onClose: (options) => {
+      if(options?.data) {
+        createStudy(options.data as Study)
       }
-    })
-  }
+    }
+  })
+}
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
       const studyUrl = location.host + '/studies/' + studyId
-      console.log(studyUrl)
-      console.log("onCopyId");
       navigator.clipboard.writeText(studyUrl)
         .then(function() {
           console.log('Copied Study ' + title + ': ' + studyUrl);
