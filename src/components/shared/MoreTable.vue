@@ -217,7 +217,7 @@ function toClassName(value:string):string {
 }
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
-  return values.find((s: any) => s.value === value.toString())?.label || value;
+  return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
 function shortenFieldText(text: string) {
