@@ -11,11 +11,11 @@
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Study Start</h5>
-        <Calendar v-model="start" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%"/>
+        <Calendar v-model="start" placeholder="dd/mm/yyyy" date-format="dd/mm/yy" autocomplete="off" style="width: 100%"/>
       </div>
       <div class="col-start-0 col-span-2">
         <h5>Study End</h5>
-        <Calendar v-model="end" placeholder="dd/mm/yyyy" autocomplete="off" style="width: 100%"/>
+        <Calendar v-model="end" placeholder="dd/mm/yyyy" date-format="dd/mm/yy" autocomplete="off" style="width: 100%"/>
       </div>
       <div class="col-start-0 col-span-6">
         <h5>Purpose</h5>
