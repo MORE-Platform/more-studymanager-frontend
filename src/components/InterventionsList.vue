@@ -1,14 +1,13 @@
 <script setup lang="ts">
-  import {ref, Ref, PropType} from 'vue'
-  import {useInterventionsApi} from "../composable/useApi";
-  import {useComponentsApi} from "../composable/useApi";
-  import {Intervention, StudyGroup, Action, Trigger, ComponentFactory} from '../generated-sources/openapi';
+  import {PropType, Ref, ref} from 'vue'
+  import {useComponentsApi, useInterventionsApi} from "../composable/useApi";
+  import {Action, ComponentFactory, Intervention, StudyGroup, Trigger} from '../generated-sources/openapi';
   import {
     MoreTableAction,
+    MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
-    MoreTableChoice,
   } from "../models/MoreTableModel";
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -17,7 +16,7 @@
   import {useDialog} from "primevue/usedialog";
   import InterventionDialog from '../components/dialog/InterventionDialog.vue'
 
-  const { interventionsApi } = useInterventionsApi();
+const { interventionsApi } = useInterventionsApi();
   const { componentsApi } = useComponentsApi();
 
   const interventionList: Ref<Intervention[]> = ref([])
@@ -44,7 +43,7 @@
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    {field: 'purpose', header: 'purpose', editable: true},
+    {field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext},
     { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'entireStudy'}
   ]
 

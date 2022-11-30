@@ -27,7 +27,7 @@ const { studiesApi } = useStudiesApi()
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
     { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    { field: 'purpose', header: 'purpose', editable: true },
+    { field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext },
     { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
     /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
       choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},

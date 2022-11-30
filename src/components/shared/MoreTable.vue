@@ -220,12 +220,16 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value.toString())?.label || value;
 }
 
+
 function shortenFieldText(text: string) {
   if(text) {
-    return text.substring(0,185) + '...';
+    if(text.length > 180) {
+      return text.substring(0,185) + '...';
+    }
   } else {
     return undefined
   }
+  return text;
 }
 </script>
 
@@ -261,7 +265,6 @@ function shortenFieldText(text: string) {
       responsive-layout="scroll"
       @row-click="onRowClick($event)"
     >
-
       <Column
         v-if="frontRowActions.length"
         key="actions"
@@ -301,11 +304,11 @@ function shortenFieldText(text: string) {
           <div v-if="data[field] === null" class="placeholder" >
             {{$t(column.placeholder || 'no-value')}}
           </div>
-          <div v-if="field === 'purpose'">{{shortenFieldText(data[field])}}</div>
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
           </div>
         </template>
       </Column>
