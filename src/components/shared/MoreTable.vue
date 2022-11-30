@@ -217,7 +217,7 @@ function toClassName(value:string):string {
 }
 
 function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
-  return values.find((s: any) => s.value === value.toString())?.label || value;
+  return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
 
@@ -338,7 +338,7 @@ function shortenFieldText(text: string) {
         {{ emptyMessage }}
       </template>
       <template #loading>
-        <ProgressSpinner />
+
       </template>
     </DataTable>
   </div>
@@ -346,6 +346,11 @@ function shortenFieldText(text: string) {
 
 <style lang="postcss">
   .more-table {
+    .p-datatable-loading-overlay {
+      filter: blur(5px);
+      background-color: #ffffff99;
+    }
+
     h3 {
       font-weight: 600;
     }

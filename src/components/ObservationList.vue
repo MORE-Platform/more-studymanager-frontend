@@ -15,7 +15,9 @@ import MoreTable from '../components/shared/MoreTable.vue'
 import {AxiosResponse} from "axios";
 import {useDialog} from "primevue/usedialog";
 import ObservationDialog from '../components/dialog/ObservationDialog.vue'
+import useLoader from '../composable/useLoader';
 
+const loader = useLoader();
 const { observationsApi } = useObservationsApi();
 const { componentsApi } = useComponentsApi();
 
@@ -59,10 +61,13 @@ const { componentsApi } = useComponentsApi();
 
   async function listObservations(): Promise<void> {
    try {
+     loader.enable()
      observationList.value = await observationsApi.listObservations(props.studyId)
        .then((response:AxiosResponse) => response.data)
+       .finally(loader.disable)
    } catch (e) {
      console.error('cannot list studies', e)
+     loader.reset()
    }
   }
 
@@ -75,27 +80,32 @@ const { componentsApi } = useComponentsApi();
     }
   }
 
-  async function changeValue(observation:Observation) {
+  async function updateObservation(observation:Observation) {
     try {
       //do change immediately (ux)
       const i = observationList.value.findIndex((o:Observation) => o.observationId === observation.observationId)
       if(i>-1) {
         observationList.value[i] = observation;
       }
-
+      loader.enable()
       await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
         .then(listObservations)
+        .finally(loader.disable)
     }catch(e) {
       console.error("Couldn't update opservation " + observation.title);
+      loader.reset()
     }
   }
 
   async function deleteObservation(requestObservation: Observation) {
     try {
+      loader.enable()
       await observationsApi.deleteObservation(props.studyId, requestObservation.observationId as number)
         .then(listObservations)
+        .finally(loader.disable)
     } catch (e) {
       console.error('Cannot delete observation ' + requestObservation.observationId, e)
+      loader.reset()
     }
   }
 
@@ -140,25 +150,14 @@ const { componentsApi } = useComponentsApi();
 
   function createObservation(newObservation: Observation) {
     try {
+      loader.enable();
       observationsApi.addObservation(props.studyId, newObservation)
           .then(listObservations)
+          .finally(loader.disable)
       } catch (e) {
         console.error('cannot create observation', e)
+        loader.disable()
       }
-  }
-
-  async function updateObservation(observation: Observation) {
-    console.log("updateObservation");
-    try {
-      const i = observationList.value.findIndex(v => v.observationId === observation.observationId);
-      if(i>-1) {
-        observationList.value[i] = observation;
-        await observationsApi.updateObservation(props.studyId, observation.observationId as number, observation)
-          .then(listObservations)
-      }
-    } catch(e) {
-       console.error("Couldn't update observation", e);
-    }
   }
 
   function openEditObservation(observationId: number) {
@@ -182,10 +181,11 @@ const { componentsApi } = useComponentsApi();
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
+      :loading="loader.loading.value"
       empty-message="No observations yet"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
-      @onchange="changeValue($event)"
+      @onchange="updateObservation($event)"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
