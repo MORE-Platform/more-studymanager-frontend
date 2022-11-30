@@ -5,17 +5,31 @@
   import {ref, Ref} from "vue";
   import {UserInfo} from '../generated-sources/openapi/models/user-info';
   import {AxiosResponse} from "axios";
+  import {useDialog} from "primevue/usedialog";
+  import DynamicDialog from "primevue/dynamicdialog";
 
   const { usersApi } = useUsersApi()
+  const dialog = useDialog()
 
   const user: Ref<UserInfo | undefined> =ref()
 
   async function getUser(): Promise<void> {
     try {
        user.value = await usersApi.getCurrentUser()
-         .then((response:AxiosResponse) => response.data)
+         .then((response:AxiosResponse) =>
+         { openWelcomeMessage(response.data)
+           return response.data
+         })
     } catch(e) {
       console.error('cannot read user', e)
+    }
+  }
+
+  function openWelcomeMessage(user: UserInfo | undefined) {
+    console.log(user);
+
+    if (user) {
+      const msg = ''
     }
   }
 
@@ -30,5 +44,6 @@
     <div class="mt-10">
       <StudyList />
     </div>
+    <DynamicDialog />
   </div>
 </template>
