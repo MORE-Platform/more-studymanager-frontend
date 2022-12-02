@@ -96,24 +96,24 @@ const { studiesApi } = useStudiesApi()
   }
 
   function openCreateDialog() {
-  dialog.open(StudyDialog,{
-    props: {
-      header: 'Create Study',
-      style: {
-        width: '50vw',
+    dialog.open(StudyDialog,{
+      props: {
+        header: 'Create Study',
+        style: {
+          width: '50vw',
+        },
+        breakpoints:{
+          '960px': '75vw',
+          '640px': '90vw'
+        },
+        modal: true,
       },
-      breakpoints:{
-        '960px': '75vw',
-        '640px': '90vw'
-      },
-      modal: true,
-    },
-    onClose: (options) => {
-      if(options?.data) {
-        createStudy(options.data as Study)
+      onClose: (options) => {
+        if(options?.data) {
+          createStudy(options.data as Study)
+        }
       }
-    }
-  })
+    })
 }
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
