@@ -28,9 +28,8 @@
 
   function openWelcomeMessage(user: UserInfo | undefined) {
     const storageItem = localStorage.getItem('welcomeMsg');
-
     if (user && !storageItem) {
-      const msg = 'Dear ' + user.name + ' ' + (user.institution) + ', welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.'
+      const msg = 'Dear ' + user.name + ' (' + (user.institution) + '), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.'
       dialog.open(InfoDialog,{
         data: {
           message: msg
