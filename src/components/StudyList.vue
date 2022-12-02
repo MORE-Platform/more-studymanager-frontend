@@ -107,21 +107,18 @@ const { studiesApi } = useStudiesApi()
           '640px': '90vw'
         },
         modal: true,
-        dismissableMask: true,
       },
       onClose: (options) => {
-        if(options) {
+        if(options?.data) {
           createStudy(options.data as Study)
         }
       }
     })
-  }
+}
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
       const studyUrl = location.host + '/studies/' + studyId
-      console.log(studyUrl)
-      console.log("onCopyId");
       navigator.clipboard.writeText(studyUrl)
         .then(function() {
           console.log('Copied Study ' + title + ': ' + studyUrl);
