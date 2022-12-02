@@ -50,7 +50,7 @@
 
   const interventionColumns: MoreTableColumn[] = [
     {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    {field: 'purpose', header: 'purpose', editable: true},
+    {field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext},
     { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'entireStudy'}
   ]
 

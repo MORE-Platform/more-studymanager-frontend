@@ -219,12 +219,16 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
+
 function shortenFieldText(text: string) {
   if(text) {
-    return text.substring(0,185) + '...';
+    if(text.length > 180) {
+      return text.substring(0,185) + '...';
+    }
   } else {
     return undefined
   }
+  return text;
 }
 </script>
 
@@ -260,7 +264,6 @@ function shortenFieldText(text: string) {
       responsive-layout="scroll"
       @row-click="onRowClick($event)"
     >
-
       <Column
         v-if="frontRowActions.length"
         key="actions"
@@ -287,7 +290,7 @@ function shortenFieldText(text: string) {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string" v-model="data[field]" style="width:100%" autofocus />
+            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string || column.type === MoreTableFieldType.longtext" v-model="data[field]" style="width:100%" autofocus />
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
               v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
@@ -300,11 +303,11 @@ function shortenFieldText(text: string) {
           <div v-if="data[field] === null" class="placeholder" >
             {{$t(column.placeholder || 'no-value')}}
           </div>
-          <div v-if="field === 'purpose'">{{shortenFieldText(data[field])}}</div>
           <div v-else>
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
           </div>
         </template>
       </Column>

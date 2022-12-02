@@ -73,7 +73,8 @@ export enum MoreTableFieldType {
   string,
   choice,
   calendar,
-  multiselect = 3
+  multiselect = 3,
+  longtext = 4
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
