@@ -8,10 +8,6 @@ postcss()
   .process(pcss, {
     from: './src/style.pcss',
   })
-  .then((result) => {
-    const output = result.css
-    console.log(output)
-  })
 
 module.exports = {
   plugins: {
