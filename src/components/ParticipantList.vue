@@ -160,29 +160,29 @@ function downloadCSV(filename: string, file: File): void {
 async function importParticipants(action: MoreTableActionResult) {
   if(action.properties?.files) {
     const file = action.properties?.files[0]
-    console.log(file);
+    const participantsArr: Ref<Participant[]> = ref([]);
 
     Papa.parse(file, {
       complete: function (result: any) {
-        console.log('VuePapaParse');
-        console.log(result);
 
         result.data.forEach(async (participant: any, index: number) => {
-          console.log(index);
           if(index !== 0) {
-            console.log(participant[0]);
-            console.log('participant');
-            await participantsApi.createParticipants(props.studyId, [{alias: participant[0]}])
-              .then(() => {
-                listParticipant()
-              });
+            participantsArr.value.push({alias: participant[0]})
           }
         })
       }
     });
 
-    listParticipant();
+    setTimeout(() => {
+      participantsApi.createParticipants(props.studyId, participantsArr.value)
+        .then(() => listParticipant())
+        .catch((e) => console.error('Cannot upload participants: ' + props.studyId, e))
+      ;
+    }, 600)
+
   }
+
+
 
 }
 
