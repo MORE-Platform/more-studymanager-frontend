@@ -6,7 +6,8 @@ import {
   UsersApi,
   ObservationsApi,
   ComponentsApi,
-  InterventionsApi
+  InterventionsApi,
+  ImportExportApi
 } from '../generated-sources/openapi';
 
 const apiConfig = {
@@ -20,6 +21,7 @@ let usersApi: UsersApi
 let observationsApi:ObservationsApi;
 let componentsApi:ComponentsApi;
 let interventionsApi:InterventionsApi;
+let importExportApi: ImportExportApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi
@@ -81,5 +83,14 @@ export function useComponentsApi(): {
   componentsApi = componentsApi || new ComponentsApi(apiConfig, undefined, window.axios)
   return {
     componentsApi,
+  }
+}
+
+export function useImportExportApi(): {
+  importExportApi: ImportExportApi
+} {
+  importExportApi = importExportApi || new ImportExportApi(apiConfig, undefined, window.axios)
+  return {
+    importExportApi,
   }
 }

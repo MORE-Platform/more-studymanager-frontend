@@ -54,8 +54,15 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'
-  values: MoreTableActionOption[]
+  type: 'menu'|'split'|'fileUpload'
+  values?: MoreTableActionOption[]
+  uploadOptions?: MoreTableActionFileUpload
+}
+export interface MoreTableActionFileUpload {
+  mode?: string,
+  multiple?: boolean,
+  acceptType?: string,
+  maxFileSize?: number
 }
 
 export interface MoreTableActionOption {
