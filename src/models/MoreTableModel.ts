@@ -2,49 +2,39 @@ export interface MoreTableColumn {
   field: string
   header: string
   type?: MoreTableFieldType //default is string
-  editable?: MoreTableEditableProperties | boolean
+  editable?: MoreTableEditableChoiceProperties | boolean
   sortable?: boolean
-  filterable?: boolean | MoreTableFilterOption,
+  filterable?: boolean | MoreTableFilterOption
   placeholder?: string
-}
-
-// filter
-export interface MoreTableFilters {
-  [key: string]: MoreTableFilterOption
 }
 
 export interface MoreTableFilterOption {
   value?: unknown
-  showFilterMatchModes?: boolean,
+  showFilterMatchModes?: boolean
   matchMode?: string
 }
 
-// actions
-export interface MoreTableChoiceOptions {
-  values: MoreTableChoice[],
-  placeholder?: string
-}
 export interface MoreTableChoice {
-  label: string,
-  value: string|null
+  label: string
+  value: string | null
 }
 
 export interface MoreTableSortOptions {
-  sortField: string,
+  sortField: string
   sortOrder: -1 | 0 | 1
 }
 
 export interface MoreTableAction {
-  id: string,
-  label: string,
-  icon?: string,
+  id: string
+  label: string
+  icon?: string
   options?: MoreTableActionOptions
-  confirm?: MoreTableActionConfirm,
-  visible?: (data?:any) => boolean
+  confirm?: MoreTableActionConfirm
+  visible?: (data?: any) => boolean
 }
 
 export interface MoreTableRowActionResult<D> {
-  id: string,
+  id: string
   row: D
 }
 
@@ -54,18 +44,18 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'
+  type: 'menu' | 'split'
   values: MoreTableActionOption[]
 }
 
 export interface MoreTableActionOption {
-  label: string,
-  value?: any,
+  label: string
+  value?: any
   icon?: string
 }
 
 export interface MoreTableActionConfirm {
-  header: string,
+  header: string
   message: string
 }
 
@@ -74,19 +64,14 @@ export enum MoreTableFieldType {
   choice,
   calendar,
   multiselect = 3,
-  longtext = 4
+  longtext = 4,
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface MoreTableEditableProperties {
-
-}
-
-export interface MoreTableEditableChoiceProperties extends MoreTableEditableProperties{
+export interface MoreTableEditableChoiceProperties {
   values: MoreTableEditableChoicePropertyValues[]
 }
 
 export interface MoreTableEditableChoicePropertyValues {
-  label?:string
+  label?: string
   value: string
 }
