@@ -4,7 +4,7 @@ export default class AuthService {
   private keycloak: Keycloak;
 
   constructor(private options: KeycloakConfig) {
-    this.keycloak = Keycloak(options);
+    this.keycloak =  new Keycloak(options);
   }
 
   public async init() {

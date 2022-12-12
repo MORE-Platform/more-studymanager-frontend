@@ -9,4 +9,4 @@ target/
 more-configuration-api-client-ts*
 ConfiguratorAPI.yaml
 openapitools.json
-src/generated-sources/*
+src/generated-sources
