@@ -18,14 +18,12 @@
     "license-check": "licensee --errors-only"
   },
   "engines": {
-    "node": "^16",
-    "npm": "^8"
+    "node": "^16"
   },
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.4.0",
     "axios": "^0.27.2",
     "dayjs": "^1.11.6",
-    "i": "^0.3.7",
     "jsdom": "^20.0.0",
     "keycloak-js": "^20.0.1",
     "licensee": "^9.0.0",

@@ -14,6 +14,7 @@ import useLoader from '../composable/useLoader';
 
 // @ts-ignore
 import Papa from 'papaparse';
+import axios from "axios";
 
 
 const { participantsApi } = useParticipantsApi()
@@ -160,6 +161,8 @@ function downloadCSV(filename: string, file: File): void {
 async function importParticipants(action: MoreTableActionResult) {
   if(action.properties?.files) {
     const file = action.properties?.files[0]
+    console.log(file);
+    console.log('file')
     const participantsArr: Ref<Participant[]> = ref([]);
 
     Papa.parse(file, {
@@ -172,7 +175,7 @@ async function importParticipants(action: MoreTableActionResult) {
         })
       }
     });
-
+     /*
     setTimeout(() => {
       participantsApi.createParticipants(props.studyId, participantsArr.value)
         .then(() => listParticipant())
@@ -180,11 +183,22 @@ async function importParticipants(action: MoreTableActionResult) {
       ;
     }, 600)
 
+      */
+
   }
-
-
-
 }
+
+function uploadFile(file: File) {
+  var formData = new FormData();
+  var imagefile = document.querySelector('#file');
+  formData.append("file", file);
+  axios.post('/url', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+}
+
 
 listParticipant()
 </script>
