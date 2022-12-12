@@ -38,7 +38,6 @@
     "storybook-i18n": "^1.1.2",
     "vue": "^3.2.25",
     "vue-i18n": "^9.1.10",
-    "vue-papa-parse": "^3.1.0",
     "vue-router": "4.1.3"
   },
   "devDependencies": {

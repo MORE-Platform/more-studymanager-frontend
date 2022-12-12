@@ -30,9 +30,6 @@ import { Router } from './router'
 import AuthService from './service/AuthService';
 import axios from 'axios';
 
-// Parser
-import VuePapaParse from 'vue-papa-parse';
-
 const authService = new AuthService({url: 'https://auth.more.redlink.io', realm: 'Auth-Client-Test', clientId: 'oauth2-pkce-client'})
 const loggedIn = await authService.init();
 if(!loggedIn) {
@@ -68,7 +65,6 @@ app.use(i18n)
 app.use(PrimeVue)
 app.use(ConfirmationService);
 app.use(DialogService);
-app.use(VuePapaParse);
 
 app.mount('#app')
 
