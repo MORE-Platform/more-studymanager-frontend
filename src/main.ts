@@ -1,12 +1,20 @@
 import {createApp} from 'vue'
 import App from './App.vue'
-import './index.css'
+import './index.pcss'
 import '../src/style.pcss'
-
+// PrimeVue
+import PrimeVue from 'primevue/config'
+import Tooltip from 'primevue/tooltip';
+import ConfirmationService from 'primevue/confirmationservice';
+import DialogService from 'primevue/dialogservice';
+// Router
+import { Router } from './router'
+import AuthService from './service/AuthService';
+import axios from 'axios';
+// i18n
 import { createI18n } from 'vue-i18n'
 import en from './i18n/en.json'
 
-// 2. Create i18n instance with options
 const i18n = createI18n({
   legacy: false,
   globalInjection: true,
@@ -19,30 +27,13 @@ const i18n = createI18n({
   // ...
 })
 
-// PrimeVue
-import PrimeVue from 'primevue/config'
-import Tooltip from 'primevue/tooltip';
-import ConfirmationService from 'primevue/confirmationservice';
-import DialogService from 'primevue/dialogservice';
-
-// Router
-import { Router } from './router'
-import AuthService from './service/AuthService';
-import axios from 'axios';
-
 const authService = new AuthService({url: 'https://auth.more.redlink.io', realm: 'Auth-Client-Test', clientId: 'oauth2-pkce-client'})
 const loggedIn = await authService.init();
 if(!loggedIn) {
   window.location.reload();
 }
 
-const axiosInstance = axios.create({
-  baseURL: "/",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-axiosInstance.interceptors.request.use(
+axios.interceptors.request.use(
   (config:any) => {
     const token = authService.getToken()
     if (token) {
@@ -55,7 +46,6 @@ axiosInstance.interceptors.request.use(
   }
 )
 
-window.axios = axiosInstance;
 
 const app = createApp(App)
 app.provide("authService", authService);
