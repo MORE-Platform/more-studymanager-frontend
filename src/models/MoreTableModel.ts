@@ -1,3 +1,6 @@
+import {StudyRole} from "../generated-sources/openapi";
+import {Ref} from 'Vue';
+
 export interface MoreTableColumn {
   field: string
   header: string
@@ -40,7 +43,7 @@ export interface MoreTableAction {
   icon?: string,
   options?: MoreTableActionOptions
   confirm?: MoreTableActionConfirm,
-  visible?: (data?:any) => boolean
+  visible?: (data?:any) => boolean,
 }
 
 export interface MoreTableRowActionResult<D> {
@@ -54,8 +57,10 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'
+  type: 'menu'|'split'|'search'
   values: MoreTableActionOption[]
+  valuesCallback?: (query: string) => Array<MoreTableActionOption[]>
+  query?: string
 }
 
 export interface MoreTableActionOption {
@@ -63,6 +68,7 @@ export interface MoreTableActionOption {
   value?: any,
   icon?: string
 }
+
 
 export interface MoreTableActionConfirm {
   header: string,
@@ -95,4 +101,12 @@ export enum MoreTableRoleTypes {
   STUDY_ADMIN = "Study Administrator",
   STUDY_OPERATOR = "Study Operator",
   STUDY_VIEWER = "Study Viewer"
+}
+
+export interface MoreTableCollaboratorItem {
+  uid: string,
+  name: string,
+  institution: string,
+  email?: string,
+  roles: Array<StudyRole>
 }

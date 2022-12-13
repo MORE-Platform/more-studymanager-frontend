@@ -83,8 +83,6 @@ function changeValue(studyGroup:StudyGroup) {
 function deleteStudyGroup(studyGroup: StudyGroup) {
   studyGroupsApi.deleteStudyGroup(studyGroup.studyId as number, studyGroup.studyGroupId as number).then(listStudyGroups)
 }
-
-console.log(studyGroupList.value);
 </script>
 
 <template>

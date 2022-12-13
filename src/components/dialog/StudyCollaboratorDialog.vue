@@ -1,0 +1,59 @@
+<script setup lang="ts">
+
+import {inject, ref, Ref} from "vue";
+import {Collaborator, Study, StudyRole} from "../../generated-sources/openapi";
+import MultiSelect from 'primevue/multiselect';
+import {MoreTableActionOption, MoreTableCollaboratorItem} from "../../models/MoreTableModel";
+import Button from 'primevue/button';
+import {dateToDateString} from "../../utils/dateUtils";
+
+const dialogRef:any = inject("dialogRef");
+const collaborator:MoreTableCollaboratorItem = dialogRef.value.data?.collaborator || {};
+const roleList: StudyRole[] = dialogRef.value.data?.roleList || [{label: 'Currently are no roles available', value: null}]
+const placeholder: string = dialogRef.value.data?.placeholder || 'Choose Option'
+
+
+console.log(collaborator);
+const roleValues: Ref<StudyRole[]> = ref([])
+const warning: Ref<string | undefined> = ref(undefined);
+
+function save(){
+  if(!roleValues.value.length) {
+    warning.value = 'Please choose at least one role to continue or cancel.'
+  } else {
+    const returnCollaborator: MoreTableCollaboratorItem = {
+      uid: collaborator.uid,
+      name: collaborator.name,
+      institution: collaborator.institution,
+      roles: roleValues.value
+    }
+    warning.value = undefined
+    dialogRef.value.close(returnCollaborator)
+  }
+}
+
+function cancel() {
+  dialogRef.value.close();
+}
+
+</script>
+
+<template>
+  <div class="study-collaborator-dialog">
+    <div class="mb-4">Add <span class="font-bold">{{collaborator.label}} ({{collaborator.institution}}) </span> to your study collaborators. </div>
+
+    <h6 >Choose your calloberator's roles:</h6>
+    <div class="error mb-3" v-if="warning">{{warning}}</div>
+    <MultiSelect v-model="roleValues" :options="roleList" option-label="label" :placeholder="$t(placeholder)" />
+
+    <div class="buttons text-right mt-8 justify-end">
+      <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
+      <Button @click="save()">Save</Button>
+    </div>
+
+  </div>
+</template>
+
+<style lang="postcss">
+
+</style>

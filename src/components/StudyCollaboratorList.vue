@@ -3,9 +3,10 @@ import {Ref, ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
 import {useUsersApi} from "../composable/useApi";
 import {useCollaboratorsApi} from "../composable/useApi";
+import {useDialog} from 'primevue/usedialog';
 import {
-  MoreTableAction, MoreTableChoice,
-  MoreTableColumn, MoreTableFieldType, MoreTableRoleTypes, MoreTableRowActionResult,
+  MoreTableAction, MoreTableChoice, MoreTableActionOption,
+  MoreTableColumn, MoreTableFieldType, MoreTableCollaboratorItem, MoreTableRowActionResult, MoreTableActionOptions,
 } from '../models/MoreTableModel'
 import {StudyGroup, Collaborator, CollaboratorDetails, Study, StudyRole, UserInfo} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
@@ -13,6 +14,9 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import {useRoute} from 'vue-router';
 import {useI18n} from 'vue-i18n';
 import {AxiosResponse} from "axios";
+import StudyCollaboratorDialog from './dialog/StudyCollaboratorDialog.vue'
+
+const dialog = useDialog();
 
 const props = defineProps({
   studyId: {
@@ -22,6 +26,12 @@ const props = defineProps({
 });
 
 
+const roleList = [
+  {label: 'STUDY_ADMIN', value: StudyRole.Admin},
+  {label: 'STUDY_OPERATOR', value: StudyRole.Operator},
+  {label: 'STUDY_VIEWER', value: StudyRole.Viewer}
+]
+
 const { collaboratorsApi } = useCollaboratorsApi()
 const { usersApi } = useUsersApi();
 const { studyGroupsApi } = useStudyGroupsApi()
@@ -29,7 +39,7 @@ const route = useRoute()
 const {t} = useI18n();
 const studyGroupList: Ref<StudyGroup[]> = route.meta['studyGroups'] as Ref<StudyGroup[]>;
 
-const collaboratorsList: Ref<Collaborator[]> = ref([]);
+const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 const collaboratorRoles: Ref<CollaboratorDetails[]> = ref([]);
 
 
@@ -41,29 +51,33 @@ const collaboratorColumns: MoreTableColumn[] = [
     editable: {values: [
       {label: 'Study Administrator', value: StudyRole.Admin},
         {label: 'Study Operator', value: StudyRole.Operator},
-        {label: 'Study Viewer', value: StudyRole.Viewer},
-        {label: 'Delete Collaborator', value: null}]},
+        {label: 'Study Viewer', value: StudyRole.Viewer}]},
     sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'choose Role'}
 
 ]
 
-console.log("collaboratorColumns------")
-console.log(collaboratorColumns)
-console.log(collaboratorColumns[3].editable)
-
-
 const rowActions: MoreTableAction[] = [
-  { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete study group?'}}
+  { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
 ]
+
+const searchQuery: Ref<string> = ref('');
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus'}
+  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', options: {type: 'search', placeholder: 'Search Collaborators',
+      valuesCallback: (query: string) => {
+        return usersApi.findUsers(query)
+          .then((response) => {
+            const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
+            return resultList
+          });
+      }
+  }}
 ]
 
-function execute(action: MoreTableRowActionResult<CollaboratorDetails>) {
+function execute(action: any) {
   switch (action.id) {
-    case 'delete': return deleteStudyCollaborator(action.row)
-    case 'create': return addStudyCollaborator(action.row)
+    case 'deleteCollab': return deleteStudyCollaborator(action.row)
+    case 'create': return openAddCollaboratorDialog(action)
     default: console.error('no handler for action', action)
   }
 }
@@ -73,9 +87,8 @@ async function listCollaborators() {
      await collaboratorsApi.listStudyCollaborators(props.studyId)
       .then(
         (response: AxiosResponse) => {
-          console.log(response.data);
-          console.log("collaboratorsApi.llistStudyCollaborators");
-          collaboratorsList.value = response.data.map((item) => ({uid: item.user.uid, name: item.user.name, institution: item.user.institution, email: item.user.email, roles: item.roles}))
+          collaboratorsList.value = response.data.map((item: Collaborator) =>
+            ({uid: item.user.uid, name: item.user.name, institution: item.user.institution, email: item.user.email, roles: getRoleChoices(item.roles)}))
           //return response.data
         });
   } catch(e) {
@@ -84,18 +97,12 @@ async function listCollaborators() {
 }
 
 async function getStudyCollaboratorRoles() {
-  console.log("getStudyCollaboratorRoles")
-  console.log(props.studyId)
-  console.log(typeof props.studyId)
   try {
     await collaboratorsApi.getStudyCollaboratorRoles(props.studyId)
       .then((response: AxiosResponse) =>
         {
-          console.log(response.data)
           if(response.data) {
             collaboratorRoles.value = response.data
-          } else {
-            console.log("collaborator roles are empty")
           }
         }
       )
@@ -104,28 +111,22 @@ async function getStudyCollaboratorRoles() {
   }
 }
 
-function addStudyCollaborator(collaborator: UserInfo, studyRole: StudyRole) {
-  collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, new Set([StudyRole.Operator, StudyRole.Viewer]))
-    .then(listCollaborators);
-}
-
 async function searchUser(query: string) {
-  await usersApi.findUsers(query)
+  return await usersApi.findUsers(query)
     .then((response) => {
-      console.log(response.data);
-      console.log(typeof response.data.result.users[0])
-      return response.data
+      const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
+      return resultList
     });
 }
 
-searchUser('a');
-
-addStudyCollaborator({uid: '9ff82926-9e0b-4111-9ba2-a81f866c0e53', name: 'Daniil Barkov', institution: 'Redlink GmbH', email: 'daniil.barkov@redlink.at'}, StudyRole.Admin)
+function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
+  collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, collaborator.roles.map((c: any) => c.value))
+    .then(listCollaborators)
+}
 
 function getRoleChoices(roles: StudyRole[]) {
-  let roleChoices = [];
-  console.log(roles);
-  roles.forEach((item, index) => {
+  let roleChoices: MoreTableChoice[] = [];
+  roles.forEach((item) => {
       if (item === StudyRole.Admin) {
         roleChoices.push({label: 'Study Administrator', value: StudyRole.Admin})
       }
@@ -136,36 +137,64 @@ function getRoleChoices(roles: StudyRole[]) {
         roleChoices.push({label: 'Study Viewer', value: StudyRole.Viewer})
       }
   })
-
-  console.log(roleString);
-  return roleString;
+  return roleChoices;
 }
 
-function changeValue(collaborator:any) {
-  console.log("changeValue");
-  console.log(collaborator);
-  const userInfo: Collaborator = {
-    roles: collaborator.roles,
+function changeValue(collabListItem:any) {
+  const collaborator: Collaborator = {
+    roles: collabListItem.roles.map((v: any) => v.value),
     user: {
-      uid: collaborator.uid,
-      name: collaborator.name,
-      institution: collaborator.institution,
-      email: collaborator.email,
+      uid: collabListItem.uid,
+      name: collabListItem.name,
+      institution: collabListItem.institution,
+      email: collabListItem.email,
     }
   }
-  console.log(userInfo.roles);
-  const i = collaboratorsList.value.findIndex(c => c.user.uid === collaborator.uid);
-  console.log(i);
+  const i = collaboratorsList.value.findIndex(c => c.uid === collabListItem.uid);
 
- if(i>-1) {
-    //collaboratorsList.value[i].roles = roles;
-    //collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, roles);
+  if(i>-1) {
+    collaboratorsList.value[i].roles = collabListItem.roles;
+    collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collabListItem.uid, collaborator.roles)
   }
 }
 
-function deleteStudyCollaborator(studyGroup: CollaboratorDetails) {
-  //studyGroupsApi.deleteStudyGroup(studyGroup.studyId as number, studyGroup.studyGroupId as number).then(listCollaborators)
+function deleteStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
+  console.log("deleteCollaborator")
+  collaboratorsApi.clearStudyCollaboratorRoles(props.studyId, collaborator.uid)
+    .then(listCollaborators)
 }
+
+
+function openAddCollaboratorDialog(action: any) {
+  dialog.open(StudyCollaboratorDialog, {
+    data: {
+      collaborator: {
+        name: action.properties.label,
+        institution: action.properties.institution,
+        uid: action.properties.value
+      } as MoreTableCollaboratorItem,
+      placeholder: 'Choose Collaborator',
+      roleList
+    },
+    props: {
+      header: 'Add Collaborator',
+      style: {
+        width: '50vw'
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true
+    },
+    onClose: (options) => {
+      if(options?.data) {
+        addStudyCollaborator(options.data)
+      }
+    }
+  })
+}
+
 
 listCollaborators();
 </script>
