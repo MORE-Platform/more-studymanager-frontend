@@ -16,7 +16,7 @@ import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
-//import MultiSelect from 'primevue/multiselect';
+import MultiSelect from 'primevue/multiselect';
 import {useConfirm} from 'primevue/useconfirm';
 import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
@@ -294,7 +294,7 @@ function shortenFieldText(text: string) {
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
               v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
-            <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
+          <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.editable.values" option-label="label" :placeholder="'Choose Roles'">{{datat[field]}} </MultiSelect>>
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -308,6 +308,7 @@ function shortenFieldText(text: string) {
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
+            <span v-if="column.type === MoreTableFieldType.multiselect">{{ data[field] }}</span>
           </div>
         </template>
       </Column>

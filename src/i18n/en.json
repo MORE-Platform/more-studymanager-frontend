@@ -3,6 +3,7 @@
   "message": "testing message",
   "studies":  "Study List",
   "studyGroups":  "Study Groups",
+  "studyCollaborators": "Study Collaborators",
   "studyId": "Study ID",
   "title": "Title",
   "purpose": "Purpose",
@@ -106,5 +107,11 @@
   },
   "user": {
     "institution": "Institution"
+  },
+
+  "roleTypes": {
+    "STUDY_ADMIN": "Study Administrator",
+    "STUDY_OPERATOR": "Study Operator",
+    "STUDY_VIEWER": "Study Viewer"
   }
 }

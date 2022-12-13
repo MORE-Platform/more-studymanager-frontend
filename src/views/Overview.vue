@@ -7,6 +7,7 @@ import {Study, StudyStatus} from '../generated-sources/openapi';
 import StudyGroupList from '../components/StudyGroupList.vue';
 import OverviewEditDetails from '../components/forms/Overview-EditDetails.vue'
 import StudyHeader from '../components/shared/StudyHeader.vue';
+import StudyCollaboratorList from '../components/StudyCollaboratorList.vue'
 
 const { studiesApi } = useStudiesApi()
 const route = useRoute()
@@ -50,6 +51,8 @@ const studyId = +route.params.studyId;
     <div class="container bg-white p-10 rounded-lg">
       <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
       <StudyGroupList :study-id="studyId"></StudyGroupList>
+
+      <StudyCollaboratorList :study-id="studyId" class="mt-20"/>
     </div>
   </div>
 </template>

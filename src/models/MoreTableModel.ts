@@ -90,3 +90,9 @@ export interface MoreTableEditableChoicePropertyValues {
   label?:string
   value: string
 }
+
+export enum MoreTableRoleTypes {
+  STUDY_ADMIN = "Study Administrator",
+  STUDY_OPERATOR = "Study Operator",
+  STUDY_VIEWER = "Study Viewer"
+}
