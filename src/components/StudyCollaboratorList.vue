@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import {Ref, ref} from 'vue'
-import {useStudyGroupsApi} from '../composable/useApi'
 import {useUsersApi} from "../composable/useApi";
 import {useCollaboratorsApi} from "../composable/useApi";
 import {useDialog} from 'primevue/usedialog';
 import {
-  MoreTableAction, MoreTableChoice, MoreTableActionOption,
-  MoreTableColumn, MoreTableFieldType, MoreTableCollaboratorItem, MoreTableRowActionResult, MoreTableActionOptions,
+  MoreTableAction, MoreTableChoice,
+  MoreTableColumn, MoreTableFieldType, MoreTableCollaboratorItem, MoreTableActionResult, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {StudyGroup, Collaborator, CollaboratorDetails, Study, StudyRole, UserInfo} from '../generated-sources/openapi';
+import {Collaborator, StudyRole} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
-import {useRoute} from 'vue-router';
-import {useI18n} from 'vue-i18n';
+//import {useI18n} from 'vue-i18n';
 import {AxiosResponse} from "axios";
 import StudyCollaboratorDialog from './dialog/StudyCollaboratorDialog.vue'
 
@@ -23,31 +21,31 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  useConfirmDialog: {
+    type: Boolean,
+    default: true
+  }
 });
 
 
 const roleList = [
-  {label: 'STUDY_ADMIN', value: StudyRole.Admin},
-  {label: 'STUDY_OPERATOR', value: StudyRole.Operator},
-  {label: 'STUDY_VIEWER', value: StudyRole.Viewer}
+  {label: 'Study Administrator', value: StudyRole.Admin},
+  {label: 'Study Operator', value: StudyRole.Operator},
+  {label: 'Study Viewer', value: StudyRole.Viewer}
 ]
 
 const { collaboratorsApi } = useCollaboratorsApi()
 const { usersApi } = useUsersApi();
-const { studyGroupsApi } = useStudyGroupsApi()
-const route = useRoute()
-const {t} = useI18n();
-const studyGroupList: Ref<StudyGroup[]> = route.meta['studyGroups'] as Ref<StudyGroup[]>;
+//const {t} = useI18n();
 
 const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
-const collaboratorRoles: Ref<CollaboratorDetails[]> = ref([]);
 
 
 const collaboratorColumns: MoreTableColumn[] = [
-  {field: 'name', header: 'Name', sortable: true, filterable: {showFilterMatchModes: false}},
-  {field: 'institution', header: 'Organisation', sortable: true, filterable: {showFilterMatchModes: false}},
-  {field: 'email', header: 'E-Mail', sortable: true},
-  { field: 'roles', header: 'Role(s)', type: MoreTableFieldType.multiselect,
+  {field: 'name', header: 'name', sortable: true, filterable: {showFilterMatchModes: false}},
+  {field: 'institution', header: 'user.institution', sortable: true, filterable: {showFilterMatchModes: false}},
+  {field: 'email', header: 'email', sortable: true},
+  { field: 'roles', header: 'roles', type: MoreTableFieldType.multiselect,
     editable: {values: [
       {label: 'Study Administrator', value: StudyRole.Admin},
         {label: 'Study Operator', value: StudyRole.Operator},
@@ -60,21 +58,21 @@ const rowActions: MoreTableAction[] = [
   { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
 ]
 
-const searchQuery: Ref<string> = ref('');
-
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', options: {type: 'search', placeholder: 'Search Collaborators',
-      valuesCallback: (query: string) => {
+  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', options: {type: 'search', values: [],
+      valuesCallback: {
+        placeholder: 'placeholder.searchCollaborators',
+        callback: (query: string) => {
         return usersApi.findUsers(query)
-          .then((response) => {
-            const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
+          .then((response: AxiosResponse) => {
+            const resultList = response.data.result.users.map((u: MoreTableCollaboratorItem) => ({label: u.name, value: u.uid, institution: u.institution}))
             return resultList
           });
-      }
+      }},
   }}
 ]
 
-function execute(action: any) {
+function execute(action: MoreTableRowActionResult<MoreTableCollaboratorItem> ) {
   switch (action.id) {
     case 'deleteCollab': return deleteStudyCollaborator(action.row)
     case 'create': return openAddCollaboratorDialog(action)
@@ -96,36 +94,23 @@ async function listCollaborators() {
   }
 }
 
-async function getStudyCollaboratorRoles() {
-  try {
-    await collaboratorsApi.getStudyCollaboratorRoles(props.studyId)
-      .then((response: AxiosResponse) =>
-        {
-          if(response.data) {
-            collaboratorRoles.value = response.data
-          }
-        }
-      )
-  } catch(e) {
-    console.error('Cannot list collaborator roles: ' + props.studyId, e);
-  }
-}
-
+/*
 async function searchUser(query: string) {
-  return await usersApi.findUsers(query)
-    .then((response) => {
-      const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
-      return resultList
-    });
+ return await usersApi.findUsers(query)
+   .then((response) => {
+     const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
+     return resultList
+   });
 }
+*/
 
 function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
-  collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, collaborator.roles.map((c: any) => c.value))
+  collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, collaborator.roles.map((c: MoreTableChoice) => c.value as StudyRole))
     .then(listCollaborators)
 }
 
 function getRoleChoices(roles: StudyRole[]) {
-  let roleChoices: MoreTableChoice[] = [];
+  const roleChoices: MoreTableChoice[] = [];
   roles.forEach((item) => {
       if (item === StudyRole.Admin) {
         roleChoices.push({label: 'Study Administrator', value: StudyRole.Admin})
@@ -140,9 +125,9 @@ function getRoleChoices(roles: StudyRole[]) {
   return roleChoices;
 }
 
-function changeValue(collabListItem:any) {
+function changeValue(collabListItem:MoreTableCollaboratorItem) {
   const collaborator: Collaborator = {
-    roles: collabListItem.roles.map((v: any) => v.value),
+    roles: collabListItem.roles.map((v: MoreTableChoice) => v.value as StudyRole),
     user: {
       uid: collabListItem.uid,
       name: collabListItem.name,
@@ -159,13 +144,14 @@ function changeValue(collabListItem:any) {
 }
 
 function deleteStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
-  console.log("deleteCollaborator")
+  console.log("delete");
   collaboratorsApi.clearStudyCollaboratorRoles(props.studyId, collaborator.uid)
     .then(listCollaborators)
 }
 
 
-function openAddCollaboratorDialog(action: any) {
+function openAddCollaboratorDialog(action: MoreTableActionResult) {
+
   dialog.open(StudyCollaboratorDialog, {
     data: {
       collaborator: {
@@ -173,7 +159,7 @@ function openAddCollaboratorDialog(action: any) {
         institution: action.properties.institution,
         uid: action.properties.value
       } as MoreTableCollaboratorItem,
-      placeholder: 'Choose Collaborator',
+      placeholder: 'placeholder.chooseRole',
       roleList
     },
     props: {
@@ -194,8 +180,6 @@ function openAddCollaboratorDialog(action: any) {
     }
   })
 }
-
-
 listCollaborators();
 </script>
 
@@ -212,6 +196,8 @@ listCollaborators();
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />
-    <ConfirmDialog></ConfirmDialog>
+    <div v-if="useConfirmDialog">
+      <ConfirmDialog></ConfirmDialog>
+    </div>
   </div>
 </template>

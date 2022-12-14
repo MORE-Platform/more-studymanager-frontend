@@ -1,11 +1,10 @@
 <script setup lang="ts">
 
 import {inject, ref, Ref} from "vue";
-import {Collaborator, Study, StudyRole} from "../../generated-sources/openapi";
+import {StudyRole} from "../../generated-sources/openapi";
 import MultiSelect from 'primevue/multiselect';
-import {MoreTableActionOption, MoreTableCollaboratorItem} from "../../models/MoreTableModel";
+import {MoreTableChoice, MoreTableCollaboratorItem} from "../../models/MoreTableModel";
 import Button from 'primevue/button';
-import {dateToDateString} from "../../utils/dateUtils";
 
 const dialogRef:any = inject("dialogRef");
 const collaborator:MoreTableCollaboratorItem = dialogRef.value.data?.collaborator || {};
@@ -14,7 +13,7 @@ const placeholder: string = dialogRef.value.data?.placeholder || 'Choose Option'
 
 
 console.log(collaborator);
-const roleValues: Ref<StudyRole[]> = ref([])
+const roleValues: Ref<MoreTableChoice[]> = ref([])
 const warning: Ref<string | undefined> = ref(undefined);
 
 function save(){
@@ -43,8 +42,8 @@ function cancel() {
     <div class="mb-4">Add <span class="font-bold">{{collaborator.label}} ({{collaborator.institution}}) </span> to your study collaborators. </div>
 
     <h6 >Choose your calloberator's roles:</h6>
-    <div class="error mb-3" v-if="warning">{{warning}}</div>
-    <MultiSelect v-model="roleValues" :options="roleList" option-label="label" :placeholder="$t(placeholder)" />
+    <div v-if="warning" class="error mb-3">{{warning}}</div>
+    <MultiSelect v-model="roleValues" :options="roleList" option-label="label" :placeholder="$t(placeholder)" ></MultiSelect>
 
     <div class="buttons text-right mt-8 justify-end">
       <Button class="p-button-secondary" @click="cancel()">Cancel</Button>

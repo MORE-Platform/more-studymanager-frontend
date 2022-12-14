@@ -52,7 +52,7 @@ const studyId = +route.params.studyId;
       <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
       <StudyGroupList :study-id="studyId"></StudyGroupList>
 
-      <StudyCollaboratorList :study-id="studyId" class="mt-20"/>
+      <StudyCollaboratorList :study-id="studyId" :use-confirm-dialog="false" class="mt-20"/>
     </div>
   </div>
 </template>

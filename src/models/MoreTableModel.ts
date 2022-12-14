@@ -1,6 +1,3 @@
-import {StudyRole} from "../generated-sources/openapi";
-import {Ref} from 'Vue';
-
 export interface MoreTableColumn {
   field: string
   header: string
@@ -59,7 +56,7 @@ export interface MoreTableActionResult {
 export interface MoreTableActionOptions {
   type: 'menu'|'split'|'search'
   values: MoreTableActionOption[]
-  valuesCallback?: (query: string) => Array<MoreTableActionOption[]>
+  valuesCallback?: MoreTableActionOptionCallback
   query?: string
 }
 
@@ -67,6 +64,11 @@ export interface MoreTableActionOption {
   label: string,
   value?: any,
   icon?: string
+}
+
+export interface MoreTableActionOptionCallback {
+  callback: (query: string) => Promise<Array<MoreTableActionOption[]>>,
+  placeholder?: string
 }
 
 
@@ -108,5 +110,5 @@ export interface MoreTableCollaboratorItem {
   name: string,
   institution: string,
   email?: string,
-  roles: Array<StudyRole>
+  roles: Array<MoreTableChoice>
 }

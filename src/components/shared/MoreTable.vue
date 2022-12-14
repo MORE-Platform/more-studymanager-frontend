@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import {onBeforeMount, PropType, Ref, ref, watch} from 'vue'
+import {onBeforeMount, PropType, Ref, ref} from 'vue'
 import {
   MoreTableColumn,
   MoreTableAction,
   MoreTableSortOptions,
   MoreTableRowActionResult,
   MoreTableActionResult,
-  MoreTableChoice, MoreTableActionOptions,
-  MoreTableActionOption
+  MoreTableChoice
 } from '../../models/MoreTableModel'
 import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -23,8 +22,6 @@ import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
-import {actions} from "@storybook/addon-actions";
-import {AxiosResponse} from "axios";
 
 const props = defineProps({
   title: {
@@ -226,10 +223,9 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
-function getLabelForMultiSelectValue(setValues: any, values: MoreTableChoice[]) {
+function getLabelForMultiSelectValue(setValues: any) {
   return setValues.map((v: MoreTableChoice) => v.label);
 }
-
 
 function shortenFieldText(text: string) {
   if(text) {
@@ -242,9 +238,9 @@ function shortenFieldText(text: string) {
   return text;
 }
 
-const searchActions: Ref<any[]>  = ref([])
+const searchActions: Ref<MoreTableChoice[]>  = ref([])
 
-async function setDynamicActions(values: Promise<any>, actionType: MoreTableAction, placeholder: string) {
+async function setDynamicActions(values: Promise<any>, placeholder: string) {
   if(values) {
   Promise.resolve(values)
     .then((response) => {
@@ -269,17 +265,18 @@ async function setDynamicActions(values: Promise<any>, actionType: MoreTableActi
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
           <Button v-if="isVisible(action) && !action.options" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
-          <SplitButton v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values"
+          <SplitButton
+            v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values"
                        @click="actionHandler(action)"></SplitButton>
 
-          <Dropdown v-if="action.options && action.options.type === 'search'" class="button p-button dropdown-search" :placeholder="action.options.placeholder" :filter="true"
+          <Dropdown
+            v-if="action.options && action.options.type === 'search'" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
                     :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
-                    @filter="setDynamicActions(action.options.valuesCallback($event.value, action.options.type), action.id, action.options.placeholder)">
+                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type), action.options.valuesCallback.placeholder)">
             <template #option="slotProps" >
-              <option v-for="item in slotProps" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
+              <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
                 <div class="col-span-1">{{item.label}}</div>
                 <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
-                <!--<MultiSelect v-if="slotProps.subOptions" v-model="slotProps.roles" :options="slotProps.subOptions" option-label="label" :placeholder="$t(slotProps.subOptions.placeholder)" />   -->
               </option>
             </template>
           </Dropdown>
@@ -349,7 +346,9 @@ async function setDynamicActions(values: Promise<any>, actionType: MoreTableActi
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
-            <span v-if="column.type === MoreTableFieldType.multiselect"><span v-for="value in getLabelForMultiSelectValue(data[field], column.editable.values)" class="multiselect-item">{{ value }}</span></span>
+            <span v-if="column.type === MoreTableFieldType.multiselect">
+              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.editable.values)" :key="index" class="multiselect-item">{{ value }}</span>
+            </span>
           </div>
         </template>
       </Column>

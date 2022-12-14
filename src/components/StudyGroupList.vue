@@ -24,7 +24,7 @@ const props = defineProps({
 });
 
 const studyGroupColumns: MoreTableColumn[] = [
-  {field: 'studyGroupId', header: 'Id', sortable: true},
+  {field: 'studyGroupId', header: 'id', sortable: true},
   { field: 'title', placeholder: 'Set a title', header: 'title', editable: true },
   { field: 'purpose', header: 'purpose', editable: true, placeholder: 'Set a proper purpose for this group' }
 ]
