@@ -2,7 +2,7 @@ export interface MoreTableColumn {
   field: string
   header: string
   type?: MoreTableFieldType //default is string
-  editable?: MoreTableEditableProperties | boolean
+  editable?: MoreTableEditableChoiceProperties | boolean | ((data?:any) => boolean),
   sortable?: boolean
   filterable?: boolean | MoreTableFilterOption,
   placeholder?: string

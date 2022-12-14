@@ -47,12 +47,11 @@ const studyId = +route.params.studyId;
 <template>
   <div class="container m-auto mt-10 overview-view">
     <StudyHeader :study="study"></StudyHeader>
-    <MoreTabNav :study-id="studyId"></MoreTabNav>
+    <MoreTabNav :study-id="studyId" :study-roles="study?.userRoles"></MoreTabNav>
     <div class="container bg-white p-10 rounded-lg">
-      <OverviewEditDetails :style-modifier="'mb-16'" :study="study" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
-      <StudyGroupList :study-id="studyId"></StudyGroupList>
-
-      <StudyCollaboratorList :study-id="studyId" :use-confirm-dialog="false" class="mt-20"/>
+      <OverviewEditDetails :style-modifier="'mb-16'" :study="study" :user-roles="study?.userRoles" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
+      <StudyGroupList :study-id="studyId" :user-roles="study?.userRoles"></StudyGroupList>
+        <StudyCollaboratorList :study-id="studyId" :user-roles="study?.userRoles" :use-confirm-dialog="false" class="mt-20"/>
     </div>
   </div>
 </template>

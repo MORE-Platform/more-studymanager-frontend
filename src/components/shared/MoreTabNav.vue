@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
-import {StudyRole, StudyStatus} from "../../generated-sources/openapi";
+import {StudyRole} from "../../generated-sources/openapi";
 import {PropType, ref, Ref} from "vue";
+import InfoDialog from "../dialog/InfoDialog.vue";
+import {useDialog} from "primevue/usedialog";
+//import DynamicDialog from 'primevue/dynamicdialog';
+import {MoreTableChoice} from "../../models/MoreTableModel";
+
+const accessDialog = useDialog()
 
 const props = defineProps({
   studyId: {
@@ -14,31 +20,83 @@ const props = defineProps({
   }
 });
 
-console.log("MoreTableNav");
-console.log(props.studyId);
-console.log(props.studyRoles);
-console.log("----------------------")
-
   interface Tab {
     title: string
     name: string
     params: RouteParamsRaw
     active?: boolean
-    access?: StudyRole[]
+    access: StudyRole[]
   }
 
   const router = useRouter()
   const route = useRoute()
 
+
+
   const tabs:Tab[] = [
-    {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
+    {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer]},
     {title: 'Data', name: 'Data', params: {studyId: props.studyId}, access: [StudyRole.Viewer]},
     {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
     {title: 'Observations', name: 'Observations', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
     {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]}
   ] as Tab[]
 
-  function getVisible(accessRoles: StudyRole[], title: string) {
+const studyRoleValues: MoreTableChoice[] = [
+  {label: 'Study Administrator', value: StudyRole.Admin},
+  {label: 'Study Operator', value: StudyRole.Operator},
+  {label: 'Study Viewer', value: StudyRole.Viewer}
+]
+
+  console.log(route.name);
+
+  function checkAccess() {
+    const activeTab = tabs.find(r => r.name === route.name)
+
+    if (activeTab) {
+      const access = props.studyRoles.some(r => activeTab.access.includes(r));
+
+      const msg: Ref<string> = ref("Access to the " + activeTab.name + "-section requires ");
+      activeTab.access.forEach((r, index) => {
+        const role: MoreTableChoice = studyRoleValues.find((l) => l.value === r) as MoreTableChoice
+        if (index > 0 && activeTab.access.length > 1) { msg.value = msg.value + ', '; }
+        msg.value = msg.value + '"' + role.label + '"-';
+        if(index === activeTab.access.length -1)  {msg.value = msg.value + "Permission. Please contact your study-administrator if you require access to this section." }
+      })
+
+      if(access === false) {
+        console.error("no access")
+
+        accessDialog.open(InfoDialog,{
+          data: {
+            message: msg
+          },
+          props: {
+            header: "Access Denied",
+            style: {
+              width: '50vw',
+            },
+            breakpoints:{
+              '960px': '75vw',
+              '640px': '90vw'
+            },
+            modal: true,
+          },
+          onClose: () => {
+            localStorage.setItem('welcomeMsg', 'hide');
+          }
+        })
+      }     else {
+        console.error("access");
+      }
+
+      console.log(msg.value);
+    }
+
+
+    return;
+  }
+
+  function getVisible(accessRoles: StudyRole[]) {
     return(props.studyRoles.some(r => accessRoles.includes(r)));
   }
 
@@ -53,13 +111,14 @@ console.log("----------------------")
   }
 
   setActiveTab();
+  checkAccess();
 </script>
 
 <template>
   <div class="mb-16 more-tab-nav">
     <div class="flex flex-wrap justify-end text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 tab-parent">
       <div v-for="tab in tabs" :key="tab.name" >
-        <div class="tab mr-0.5 tab-element" v-if="getVisible(tab.access, tab.title)">
+        <div v-if="getVisible(tab.access, tab.title)" class="tab mr-0.5 tab-element" >
           <a
             href="#"
             class="inline-block p-4 rounded-t-lg"

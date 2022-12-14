@@ -8,7 +8,7 @@ import {
   MoreTableFieldType,
   MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Study, StudyStatus} from '../generated-sources/openapi';
+import {Study, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
@@ -27,8 +27,11 @@ const { studiesApi } = useStudiesApi()
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
-    { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    { field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext },
+    { field: 'title', header: 'title',
+      editable: (data: any) => data.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)),
+      sortable: true, filterable: {showFilterMatchModes: false}},
+    //@ts-ignore
+    { field: 'purpose', header: 'purpose', editable: (data) => data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r)), type: MoreTableFieldType.longtext },
     { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
     /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
       choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
@@ -37,10 +40,12 @@ const { studiesApi } = useStudiesApi()
     }*/
   ]
 
+
+
   const studyColumnsDraft: MoreTableColumn[] = [
     ...studyColumns,
-    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
-    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: false, sortable: true},
+    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: false, sortable: true},
   ]
 
   const tableActions: MoreTableAction[] = [
@@ -49,7 +54,7 @@ const { studiesApi } = useStudiesApi()
 
   const rowActions: MoreTableAction[] = [
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
-      visible: (data) => data.status === StudyStatus.Draft
+      visible: (data) => data.status === StudyStatus.Draft && data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r))
     }
   ]
  const frontRowActions: MoreTableAction[] = [

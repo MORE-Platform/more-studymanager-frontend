@@ -8,6 +8,8 @@
   function closeDialog() {
     dialogRef.value.close();
   }
+
+  console.log("hello from info dialog")
 </script>
 
 <template>

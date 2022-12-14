@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Ref, ref} from 'vue'
+import {PropType, Ref, ref} from 'vue'
 import {useUsersApi} from "../composable/useApi";
 import {useCollaboratorsApi} from "../composable/useApi";
 import {useDialog} from 'primevue/usedialog';
@@ -21,6 +21,10 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    required: true
+  },
   useConfirmDialog: {
     type: Boolean,
     default: true
@@ -40,7 +44,7 @@ const { usersApi } = useUsersApi();
 
 const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
-
+const editAccess = props.userRoles.some(r => [StudyRole.Admin].includes(r));
 const collaboratorColumns: MoreTableColumn[] = [
   {field: 'name', header: 'name', sortable: true, filterable: {showFilterMatchModes: false}},
   {field: 'institution', header: 'user.institution', sortable: true, filterable: {showFilterMatchModes: false}},
@@ -55,11 +59,11 @@ const collaboratorColumns: MoreTableColumn[] = [
 ]
 
 const rowActions: MoreTableAction[] = [
-  { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
+  { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', visible: () => editAccess, confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', options: {type: 'search', values: [],
+  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', visible: () => editAccess, options: {type: 'search', values: [],
       valuesCallback: {
         placeholder: 'placeholder.searchCollaborators',
         callback: (query: string) => {
@@ -144,7 +148,6 @@ function changeValue(collabListItem:MoreTableCollaboratorItem) {
 }
 
 function deleteStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
-  console.log("delete");
   collaboratorsApi.clearStudyCollaboratorRoles(props.studyId, collaborator.uid)
     .then(listCollaborators)
 }
@@ -192,6 +195,7 @@ listCollaborators();
       :rows="collaboratorsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
+      :editable-access="editAccess"
       empty-message="No collaborators added yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

@@ -65,6 +65,10 @@ const props = defineProps({
     // eslint-disable-next-line
     default: (data:any) => true
   },
+  editableAccess: {
+    type: Boolean,
+    default: true
+  },
   emptyMessage: {
     type: String,
     default: 'No records',
@@ -97,7 +101,9 @@ function filterMatchMode(column: MoreTableColumn): boolean {
 
 const _editable = ref(false);
 onBeforeMount(() => {
-  _editable.value = !!props.columns.find(c => c.editable)
+  if (props.editableAccess) {
+    _editable.value = (!!props.columns.find(c => c.editable))
+  }
 })
 
 const confirm = useConfirm();
@@ -116,9 +122,6 @@ function selectHandler(rowKey: string) {
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
-  console.log("actionHandler");
-  console.log(action)
-  console.log(properties);
   emit('onaction', {id: action.id, properties})
 }
 
@@ -164,7 +167,12 @@ function save(row: unknown) {
 }
 
 function isEditable(row:any) {
-  return props.editable(row);
+  if(props.editableAccess === false)  {
+    return false;
+  }  else {
+    return props.editable(row);
+  }
+
 }
 
 function onRowClick($event: any) {
@@ -270,7 +278,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
                        @click="actionHandler(action)"></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search'" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
+            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
                     :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
                     @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type), action.options.valuesCallback.placeholder)">
             <template #option="slotProps" >
@@ -345,7 +353,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
-            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
             <span v-if="column.type === MoreTableFieldType.multiselect">
               <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.editable.values)" :key="index" class="multiselect-item">{{ value }}</span>
             </span>
