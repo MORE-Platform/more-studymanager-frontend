@@ -15,7 +15,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "createApi": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models --type-mappings=set=Array",
-    "license-check": "licensee --errors-only"
+    "license-check": "licensee --production --errors-only",
+    "license-list": "licensee --production || true"
   },
   "engines": {
     "node": "^16",
