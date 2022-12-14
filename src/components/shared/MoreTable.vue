@@ -16,7 +16,7 @@ import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
-//import MultiSelect from 'primevue/multiselect';
+import MultiSelect from 'primevue/multiselect';
 import {useConfirm} from 'primevue/useconfirm';
 import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
@@ -116,6 +116,9 @@ function selectHandler(rowKey: string) {
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
+  console.log("actionHandler");
+  console.log(action)
+  console.log(properties);
   emit('onaction', {id: action.id, properties})
 }
 
@@ -181,9 +184,10 @@ function prepare(rows:any) {
   });
 }
 
+
 const menus:any = {}
 props.tableActions.forEach(action => {
-  if(action.options) {
+  if(action.options && action.options.values && action.options.type !== 'search') {
     action.options.values.forEach(option => {
       (option as any)['command'] = () => {actionHandler(action, option.value)}
     })
@@ -219,6 +223,9 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
+function getLabelForMultiSelectValue(setValues: any) {
+  return setValues.map((v: MoreTableChoice) => v.label);
+}
 
 function shortenFieldText(text: string) {
   if(text) {
@@ -229,6 +236,22 @@ function shortenFieldText(text: string) {
     return undefined
   }
   return text;
+}
+
+const searchActions: Ref<MoreTableChoice[]>  = ref([])
+
+async function setDynamicActions(values: Promise<any>, placeholder: string) {
+  if(values) {
+  Promise.resolve(values)
+    .then((response) => {
+      if(response.length) {
+        searchActions.value =  response.map((v: any) => ({label: v.label, value: v.value, institution: v.institution}))
+      } else {
+        searchActions.value =  [{label: placeholder, value: null}];
+      }
+    })
+  }
+
 }
 </script>
 
@@ -242,7 +265,22 @@ function shortenFieldText(text: string) {
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
           <Button v-if="isVisible(action) && !action.options" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
-          <SplitButton v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values" @click="actionHandler(action)"></SplitButton>
+          <SplitButton
+            v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values"
+                       @click="actionHandler(action)"></SplitButton>
+
+          <Dropdown
+            v-if="action.options && action.options.type === 'search'" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
+                    :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
+                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type), action.options.valuesCallback.placeholder)">
+            <template #option="slotProps" >
+              <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
+                <div class="col-span-1">{{item.label}}</div>
+                <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
+              </option>
+            </template>
+          </Dropdown>
+
           <div v-if="isVisible(action) && !!action.options && action.options.type === 'menu'">
             <Button  type="button" :label="action.label" :icon="action.icon" @click="toggle(action,$event)"></Button>
             <Menu :ref="menus[action.id]" :model="action.options.values" :popup="true" />
@@ -294,7 +332,7 @@ function shortenFieldText(text: string) {
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
               v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
-            <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
+          <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.editable.values" option-label="label" :placeholder="$t(column.placeholder)" />
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -308,6 +346,9 @@ function shortenFieldText(text: string) {
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
+            <span v-if="column.type === MoreTableFieldType.multiselect">
+              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.editable.values)" :key="index" class="multiselect-item">{{ value }}</span>
+            </span>
           </div>
         </template>
       </Column>
@@ -386,6 +427,39 @@ function shortenFieldText(text: string) {
     .placeholder {
       font-style: italic;
       color:#ccc
+    }
+
+    .p-multiselect {
+      width: 100%;
+    }
+
+    .multiselect-item {
+      &:after {
+        content: ', '
+      }
+      &:last-of-type:after {
+        content: ''
+      }
+    }
+
+    .p-dropdown .p-dropdown-label.p-placeholder {
+      color: var(--surface-a)!important;
+    }
+    .p-dropdown-trigger {
+      display: none!important;
+    }
+    .dropdown-search {
+      padding: 0!important;
+    }
+  }
+  .dropdown-search-panel {
+    min-width:350px!important;
+    width: 450px;
+    left: 705px;
+    min-height:250px;
+
+    ul li {
+      display:flex;
     }
   }
 </style>
