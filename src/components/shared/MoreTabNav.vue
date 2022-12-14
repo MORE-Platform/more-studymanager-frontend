@@ -1,30 +1,47 @@
 <script setup lang="ts">
 import {RouteParamsRaw, useRoute, useRouter} from 'vue-router';
+import {StudyRole, StudyStatus} from "../../generated-sources/openapi";
+import {PropType, ref, Ref} from "vue";
+
+const props = defineProps({
+  studyId: {
+    type: Number,
+    required: true
+  },
+  studyRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    required: true
+  }
+});
+
+console.log(props.studyId);
+console.log(props.studyRoles);
 
   interface Tab {
     title: string
     name: string
     params: RouteParamsRaw
     active?: boolean
+    access?: StudyRole[]
   }
 
   const router = useRouter()
   const route = useRoute()
 
-  const props = defineProps({
-    studyId: {
-      type: Number,
-      required: true
-    }
-  });
-
   const tabs:Tab[] = [
-    {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}},
-    {title: 'Data', name: 'Data', params: {studyId: props.studyId}},
-    {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}},
-    {title: 'Observations', name: 'Observations', params: {studyId: props.studyId}},
-    {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}}
+    {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}, access: () => getAccess([StudyRole.Admin, StudyRole.Operator]), accesst: [StudyRole.Admin, StudyRole.Operator]},
+    {title: 'Data', name: 'Data', params: {studyId: props.studyId}, access: [StudyRole.Viewer]},
+    {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
+    {title: 'Observations', name: 'Observations', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
+    {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]}
   ] as Tab[]
+
+  function getAccess(accessRoles: StudyRole[]) {
+    props.studyRoles.forEach((studyRole: StudyRole) => {
+      console.log(accessRoles.find((accessRole: StudyRole) => studyRole)  )
+
+    })
+  }
 
   function setActiveTab() {
     tabs.forEach((tab:Tab) => {
