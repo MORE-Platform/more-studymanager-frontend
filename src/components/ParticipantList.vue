@@ -22,7 +22,7 @@ const props = defineProps({
     required: true
   },
   statusStatus: {
-    type: Object as PropType<StudyStatus>,
+    type: String as PropType<StudyStatus>,
     required: true
   },
   studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
@@ -34,7 +34,7 @@ const groupStatuses: Ref<MoreTableChoice[]> = ref(
 groupStatuses.value.push({label: "No Group", value: null})
 
 const participantsColumns: MoreTableColumn[] = [
-  {field: 'participantId', header: 'Id', sortable: true},
+  {field: 'participantId', header: 'id', sortable: true},
   { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status', filterable: {showFilterMatchModes: false} },

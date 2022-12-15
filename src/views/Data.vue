@@ -5,6 +5,7 @@
   import {useRoute} from 'vue-router';
   const route = useRoute()
   const study = route.meta['study'] as Study;
+  import DataView from '../components/DataView.vue'
 </script>
 
 <template>
