@@ -38,7 +38,7 @@ jobs:
       - name: 3rd-Party Licenses
         run: |
           mkdir -p target/
-          npm --silent run license-list > target/THIRD_PARTY.txt
+          npm --silent run license:list > target/THIRD_PARTY.txt
           cat target/THIRD_PARTY.txt
 
       - name: Upload License List
@@ -49,7 +49,7 @@ jobs:
           path: "target/THIRD_PARTY.txt"
 
       - name: Check licenses
-        run: npm run license-check
+        run: npm run license:check
 
 #      - name: Run tests
 #        run: npm run test:unit:once
