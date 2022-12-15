@@ -11,10 +11,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
 import * as names from 'starwars-names';
 import useLoader from '../composable/useLoader';
-
-// @ts-ignore
-import Papa from 'papaparse';
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 
 const { participantsApi } = useParticipantsApi()
@@ -136,9 +133,25 @@ function deleteParticipant(participant:Participant) {
   participantsApi.deleteParticipant(participant.studyId as number, participant.participantId as number).then(listParticipant)
 }
 
+async function importParticipants(action: MoreTableActionResult): Promise<void> {
+  if(action.properties?.files) {
+    const file = action.properties?.files[0]
+    await importExportApi.importParticipants(props.studyId, file, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(() => {
+        setTimeout(function() {
+          listParticipant()
+        }, 100)
+      })
+  }
+}
+
 async function exportParticipants(): Promise<void> {
   await importExportApi.exportParticipants(props.studyId)
-    .then((response) => {
+    .then((response: AxiosResponse) => {
       const filename: string = props.studyId + '_participants';
       downloadCSV(filename, response.data);
     })
@@ -157,48 +170,6 @@ function downloadCSV(filename: string, file: File): void {
     document.body.removeChild(link);
   }
 }
-
-async function importParticipants(action: MoreTableActionResult) {
-  if(action.properties?.files) {
-    const file = action.properties?.files[0]
-    console.log(file);
-    console.log('file')
-    const participantsArr: Ref<Participant[]> = ref([]);
-
-    Papa.parse(file, {
-      complete: function (result: any) {
-
-        result.data.forEach(async (participant: any, index: number) => {
-          if(index !== 0) {
-            participantsArr.value.push({alias: participant[0]})
-          }
-        })
-      }
-    });
-     /*
-    setTimeout(() => {
-      participantsApi.createParticipants(props.studyId, participantsArr.value)
-        .then(() => listParticipant())
-        .catch((e) => console.error('Cannot upload participants: ' + props.studyId, e))
-      ;
-    }, 600)
-
-      */
-
-  }
-}
-
-function uploadFile(file: File) {
-  var formData = new FormData();
-  var imagefile = document.querySelector('#file');
-  formData.append("file", file);
-  axios.post('/url', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  })
-}
-
 
 listParticipant()
 </script>
