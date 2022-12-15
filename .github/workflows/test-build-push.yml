@@ -35,18 +35,31 @@ jobs:
       - name: Run linting
         run: npm run lint
 
-      - name: Check licenses
-        run: npm run license-check
+      - name: 3rd-Party Licenses
+        run: |
+          mkdir -p target/
+          npm --silent run license:list > target/THIRD_PARTY.txt
+          cat target/THIRD_PARTY.txt
 
-      #- name: Run tests
-      #  run: npm run test:unit:once
-
-      - name: Upload Test Results
+      - name: Upload License List
         if: always()
         uses: actions/upload-artifact@v3
         with:
-          name: Test Results
-          path: "target/testResults.xml"
+          name: 3rd Party Licenses
+          path: "target/THIRD_PARTY.txt"
+
+      - name: Check licenses
+        run: npm run license:check
+
+#      - name: Run tests
+#        run: npm run test:unit:once
+#
+#      - name: Upload Test Results
+#        if: always()
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: Test Results
+#          path: "target/testResults.xml"
 
       - name: Run build
         run: npm run package:quick
