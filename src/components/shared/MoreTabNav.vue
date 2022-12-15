@@ -4,7 +4,6 @@ import {StudyRole} from "../../generated-sources/openapi";
 import {PropType, ref, Ref} from "vue";
 import InfoDialog from "../dialog/InfoDialog.vue";
 import {useDialog} from "primevue/usedialog";
-import Button from "primevue/button";
 import AccessDialog from 'primevue/dynamicdialog';
 import {MoreTableChoice} from "../../models/MoreTableModel";
 
@@ -72,6 +71,7 @@ const studyRoleValues: MoreTableChoice[] = [
             },
           },
           onClose: () => {
+            console.log("closed access dialog")
           }
         })
       }

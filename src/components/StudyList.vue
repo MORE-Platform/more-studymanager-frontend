@@ -25,18 +25,19 @@ const { studiesApi } = useStudiesApi()
   const dialog = useDialog();
   const loader = useLoader();
 
-  const editableRoles: StudyRole[] = [
-    StudyRole.Admin, StudyRole.Operator
-  ]
-
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
     { field: 'title', header: 'title',
-      editable: (data) => (data.userRoles.some((r: StudyRole) => editableRoles.includes(r))),
+      editable: true,
       sortable: true, filterable: {showFilterMatchModes: false}},
-    { field: 'purpose', header: 'purpose', editable: (data) => (data.userRoles.some((r: StudyRole) => editableRoles.includes(r))), type: MoreTableFieldType.longtext },
+    { field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext },
     { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
-    {field: 'userRoles', header: 'roles', sortable: true, filterable: {showFilterMatchModes: false}}
+    {field: 'userRoles', header: 'roles', sortable: true, filterable: {showFilterMatchModes: false},
+      arrayLabels: [
+        {label: 'Study Administrator', value: StudyRole.Admin},
+        {label: 'Study Operator', value: StudyRole.Operator},
+        {label: 'Study Viewer', value: StudyRole.Viewer}
+      ]}
   ]
 
   const studyColumnsDraft: MoreTableColumn[] = [

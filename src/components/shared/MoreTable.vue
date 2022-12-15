@@ -22,7 +22,7 @@ import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
-import {Study, StudyRole, StudyStatus} from '../../generated-sources/openapi';
+import {StudyRole} from '../../generated-sources/openapi';
 
 const props = defineProps({
   title: {
@@ -167,10 +167,18 @@ function save(row: unknown) {
   cancel(row);
 }
 
-function isEditable(row:any, slot: any) {
-  console.log(row);
-  console.log(slot);
-  if(props.editableAccess === false)  {
+const editableRoles: StudyRole[] = [
+  StudyRole.Admin, StudyRole.Operator
+]
+
+function isEditable(row:any) {
+  const userRoles: Ref<StudyRole[]> = ref([]);
+  if (row.userRoles) {
+    userRoles.value = row.userRoles;
+  } else if (row.roles) {
+    userRoles.value = row.roles
+  }
+  if(props.editableAccess === false || !userRoles.value.some((r: StudyRole) => editableRoles.includes(r)))  {
     return false;
   }  else {
     return props.editable(row);
@@ -233,7 +241,17 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
-function getLabelForMultiSelectValue(setValues: any) {
+function getLabelForMultiSelectValue(setValues: any, valueChoices?: MoreTableChoice[]) {
+  if(valueChoices) {
+    const labels: Ref<string[]> = ref([])
+    setValues.forEach((v: StudyRole) => {
+      const valueLabel = valueChoices.find((vc) => vc.value === v);
+      if(valueLabel) {
+        labels.value.push(valueLabel.label)
+      }
+    })
+    return labels.value;
+  }
   return setValues.map((v: MoreTableChoice) => v.label);
 }
 
@@ -351,7 +369,12 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             {{$t(column.placeholder || 'no-value')}}
           </div>
           <div v-else>
-            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}{{data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r))}} {{column.editable}}</span>
+            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">
+              <span v-if="column.arrayLabels">
+                <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.arrayLabels)" :key="index" class="multiselect-item">{{ value }}</span>
+              </span>
+              <span v-else>{{data[field]}}</span>
+            </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>

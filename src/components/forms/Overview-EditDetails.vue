@@ -75,7 +75,8 @@
       <div class="flex justify-items-end">
           <StudyStatusChange v-if="props.userRoles.find((r) => r === StudyRole.Admin)" :status="study.status" @onchange="updateStudyStatus"></StudyStatusChange>
         <Button
-          v-if="props.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r))"
+          v-if="props.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)) && (props.study?.status === StudyStatus.Paused) ||
+              props.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)) && (props.study?.status === StudyStatus.Active)"
           class="buttons"
           type="button"
           title="Edit Study Details" @click="openEditDialog()"><span>Edit</span></Button>

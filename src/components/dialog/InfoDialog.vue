@@ -5,13 +5,9 @@
   const infoDialogRef:any = inject("dialogRef")
   const message:number = infoDialogRef?.value?.data?.message;
 
-  console.log("hello from info dialog----------------")
-
   function closeDialog() {
     infoDialogRef.value.close();
   }
-
-  console.log("hello from info dialog")
 </script>
 
 <template>
