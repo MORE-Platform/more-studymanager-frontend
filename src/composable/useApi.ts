@@ -7,6 +7,7 @@ import {
   ObservationsApi,
   ComponentsApi,
   InterventionsApi,
+  CollaboratorsApi,
   ImportExportApi
 } from '../generated-sources/openapi';
 
@@ -21,6 +22,7 @@ let usersApi: UsersApi
 let observationsApi:ObservationsApi;
 let componentsApi:ComponentsApi;
 let interventionsApi:InterventionsApi;
+let collaboratorsApi: CollaboratorsApi;
 let importExportApi: ImportExportApi;
 
 export function useStudiesApi(): {
@@ -83,6 +85,15 @@ export function useComponentsApi(): {
   componentsApi = componentsApi || new ComponentsApi(apiConfig, undefined, window.axios)
   return {
     componentsApi,
+  }
+}
+
+export function useCollaboratorsApi(): {
+  collaboratorsApi: CollaboratorsApi
+} {
+  collaboratorsApi = collaboratorsApi || new CollaboratorsApi(apiConfig, undefined, window.axios)
+  return {
+    collaboratorsApi,
   }
 }
 

@@ -14,7 +14,7 @@
     "test:unit:once": "vitest --environment jsdom run --outputFile.junit=target/testResults.xml --reporter=junit --reporter=default",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "createApi": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models",
+    "createApi": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models --type-mappings=set=Array",
     "license-check": "licensee --errors-only"
   },
   "engines": {

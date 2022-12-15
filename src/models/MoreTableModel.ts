@@ -54,10 +54,13 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'|'fileUpload'
-  values?: MoreTableActionOption[]
+  type: 'menu'|'split'|'search'
+  values: MoreTableActionOption[]
+  valuesCallback?: MoreTableActionOptionCallback
   uploadOptions?: MoreTableActionFileUpload
+  query?: string
 }
+
 export interface MoreTableActionFileUpload {
   mode?: string,
   multiple?: boolean,
@@ -70,6 +73,12 @@ export interface MoreTableActionOption {
   value?: any,
   icon?: string
 }
+
+export interface MoreTableActionOptionCallback {
+  callback: (query: string) => Promise<Array<MoreTableActionOption[]>>,
+  placeholder?: string
+}
+
 
 export interface MoreTableActionConfirm {
   header: string,
@@ -96,4 +105,18 @@ export interface MoreTableEditableChoiceProperties extends MoreTableEditableProp
 export interface MoreTableEditableChoicePropertyValues {
   label?:string
   value: string
+}
+
+export enum MoreTableRoleTypes {
+  STUDY_ADMIN = "Study Administrator",
+  STUDY_OPERATOR = "Study Operator",
+  STUDY_VIEWER = "Study Viewer"
+}
+
+export interface MoreTableCollaboratorItem {
+  uid: string,
+  name: string,
+  institution: string,
+  email?: string,
+  roles: Array<MoreTableChoice>
 }
