@@ -13,7 +13,7 @@ defineProps({
     <div class="title-block">
       <h1><span class="status-inline mr-2" :class="[[study.status === 'active' ? 'active' : ''], [study.status === 'paused' ? 'paused' : '']]">{{study.status}}</span>
         {{study.title}}</h1>
-      <div>{{study.userRoles}}</div>
+      <!--<div>{{study.userRoles}}</div> -->
     </div>
   </div>
 </template>
