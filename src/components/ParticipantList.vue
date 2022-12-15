@@ -11,7 +11,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
 import * as names from 'starwars-names';
 import useLoader from '../composable/useLoader';
-import axios, {AxiosResponse} from "axios";
+import {AxiosResponse} from "axios";
 
 
 const { participantsApi } = useParticipantsApi()
