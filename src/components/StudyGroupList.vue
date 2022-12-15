@@ -5,7 +5,7 @@ import {
   MoreTableAction,
   MoreTableColumn, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {StudyGroup, StudyRole} from '../generated-sources/openapi';
+import {StudyGroup, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import {useRoute} from 'vue-router';
@@ -24,6 +24,10 @@ const props = defineProps({
   userRoles: {
     type: Array as PropType<Array<StudyRole>>,
     required: true
+  },
+  studyStatus: {
+    type: Object as PropType<StudyStatus>,
+    required: true
   }
 });
 
@@ -32,7 +36,8 @@ const editableRoles: StudyRole[] = [
     StudyRole.Operator
   ]
 
-const editAccess = props.userRoles.some(r => editableRoles.includes(r));
+const editAccess = props.userRoles.some(r => editableRoles.includes(r)) && props.studyStatus === StudyStatus.Draft ||
+  props.userRoles.some(r => editableRoles.includes(r)) && props.studyStatus === StudyStatus.Paused;
 
 const studyGroupColumns: MoreTableColumn[] = [
   {field: 'studyGroupId', header: 'id', sortable: true},
@@ -41,11 +46,11 @@ const studyGroupColumns: MoreTableColumn[] = [
 ]
 
 const rowActions: MoreTableAction[] = [
-  { id:'delete', label:'Delete', icon:'pi pi-trash', visible: () => props.userRoles.some(r => editableRoles.includes(r)),confirm: {header: 'Confirm', message: 'Really delete study group?'}}
+  { id:'delete', label:'Delete', icon:'pi pi-trash', visible: () => editAccess,confirm: {header: 'Confirm', message: 'Really delete study group?'}}
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Create Group', icon: 'pi pi-plus', visible: () => props.userRoles.some(r => editableRoles.includes(r))}
+  { id:'create', label:'Create Group', icon: 'pi pi-plus', visible: () => editAccess}
 ]
 
 async function listStudyGroups(): Promise<void> {
@@ -104,6 +109,7 @@ function deleteStudyGroup(studyGroup: StudyGroup) {
       :editable-access="editAccess"
       :row-actions="rowActions"
       :table-actions="tableActions"
+      :edit-access-roles="editableRoles"
       empty-message="No groups yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

@@ -54,12 +54,13 @@
     })
   }
 
-
+  const accessEditDetailsRoles: StudyRole[] = [
+    StudyRole.Admin, StudyRole.Operator
+  ]
 </script>
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
-
     <div class="flex justify-start mb-8">
       <div class="study-info-fixed grid grid-cols-3  2xl:grid-cols-5 gap-x-6 py-3" :style="props.userRoles.find((r) => r === StudyRole.Admin) ? 'width:89%;' : 'width:100%'">
         <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{dayjs(study.plannedStart).format("DD/MM/YYYY")}}</div>
@@ -70,13 +71,12 @@
         <div> <span class="font-bold">{{$t('actualEnd')}}: </span>
           <span v-if="study.end">{{dayjs(study.end).format("DD/MM/YYYY")}}</span><span v-else>-</span>
         </div>
-        <!--<div><span class="font-bold">{{$t('language')}}: </span> {{study.language}}</div>  -->
       </div>
       <div class="flex justify-items-end">
           <StudyStatusChange v-if="props.userRoles.find((r) => r === StudyRole.Admin)" :status="study.status" @onchange="updateStudyStatus"></StudyStatusChange>
         <Button
-          v-if="props.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)) && (props.study?.status === StudyStatus.Paused) ||
-              props.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)) && (props.study?.status === StudyStatus.Active)"
+          v-if="props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
+      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft"
           class="buttons"
           type="button"
           title="Edit Study Details" @click="openEditDialog()"><span>Edit</span></Button>

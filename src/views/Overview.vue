@@ -50,8 +50,8 @@ const studyId = +route.params.studyId;
     <MoreTabNav :study-id="studyId" :study-roles="study?.userRoles"></MoreTabNav>
     <div class="container bg-white p-10 rounded-lg">
       <OverviewEditDetails :style-modifier="'mb-16'" :study="study" :user-roles="study?.userRoles" @on-update-study="updateStudy($event)" @on-update-study-status="updateStudyStatus" />
-      <StudyGroupList :study-id="studyId" :user-roles="study?.userRoles"></StudyGroupList>
-        <StudyCollaboratorList :study-id="studyId" :user-roles="study?.userRoles" :use-confirm-dialog="false" class="mt-20"/>
+      <StudyGroupList :study-id="studyId" :user-roles="study?.userRoles" :study-status="study?.status"></StudyGroupList>
+        <StudyCollaboratorList :study-id="studyId" :user-roles="study?.userRoles" :study-status="study?.status" :use-confirm-dialog="false" class="mt-20"/>
     </div>
   </div>
 </template>

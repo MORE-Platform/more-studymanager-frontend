@@ -7,7 +7,7 @@ import {
   MoreTableAction, MoreTableChoice,
   MoreTableColumn, MoreTableFieldType, MoreTableCollaboratorItem, MoreTableActionResult, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Collaborator, StudyRole} from '../generated-sources/openapi';
+import {Collaborator, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 //import {useI18n} from 'vue-i18n';
@@ -28,6 +28,10 @@ const props = defineProps({
   useConfirmDialog: {
     type: Boolean,
     default: true
+  },
+  studyStatus: {
+    type: Object as PropType<StudyStatus>,
+    required: true
   }
 });
 
@@ -44,7 +48,14 @@ const { usersApi } = useUsersApi();
 
 const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
-const editAccess = props.userRoles.some(r => [StudyRole.Admin].includes(r));
+const editAccessRoles: StudyRole[] = [
+  StudyRole.Admin
+]
+
+const editAccess = props.userRoles.some((r: StudyRole) => editAccessRoles.includes(r)) && props.studyStatus === StudyStatus.Draft ||
+  props.userRoles.some((r: StudyRole) => editAccessRoles.includes(r)) && props.studyStatus === StudyStatus.Paused
+;
+
 const collaboratorColumns: MoreTableColumn[] = [
   {field: 'name', header: 'name', sortable: true, filterable: {showFilterMatchModes: false}},
   {field: 'institution', header: 'user.institution', sortable: true, filterable: {showFilterMatchModes: false}},
@@ -97,16 +108,6 @@ async function listCollaborators() {
     console.error('Cannot list collaborators: ' + props.studyId, e);
   }
 }
-
-/*
-async function searchUser(query: string) {
- return await usersApi.findUsers(query)
-   .then((response) => {
-     const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
-     return resultList
-   });
-}
-*/
 
 function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
   collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, collaborator.roles.map((c: MoreTableChoice) => c.value as StudyRole))
@@ -196,6 +197,8 @@ listCollaborators();
       :row-actions="rowActions"
       :table-actions="tableActions"
       :editable-access="editAccess"
+      :edit-access-roles="editAccessRoles"
+      :user-study-roles="props.userRoles"
       empty-message="No collaborators added yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

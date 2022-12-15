@@ -114,11 +114,11 @@ const studyRoleValues: MoreTableChoice[] = [
   <div class="mb-16 more-tab-nav">
     <div class="flex flex-wrap justify-end text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 tab-parent">
       <div v-for="tab in tabs" :key="tab.name" >
-        <div v-if="getVisible(tab.access)" class="tab mr-0.5 tab-element" >
+        <div class="tab mr-0.5 tab-element" :class="!getVisible(tab.access) ? 'tab-inactive' : ''" >
           <a
             href="#"
             class="inline-block p-4 rounded-t-lg"
-            :class="{'cursor-default': tab.active, 'text-white': tab.active, 'bg-blue-500': tab.active, 'scale-110 origin-bottom z-50 hover:text-white': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
+            :class="!getVisible(tab.access) ? 'bg-gray-200 text-gray-400' : {'cursor-default': tab.active, 'text-white': tab.active, 'bg-blue-500': tab.active, 'scale-110 origin-bottom z-50 hover:text-white': tab.active, 'hover:text-gray-600': !tab.active, 'hover:bg-gray-50': !tab.active}"
             @click="goto(tab)"
           >{{tab.title}}</a>
         </div>
@@ -147,6 +147,15 @@ const studyRoleValues: MoreTableChoice[] = [
 
     .bg-blue-500{
       background-color: var(--primary-color)!important;
+    }
+
+    .tab-inactive {
+      pointer-events: none;
+      a {
+        font-size: calc(var(--default-font-size) / 0.8)!important;
+        font-weight: 350;
+      }
+
     }
   }
 </style>

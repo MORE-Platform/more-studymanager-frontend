@@ -22,7 +22,7 @@ import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
-import {StudyRole} from '../../generated-sources/openapi';
+import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
 
 const props = defineProps({
   title: {
@@ -77,6 +77,14 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  editAccessRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
+  },
+  userStudyRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
   }
 })
 
@@ -166,22 +174,16 @@ function save(row: unknown) {
   emit('onchange', clean(row))
   cancel(row);
 }
-
-const editableRoles: StudyRole[] = [
-  StudyRole.Admin, StudyRole.Operator
-]
-
 function isEditable(row:any) {
-  const userRoles: Ref<StudyRole[]> = ref([]);
-  if (row.userRoles) {
-    userRoles.value = row.userRoles;
-  } else if (row.roles) {
-    userRoles.value = row.roles
-  }
-  if(props.editableAccess === false || !userRoles.value.some((r: StudyRole) => editableRoles.includes(r)))  {
+  if(props.editableAccess) {
+    if(row.userRoles) {
+      return row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Draft ||
+        row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Paused;
+    } else {
+      return props.editable(row);
+    }
+  } else {
     return false;
-  }  else {
-    return props.editable(row);
   }
 }
 
@@ -251,8 +253,10 @@ function getLabelForMultiSelectValue(setValues: any, valueChoices?: MoreTableCho
       }
     })
     return labels.value;
+  } else {
+    return setValues.map((v: MoreTableChoice) => v.label);
   }
-  return setValues.map((v: MoreTableChoice) => v.label);
+
 }
 
 function shortenFieldText(text: string) {
@@ -379,7 +383,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
             <span v-if="column.type === MoreTableFieldType.multiselect">
-              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.editable.values)" :key="index" class="multiselect-item">{{ value }}</span>
+              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field])" :key="index" class="multiselect-item">{{ value }}</span>
             </span>
           </div>
         </template>

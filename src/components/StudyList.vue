@@ -150,6 +150,10 @@ const { studiesApi } = useStudiesApi()
 
   loader.enable();
   listStudies().finally(() => loader.disable());
+
+  const editAccessRoles: StudyRole[] = [
+    StudyRole.Admin, StudyRole.Operator
+  ]
 </script>
 
 <template>
@@ -163,8 +167,10 @@ const { studiesApi } = useStudiesApi()
       :row-actions="rowActions"
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
+      :editable-access="true"
       :sort-options="{sortField: 'studyId', sortOrder: -1}"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
+      :edit-access-roles="editAccessRoles"
       :loading="loader.loading.value"
       empty-message="No studies yet"
       @onselect="goToStudy($event)"
