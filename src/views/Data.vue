@@ -3,7 +3,6 @@
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import {Study, StudyRole} from '../generated-sources/openapi';
   import {useRoute} from 'vue-router';
-  import DataView from '../components/DataView.vue'
   const route = useRoute()
   const study = route.meta['study'] as Study;
 </script>
@@ -31,5 +30,4 @@
       font-size: 1rem;
     }
   }
-
 </style>

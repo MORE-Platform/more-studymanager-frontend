@@ -4,7 +4,8 @@ import {StudyRole} from "../../generated-sources/openapi";
 import {PropType, ref, Ref} from "vue";
 import InfoDialog from "../dialog/InfoDialog.vue";
 import {useDialog} from "primevue/usedialog";
-//import DynamicDialog from 'primevue/dynamicdialog';
+import Button from "primevue/button";
+import AccessDialog from 'primevue/dynamicdialog';
 import {MoreTableChoice} from "../../models/MoreTableModel";
 
 const accessDialog = useDialog()
@@ -31,8 +32,6 @@ const props = defineProps({
   const router = useRouter()
   const route = useRoute()
 
-
-
   const tabs:Tab[] = [
     {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer]},
     {title: 'Data', name: 'Data', params: {studyId: props.studyId}, access: [StudyRole.Viewer]},
@@ -47,26 +46,18 @@ const studyRoleValues: MoreTableChoice[] = [
   {label: 'Study Viewer', value: StudyRole.Viewer}
 ]
 
-  console.log(route.name);
+  const activeTab = tabs.find(r => r.name === route.name);
+  const access: Ref<boolean> = ref(false);
+  if (activeTab)    {
+      access.value =  props.studyRoles.some(r => activeTab.access.includes(r));
+  }
 
-  function checkAccess() {
-    const activeTab = tabs.find(r => r.name === route.name)
+  function getAccess() {
+    if(activeTab) {
+      const msg = getDialogMsg(activeTab)
 
-    if (activeTab) {
-      const access = props.studyRoles.some(r => activeTab.access.includes(r));
-
-      const msg: Ref<string> = ref("Access to the " + activeTab.name + "-section requires ");
-      activeTab.access.forEach((r, index) => {
-        const role: MoreTableChoice = studyRoleValues.find((l) => l.value === r) as MoreTableChoice
-        if (index > 0 && activeTab.access.length > 1) { msg.value = msg.value + ', '; }
-        msg.value = msg.value + '"' + role.label + '"-';
-        if(index === activeTab.access.length -1)  {msg.value = msg.value + "Permission. Please contact your study-administrator if you require access to this section." }
-      })
-
-      if(access === false) {
-        console.error("no access")
-
-        accessDialog.open(InfoDialog,{
+      if(!access.value) {
+        accessDialog.open(InfoDialog, {
           data: {
             message: msg
           },
@@ -79,21 +70,24 @@ const studyRoleValues: MoreTableChoice[] = [
               '960px': '75vw',
               '640px': '90vw'
             },
-            modal: true,
           },
           onClose: () => {
-            localStorage.setItem('welcomeMsg', 'hide');
           }
         })
-      }     else {
-        console.error("access");
       }
-
-      console.log(msg.value);
     }
+  }
 
 
-    return;
+  function getDialogMsg(activeTab: Tab) {
+    const msg: Ref<string> = ref("Access to the " + activeTab.name + "-section requires ")
+    activeTab.access.forEach((r, index) => {
+      const role: MoreTableChoice = studyRoleValues.find((l) => l.value === r) as MoreTableChoice
+      if (index > 0 && activeTab.access.length > 1) { msg.value = msg.value + ', '; }
+      msg.value = msg.value + '"' + role.label + '"-';
+      if(index === activeTab.access.length -1)  {msg.value = msg.value + "Permission. Please contact your study-administrator if you require access to this section." }
+    })
+    return msg.value;
   }
 
   function getVisible(accessRoles: StudyRole[]) {
@@ -111,14 +105,16 @@ const studyRoleValues: MoreTableChoice[] = [
   }
 
   setActiveTab();
-  checkAccess();
+  setTimeout(function() {
+    getAccess()
+  }, 100)
 </script>
 
 <template>
   <div class="mb-16 more-tab-nav">
     <div class="flex flex-wrap justify-end text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:border-gray-700 dark:text-gray-400 tab-parent">
       <div v-for="tab in tabs" :key="tab.name" >
-        <div v-if="getVisible(tab.access, tab.title)" class="tab mr-0.5 tab-element" >
+        <div v-if="getVisible(tab.access)" class="tab mr-0.5 tab-element" >
           <a
             href="#"
             class="inline-block p-4 rounded-t-lg"
@@ -128,7 +124,11 @@ const studyRoleValues: MoreTableChoice[] = [
         </div>
       </div>
     </div>
+    <div v-if="!access">
+      <AccessDialog />
+    </div>
   </div>
+
 </template>
 
 <style lang="postcss">

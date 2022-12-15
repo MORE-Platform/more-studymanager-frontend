@@ -25,22 +25,19 @@ const { studiesApi } = useStudiesApi()
   const dialog = useDialog();
   const loader = useLoader();
 
+  const editableRoles: StudyRole[] = [
+    StudyRole.Admin, StudyRole.Operator
+  ]
+
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
     { field: 'title', header: 'title',
-      editable: (data: any) => data.userRoles.some(r => [StudyRole.Admin, StudyRole.Operator].includes(r)),
+      editable: (data) => (data.userRoles.some((r: StudyRole) => editableRoles.includes(r))),
       sortable: true, filterable: {showFilterMatchModes: false}},
-    //@ts-ignore
-    { field: 'purpose', header: 'purpose', editable: (data) => data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r)), type: MoreTableFieldType.longtext },
+    { field: 'purpose', header: 'purpose', editable: (data) => (data.userRoles.some((r: StudyRole) => editableRoles.includes(r))), type: MoreTableFieldType.longtext },
     { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
-    /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
-      choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
-          {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
-          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'placeholder.roleMultiselect'}
-    }*/
+    {field: 'userRoles', header: 'roles', sortable: true, filterable: {showFilterMatchModes: false}}
   ]
-
-
 
   const studyColumnsDraft: MoreTableColumn[] = [
     ...studyColumns,

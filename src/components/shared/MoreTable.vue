@@ -22,6 +22,7 @@ import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
+import {Study, StudyRole, StudyStatus} from '../../generated-sources/openapi';
 
 const props = defineProps({
   title: {
@@ -166,13 +167,14 @@ function save(row: unknown) {
   cancel(row);
 }
 
-function isEditable(row:any) {
+function isEditable(row:any, slot: any) {
+  console.log(row);
+  console.log(slot);
   if(props.editableAccess === false)  {
     return false;
   }  else {
     return props.editable(row);
   }
-
 }
 
 function onRowClick($event: any) {
@@ -247,7 +249,6 @@ function shortenFieldText(text: string) {
 }
 
 const searchActions: Ref<MoreTableChoice[]>  = ref([])
-
 async function setDynamicActions(values: Promise<any>, placeholder: string) {
   if(values) {
   Promise.resolve(values)
@@ -350,7 +351,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             {{$t(column.placeholder || 'no-value')}}
           </div>
           <div v-else>
-            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
+            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}{{data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r))}} {{column.editable}}</span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
             <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
@@ -373,7 +374,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
-            <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            <Button v-if="isEditable(slotProps.data, slotProps)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">
