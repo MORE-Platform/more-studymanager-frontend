@@ -12,7 +12,7 @@
   <div class="container m-auto mt-10" >
     <StudyHeader :study="study"></StudyHeader>
     <MoreTabNav :study-id="study?.studyId" :study-roles="study?.userRoles"></MoreTabNav>
-    <div v-if="study?.userRoles.some(r => [StudyRole.Viewer].includes(r))" class="container bg-white p-10 rounded-lg">
+    <div v-if="study?.userRoles.some(r => [StudyRole.Viewer, StudyRole.Admin].includes(r))" class="container bg-white p-10 rounded-lg">
         <div class="data-header-textblock">
           <h3>Data</h3>
           <h4>Data collected during the study will be visualized at this within this dashboard.</h4>

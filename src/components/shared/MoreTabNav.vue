@@ -33,7 +33,7 @@ const props = defineProps({
 
   const tabs:Tab[] = [
     {title: 'Overview', name: 'Overview', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer]},
-    {title: 'Data', name: 'Data', params: {studyId: props.studyId}, access: [StudyRole.Viewer]},
+    {title: 'Data', name: 'Data', params: {studyId: props.studyId}, access: [StudyRole.Viewer, StudyRole.Admin]},
     {title: 'Participants', name: 'Participants', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
     {title: 'Observations', name: 'Observations', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]},
     {title: 'Interventions', name: 'Interventions', params: {studyId: props.studyId}, access: [StudyRole.Admin, StudyRole.Operator]}
