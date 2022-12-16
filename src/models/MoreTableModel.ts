@@ -2,10 +2,11 @@ export interface MoreTableColumn {
   field: string
   header: string
   type?: MoreTableFieldType //default is string
-  editable?: MoreTableEditableProperties | boolean
+  editable?: MoreTableEditableChoiceProperties | boolean | ((data?:any) => boolean),
   sortable?: boolean
   filterable?: boolean | MoreTableFilterOption,
-  placeholder?: string
+  placeholder?: string,
+  arrayLabels?: MoreTableChoice[]
 }
 
 // filter
@@ -57,7 +58,6 @@ export interface MoreTableActionOptions {
   type: 'menu'|'split'|'search'
   values: MoreTableActionOption[]
   valuesCallback?: MoreTableActionOptionCallback
-  query?: string
 }
 
 export interface MoreTableActionOption {

@@ -1,7 +1,7 @@
 <script async setup lang="ts">
 import {ref, Ref, PropType} from 'vue'
 import {useObservationsApi, useComponentsApi} from "../composable/useApi";
-import {ComponentFactory, Observation, StudyGroup} from '../generated-sources/openapi';
+import {ComponentFactory, Observation, StudyGroup, StudyRole} from '../generated-sources/openapi';
 import {
   MoreTableAction,
   MoreTableColumn,
@@ -182,6 +182,7 @@ const { componentsApi } = useComponentsApi();
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
       :loading="loader.loading.value"
+      :editable-user-roles="[StudyRole.Admin,  StudyRole.Operator]"
       empty-message="No observations yet"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Ref, ref} from 'vue'
+import {PropType, Ref, ref} from 'vue'
 import {useUsersApi} from "../composable/useApi";
 import {useCollaboratorsApi} from "../composable/useApi";
 import {useDialog} from 'primevue/usedialog';
@@ -7,7 +7,7 @@ import {
   MoreTableAction, MoreTableChoice,
   MoreTableColumn, MoreTableFieldType, MoreTableCollaboratorItem, MoreTableActionResult, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Collaborator, StudyRole} from '../generated-sources/openapi';
+import {Collaborator, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 //import {useI18n} from 'vue-i18n';
@@ -21,9 +21,17 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    required: true
+  },
   useConfirmDialog: {
     type: Boolean,
     default: true
+  },
+  studyStatus: {
+    type: String as PropType<StudyStatus>,
+    required: true
   }
 });
 
@@ -40,6 +48,13 @@ const { usersApi } = useUsersApi();
 
 const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
+const editAccessRoles: StudyRole[] = [
+  StudyRole.Admin
+]
+
+const editAccess = props.userRoles.some((r: StudyRole) => editAccessRoles.includes(r)) && props.studyStatus === StudyStatus.Draft ||
+  props.userRoles.some((r: StudyRole) => editAccessRoles.includes(r)) && props.studyStatus === StudyStatus.Paused
+;
 
 const collaboratorColumns: MoreTableColumn[] = [
   {field: 'name', header: 'name', sortable: true, filterable: {showFilterMatchModes: false}},
@@ -55,11 +70,11 @@ const collaboratorColumns: MoreTableColumn[] = [
 ]
 
 const rowActions: MoreTableAction[] = [
-  { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
+  { id:'deleteCollab', label:'Delete', icon:'pi pi-trash', visible: () => editAccess, confirm: {header: 'Confirm', message: 'Really delete the collaborator?'}}
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', options: {type: 'search', values: [],
+  { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', visible: () => editAccess, options: {type: 'search', values: [],
       valuesCallback: {
         placeholder: 'placeholder.searchCollaborators',
         callback: (query: string) => {
@@ -93,16 +108,6 @@ async function listCollaborators() {
     console.error('Cannot list collaborators: ' + props.studyId, e);
   }
 }
-
-/*
-async function searchUser(query: string) {
- return await usersApi.findUsers(query)
-   .then((response) => {
-     const resultList = response.data.result.users.map((u: any) => ({label: u.name, value: u.uid, institution: u.institution}))
-     return resultList
-   });
-}
-*/
 
 function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
   collaboratorsApi.setStudyCollaboratorRoles(props.studyId, collaborator.uid, collaborator.roles.map((c: MoreTableChoice) => c.value as StudyRole))
@@ -144,7 +149,6 @@ function changeValue(collabListItem:MoreTableCollaboratorItem) {
 }
 
 function deleteStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
-  console.log("delete");
   collaboratorsApi.clearStudyCollaboratorRoles(props.studyId, collaborator.uid)
     .then(listCollaborators)
 }
@@ -192,6 +196,9 @@ listCollaborators();
       :rows="collaboratorsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
+      :editable-access="editAccess"
+      :edit-access-roles="editAccessRoles"
+      :user-study-roles="props.userRoles"
       empty-message="No collaborators added yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
