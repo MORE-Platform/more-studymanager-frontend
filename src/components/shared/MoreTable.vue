@@ -18,6 +18,7 @@ import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
 import MultiSelect from 'primevue/multiselect';
 import {useConfirm} from 'primevue/useconfirm';
+import FileUpload from 'primevue/fileupload';
 import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
@@ -204,16 +205,17 @@ function prepare(rows:any) {
   });
 }
 
-
 const menus:any = {}
 props.tableActions.forEach(action => {
-  if(action.options && action.options.values && action.options.type !== 'search') {
-    action.options.values.forEach(option => {
+  if(action.options && action.options.values && action.options.type !== 'fileUpload' && action.options.type !== 'search') {
+    action.options.values?.forEach(option => {
       (option as any)['command'] = () => {actionHandler(action, option.value)}
     })
-    if(action.options.type === 'menu') {
+    if(action.options && action.options.type === 'menu') {
       menus[action.id] = ref()
     }
+  } else if (action.options && action.options.type === 'fileUpload') {
+     actionHandler(action, action.options?.uploadOptions)
   }
 })
 
@@ -316,6 +318,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             <Button  type="button" :label="action.label" :icon="action.icon" @click="toggle(action,$event)"></Button>
             <Menu :ref="menus[action.id]" :model="action.options.values" :popup="true" />
           </div>
+          <FileUpload v-if="isVisible(action) && !!action.options && action.options.type === 'fileUpload'" :mode="action.options.uploadOptions?.mode || 'basic'" :choose-label="action.label" :icon="action.icon" :multiple="action.options.uploadOptions?.multiple || false" :custom-upload="true" :auto="true" @uploader="actionHandler(action, $event)"></FileUpload>
         </div>
       </div>
     </div>

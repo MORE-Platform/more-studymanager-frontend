@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {PropType, ref, Ref} from 'vue'
-import {useParticipantsApi} from '../composable/useApi'
+import {useImportExportApi, useParticipantsApi} from '../composable/useApi'
 import {
   MoreTableAction, MoreTableActionResult, MoreTableChoice,
   MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult,
@@ -11,8 +11,11 @@ import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
 import * as names from 'starwars-names';
 import useLoader from '../composable/useLoader';
+import {AxiosResponse} from "axios";
+
 
 const { participantsApi } = useParticipantsApi()
+const { importExportApi } = useImportExportApi()
 const participantsList: Ref<Participant[]> = ref([])
 const loader = useLoader();
 
@@ -49,9 +52,16 @@ const actionsVisible = props.statusStatus === StudyStatus.Draft || props.statusS
 
 const tableActions: MoreTableAction[] = [
   { id: 'distribute', label:'Distribute Participants', visible: () => {
-    return actionsVisible
+      return actionsVisible
     }},
-  { id:'create', label:'Add Participant', icon:'pi pi-plus',
+  { id: 'import', label:'Import Participants', visible: () => {return actionsVisible}, options: {
+      type: 'fileUpload',
+      uploadOptions: {
+        mode: 'basic',
+      }
+    }},
+  { id: 'export', label:'Export Participants', visible: () => {return participantsList.value.length > 0}},
+  { id:'create', label:'Add Participant', icon:'pi pi-plus', visible: () => {return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused},
     options: {
       type: 'split',
       values: [{label: "Add 3", value: 3},{label: "Add 10", value: 10},{label: "Add 25", value: 25},{label: "Add 50", value: 50}]
@@ -103,6 +113,8 @@ function execute(action: MoreTableRowActionResult<Participant>|MoreTableActionRe
     case 'delete': return deleteParticipant((action as MoreTableRowActionResult<Participant>).row)
     case 'create': return createParticipant(action as MoreTableActionResult)
     case 'distribute': return distributeGroups()
+    case 'import': return importParticipants(action)
+    case 'export': return exportParticipants()
     default: console.error('no handler for action', action)
   }
 }
@@ -123,6 +135,44 @@ function changeValue(participant:Participant) {
 
 function deleteParticipant(participant:Participant) {
   participantsApi.deleteParticipant(participant.studyId as number, participant.participantId as number).then(listParticipant)
+}
+
+async function importParticipants(action: MoreTableActionResult): Promise<void> {
+  if(action.properties?.files) {
+    const file = action.properties?.files[0]
+    await importExportApi.importParticipants(props.studyId, file, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+      .then(() => {
+        setTimeout(function() {
+          listParticipant()
+        }, 100)
+      })
+  }
+}
+
+async function exportParticipants(): Promise<void> {
+  await importExportApi.exportParticipants(props.studyId)
+    .then((response: AxiosResponse) => {
+      const filename: string = props.studyId + '_participants';
+      downloadCSV(filename, response.data);
+    })
+}
+
+function downloadCSV(filename: string, file: File): void {
+  const blob = new Blob([file], {type: 'text/csv; charset=utf-8;'})
+  const link = document.createElement('a');
+  if(link) {
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click()
+    document.body.removeChild(link);
+  }
 }
 
 listParticipant()
