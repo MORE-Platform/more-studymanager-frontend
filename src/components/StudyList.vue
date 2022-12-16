@@ -42,8 +42,8 @@ const { studiesApi } = useStudiesApi()
 
   const studyColumnsDraft: MoreTableColumn[] = [
     ...studyColumns,
-    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: false, sortable: true},
-    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: false, sortable: true},
+    { field: 'plannedStart', header: 'plannedStart', type: MoreTableFieldType.calendar, editable: true, sortable: true},
+    { field: 'plannedEnd', header: 'plannedEnd', type: MoreTableFieldType.calendar, editable: true, sortable: true},
   ]
 
   const tableActions: MoreTableAction[] = [

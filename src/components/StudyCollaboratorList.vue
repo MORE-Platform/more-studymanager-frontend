@@ -30,7 +30,7 @@ const props = defineProps({
     default: true
   },
   studyStatus: {
-    type: Object as PropType<StudyStatus>,
+    type: String as PropType<StudyStatus>,
     required: true
   }
 });

@@ -43,7 +43,6 @@ async function updateStudyStatus(status: StudyStatus) {
 
 const studyId = +route.params.studyId;
 const studyStatus: StudyStatus = study.value.status as StudyStatus;
-console.log(studyStatus)
 </script>
 
 <template>
