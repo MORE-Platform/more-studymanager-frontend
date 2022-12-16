@@ -74,7 +74,9 @@ const rowActions: MoreTableAction[] = [
 const tableActions: MoreTableAction[] = [
   { id:'create', label:'Add Collaborator', icon: 'pi pi-plus', visible: () => editAccess, options: {type: 'search', values: [],
       valuesCallback: {
-        placeholder: 'placeholder.searchCollaborators',
+        placeholder: 'placeholder.addCollaborator',
+        filterPlaceholder: 'placeholder.searchCollaborators',
+        noResultsPlaceholder: 'placeholder.noResultsFound',
         callback: (query: string) => {
         return usersApi.findUsers(query)
           .then((response: AxiosResponse) => {

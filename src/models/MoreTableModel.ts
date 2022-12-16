@@ -77,7 +77,9 @@ export interface MoreTableActionOption {
 
 export interface MoreTableActionOptionCallback {
   callback: (query: string) => Promise<Array<MoreTableActionOption[]>>,
-  placeholder?: string
+  placeholder?: string,
+  filterPlaceholder?: string,
+  noResultsPlaceholder?: string
 }
 
 

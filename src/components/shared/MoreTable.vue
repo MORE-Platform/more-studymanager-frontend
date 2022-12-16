@@ -273,14 +273,14 @@ function shortenFieldText(text: string) {
 }
 
 const searchActions: Ref<MoreTableChoice[]>  = ref([])
-async function setDynamicActions(values: Promise<any>, placeholder: string) {
+async function setDynamicActions(values: Promise<any>) {
   if(values) {
   Promise.resolve(values)
     .then((response) => {
       if(response.length) {
         searchActions.value =  response.map((v: any) => ({label: v.label, value: v.value, institution: v.institution}))
       } else {
-        searchActions.value =  [{label: placeholder, value: null}];
+        searchActions.value =  [];
       }
     })
   }
@@ -303,15 +303,19 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
                        @click="actionHandler(action)"></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
+            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :filter="true"
                     :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
-                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type), action.options.valuesCallback.placeholder)">
-            <template #option="slotProps" >
-              <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
-                <div class="col-span-1">{{item.label}}</div>
-                <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
-              </option>
-            </template>
+                    :empty-message="$t(action.options.valuesCallback.filterPlaceholder)" :empty-filter-message="$t(action.options.valuesCallback.noResultsPlaceholder)"
+                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type))">
+              <template #value="">
+                  <span :class="action.icon" class="text-white mr-2"></span> <span class="text-white">{{$t(action.options.valuesCallback.placeholder)}}</span>
+              </template>
+              <template #option="slotProps">
+                  <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
+                    <div class="col-span-1">{{item.label}}</div>
+                    <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
+                  </option>
+              </template>
           </Dropdown>
 
           <div v-if="isVisible(action) && !!action.options && action.options.type === 'menu'">
