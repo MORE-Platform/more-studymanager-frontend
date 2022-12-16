@@ -41,7 +41,7 @@ export interface MoreTableAction {
   icon?: string,
   options?: MoreTableActionOptions
   confirm?: MoreTableActionConfirm,
-  visible?: (data?:any) => boolean,
+  visible?: (data?:any) => boolean
 }
 
 export interface MoreTableRowActionResult<D> {
@@ -58,6 +58,15 @@ export interface MoreTableActionOptions {
   type: 'menu'|'split'|'search'
   values: MoreTableActionOption[]
   valuesCallback?: MoreTableActionOptionCallback
+  uploadOptions?: MoreTableActionFileUpload
+  query?: string
+}
+
+export interface MoreTableActionFileUpload {
+  mode?: string,
+  multiple?: boolean,
+  acceptType?: string,
+  maxFileSize?: number
 }
 
 export interface MoreTableActionOption {
