@@ -104,7 +104,9 @@
     "title": "Please provide a short title.",
     "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
     "chooseRole": "Choose the collaborator's roles",
-    "searchCollaborators": "Search Collaborators"
+    "searchCollaborators": "Type to search collaborators",
+    "addCollaborator": "Add Collaborator",
+    "noResultsFound": "No results found"
   },
   "listDescription": {
     "participantList": "This is the list of participants of your study. You can add or import participants."
