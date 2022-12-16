@@ -8,7 +8,7 @@ import {
   MoreTableFieldType,
   MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Study, StudyStatus} from '../generated-sources/openapi';
+import {Study, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import DynamicDialog from 'primevue/dynamicdialog';
@@ -27,14 +27,17 @@ const { studiesApi } = useStudiesApi()
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true},
-    { field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
+    { field: 'title', header: 'title',
+      editable: true,
+      sortable: true, filterable: {showFilterMatchModes: false}},
     { field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext },
     { field: 'status', header: 'status', filterable: {showFilterMatchModes: false}},
-    /*{field: 'roles', header: 'roles', sortable: true,editable: true, type: MoreTableFieldType.multiselect,
-      choiceOptions: {statuses: [{label: 'Study Viewer', value: UserRolesEnum.StudyViewer},
-          {label: 'Study Operator', value: UserRolesEnum.StudyOperator},
-          {label: 'Study Administrator', value: UserRolesEnum.StudyAdministrator}], placeholder: 'placeholder.roleMultiselect'}
-    }*/
+    {field: 'userRoles', header: 'roles', sortable: true, filterable: {showFilterMatchModes: false},
+      arrayLabels: [
+        {label: 'Study Administrator', value: StudyRole.Admin},
+        {label: 'Study Operator', value: StudyRole.Operator},
+        {label: 'Study Viewer', value: StudyRole.Viewer}
+      ]}
   ]
 
   const studyColumnsDraft: MoreTableColumn[] = [
@@ -49,7 +52,7 @@ const { studiesApi } = useStudiesApi()
 
   const rowActions: MoreTableAction[] = [
     { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study', message: 'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...'},
-      visible: (data) => data.status === StudyStatus.Draft
+      visible: (data) => data.status === StudyStatus.Draft && data.userRoles.some((r: any) => [StudyRole.Admin, StudyRole.Operator].includes(r))
     }
   ]
  const frontRowActions: MoreTableAction[] = [
@@ -147,6 +150,10 @@ const { studiesApi } = useStudiesApi()
 
   loader.enable();
   listStudies().finally(() => loader.disable());
+
+  const editAccessRoles: StudyRole[] = [
+    StudyRole.Admin, StudyRole.Operator
+  ]
 </script>
 
 <template>
@@ -160,8 +167,10 @@ const { studiesApi } = useStudiesApi()
       :row-actions="rowActions"
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
+      :editable-access="true"
       :sort-options="{sortField: 'studyId', sortOrder: -1}"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
+      :edit-access-roles="editAccessRoles"
       :loading="loader.loading.value"
       empty-message="No studies yet"
       @onselect="goToStudy($event)"

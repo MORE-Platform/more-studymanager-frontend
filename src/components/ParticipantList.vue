@@ -5,7 +5,7 @@ import {
   MoreTableAction, MoreTableActionResult, MoreTableChoice,
   MoreTableColumn, MoreTableFieldType, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {Participant, StudyGroup, StudyStatus} from '../generated-sources/openapi';
+import {Participant, StudyGroup, StudyStatus, StudyRole} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 // @ts-ignore
@@ -25,7 +25,7 @@ const props = defineProps({
     required: true
   },
   statusStatus: {
-    type: String,
+    type: String as PropType<StudyStatus>,
     required: true
   },
   studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
@@ -37,7 +37,7 @@ const groupStatuses: Ref<MoreTableChoice[]> = ref(
 groupStatuses.value.push({label: "No Group", value: null})
 
 const participantsColumns: MoreTableColumn[] = [
-  {field: 'participantId', header: 'Id', sortable: true},
+  {field: 'participantId', header: 'id', sortable: true},
   { field: 'alias', header: 'alias', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
   { field: 'registrationToken', header: 'token' },
   { field: 'status', header: 'status', filterable: {showFilterMatchModes: false} },
@@ -48,9 +48,13 @@ const rowActions: MoreTableAction[] = [
   { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete participant?'}}
 ]
 
+const actionsVisible = props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused;
+
 const tableActions: MoreTableAction[] = [
-  { id: 'distribute', label:'Distribute Participants', visible: () => {return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused}},
-  { id: 'import', label:'Import Participants', visible: () => {return props.statusStatus === StudyStatus.Draft || props.statusStatus === StudyStatus.Paused}, options: {
+  { id: 'distribute', label:'Distribute Participants', visible: () => {
+      return actionsVisible
+    }},
+  { id: 'import', label:'Import Participants', visible: () => {return actionsVisible}, options: {
       type: 'fileUpload',
       uploadOptions: {
         mode: 'basic',
@@ -186,6 +190,7 @@ listParticipant()
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.loading.value"
+      :editable-user-roles="[StudyRole.Admin,  StudyRole.Operator]"
       empty-message="No participants yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

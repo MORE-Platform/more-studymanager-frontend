@@ -2,7 +2,7 @@
   import {ref, Ref, PropType} from 'vue'
   import {useInterventionsApi} from "../composable/useApi";
   import {useComponentsApi} from "../composable/useApi";
-  import {Intervention, StudyGroup, Action, Trigger, ComponentFactory} from '../generated-sources/openapi';
+  import {Intervention, StudyGroup, Action, Trigger, ComponentFactory, StudyRole} from '../generated-sources/openapi';
   import {
     MoreTableAction,
     MoreTableColumn,
@@ -316,6 +316,7 @@
       :table-actions="tableActions"
       :sort-options="{sortField: 'title', sortOrder: -1}"
       :loading="loader.loading.value"
+      :editable-user-roles="[StudyRole.Admin,  StudyRole.Operator]"
       empty-message="No interventions yet"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"

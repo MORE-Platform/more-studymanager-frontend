@@ -23,6 +23,7 @@ import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
+import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
 
 const props = defineProps({
   title: {
@@ -66,6 +67,10 @@ const props = defineProps({
     // eslint-disable-next-line
     default: (data:any) => true
   },
+  editableAccess: {
+    type: Boolean,
+    default: true
+  },
   emptyMessage: {
     type: String,
     default: 'No records',
@@ -73,6 +78,14 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  editAccessRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
+  },
+  userStudyRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
   }
 })
 
@@ -98,7 +111,9 @@ function filterMatchMode(column: MoreTableColumn): boolean {
 
 const _editable = ref(false);
 onBeforeMount(() => {
-  _editable.value = !!props.columns.find(c => c.editable)
+  if (props.editableAccess) {
+    _editable.value = (!!props.columns.find(c => c.editable))
+  }
 })
 
 const confirm = useConfirm();
@@ -117,9 +132,6 @@ function selectHandler(rowKey: string) {
 }
 
 function actionHandler(action: MoreTableAction, properties?: any) {
-  console.log("actionHandler");
-  console.log(action)
-  console.log(properties);
   emit('onaction', {id: action.id, properties})
 }
 
@@ -163,9 +175,17 @@ function save(row: unknown) {
   emit('onchange', clean(row))
   cancel(row);
 }
-
 function isEditable(row:any) {
-  return props.editable(row);
+  if(props.editableAccess) {
+    if(row.userRoles) {
+      return row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Draft ||
+        row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Paused;
+    } else {
+      return props.editable(row);
+    }
+  } else {
+    return false;
+  }
 }
 
 function onRowClick($event: any) {
@@ -225,8 +245,20 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
-function getLabelForMultiSelectValue(setValues: any) {
-  return setValues.map((v: MoreTableChoice) => v.label);
+function getLabelForMultiSelectValue(setValues: any, valueChoices?: MoreTableChoice[]) {
+  if(valueChoices) {
+    const labels: Ref<string[]> = ref([])
+    setValues.forEach((v: StudyRole) => {
+      const valueLabel = valueChoices.find((vc) => vc.value === v);
+      if(valueLabel) {
+        labels.value.push(valueLabel.label)
+      }
+    })
+    return labels.value;
+  } else {
+    return setValues.map((v: MoreTableChoice) => v.label);
+  }
+
 }
 
 function shortenFieldText(text: string) {
@@ -241,7 +273,6 @@ function shortenFieldText(text: string) {
 }
 
 const searchActions: Ref<MoreTableChoice[]>  = ref([])
-
 async function setDynamicActions(values: Promise<any>, placeholder: string) {
   if(values) {
   Promise.resolve(values)
@@ -272,7 +303,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
                        @click="actionHandler(action)"></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search'" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
+            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :placeholder="$t(action.options.valuesCallback.placeholder)" :filter="true"
                     :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
                     @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type), action.options.valuesCallback.placeholder)">
             <template #option="slotProps" >
@@ -345,12 +376,17 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
             {{$t(column.placeholder || 'no-value')}}
           </div>
           <div v-else>
-            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
+            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">
+              <span v-if="column.arrayLabels">
+                <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.arrayLabels)" :key="index" class="multiselect-item">{{ value }}</span>
+              </span>
+              <span v-else>{{data[field]}}</span>
+            </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
-            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
             <span v-if="column.type === MoreTableFieldType.multiselect">
-              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.editable.values)" :key="index" class="multiselect-item">{{ value }}</span>
+              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field])" :key="index" class="multiselect-item">{{ value }}</span>
             </span>
           </div>
         </template>
@@ -368,7 +404,7 @@ async function setDynamicActions(values: Promise<any>, placeholder: string) {
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
-            <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            <Button v-if="isEditable(slotProps.data, slotProps)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">

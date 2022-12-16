@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {Ref} from 'vue'
+import {PropType, Ref} from 'vue'
 import {useStudyGroupsApi} from '../composable/useApi'
 import {
   MoreTableAction,
   MoreTableColumn, MoreTableRowActionResult,
 } from '../models/MoreTableModel'
-import {StudyGroup} from '../generated-sources/openapi';
+import {StudyGroup, StudyRole, StudyStatus} from '../generated-sources/openapi';
 import MoreTable from './shared/MoreTable.vue';
 import ConfirmDialog from 'primevue/confirmdialog';
 import {useRoute} from 'vue-router';
@@ -21,22 +21,36 @@ const props = defineProps({
     type: Number,
     required: true
   },
+  userRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    required: true
+  },
+  studyStatus: {
+    type: String as PropType<StudyStatus>,
+    required: true
+  }
 });
+
+const editableRoles: StudyRole[] = [
+    StudyRole.Admin,
+    StudyRole.Operator
+  ]
+
+const editAccess = props.userRoles.some(r => editableRoles.includes(r)) && props.studyStatus === StudyStatus.Draft ||
+  props.userRoles.some(r => editableRoles.includes(r)) && props.studyStatus === StudyStatus.Paused;
 
 const studyGroupColumns: MoreTableColumn[] = [
   {field: 'studyGroupId', header: 'id', sortable: true},
-  { field: 'title', placeholder: 'Set a title', header: 'title', editable: true },
+  { field: 'title', placeholder: 'Set a title', header: 'title', editable: true},
   { field: 'purpose', header: 'purpose', editable: true, placeholder: 'Set a proper purpose for this group' }
 ]
 
-
-
 const rowActions: MoreTableAction[] = [
-  { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Confirm', message: 'Really delete study group?'}}
+  { id:'delete', label:'Delete', icon:'pi pi-trash', visible: () => editAccess,confirm: {header: 'Confirm', message: 'Really delete study group?'}}
 ]
 
 const tableActions: MoreTableAction[] = [
-  { id:'create', label:'Create Group', icon: 'pi pi-plus'}
+  { id:'create', label:'Create Group', icon: 'pi pi-plus', visible: () => editAccess}
 ]
 
 async function listStudyGroups(): Promise<void> {
@@ -92,8 +106,10 @@ function deleteStudyGroup(studyGroup: StudyGroup) {
       :title="$t('studyGroups')"
       :columns="studyGroupColumns"
       :rows="studyGroupList"
+      :editable-access="editAccess"
       :row-actions="rowActions"
       :table-actions="tableActions"
+      :edit-access-roles="editableRoles"
       empty-message="No groups yet"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

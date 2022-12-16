@@ -2,11 +2,11 @@
   import {inject} from "vue";
   import Button from "primevue/button";
 
-  const dialogRef:any = inject("dialogRef")
-  const message:number = dialogRef?.value?.data?.message;
+  const infoDialogRef:any = inject("dialogRef")
+  const message:number = infoDialogRef?.value?.data?.message;
 
   function closeDialog() {
-    dialogRef.value.close();
+    infoDialogRef.value.close();
   }
 </script>
 
