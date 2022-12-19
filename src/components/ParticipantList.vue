@@ -39,6 +39,10 @@
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
   });
 
+  const actionsVisible =
+    props.statusStatus === StudyStatus.Draft ||
+    props.statusStatus === StudyStatus.Paused;
+
   const groupStatuses: Ref<MoreTableChoice[]> = ref(
     props.studyGroups.map(
       (item) =>
@@ -81,13 +85,10 @@
       id: 'delete',
       label: 'Delete',
       icon: 'pi pi-trash',
+      visible: () => actionsVisible,
       confirm: { header: 'Confirm', message: 'Really delete participant?' },
     },
   ];
-
-  const actionsVisible =
-    props.statusStatus === StudyStatus.Draft ||
-    props.statusStatus === StudyStatus.Paused;
 
   const tableActions: MoreTableAction[] = [
     {
@@ -295,6 +296,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.loading.value"
+      :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       empty-message="No participants yet"
       @onaction="execute($event)"

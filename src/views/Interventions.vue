@@ -28,6 +28,7 @@
         <InterventionsList
           :study-groups="studyGroups"
           :study-id="study.studyId"
+          :study-status="study.status"
         />
       </suspense>
     </div>
