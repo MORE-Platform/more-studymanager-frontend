@@ -389,18 +389,19 @@
               }}</span>
             </template>
             <template #option="slotProps">
-              <option
+              <div
                 v-for="(item, index) in slotProps"
                 :key="index"
                 :value="item.value"
-                class="align-center grid grid-cols-2"
+                class="p-dropdown-item"
                 @click="actionHandler({ id: action.id }, slotProps.option)"
               >
-                <div class="col-span-1">{{ item.label }}</div>
-                <div v-if="item.institution" class="col-span-1">
+                <span class="mr-1 inline-block font-medium color-primary">{{ item.label }}</span>
+               <span v-if="item.institution" class="
+               block">
                   ({{ item.institution }})
-                </div>
-              </option>
+                </span>
+              </div>
             </template>
           </Dropdown>
 
@@ -703,9 +704,18 @@
     width: 450px;
     left: 705px;
     min-height: 250px;
+    line-break: normal;
+
+    .p-dropdown-item:nth-child(2) {
+      display: none;
+    }
+    .p-dropdown-item:nth-child(1) {
+      width: 100%;
+    }
 
     ul li {
       display: flex;
+      line-break: normal;
     }
   }
 </style>
