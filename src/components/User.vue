@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import {PropType} from 'vue';
-import {UserInfo} from '../generated-sources/openapi/models/user-info';
+  import { PropType } from 'vue';
+  import { UserInfo } from '../generated-sources/openapi';
 
-defineProps({
-  user: {
-    type: Object as PropType<UserInfo>,
-    required: true
-  }
-})
+  defineProps({
+    user: {
+      type: Object as PropType<UserInfo>,
+      required: true,
+    },
+  });
 </script>
 
 <template>
   <div>
-    <h2 v-if="user && user.name">{{user.name}}</h2>
-    <h3 v-if="user && user.institution">{{user.institution}}</h3>
+    <h2 v-if="user && user.name">{{ user.name }}</h2>
+    <h3 v-if="user && user.institution">{{ user.institution }}</h3>
   </div>
 </template>

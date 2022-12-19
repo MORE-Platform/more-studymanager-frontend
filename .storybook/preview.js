@@ -1,7 +1,7 @@
 import '../src/style.pcss'
-import '../src/index.css'
+import '../src/index.pcss'
 
-import { app, addParameters } from '@storybook/vue3'
+import { app } from '@storybook/vue3'
 import PrimeVue from 'primevue/config'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
@@ -12,8 +12,7 @@ import Column from 'primevue/column'
 import Row from 'primevue/row'
 import ColumnGroup from 'primevue/columngroup'
 
-import { createI18n, useI18n } from 'vue-i18n'
-import de from '../src/i18n/de'
+import { createI18n } from 'vue-i18n'
 import en from '../src/i18n/en'
 
 const i18n = createI18n({

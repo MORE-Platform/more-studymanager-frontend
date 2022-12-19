@@ -1,10 +1,14 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <footer class="footer w-full">
-    <div class="content-block flex justify-end my-6 mx-24">
-      <a href="https://dhp.lbg.ac.at/more/" target="_blank" class="uppercase text-base link">About More</a>
+    <div class="content-block my-6 mx-24 flex justify-end">
+      <a
+        href="https://dhp.lbg.ac.at/more/"
+        target="_blank"
+        class="link text-base uppercase"
+        >About More</a
+      >
     </div>
   </footer>
 </template>
@@ -22,7 +26,8 @@
       content: '';
       height: 100%;
       width: 100%;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+        0 2px 4px -2px rgb(0 0 0 / 0.1);
       transform: rotate(180deg);
       position: absolute;
       top: 0;

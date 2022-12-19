@@ -1,37 +1,40 @@
 <script setup lang="ts">
-  import {PropType} from 'vue';
-  import {Study, StudyRole, StudyStatus} from '../../generated-sources/openapi/'
-  import StudyDialog from '../../components/dialog/StudyDialog.vue'
-  import {useDialog} from "primevue/usedialog";
-  import Button from "primevue/button";
+  import { PropType } from 'vue';
+  import {
+    Study,
+    StudyRole,
+    StudyStatus,
+  } from '../../generated-sources/openapi/';
+  import StudyDialog from '../../components/dialog/StudyDialog.vue';
+  import { useDialog } from 'primevue/usedialog';
+  import Button from 'primevue/button';
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
-  import dayjs from 'dayjs'
+  import dayjs from 'dayjs';
 
   const dialog = useDialog();
 
   const props = defineProps({
-    study: {type: Object as PropType<Study>, required: true},
-    styleModifier: {type: String, default: ''},
-    userRoles: {type: Array as PropType<Array<StudyRole[]>>, required: true}
-  })
+    study: { type: Object as PropType<Study>, required: true },
+    styleModifier: { type: String, default: '' },
+    userRoles: { type: Array as PropType<Array<StudyRole[]>>, required: true },
+  });
 
   const emit = defineEmits<{
-    (e: 'onUpdateStudy', study: Study) : void,
-    (e: 'onUpdateStudyStatus', status: StudyStatus) : void
-  }>()
+    (e: 'onUpdateStudy', study: Study): void;
+    (e: 'onUpdateStudyStatus', status: StudyStatus): void;
+  }>();
 
-
-  function updateStudy(study:Study) {
-     emit('onUpdateStudy', study)
+  function updateStudy(study: Study) {
+    emit('onUpdateStudy', study);
   }
 
-  function updateStudyStatus(status:StudyStatus) {
-    emit('onUpdateStudyStatus', status)
+  function updateStudyStatus(status: StudyStatus) {
+    emit('onUpdateStudyStatus', status);
   }
 
   function openEditDialog() {
-    dialog.open(StudyDialog,{
+    dialog.open(StudyDialog, {
       data: {
         study: props.study,
       },
@@ -40,68 +43,99 @@
         style: {
           width: '50vw',
         },
-        breakpoints:{
+        breakpoints: {
           '960px': '75vw',
-          '640px': '90vw'
+          '640px': '90vw',
         },
         modal: true,
       },
       onClose: (options) => {
-        if(options) {
-          updateStudy(options.data as Study)
+        if (options) {
+          updateStudy(options.data as Study);
         }
-      }
-    })
+      },
+    });
   }
 
   const accessEditDetailsRoles: StudyRole[] = [
-    StudyRole.Admin, StudyRole.Operator
-  ]
+    StudyRole.Admin,
+    StudyRole.Operator,
+  ];
 </script>
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
-    <div class="flex justify-start mb-8">
-      <div class="study-info-fixed grid grid-cols-3  2xl:grid-cols-5 gap-x-6 py-3" :style="props.userRoles.find((r) => r === StudyRole.Admin) ? 'width:89%;' : 'width:100%'">
-        <div><span class="font-bold">{{$t('plannedStart')}}: </span>{{dayjs(study.plannedStart).format("DD/MM/YYYY")}}</div>
-        <div><span class="font-bold">{{$t('actualStart')}}: </span>
-          <span v-if="study.start">{{dayjs(study.start).format("DD/MM/YYYY")}}</span><span v-else>-</span>
+    <div class="mb-8 flex justify-start">
+      <div
+        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 2xl:grid-cols-5"
+        :style="
+          props.userRoles.find((r) => r === StudyRole.Admin)
+            ? 'width:89%;'
+            : 'width:100%'
+        "
+      >
+        <div>
+          <span class="font-bold">{{ $t('plannedStart') }}: </span
+          >{{ dayjs(study.plannedStart).format('DD/MM/YYYY') }}
         </div>
-        <div><span class="font-bold">{{$t('plannedEnd')}}: </span>{{dayjs(study.plannedEnd).format("DD/MM/YYYY")}}</div>
-        <div> <span class="font-bold">{{$t('actualEnd')}}: </span>
-          <span v-if="study.end">{{dayjs(study.end).format("DD/MM/YYYY")}}</span><span v-else>-</span>
+        <div>
+          <span class="font-bold">{{ $t('actualStart') }}: </span>
+          <span v-if="study.start">{{
+            dayjs(study.start).format('DD/MM/YYYY')
+          }}</span
+          ><span v-else>-</span>
+        </div>
+        <div>
+          <span class="font-bold">{{ $t('plannedEnd') }}: </span
+          >{{ dayjs(study.plannedEnd).format('DD/MM/YYYY') }}
+        </div>
+        <div>
+          <span class="font-bold">{{ $t('actualEnd') }}: </span>
+          <span v-if="study.end">{{
+            dayjs(study.end).format('DD/MM/YYYY')
+          }}</span
+          ><span v-else>-</span>
         </div>
       </div>
       <div class="flex justify-items-end">
-          <StudyStatusChange v-if="props.userRoles.find((r) => r === StudyRole.Admin)" :status="study.status" @onchange="updateStudyStatus"></StudyStatusChange>
+        <StudyStatusChange
+          v-if="props.userRoles.find((r) => r === StudyRole.Admin)"
+          :status="study.status"
+          @onchange="updateStudyStatus"
+        ></StudyStatusChange>
         <Button
           v-if="props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
       props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft"
           class="buttons"
           type="button"
-          title="Edit Study Details" @click="openEditDialog()"><span>Edit</span></Button>
+          title="Edit Study Details"
+          @click="openEditDialog()"
+          ><span>Edit</span></Button
+        >
       </div>
     </div>
 
     <div class="mb-6">
-      <h5>{{$t('purpose')}}</h5>
+      <h5>{{ $t('purpose') }}</h5>
       <div>
-        <span v-if="study.purpose">{{study.purpose}}</span>
-        <span v-else>Enter information about the {{$t('purpose')}}</span>
+        <span v-if="study.purpose">{{ study.purpose }}</span>
+        <span v-else>Enter information about the {{ $t('purpose') }}</span>
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{$t('participantInfo')}}</h5>
+      <h5>{{ $t('participantInfo') }}</h5>
       <div>
-        <span v-if="study.participantInfo">{{study.participantInfo}}</span>
-        <span v-else>Enter information about the {{$t('participantInfo')}}</span>
+        <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
+        <span v-else
+          >Enter information about the {{ $t('participantInfo') }}</span
+        >
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{$t('consentInfo')}}</h5>
+      <h5>{{ $t('consentInfo') }}</h5>
       <div>
-        <span v-if="study.consentInfo">{{study.consentInfo}}</span>
-        <span v-else>Enter information about the {{$t('consentInfo')}}</span>
+        <span v-if="study.consentInfo">{{ study.consentInfo }}</span>
+        <span v-else>Enter information about the {{ $t('consentInfo') }}</span>
       </div>
     </div>
   </div>
@@ -109,24 +143,26 @@
 </template>
 
 <style lang="postcss">
-h5 {
-  font-size: 18px;
-  font-weight: bold;
-}
-button.edit-btn {
-  border: none;
-  background-color: transparent;
-  padding: 0!important;
-
-  span:before {
-    color: black;
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
   }
+  button.edit-btn {
+    border: none;
+    background-color: transparent;
+    padding: 0 !important;
 
-  &:hover, &:active, &:focus {
-    background-color: lightgrey!important;
     span:before {
-      color: var(--primary-color);
+      color: black;
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: lightgrey !important;
+      span:before {
+        color: var(--primary-color);
+      }
     }
   }
-}
 </style>

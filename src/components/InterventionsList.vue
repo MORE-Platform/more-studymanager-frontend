@@ -1,95 +1,139 @@
 <script setup lang="ts">
-  import {ref, Ref, PropType} from 'vue'
-  import {useInterventionsApi} from "../composable/useApi";
-  import {useComponentsApi} from "../composable/useApi";
-  import {Intervention, StudyGroup, Action, Trigger, ComponentFactory, StudyRole} from '../generated-sources/openapi';
+  import { ref, Ref, PropType } from 'vue';
+  import { useInterventionsApi } from '../composable/useApi';
+  import { useComponentsApi } from '../composable/useApi';
+  import {
+    Intervention,
+    StudyGroup,
+    Action,
+    Trigger,
+    ComponentFactory,
+    StudyRole,
+  } from '../generated-sources/openapi';
   import {
     MoreTableAction,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
-  } from "../models/MoreTableModel";
+  } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import MoreTable from '../components/shared/MoreTable.vue'
-  import {AxiosResponse} from "axios";
-  import {useDialog} from "primevue/usedialog";
-  import InterventionDialog from '../components/dialog/InterventionDialog.vue'
+  import MoreTable from '../components/shared/MoreTable.vue';
+  import { AxiosResponse } from 'axios';
+  import { useDialog } from 'primevue/usedialog';
+  import InterventionDialog from '../components/dialog/InterventionDialog.vue';
   import useLoader from '../composable/useLoader';
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
   const { componentsApi } = useComponentsApi();
 
-  const interventionList: Ref<Intervention[]> = ref([])
-  const dialog = useDialog()
+  const interventionList: Ref<Intervention[]> = ref([]);
+  const dialog = useDialog();
   //const interventionTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
     studyId: { type: Number, required: true },
-    studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true}
-  })
+    studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+  });
 
-  const groupStatuses = props.studyGroups.map((item) => ({label: item.title, value: item.studyGroupId?.toString()} as MoreTableChoice));
-  groupStatuses.push({label: "Entire Study", value: null})
+  const groupStatuses = props.studyGroups.map(
+    (item) =>
+      ({
+        label: item.title,
+        value: item.studyGroupId?.toString(),
+      } as MoreTableChoice)
+  );
+  groupStatuses.push({ label: 'Entire Study', value: null });
 
-  async function getActionFactories():Promise<ComponentFactory[]> {
-    loader.enable()
-    return  componentsApi.listComponents("action")
-      .then((response:any) => response.data)
+  async function getActionFactories(): Promise<ComponentFactory[]> {
+    loader.enable();
+    return componentsApi
+      .listComponents('action')
+      .then((response: any) => response.data)
       .finally(loader.disable);
   }
 
-  async function getTriggerFactories():Promise<ComponentFactory[]> {
-    loader.enable()
-    return componentsApi.listComponents("trigger")
-      .then((response:any) => response.data)
+  async function getTriggerFactories(): Promise<ComponentFactory[]> {
+    loader.enable();
+    return componentsApi
+      .listComponents('trigger')
+      .then((response: any) => response.data)
       .finally(loader.disable);
   }
 
   const interventionColumns: MoreTableColumn[] = [
-    {field: 'title', header: 'title', editable: true, sortable: true, filterable: {showFilterMatchModes: false}},
-    {field: 'purpose', header: 'purpose', editable: true, type: MoreTableFieldType.longtext},
-    { field: 'studyGroupId', header: 'group', type: MoreTableFieldType.choice, editable: {values: groupStatuses}, sortable: true, filterable: {showFilterMatchModes: false}, placeholder: 'entireStudy'}
-  ]
+    {
+      field: 'title',
+      header: 'title',
+      editable: true,
+      sortable: true,
+      filterable: { showFilterMatchModes: false },
+    },
+    {
+      field: 'purpose',
+      header: 'purpose',
+      editable: true,
+      type: MoreTableFieldType.longtext,
+    },
+    {
+      field: 'studyGroupId',
+      header: 'group',
+      type: MoreTableFieldType.choice,
+      editable: { values: groupStatuses },
+      sortable: true,
+      filterable: { showFilterMatchModes: false },
+      placeholder: 'entireStudy',
+    },
+  ];
 
   const tableActions: MoreTableAction[] = [
-    {id: 'create', icon: 'pi pi-plus', label: 'Add Intervention'}
-  ]
+    { id: 'create', icon: 'pi pi-plus', label: 'Add Intervention' },
+  ];
 
   const rowActions: MoreTableAction[] = [
-    {id: 'clone', label: 'Clone'},
-    { id:'delete', label:'Delete', icon:'pi pi-trash', confirm: {header: 'Delete Study',
-        message: 'Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ...'}
-    }
-  ]
+    { id: 'clone', label: 'Clone' },
+    {
+      id: 'delete',
+      label: 'Delete',
+      icon: 'pi pi-trash',
+      confirm: {
+        header: 'Delete Study',
+        message:
+          'Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ...',
+      },
+    },
+  ];
 
-   function listInterventions(): void {
-    loader.enable()
-    interventionsApi.listInterventions(props.studyId)
-      .then((response:AxiosResponse) => {
+  function listInterventions(): void {
+    loader.enable();
+    interventionsApi
+      .listInterventions(props.studyId)
+      .then((response: AxiosResponse) => {
         interventionList.value = response.data;
       })
-      .finally(loader.disable)
+      .finally(loader.disable);
   }
 
   async function listActions(interventionId?: number) {
-    if(interventionId) {
-      loader.enable()
-      return interventionsApi.listActions(props.studyId, interventionId)
-        .then((response:any) => response.data)
-        .finally(loader.disable)
+    if (interventionId) {
+      loader.enable();
+      return interventionsApi
+        .listActions(props.studyId, interventionId)
+        .then((response: any) => response.data)
+        .finally(loader.disable);
     } else {
-      return undefined
+      return undefined;
     }
   }
   async function getTrigger(interventionId?: number) {
-    if(interventionId) {
-      loader.enable()
-      return interventionsApi.getTrigger(props.studyId, interventionId)
+    if (interventionId) {
+      loader.enable();
+      return interventionsApi
+        .getTrigger(props.studyId, interventionId)
         .then((response: any) => response.data)
-        .finally(loader.disable)
+        .finally(loader.disable);
     } else {
       return undefined;
     }
@@ -97,211 +141,276 @@
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
-      case 'delete': return deleteIntervention(action.row)
-      case 'create': return openInterventionDialog('Create Intervention')
-      case 'clone': return openInterventionDialog('Clone Intervention', action.row, true)
-      default: console.error('no handler for action', action)
+      case 'delete':
+        return deleteIntervention(action.row);
+      case 'create':
+        return openInterventionDialog('Create Intervention');
+      case 'clone':
+        return openInterventionDialog('Clone Intervention', action.row, true);
+      default:
+        console.error('no handler for action', action);
     }
   }
 
-  async function changeValue(intervention:Intervention) {
+  async function changeValue(intervention: Intervention) {
     try {
       //do change immediately (ux)
-      const i = interventionList.value.findIndex((i:Intervention) => i.interventionId === intervention.interventionId)
-      if(i>-1) {
+      const i = interventionList.value.findIndex(
+        (i: Intervention) => i.interventionId === intervention.interventionId
+      );
+      if (i > -1) {
         interventionList.value[i] = intervention;
       }
 
-      loader.enable()
-      await interventionsApi.updateIntervention(props.studyId, intervention.interventionId as number, intervention)
+      loader.enable();
+      await interventionsApi
+        .updateIntervention(
+          props.studyId,
+          intervention.interventionId as number,
+          intervention
+        )
         .then(listInterventions)
-        .finally(loader.disable)
-    } catch(e) {
+        .finally(loader.disable);
+    } catch (e) {
       console.error("Couldn't update opservation " + intervention.title);
-      loader.reset()
+      loader.reset();
     }
   }
 
   async function deleteIntervention(requestIntervention: Intervention) {
     try {
-      loader.enable()
-      await interventionsApi.deleteIntervention(props.studyId, requestIntervention.interventionId as number)
+      loader.enable();
+      await interventionsApi
+        .deleteIntervention(
+          props.studyId,
+          requestIntervention.interventionId as number
+        )
         .then(listInterventions)
-        .finally(loader.disable)
+        .finally(loader.disable);
     } catch (e) {
-      console.error('Cannot delete intervention ' + requestIntervention.interventionId, e)
-      loader.reset()
+      console.error(
+        'Cannot delete intervention ' + requestIntervention.interventionId,
+        e
+      );
+      loader.reset();
     }
   }
 
   async function createIntervention(object: any) {
-    const interventionId: Ref<number | undefined> = ref(await addIntervention(object.intervention))
+    const interventionId: Ref<number | undefined> = ref(
+      await addIntervention(object.intervention)
+    );
 
-     if(interventionId.value) {
-       loader.enable()
-       await updateTrigger(interventionId.value as number, object.trigger);
-       object.actions.forEach((action: Action) => {
-         createAction(interventionId.value as number, action)
-       })
-       loader.disable()
-       listInterventions()
-     }
+    if (interventionId.value) {
+      loader.enable();
+      await updateTrigger(interventionId.value as number, object.trigger);
+      object.actions.forEach((action: Action) => {
+        createAction(interventionId.value as number, action);
+      });
+      loader.disable();
+      listInterventions();
+    }
   }
 
   async function addIntervention(intervention: Intervention) {
     try {
-      loader.enable()
-      return interventionsApi.addIntervention(props.studyId, intervention)
+      loader.enable();
+      return interventionsApi
+        .addIntervention(props.studyId, intervention)
         .then((response: AxiosResponse) => response.data.interventionId)
-        .finally(loader.disable)
-    } catch(e) {
-      loader.reset()
-      console.error("Cannot create intervention", e);
+        .finally(loader.disable);
+    } catch (e) {
+      loader.reset();
+      console.error('Cannot create intervention', e);
     }
   }
 
   async function createAction(interventionId: number, action: Action) {
     try {
-      loader.enable()
-      await interventionsApi.createAction(props.studyId, interventionId, action)
+      loader.enable();
+      await interventionsApi
+        .createAction(props.studyId, interventionId, action)
         .then(listInterventions)
-        .finally(loader.disable)
-    } catch(e) {
-      loader.reset()
-      console.error('Cannot create action on: ' + interventionId, e)
+        .finally(loader.disable);
+    } catch (e) {
+      loader.reset();
+      console.error('Cannot create action on: ' + interventionId, e);
     }
   }
 
-  async function updateAction(interventionId: number, actionId: number, action: Action) {
+  async function updateAction(
+    interventionId: number,
+    actionId: number,
+    action: Action
+  ) {
     try {
-      loader.enable()
-      await interventionsApi.updateAction(props.studyId, interventionId, actionId, action)
-      loader.disable()
-    } catch(e) {
-      loader.reset()
+      loader.enable();
+      await interventionsApi.updateAction(
+        props.studyId,
+        interventionId,
+        actionId,
+        action
+      );
+      loader.disable();
+    } catch (e) {
+      loader.reset();
       console.error('Cannot update action: ' + action.actionId, e);
     }
   }
 
   async function deleteAction(interventionId: number, actionId: number) {
     try {
-      loader.enable()
-      await interventionsApi.deleteAction(props.studyId, interventionId, actionId)
-      loader.disable()
-    } catch(e) {
-      loader.reset()
+      loader.enable();
+      await interventionsApi.deleteAction(
+        props.studyId,
+        interventionId,
+        actionId
+      );
+      loader.disable();
+    } catch (e) {
+      loader.reset();
       console.error('Cannot delete action: ' + actionId, e);
     }
   }
 
   async function updateTrigger(interventionId: number, trigger: Trigger) {
     try {
-      loader.enable()
-      await interventionsApi.updateTrigger(props.studyId, interventionId, trigger)
-      loader.disable()
-    }catch(e) {
-      loader.reset()
-      console.error('Cannot create trigger on: ' + interventionId, e)
+      loader.enable();
+      await interventionsApi.updateTrigger(
+        props.studyId,
+        interventionId,
+        trigger
+      );
+      loader.disable();
+    } catch (e) {
+      loader.reset();
+      console.error('Cannot create trigger on: ' + interventionId, e);
     }
   }
 
   async function updateInterventionData(object: any) {
-    loader.enable()
-    await updateIntervention(object.intervention)
+    loader.enable();
+    await updateIntervention(object.intervention);
 
-    if(object.intervention.interventionId) {
-      await updateTrigger(object.intervention.interventionId, object.trigger)
-        .then(() => {
-          listInterventions()
-        })
+    if (object.intervention.interventionId) {
+      await updateTrigger(
+        object.intervention.interventionId,
+        object.trigger
+      ).then(() => {
+        listInterventions();
+      });
 
       object.actions.forEach((action: Action) => {
-        if(action.actionId) {
-          updateAction(object.intervention.interventionId as number, action.actionId, action)
+        if (action.actionId) {
+          updateAction(
+            object.intervention.interventionId as number,
+            action.actionId,
+            action
+          );
         } else {
-          createAction(object.intervention.interventionId as number, action)
+          createAction(object.intervention.interventionId as number, action);
         }
-      })
+      });
       object.removeActions.forEach((actionId: number) => {
-        deleteAction(object.intervention.interventionId as number, actionId)
-      })
+        deleteAction(object.intervention.interventionId as number, actionId);
+      });
     }
     loader.disable();
   }
 
   async function updateIntervention(intervention: Intervention) {
     try {
-      const i = interventionList.value.findIndex(v => v.interventionId === intervention.interventionId);
-      if(i>-1) {
+      const i = interventionList.value.findIndex(
+        (v) => v.interventionId === intervention.interventionId
+      );
+      if (i > -1) {
         interventionList.value[i] = intervention;
-        loader.enable()
-        await interventionsApi.updateIntervention(props.studyId, intervention.interventionId as number, intervention)
+        loader.enable();
+        await interventionsApi
+          .updateIntervention(
+            props.studyId,
+            intervention.interventionId as number,
+            intervention
+          )
           .then(listInterventions)
-          .finally(loader.disable)
+          .finally(loader.disable);
         return i;
       }
-    } catch(e) {
-      loader.reset()
-      console.error('Cannot update intervention: ' + intervention.interventionId, e);
+    } catch (e) {
+      loader.reset();
+      console.error(
+        'Cannot update intervention: ' + intervention.interventionId,
+        e
+      );
     }
   }
 
   function openEditIntervetion(interventionId: number) {
-    const intervention = interventionList.value.find(i => i.interventionId === interventionId);
-    if(intervention) {
+    const intervention = interventionList.value.find(
+      (i) => i.interventionId === interventionId
+    );
+    if (intervention) {
       openInterventionDialog('Edit intervention', intervention);
     }
   }
 
-   function openInterventionDialog(headerText: string, intervention?: Intervention, clone?: boolean) {
-    loader.enable()
-    Promise.all([listActions(intervention?.interventionId), getTrigger(intervention?.interventionId), getActionFactories(), getTriggerFactories()])
-      .then(([actionsRes, triggerRes, actionFactoriesRes, triggerFactoriesRes]) => {
-        dialog.open(InterventionDialog, {
-          data: {
-            groupStates: groupStatuses,
-            intervention: intervention,
-            studyId: props.studyId,
-            actionsData: actionsRes,
-            triggerData: triggerRes,
-            actionFactories: actionFactoriesRes,
-            triggerFactories: triggerFactoriesRes
-          },
-          props: {
-            header: headerText,
-            style: {
-              width: '50vw',
+  function openInterventionDialog(
+    headerText: string,
+    intervention?: Intervention,
+    clone?: boolean
+  ) {
+    loader.enable();
+    Promise.all([
+      listActions(intervention?.interventionId),
+      getTrigger(intervention?.interventionId),
+      getActionFactories(),
+      getTriggerFactories(),
+    ])
+      .then(
+        ([actionsRes, triggerRes, actionFactoriesRes, triggerFactoriesRes]) => {
+          dialog.open(InterventionDialog, {
+            data: {
+              groupStates: groupStatuses,
+              intervention: intervention,
+              studyId: props.studyId,
+              actionsData: actionsRes,
+              triggerData: triggerRes,
+              actionFactories: actionFactoriesRes,
+              triggerFactories: triggerFactoriesRes,
             },
-            breakpoints:{
-              '960px': '75vw',
-              '640px': '90vw'
+            props: {
+              header: headerText,
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+              closeOnEscape: false,
             },
-            modal: true,
-            closeOnEscape: false,
-
-          },
-          onClose: (options) => {
-            if(options?.data) {
-              if(options.data?.intervention.interventionId) {
-                if(clone) {
-                  createIntervention(options.data)
+            onClose: (options) => {
+              if (options?.data) {
+                if (options.data?.intervention.interventionId) {
+                  if (clone) {
+                    createIntervention(options.data);
+                  } else {
+                    updateInterventionData(options.data);
+                  }
                 } else {
-                  updateInterventionData(options.data)
+                  createIntervention(options.data);
                 }
-              } else {
-                createIntervention(options.data)
               }
-            }
-          }
-        })
-     }).catch(console.error)
-      .finally(loader.disable)
-
-
+            },
+          });
+        }
+      )
+      .catch(console.error)
+      .finally(loader.disable);
   }
 
   listInterventions();
-
 </script>
 
 <template>
@@ -314,9 +423,9 @@
       :rows="interventionList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :sort-options="{sortField: 'title', sortOrder: -1}"
+      :sort-options="{ sortField: 'title', sortOrder: -1 }"
       :loading="loader.loading.value"
-      :editable-user-roles="[StudyRole.Admin,  StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       empty-message="No interventions yet"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"

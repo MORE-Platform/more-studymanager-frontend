@@ -1,6 +1,6 @@
-import MoreTable from '../shared/MoreTable.vue'
-import { action } from '@storybook/addon-actions'
-import {StudyStatus} from "../../generated-sources/openapi";
+import MoreTable from '../shared/MoreTable.vue';
+import { action } from '@storybook/addon-actions';
+import { StudyStatus } from '../../generated-sources/openapi';
 
 export default {
   component: MoreTable,
@@ -8,21 +8,21 @@ export default {
   argTypes: {
     onSelect: action('onSelect'),
   },
-}
+};
 
 const Template = (args) => ({
   components: { MoreTable },
   setup() {
-    return { args }
+    return { args };
   },
   template:
     '<MoreTable id="studyId" @onselect="onselect" :title="args.title" :columns="args.columns" :data="args.data" />',
   methods: {
     onselect: action('onselect'),
   },
-})
+});
 
-export const Default = Template.bind({})
+export const Default = Template.bind({});
 Default.args = {
   title: 'Studies',
   columns: [
@@ -47,5 +47,5 @@ Default.args = {
       end: '30.05.2022',
       status: StudyStatus.approved,
     },
-  ]
-}
+  ],
+};
