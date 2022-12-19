@@ -56,7 +56,7 @@
       :options="roleList"
       option-label="label"
       :placeholder="$t(placeholder)"
-      :showToggleAll="false"
+      :show-toggle-all="false"
     >
     </MultiSelect>
 
