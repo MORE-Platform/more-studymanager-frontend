@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
   version: 1.0.0
-  title: Configurator API
+  title: StudyManager API
 security:
   - OAuth:
       - read
@@ -277,6 +277,8 @@ paths:
                 $ref: '#/components/schemas/CollaboratorDetails'
         '400':
           description: invalid roles list
+        '409':
+          description: role update failed
         '404':
           description: unknown uid
 
@@ -288,6 +290,8 @@ paths:
       responses:
         '204':
           description: Cleared
+        '409':
+          description: removal failed
 
   /studies/{studyId}/studyGroups:
     post:
@@ -519,7 +523,14 @@ paths:
         - $ref: '#/components/parameters/ParticipantId'
       responses:
         '200':
-          description: deleted participants
+          description: >
+            participant could not be deleted because it was already activated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Participant'
+        '204':
+          description: participant deleted
         '500':
           description: Error
 
@@ -838,6 +849,29 @@ paths:
         '400':
           description: bad request
 
+  /studies/{studyId}/import/participants:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    post:
+      tags:
+        - importExport
+      description: Import Participants
+      operationId: importParticipants
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '201':
+          description: import was successful
+        '400':
+          description: bad request
+
   /studies/{studyId}/export/participants:
     parameters:
       - $ref: '#/components/parameters/StudyId'
@@ -847,7 +881,7 @@ paths:
       description: Export Participants
       operationId: exportParticipants
       responses:
-        200:
+        '200':
           description: foo
           content:
             text/csv:
@@ -864,12 +898,40 @@ paths:
       description: retrieve the current user
       operationId: getCurrentUser
       responses:
-        default:
+        '200':
           description: "user-info/profile of the current user"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+  /users/search:
+    get:
+      tags:
+        - users
+      description: find & list users
+      operationId: findUsers
+      parameters:
+        - name: q
+          in: query
+          schema:
+            type: string
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: users matching the query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSearchResultList'
 
 components:
   schemas:
@@ -1139,6 +1201,40 @@ components:
       type: integer
       format: int32
 
+    UserSearchResultList:
+      type: object
+      properties:
+        query:
+          type: object
+          properties:
+            q:
+              type: string
+            offset:
+              type: integer
+              default: 0
+            limit:
+              type: integer
+              default: 10
+        result:
+          type: object
+          properties:
+            numFound:
+              type: integer
+              format: int64
+            start:
+              type: integer
+              default: 0
+            users:
+              type: array
+              items:
+                $ref: '#/components/schemas/UserInfo'
+          required:
+            - numFound
+            - users
+      required:
+        - query
+        - result
+
     UserInfo:
       description: |
         Basic user-profile in the MORE Platform
@@ -1168,14 +1264,32 @@ components:
         - $ref: '#/components/schemas/UserInfo'
         - type: object
           properties:
+            completeProfile:
+              type: boolean
+              default: false
+              readOnly: true
             roles:
               type: array
               items:
                 $ref: '#/components/schemas/PlatformRole'
               uniqueItems: true
               readOnly: true
+            links:
+              title: ProfileLinks
+              type: object
+              properties:
+                profile:
+                  type: string
+                  format: uri
+                  readOnly: true
+                userManagement:
+                  type: string
+                  format: uri
+                  readOnly: true
+              readOnly: true
           required:
             - roles
+            - links
           readOnly: true
 
     Collaborator:

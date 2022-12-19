@@ -16,12 +16,14 @@ import Menu from 'primevue/menu'
 import InputText from 'primevue/inputtext'
 import Calendar from 'primevue/calendar'
 import Dropdown from "primevue/dropdown";
-//import MultiSelect from 'primevue/multiselect';
+import MultiSelect from 'primevue/multiselect';
 import {useConfirm} from 'primevue/useconfirm';
+import FileUpload from 'primevue/fileupload';
 import dayjs from 'dayjs'
 import {MoreTableFieldType} from '../../models/MoreTableModel'
 import {FilterMatchMode} from 'primevue/api';
 import {dateToDateString} from '../../utils/dateUtils';
+import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
 
 const props = defineProps({
   title: {
@@ -65,6 +67,10 @@ const props = defineProps({
     // eslint-disable-next-line
     default: (data:any) => true
   },
+  editableAccess: {
+    type: Boolean,
+    default: true
+  },
   emptyMessage: {
     type: String,
     default: 'No records',
@@ -72,6 +78,14 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  editAccessRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
+  },
+  userStudyRoles: {
+    type: Array as PropType<Array<StudyRole>>,
+    default: () => []
   }
 })
 
@@ -97,7 +111,9 @@ function filterMatchMode(column: MoreTableColumn): boolean {
 
 const _editable = ref(false);
 onBeforeMount(() => {
-  _editable.value = !!props.columns.find(c => c.editable)
+  if (props.editableAccess) {
+    _editable.value = (!!props.columns.find(c => c.editable))
+  }
 })
 
 const confirm = useConfirm();
@@ -159,9 +175,17 @@ function save(row: unknown) {
   emit('onchange', clean(row))
   cancel(row);
 }
-
 function isEditable(row:any) {
-  return props.editable(row);
+  if(props.editableAccess) {
+    if(row.userRoles) {
+      return row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Draft ||
+        row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Paused;
+    } else {
+      return props.editable(row);
+    }
+  } else {
+    return false;
+  }
 }
 
 function onRowClick($event: any) {
@@ -183,13 +207,15 @@ function prepare(rows:any) {
 
 const menus:any = {}
 props.tableActions.forEach(action => {
-  if(action.options) {
-    action.options.values.forEach(option => {
+  if(action.options && action.options.values && action.options.type !== 'fileUpload' && action.options.type !== 'search') {
+    action.options.values?.forEach(option => {
       (option as any)['command'] = () => {actionHandler(action, option.value)}
     })
-    if(action.options.type === 'menu') {
+    if(action.options && action.options.type === 'menu') {
       menus[action.id] = ref()
     }
+  } else if (action.options && action.options.type === 'fileUpload') {
+     actionHandler(action, action.options?.uploadOptions)
   }
 })
 
@@ -219,6 +245,21 @@ function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
   return values.find((s: any) => s.value === value?.toString())?.label || value;
 }
 
+function getLabelForMultiSelectValue(setValues: any, valueChoices?: MoreTableChoice[]) {
+  if(valueChoices) {
+    const labels: Ref<string[]> = ref([])
+    setValues.forEach((v: StudyRole) => {
+      const valueLabel = valueChoices.find((vc) => vc.value === v);
+      if(valueLabel) {
+        labels.value.push(valueLabel.label)
+      }
+    })
+    return labels.value;
+  } else {
+    return setValues.map((v: MoreTableChoice) => v.label);
+  }
+
+}
 
 function shortenFieldText(text: string) {
   if(text) {
@@ -229,6 +270,21 @@ function shortenFieldText(text: string) {
     return undefined
   }
   return text;
+}
+
+const searchActions: Ref<MoreTableChoice[]>  = ref([])
+async function setDynamicActions(values: Promise<any>) {
+  if(values) {
+  Promise.resolve(values)
+    .then((response) => {
+      if(response.length) {
+        searchActions.value =  response.map((v: any) => ({label: v.label, value: v.value, institution: v.institution}))
+      } else {
+        searchActions.value =  [];
+      }
+    })
+  }
+
 }
 </script>
 
@@ -242,11 +298,31 @@ function shortenFieldText(text: string) {
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
           <Button v-if="isVisible(action) && !action.options" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
-          <SplitButton v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values" @click="actionHandler(action)"></SplitButton>
+          <SplitButton
+            v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values"
+                       @click="actionHandler(action)"></SplitButton>
+
+          <Dropdown
+            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :filter="true"
+                    :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
+                    :empty-message="$t(action.options.valuesCallback.filterPlaceholder)" :empty-filter-message="$t(action.options.valuesCallback.noResultsPlaceholder)"
+                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type))">
+              <template #value="">
+                  <span :class="action.icon" class="text-white mr-2"></span> <span class="text-white">{{$t(action.options.valuesCallback.placeholder)}}</span>
+              </template>
+              <template #option="slotProps">
+                  <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
+                    <div class="col-span-1">{{item.label}}</div>
+                    <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
+                  </option>
+              </template>
+          </Dropdown>
+
           <div v-if="isVisible(action) && !!action.options && action.options.type === 'menu'">
             <Button  type="button" :label="action.label" :icon="action.icon" @click="toggle(action,$event)"></Button>
             <Menu :ref="menus[action.id]" :model="action.options.values" :popup="true" />
           </div>
+          <FileUpload v-if="isVisible(action) && !!action.options && action.options.type === 'fileUpload'" :mode="action.options.uploadOptions?.mode || 'basic'" :choose-label="action.label" :icon="action.icon" :multiple="action.options.uploadOptions?.multiple || false" :custom-upload="true" :auto="true" @uploader="actionHandler(action, $event)"></FileUpload>
         </div>
       </div>
     </div>
@@ -294,7 +370,7 @@ function shortenFieldText(text: string) {
             <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
             <Dropdown
               v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
-            <!--<MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.choiceOptions.statuses" option-label="label" :placeholder="$t(column.choiceOptions.placeholder)"/>-->
+          <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.editable.values" option-label="label" :placeholder="$t(column.placeholder)" />
         </template>
         <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
           <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
@@ -304,10 +380,18 @@ function shortenFieldText(text: string) {
             {{$t(column.placeholder || 'no-value')}}
           </div>
           <div v-else>
-            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">{{data[field]}}</span>
+            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">
+              <span v-if="column.arrayLabels">
+                <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.arrayLabels)" :key="index" class="multiselect-item">{{ value }}</span>
+              </span>
+              <span v-else>{{data[field]}}</span>
+            </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
-            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
+            <span v-if="column.type === MoreTableFieldType.multiselect">
+              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field])" :key="index" class="multiselect-item">{{ value }}</span>
+            </span>
           </div>
         </template>
       </Column>
@@ -324,7 +408,7 @@ function shortenFieldText(text: string) {
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
-            <Button v-if="isEditable(slotProps.data)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            <Button v-if="isEditable(slotProps.data, slotProps)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
             </Button>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">
@@ -386,6 +470,39 @@ function shortenFieldText(text: string) {
     .placeholder {
       font-style: italic;
       color:#ccc
+    }
+
+    .p-multiselect {
+      width: 100%;
+    }
+
+    .multiselect-item {
+      &:after {
+        content: ', '
+      }
+      &:last-of-type:after {
+        content: ''
+      }
+    }
+
+    .p-dropdown .p-dropdown-label.p-placeholder {
+      color: var(--surface-a)!important;
+    }
+    .p-dropdown-trigger {
+      display: none!important;
+    }
+    .dropdown-search {
+      padding: 0!important;
+    }
+  }
+  .dropdown-search-panel {
+    min-width:350px!important;
+    width: 450px;
+    left: 705px;
+    min-height:250px;
+
+    ul li {
+      display:flex;
     }
   }
 </style>

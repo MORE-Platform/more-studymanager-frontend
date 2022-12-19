@@ -3,6 +3,7 @@
   "message": "testing message",
   "studies":  "Study List",
   "studyGroups":  "Study Groups",
+  "studyCollaborators": "Study Collaborators",
   "studyId": "Study ID",
   "title": "Title",
   "purpose": "Purpose",
@@ -21,6 +22,8 @@
   "trigger": "Trigger",
   "intervention": "Intervention",
   "interventions": "Interventions",
+  "name": "Name",
+  "email": "E-Mail",
 
   "participants": "Participants",
   "token": "Token",
@@ -99,12 +102,22 @@
     "purpose": "Please provide short description of your research purpose for your collaborators.",
     "participantInfo": "Please provide information for study participants. This description will be visible at the participant's app.",
     "title": "Please provide a short title.",
-    "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app."
+    "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
+    "chooseRole": "Choose the collaborator's roles",
+    "searchCollaborators": "Type to search collaborators",
+    "addCollaborator": "Add Collaborator",
+    "noResultsFound": "No results found"
   },
   "listDescription": {
     "participantList": "This is the list of participants of your study. You can add or import participants."
   },
   "user": {
-    "institution": "Institution"
+    "institution": "Organisation"
+  },
+
+  "roleTypes": {
+    "STUDY_ADMIN": "Study Administrator",
+    "STUDY_OPERATOR": "Study Operator",
+    "STUDY_VIEWER": "Study Viewer"
   }
 }
