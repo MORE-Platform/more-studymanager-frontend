@@ -524,6 +524,7 @@
             :options="column.editable.values"
             option-label="label"
             :placeholder="$t(column.placeholder)"
+            :showToggleAll="false"
           />
         </template>
         <template
