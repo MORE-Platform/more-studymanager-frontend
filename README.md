@@ -21,6 +21,8 @@ Set the EsLint settings for Webstorm in Preferences --> Languages & Frameworks -
 - File extensions to check: `{**/*,*}.{js,ts,html,vue,json}`
 - Check on run eslint fix on save
 
+**Currently not working because of Intellij IDEs..., use `npm run lint:fix` for now**
+
 ## Vue Environment
 
 ### Scripts
