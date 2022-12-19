@@ -59,7 +59,7 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'|'search'|'fileUpload';
+  type: 'menu' | 'split' | 'search' | 'fileUpload';
   values: MoreTableActionOption[];
   valuesCallback?: MoreTableActionOptionCallback;
   uploadOptions?: MoreTableActionFileUpload;

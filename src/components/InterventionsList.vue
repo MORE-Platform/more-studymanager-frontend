@@ -8,7 +8,8 @@
     Action,
     Trigger,
     ComponentFactory,
-    StudyRole, StudyStatus,
+    StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -36,7 +37,7 @@
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
-    studyStatus: { type: String as PropType<StudyStatus>, required: true }
+    studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
   const actionsVisible =
@@ -94,11 +95,20 @@
   ];
 
   const tableActions: MoreTableAction[] = [
-    { id: 'create', icon: 'pi pi-plus', label: 'Add Intervention', visible: () => actionsVisible },
+    {
+      id: 'create',
+      icon: 'pi pi-plus',
+      label: 'Add Intervention',
+      visible: () => actionsVisible,
+    },
   ];
 
   const rowActions: MoreTableAction[] = [
-    { id: 'clone', label: 'Clone', visible: () => actionsVisible },
+    {
+      id: 'clone',
+      label: 'Clone',
+      visible: () => actionsVisible,
+    },
     {
       id: 'delete',
       label: 'Delete',

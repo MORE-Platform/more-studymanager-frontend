@@ -54,7 +54,7 @@
   );
   groupStatuses.value.push({ label: 'No Group', value: null });
 
-  const participantsColumns: MoreTableColumn[] =[
+  const participantsColumns: MoreTableColumn[] = [
     { field: 'participantId', header: 'id', sortable: true },
     {
       field: 'alias',

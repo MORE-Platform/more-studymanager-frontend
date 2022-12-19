@@ -5,7 +5,8 @@
     ComponentFactory,
     Observation,
     StudyGroup,
-    StudyRole, StudyStatus,
+    StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -32,7 +33,7 @@
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
-    studyStatus: { type: String as PropType<StudyStatus>, required: true}
+    studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
   const actionsVisible =
