@@ -8,103 +8,103 @@ import {
   ComponentsApi,
   InterventionsApi,
   CollaboratorsApi,
-  ImportExportApi
+  ImportExportApi,
 } from '../generated-sources/openapi';
 
 const apiConfig = {
   basePath: '/api/v1',
   baseOptions: {
-    "Content-Type": "application/json",
-  }
+    'Content-Type': 'application/json',
+  },
 } as Configuration;
 
-let studyGroupsApi:StudyGroupsApi;
-let studiesApi:StudiesApi;
-let participantsApi:ParticipantsApi;
-let usersApi: UsersApi
-let observationsApi:ObservationsApi;
-let componentsApi:ComponentsApi;
-let interventionsApi:InterventionsApi;
+let studyGroupsApi: StudyGroupsApi;
+let studiesApi: StudiesApi;
+let participantsApi: ParticipantsApi;
+let usersApi: UsersApi;
+let observationsApi: ObservationsApi;
+let componentsApi: ComponentsApi;
+let interventionsApi: InterventionsApi;
 let collaboratorsApi: CollaboratorsApi;
 let importExportApi: ImportExportApi;
 
 export function useStudiesApi(): {
-  studiesApi: StudiesApi
+  studiesApi: StudiesApi;
 } {
   studiesApi = studiesApi || new StudiesApi(apiConfig);
   return {
     studiesApi,
-  }
+  };
 }
 
 export function useStudyGroupsApi(): {
-  studyGroupsApi: StudyGroupsApi
+  studyGroupsApi: StudyGroupsApi;
 } {
-  studyGroupsApi = studyGroupsApi || new StudyGroupsApi(apiConfig)
+  studyGroupsApi = studyGroupsApi || new StudyGroupsApi(apiConfig);
   return {
     studyGroupsApi,
-  }
+  };
 }
 
 export function useParticipantsApi(): {
-  participantsApi: ParticipantsApi
+  participantsApi: ParticipantsApi;
 } {
-  participantsApi = participantsApi || new ParticipantsApi(apiConfig)
+  participantsApi = participantsApi || new ParticipantsApi(apiConfig);
   return {
     participantsApi,
-  }
+  };
 }
 
 export function useUsersApi(): {
-  usersApi: UsersApi
+  usersApi: UsersApi;
 } {
-  usersApi = usersApi || new UsersApi(apiConfig)
+  usersApi = usersApi || new UsersApi(apiConfig);
   return {
     usersApi,
-  }
+  };
 }
 
 export function useObservationsApi(): {
-  observationsApi: ObservationsApi
+  observationsApi: ObservationsApi;
 } {
-  observationsApi = observationsApi || new ObservationsApi(apiConfig)
+  observationsApi = observationsApi || new ObservationsApi(apiConfig);
   return {
     observationsApi,
-  }
+  };
 }
 
 export function useInterventionsApi(): {
-  interventionsApi: InterventionsApi
+  interventionsApi: InterventionsApi;
 } {
-  interventionsApi = interventionsApi || new InterventionsApi(apiConfig)
+  interventionsApi = interventionsApi || new InterventionsApi(apiConfig);
   return {
     interventionsApi,
-  }
+  };
 }
 
 export function useComponentsApi(): {
-  componentsApi: ComponentsApi
+  componentsApi: ComponentsApi;
 } {
-  componentsApi = componentsApi || new ComponentsApi(apiConfig)
+  componentsApi = componentsApi || new ComponentsApi(apiConfig);
   return {
     componentsApi,
-  }
+  };
 }
 
 export function useCollaboratorsApi(): {
-  collaboratorsApi: CollaboratorsApi
+  collaboratorsApi: CollaboratorsApi;
 } {
-  collaboratorsApi = collaboratorsApi || new CollaboratorsApi(apiConfig, undefined, window.axios)
+  collaboratorsApi = collaboratorsApi || new CollaboratorsApi(apiConfig);
   return {
     collaboratorsApi,
-  }
+  };
 }
 
 export function useImportExportApi(): {
-  importExportApi: ImportExportApi
+  importExportApi: ImportExportApi;
 } {
-  importExportApi = importExportApi || new ImportExportApi(apiConfig, undefined, window.axios)
+  importExportApi = importExportApi || new ImportExportApi(apiConfig);
   return {
     importExportApi,
-  }
+  };
 }

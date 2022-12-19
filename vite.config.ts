@@ -1,7 +1,7 @@
-import path from 'path'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueI18n from '@intlify/vite-plugin-vue-i18n'
+import path from 'path';
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import vueI18n from '@intlify/vite-plugin-vue-i18n';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,17 +16,19 @@ export default defineConfig({
   ],
   build: {
     //TODO maybe remove on cleanup session
-    target: 'esnext'
+    target: 'esnext',
   },
   server: {
     proxy: {
       '/api': {
-        target: process.env.LOCAL_BACKEND ? 'http://localhost:8080/api' : 'https://studymanager.platform-test.more.redlink.io/api',
+        target: process.env.LOCAL_BACKEND
+          ? 'http://localhost:8080/api'
+          : 'https://studymanager.platform-test.more.redlink.io/api',
         //target: 'http://localhost:8080/api', // local
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
-          return path.replace(/^\/api/, '')
+          return path.replace(/^\/api/, '');
         },
         /*configure: (proxy, options) => {
           const username = 'more-mmb'
@@ -36,4 +38,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

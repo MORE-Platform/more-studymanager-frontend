@@ -1,9 +1,9 @@
 <script setup lang="ts">
-  import {inject} from "vue";
-  import Button from "primevue/button";
+  import { inject } from 'vue';
+  import Button from 'primevue/button';
 
-  const infoDialogRef:any = inject("dialogRef")
-  const message:number = infoDialogRef?.value?.data?.message;
+  const infoDialogRef: any = inject('dialogRef');
+  const message: number = infoDialogRef?.value?.data?.message;
 
   function closeDialog() {
     infoDialogRef.value.close();
@@ -13,14 +13,14 @@
 <template>
   <div class="info-dialog">
     <div class="mb-8">{{ message }}</div>
-    <div class="flex justify-end"><Button type="button" class="p-button" @click="closeDialog">Close</Button></div>
+    <div class="flex justify-end">
+      <Button type="button" class="p-button" @click="closeDialog">Close</Button>
+    </div>
   </div>
 </template>
 
 <style>
-
   .info-dialog {
     font-size: 1rem;
   }
-
 </style>

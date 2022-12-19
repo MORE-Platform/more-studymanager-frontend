@@ -1,19 +1,19 @@
-import {createApp} from 'vue'
-import App from './App.vue'
-import './index.pcss'
-import '../src/style.pcss'
+import { createApp } from 'vue';
+import App from './App.vue';
+import './index.pcss';
+import '../src/style.pcss';
 // PrimeVue
-import PrimeVue from 'primevue/config'
+import PrimeVue from 'primevue/config';
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
 // Router
-import { Router } from './router'
+import { Router } from './router';
 import AuthService from './service/AuthService';
 import axios from 'axios';
 // i18n
-import { createI18n } from 'vue-i18n'
-import en from './i18n/en.json'
+import { createI18n } from 'vue-i18n';
+import en from './i18n/en.json';
 
 const i18n = createI18n({
   legacy: false,
@@ -25,37 +25,40 @@ const i18n = createI18n({
   messages: Object.assign({ en: en }), // set locale messages
   // If you need to specify other options, you can set other options
   // ...
-})
+});
 
-const authService = new AuthService({url: 'https://auth.more.redlink.io', realm: 'Auth-Client-Test', clientId: 'oauth2-pkce-client'})
+const authService = new AuthService({
+  url: 'https://auth.more.redlink.io',
+  realm: 'Auth-Client-Test',
+  clientId: 'oauth2-pkce-client',
+});
 const loggedIn = await authService.init();
-if(!loggedIn) {
+if (!loggedIn) {
   window.location.reload();
 }
 
 axios.interceptors.request.use(
-  (config:any) => {
-    const token = authService.getToken()
+  (config: any) => {
+    const token = authService.getToken();
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`; // for Node.js Express back-end
+      config.headers['Authorization'] = `Bearer ${token}`; // for Node.js Express back-end
     }
     return config;
   },
-  (error:any) => {
+  (error: any) => {
     return Promise.reject(error);
   }
-)
+);
 
+const app = createApp(App);
+app.provide('authService', authService);
 
-const app = createApp(App)
-app.provide("authService", authService);
-
-app.use(Router)
-app.use(i18n)
-app.use(PrimeVue)
+app.use(Router);
+app.use(i18n);
+app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(DialogService);
 
-app.mount('#app')
+app.mount('#app');
 
 app.directive('tooltip', Tooltip);
