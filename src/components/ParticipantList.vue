@@ -120,7 +120,7 @@
     },
     {
       id: 'create',
-      label: 'Add Participant',
+      label: 'Add Participants',
       icon: 'pi pi-plus',
       visible: () => {
         return (

@@ -56,7 +56,9 @@
       :options="roleList"
       option-label="label"
       :placeholder="$t(placeholder)"
-    ></MultiSelect>
+      :show-toggle-all="false"
+    >
+    </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
       <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
