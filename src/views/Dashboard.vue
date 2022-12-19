@@ -6,7 +6,6 @@
   import { UserInfo } from '../generated-sources/openapi';
   import { AxiosResponse } from 'axios';
   import { useDialog } from 'primevue/usedialog';
-  import DynamicDialog from 'primevue/dynamicdialog';
   import InfoDialog from '../components/dialog/InfoDialog.vue';
 
   const { usersApi } = useUsersApi();
