@@ -69,6 +69,5 @@
     <div class="mt-10">
       <StudyList />
     </div>
-    <DynamicDialog />
   </div>
 </template>
