@@ -1,328 +1,442 @@
 <script setup lang="ts">
-import {onBeforeMount, PropType, Ref, ref} from 'vue'
-import {
-  MoreTableColumn,
-  MoreTableAction,
-  MoreTableSortOptions,
-  MoreTableRowActionResult,
-  MoreTableActionResult,
-  MoreTableChoice
-} from '../../models/MoreTableModel'
-import DataTable, {DataTableFilterMeta} from 'primevue/datatable'
-import Column from 'primevue/column'
-import Button from 'primevue/button'
-import SplitButton from 'primevue/splitbutton'
-import Menu from 'primevue/menu'
-import InputText from 'primevue/inputtext'
-import Calendar from 'primevue/calendar'
-import Dropdown from "primevue/dropdown";
-import MultiSelect from 'primevue/multiselect';
-import {useConfirm} from 'primevue/useconfirm';
-import FileUpload from 'primevue/fileupload';
-import dayjs from 'dayjs'
-import {MoreTableFieldType} from '../../models/MoreTableModel'
-import {FilterMatchMode} from 'primevue/api';
-import {dateToDateString} from '../../utils/dateUtils';
-import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
+  import { onBeforeMount, PropType, Ref, ref } from 'vue';
+  import {
+    MoreTableColumn,
+    MoreTableAction,
+    MoreTableSortOptions,
+    MoreTableRowActionResult,
+    MoreTableActionResult,
+    MoreTableChoice,
+  } from '../../models/MoreTableModel';
+  import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import Button from 'primevue/button';
+  import SplitButton from 'primevue/splitbutton';
+  import Menu from 'primevue/menu';
+  import InputText from 'primevue/inputtext';
+  import Calendar from 'primevue/calendar';
+  import Dropdown from 'primevue/dropdown';
+  import MultiSelect from 'primevue/multiselect';
+  import { useConfirm } from 'primevue/useconfirm';
+  import FileUpload from 'primevue/fileupload';
+  import dayjs from 'dayjs';
+  import { MoreTableFieldType } from '../../models/MoreTableModel';
+  import { FilterMatchMode } from 'primevue/api';
+  import { dateToDateString } from '../../utils/dateUtils';
+  import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
 
-const props = defineProps({
-  title: {
-    type: String,
-    default: undefined,
-  },
-  subtitle: {
-    type: String,
-    default: undefined,
-  },
-  rowId: {
-    type: String,
-    required: true,
-  },
-  columns: {
-    type: Array as PropType<Array<MoreTableColumn>>,
-    required: true,
-  },
-  rows: {
-    type: Array as PropType<Array<any>>,
-    required: true,
-  },
-  rowActions: {
-    type: Array as PropType<Array<MoreTableAction>>,
-    default: () => [],
-  },
-  frontRowActions: {
-    type: Array as PropType<Array<MoreTableAction>>,
-    default: () => []
-  },
-  tableActions: {
-    type: Array as PropType<Array<MoreTableAction>>,
-    default: () => [],
-  } ,
-  sortOptions: {
-    type: Object as PropType <MoreTableSortOptions>,
-    default:  () => undefined,
-  },
-  editable: {
-    type: Function,
-    // eslint-disable-next-line
+  const props = defineProps({
+    title: {
+      type: String,
+      default: undefined,
+    },
+    subtitle: {
+      type: String,
+      default: undefined,
+    },
+    rowId: {
+      type: String,
+      required: true,
+    },
+    columns: {
+      type: Array as PropType<Array<MoreTableColumn>>,
+      required: true,
+    },
+    rows: {
+      type: Array as PropType<Array<any>>,
+      required: true,
+    },
+    rowActions: {
+      type: Array as PropType<Array<MoreTableAction>>,
+      default: () => [],
+    },
+    frontRowActions: {
+      type: Array as PropType<Array<MoreTableAction>>,
+      default: () => [],
+    },
+    tableActions: {
+      type: Array as PropType<Array<MoreTableAction>>,
+      default: () => [],
+    },
+    sortOptions: {
+      type: Object as PropType<MoreTableSortOptions>,
+      default: () => undefined,
+    },
+    editable: {
+      type: Function,
+      // eslint-disable-next-line
     default: (data:any) => true
-  },
-  editableAccess: {
-    type: Boolean,
-    default: true
-  },
-  emptyMessage: {
-    type: String,
-    default: 'No records',
-  },
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-  editAccessRoles: {
-    type: Array as PropType<Array<StudyRole>>,
-    default: () => []
-  },
-  userStudyRoles: {
-    type: Array as PropType<Array<StudyRole>>,
-    default: () => []
-  }
-})
+    },
+    editableAccess: {
+      type: Boolean,
+      default: true,
+    },
+    emptyMessage: {
+      type: String,
+      default: 'No records',
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
+    editAccessRoles: {
+      type: Array as PropType<Array<StudyRole>>,
+      default: () => [],
+    },
+    userStudyRoles: {
+      type: Array as PropType<Array<StudyRole>>,
+      default: () => [],
+    },
+  });
 
-const tableFilter = createTableFilter();
+  const tableFilter = createTableFilter();
 
-function createTableFilter(): Ref<DataTableFilterMeta> {
-  const filterObject = {} as DataTableFilterMeta;
-  props.columns.forEach(column => {
-    if(column.filterable) {
-      filterObject[column.field] = {value: null, matchMode: FilterMatchMode.CONTAINS};
-    }
-  })
-   return ref(filterObject)
-}
-
-function filterMatchMode(column: MoreTableColumn): boolean {
-    if (typeof column.filterable ==="object" && column.filterable !== undefined) {
-    return column.filterable.showFilterMatchModes as boolean
-   } else {
-     return false;
-   }
-}
-
-const _editable = ref(false);
-onBeforeMount(() => {
-  if (props.editableAccess) {
-    _editable.value = (!!props.columns.find(c => c.editable))
-  }
-})
-
-const confirm = useConfirm();
-
-const editingRows = ref([]);
-const editMode = ref([]);
-
-const emit = defineEmits<{
-  (e: 'onselect', row: unknown): void
-  (e: 'onaction', result: MoreTableRowActionResult<unknown>|MoreTableActionResult): void
-  (e: 'onchange', row: unknown): void
-}>()
-
-function selectHandler(rowKey: string) {
-    emit('onselect', rowKey)
-}
-
-function actionHandler(action: MoreTableAction, properties?: any) {
-  emit('onaction', {id: action.id, properties})
-}
-
-function rowActionHandler(action: MoreTableAction, row: unknown) {
-  if(action.confirm) {
-    confirm.require({
-      header: action.confirm.header,
-      message: action.confirm.message,
-      accept: () => {
-        emit('onaction', {id: action.id, row})
+  function createTableFilter(): Ref<DataTableFilterMeta> {
+    const filterObject = {} as DataTableFilterMeta;
+    props.columns.forEach((column) => {
+      if (column.filterable) {
+        filterObject[column.field] = {
+          value: null,
+          matchMode: FilterMatchMode.CONTAINS,
+        };
       }
     });
-  } else {
-    emit('onaction', {id: action.id, row})
+    return ref(filterObject);
   }
-}
 
-function isVisible(action: MoreTableAction, row: unknown = undefined) {
-  return action.visible === undefined || action.visible(row);
-}
-
-function isEditMode(row:any) {
-  // @ts-expect-error: cannot really fix
-  return editMode.value.includes(row[props.rowId])
-}
-
-function edit(row: any) {
-  // @ts-expect-error: cannot really fix
-  editMode.value.push(row[props.rowId]);
-
-  // @ts-expect-error: cannot really fix
-  editingRows.value.push(row);
-}
-
-function cancel(row: any) {
-  editingRows.value.splice(editingRows.value.findIndex(r => r[props.rowId] === row[props.rowId]));
-  editMode.value.splice(editMode.value.findIndex(r => r === row[props.rowId]));
-}
-
-function save(row: unknown) {
-  emit('onchange', clean(row))
-  cancel(row);
-}
-function isEditable(row:any) {
-  if(props.editableAccess) {
-    if(row.userRoles) {
-      return row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Draft ||
-        row.userRoles.some((r: StudyRole) => props.editAccessRoles.includes(r)) && row.status === StudyStatus.Paused;
+  function filterMatchMode(column: MoreTableColumn): boolean {
+    if (
+      typeof column.filterable === 'object' &&
+      column.filterable !== undefined
+    ) {
+      return column.filterable.showFilterMatchModes as boolean;
     } else {
-      return props.editable(row);
+      return false;
     }
-  } else {
-    return false;
   }
-}
 
-function onRowClick($event: any) {
-  if(editMode.value.length === 0) {
-    selectHandler($event.data[props.rowId])
-  }
-}
-
-function prepare(rows:any) {
-  return rows.map((row:any) => {
-    props.columns.forEach(column => {
-      if(column.type === MoreTableFieldType.calendar) {
-        row['__internalValue_' + column.field] = column.field ? new Date(row[column.field]) : undefined;
-      }
-    })
-    return row;
+  const _editable = ref(false);
+  onBeforeMount(() => {
+    if (props.editableAccess) {
+      _editable.value = !!props.columns.find((c) => c.editable);
+    }
   });
-}
 
-const menus:any = {}
-props.tableActions.forEach(action => {
-  if(action.options && action.options.values && action.options.type !== 'fileUpload' && action.options.type !== 'search') {
-    action.options.values?.forEach(option => {
-      (option as any)['command'] = () => {actionHandler(action, option.value)}
-    })
-    if(action.options && action.options.type === 'menu') {
-      menus[action.id] = ref()
+  const confirm = useConfirm();
+
+  const editingRows = ref([]);
+  const editMode = ref([]);
+
+  const emit = defineEmits<{
+    (e: 'onselect', row: unknown): void;
+    (
+      e: 'onaction',
+      result: MoreTableRowActionResult<unknown> | MoreTableActionResult
+    ): void;
+    (e: 'onchange', row: unknown): void;
+  }>();
+
+  function selectHandler(rowKey: string) {
+    emit('onselect', rowKey);
+  }
+
+  function actionHandler(action: MoreTableAction, properties?: any) {
+    emit('onaction', { id: action.id, properties });
+  }
+
+  function rowActionHandler(action: MoreTableAction, row: unknown) {
+    if (action.confirm) {
+      confirm.require({
+        header: action.confirm.header,
+        message: action.confirm.message,
+        accept: () => {
+          emit('onaction', { id: action.id, row });
+        },
+      });
+    } else {
+      emit('onaction', { id: action.id, row });
     }
-  } else if (action.options && action.options.type === 'fileUpload') {
-     actionHandler(action, action.options?.uploadOptions)
-  }
-})
-
-function toggle(action:MoreTableAction, event:any) {
-  menus[action.id].value[0].toggle(event)
-}
-
-function clean(row:any) {
-  props.columns.forEach(column => {
-    if(column.type === MoreTableFieldType.calendar) {
-      const date = row['__internalValue_' + column.field];
-      row[column.field] = dateToDateString(date)
-      delete row['__internalValue_' + column.field];
-    }
-  })
-  return row;
-}
-
-function toClassName(value:string):string {
-  if(value) {
-    return value.toString().toLowerCase().replace(/\.|%[0-9a-z]{2}/gi, '');
-  }
-  return value;
-}
-
-function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
-  return values.find((s: any) => s.value === value?.toString())?.label || value;
-}
-
-function getLabelForMultiSelectValue(setValues: any, valueChoices?: MoreTableChoice[]) {
-  if(valueChoices) {
-    const labels: Ref<string[]> = ref([])
-    setValues.forEach((v: StudyRole) => {
-      const valueLabel = valueChoices.find((vc) => vc.value === v);
-      if(valueLabel) {
-        labels.value.push(valueLabel.label)
-      }
-    })
-    return labels.value;
-  } else {
-    return setValues.map((v: MoreTableChoice) => v.label);
   }
 
-}
-
-function shortenFieldText(text: string) {
-  if(text) {
-    if(text.length > 180) {
-      return text.substring(0,185) + '...';
-    }
-  } else {
-    return undefined
+  function isVisible(action: MoreTableAction, row: unknown = undefined) {
+    return action.visible === undefined || action.visible(row);
   }
-  return text;
-}
 
-const searchActions: Ref<MoreTableChoice[]>  = ref([])
-async function setDynamicActions(values: Promise<any>) {
-  if(values) {
-  Promise.resolve(values)
-    .then((response) => {
-      if(response.length) {
-        searchActions.value =  response.map((v: any) => ({label: v.label, value: v.value, institution: v.institution}))
+  function isEditMode(row: any) {
+    // @ts-expect-error: cannot really fix
+    return editMode.value.includes(row[props.rowId]);
+  }
+
+  function edit(row: any) {
+    // @ts-expect-error: cannot really fix
+    editMode.value.push(row[props.rowId]);
+
+    // @ts-expect-error: cannot really fix
+    editingRows.value.push(row);
+  }
+
+  function cancel(row: any) {
+    editingRows.value.splice(
+      editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId])
+    );
+    editMode.value.splice(
+      editMode.value.findIndex((r) => r === row[props.rowId])
+    );
+  }
+
+  function save(row: unknown) {
+    emit('onchange', clean(row));
+    cancel(row);
+  }
+  function isEditable(row: any) {
+    if (props.editableAccess) {
+      if (row.userRoles) {
+        return (
+          (row.userRoles.some((r: StudyRole) =>
+            props.editAccessRoles.includes(r)
+          ) &&
+            row.status === StudyStatus.Draft) ||
+          (row.userRoles.some((r: StudyRole) =>
+            props.editAccessRoles.includes(r)
+          ) &&
+            row.status === StudyStatus.Paused)
+        );
       } else {
-        searchActions.value =  [];
+        return props.editable(row);
       }
-    })
+    } else {
+      return false;
+    }
   }
 
-}
+  function onRowClick($event: any) {
+    if (editMode.value.length === 0) {
+      selectHandler($event.data[props.rowId]);
+    }
+  }
+
+  function prepare(rows: any) {
+    return rows.map((row: any) => {
+      props.columns.forEach((column) => {
+        if (column.type === MoreTableFieldType.calendar) {
+          row['__internalValue_' + column.field] = column.field
+            ? new Date(row[column.field])
+            : undefined;
+        }
+      });
+      return row;
+    });
+  }
+
+  const menus: any = {};
+  props.tableActions.forEach((action) => {
+    if (
+      action.options &&
+      action.options.values &&
+      action.options.type !== 'fileUpload' &&
+      action.options.type !== 'search'
+    ) {
+      action.options.values?.forEach((option) => {
+        (option as any)['command'] = () => {
+          actionHandler(action, option.value);
+        };
+      });
+      if (action.options && action.options.type === 'menu') {
+        menus[action.id] = ref();
+      }
+    } else if (action.options && action.options.type === 'fileUpload') {
+      actionHandler(action, action.options?.uploadOptions);
+    }
+  });
+
+  function toggle(action: MoreTableAction, event: any) {
+    menus[action.id].value[0].toggle(event);
+  }
+
+  function clean(row: any) {
+    props.columns.forEach((column) => {
+      if (column.type === MoreTableFieldType.calendar) {
+        const date = row['__internalValue_' + column.field];
+        row[column.field] = dateToDateString(date);
+        delete row['__internalValue_' + column.field];
+      }
+    });
+    return row;
+  }
+
+  function toClassName(value: string): string {
+    if (value) {
+      return value
+        .toString()
+        .toLowerCase()
+        .replace(/\.|%[0-9a-z]{2}/gi, '');
+    }
+    return value;
+  }
+
+  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+    return (
+      values.find((s: any) => s.value === value?.toString())?.label || value
+    );
+  }
+
+  function getLabelForMultiSelectValue(
+    setValues: any,
+    valueChoices?: MoreTableChoice[]
+  ) {
+    if (valueChoices) {
+      const labels: Ref<string[]> = ref([]);
+      setValues.forEach((v: StudyRole) => {
+        const valueLabel = valueChoices.find((vc) => vc.value === v);
+        if (valueLabel) {
+          labels.value.push(valueLabel.label);
+        }
+      });
+      return labels.value;
+    } else {
+      return setValues.map((v: MoreTableChoice) => v.label);
+    }
+  }
+
+  function shortenFieldText(text: string) {
+    if (text) {
+      if (text.length > 180) {
+        return text.substring(0, 185) + '...';
+      }
+    } else {
+      return undefined;
+    }
+    return text;
+  }
+
+  const searchActions: Ref<MoreTableChoice[]> = ref([]);
+  async function setDynamicActions(values: Promise<any>) {
+    if (values) {
+      Promise.resolve(values).then((response) => {
+        if (response.length) {
+          searchActions.value = response.map((v: any) => ({
+            label: v.label,
+            value: v.value,
+            institution: v.institution,
+          }));
+        } else {
+          searchActions.value = [];
+        }
+      });
+    }
+  }
 </script>
 
 <template>
   <div class="more-table">
-    <div class="flex mb-8">
+    <div class="mb-8 flex">
       <div class="title">
         <h3 v-if="title">{{ title }}</h3>
-        <h4 v-if="subtitle">{{subtitle}}</h4>
+        <h4 v-if="subtitle">{{ subtitle }}</h4>
       </div>
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
-          <Button v-if="isVisible(action) && !action.options" type="button" :label="action.label" :icon="action.icon" @click="actionHandler(action)"></Button>
+          <Button
+            v-if="isVisible(action) && !action.options"
+            type="button"
+            :label="action.label"
+            :icon="action.icon"
+            @click="actionHandler(action)"
+          ></Button>
           <SplitButton
-            v-if="isVisible(action) && !!action.options && action.options.type === 'split'" type="button" :label="action.label" :icon="action.icon" :model="action.options.values"
-                       @click="actionHandler(action)"></SplitButton>
+            v-if="
+              isVisible(action) &&
+              !!action.options &&
+              action.options.type === 'split'
+            "
+            type="button"
+            :label="action.label"
+            :icon="action.icon"
+            :model="action.options.values"
+            @click="actionHandler(action)"
+          ></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search' && isVisible(action)" class="button p-button dropdown-search" :filter="true"
-                    :options="searchActions" option-label="label" option-value="value" :icon="action.icon" panel-class="dropdown-search-panel"
-                    :empty-message="$t(action.options.valuesCallback.filterPlaceholder)" :empty-filter-message="$t(action.options.valuesCallback.noResultsPlaceholder)"
-                    @filter="setDynamicActions(action.options.valuesCallback.callback($event.value, action.options.type))">
-              <template #value="">
-                  <span :class="action.icon" class="text-white mr-2"></span> <span class="text-white">{{$t(action.options.valuesCallback.placeholder)}}</span>
-              </template>
-              <template #option="slotProps">
-                  <option v-for="(item, index) in slotProps" :key="index" :value="item.value" class="grid grid-cols-2 align-center" @click="actionHandler({id: action.id}, slotProps.option)">
-                    <div class="col-span-1">{{item.label}}</div>
-                    <div v-if="item.institution" class="col-span-1"> ({{item.institution}})</div>
-                  </option>
-              </template>
+            v-if="
+              action.options &&
+              action.options.type === 'search' &&
+              isVisible(action)
+            "
+            class="button p-button dropdown-search"
+            :filter="true"
+            :options="searchActions"
+            option-label="label"
+            option-value="value"
+            :icon="action.icon"
+            panel-class="dropdown-search-panel"
+            :empty-message="$t(action.options.valuesCallback.filterPlaceholder)"
+            :empty-filter-message="
+              $t(action.options.valuesCallback.noResultsPlaceholder)
+            "
+            @filter="
+              setDynamicActions(
+                action.options.valuesCallback.callback(
+                  $event.value,
+                  action.options.type
+                )
+              )
+            "
+          >
+            <template #value="">
+              <span :class="action.icon" class="mr-2 text-white"></span>
+              <span class="text-white">{{
+                $t(action.options.valuesCallback.placeholder)
+              }}</span>
+            </template>
+            <template #option="slotProps">
+              <option
+                v-for="(item, index) in slotProps"
+                :key="index"
+                :value="item.value"
+                class="align-center grid grid-cols-2"
+                @click="actionHandler({ id: action.id }, slotProps.option)"
+              >
+                <div class="col-span-1">{{ item.label }}</div>
+                <div v-if="item.institution" class="col-span-1">
+                  ({{ item.institution }})
+                </div>
+              </option>
+            </template>
           </Dropdown>
 
-          <div v-if="isVisible(action) && !!action.options && action.options.type === 'menu'">
-            <Button  type="button" :label="action.label" :icon="action.icon" @click="toggle(action,$event)"></Button>
-            <Menu :ref="menus[action.id]" :model="action.options.values" :popup="true" />
+          <div
+            v-if="
+              isVisible(action) &&
+              !!action.options &&
+              action.options.type === 'menu'
+            "
+          >
+            <Button
+              type="button"
+              :label="action.label"
+              :icon="action.icon"
+              @click="toggle(action, $event)"
+            ></Button>
+            <Menu
+              :ref="menus[action.id]"
+              :model="action.options.values"
+              :popup="true"
+            />
           </div>
-          <FileUpload v-if="isVisible(action) && !!action.options && action.options.type === 'fileUpload'" :mode="action.options.uploadOptions?.mode || 'basic'" :choose-label="action.label" :icon="action.icon" :multiple="action.options.uploadOptions?.multiple || false" :custom-upload="true" :auto="true" @uploader="actionHandler(action, $event)"></FileUpload>
+          <FileUpload
+            v-if="
+              isVisible(action) &&
+              !!action.options &&
+              action.options.type === 'fileUpload'
+            "
+            :mode="action.options.uploadOptions?.mode || 'basic'"
+            :choose-label="action.label"
+            :icon="action.icon"
+            :multiple="action.options.uploadOptions?.multiple || false"
+            :custom-upload="true"
+            :auto="true"
+            @uploader="actionHandler(action, $event)"
+          ></FileUpload>
         </div>
       </div>
     </div>
@@ -347,11 +461,20 @@ async function setDynamicActions(values: Promise<any>) {
         class="row-actions"
       >
         <template #body="slotProps">
-          <div v-for="action in frontRowActions" :key="action.id" class="inline">
-            <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) "></Button>
+          <div
+            v-for="action in frontRowActions"
+            :key="action.id"
+            class="inline"
+          >
+            <Button
+              v-if="isVisible(action, slotProps.data)"
+              type="button"
+              :title="action.label"
+              :icon="action.icon"
+              @click="rowActionHandler(action, slotProps.data)"
+            ></Button>
           </div>
         </template>
-
       </Column>
 
       <Column
@@ -366,63 +489,143 @@ async function setDynamicActions(values: Promise<any>) {
         :show-filter-match-modes="filterMatchMode(column)"
       >
         <template v-if="column.editable" #editor="{ data, field }">
-            <InputText v-if="!column.type || column.type ===MoreTableFieldType.string || column.type === MoreTableFieldType.longtext" v-model="data[field]" style="width:100%" autofocus />
-            <Calendar v-if="column.type === MoreTableFieldType.calendar" v-model="data['__internalValue_' + field]" style="width:100%" input-id="dateformat" autocomplete="off" date-format="dd/mm/yy"/>
-            <Dropdown
-              v-if="column.type === MoreTableFieldType.choice" v-model="data[field]" class="w-full" :options="column.editable.values" option-label="label" option-value="value" :placeholder="$t(column.placeholder)"></Dropdown>
-          <MultiSelect v-if="column.type === MoreTableFieldType.multiselect" v-model="data[field]" :options="column.editable.values" option-label="label" :placeholder="$t(column.placeholder)" />
+          <InputText
+            v-if="
+              !column.type ||
+              column.type === MoreTableFieldType.string ||
+              column.type === MoreTableFieldType.longtext
+            "
+            v-model="data[field]"
+            style="width: 100%"
+            autofocus
+          />
+          <Calendar
+            v-if="column.type === MoreTableFieldType.calendar"
+            v-model="data['__internalValue_' + field]"
+            style="width: 100%"
+            input-id="dateformat"
+            autocomplete="off"
+            date-format="dd/mm/yy"
+          />
+          <Dropdown
+            v-if="column.type === MoreTableFieldType.choice"
+            v-model="data[field]"
+            class="w-full"
+            :options="column.editable.values"
+            option-label="label"
+            option-value="value"
+            :placeholder="$t(column.placeholder)"
+          ></Dropdown>
+          <MultiSelect
+            v-if="column.type === MoreTableFieldType.multiselect"
+            v-model="data[field]"
+            :options="column.editable.values"
+            option-label="label"
+            :placeholder="$t(column.placeholder)"
+          />
         </template>
-        <template v-if="column.filterable" #filter="{filterModel,filterCallback}">
-          <InputText v-model="filterModel.value" type="text"  class="p-column-filter" :placeholder="`Search by name - ${filterModel.matchMode}`" @keydown.enter="filterCallback()"/>
+        <template
+          v-if="column.filterable"
+          #filter="{ filterModel, filterCallback }"
+        >
+          <InputText
+            v-model="filterModel.value"
+            type="text"
+            class="p-column-filter"
+            :placeholder="`Search by name - ${filterModel.matchMode}`"
+            @keydown.enter="filterCallback()"
+          />
         </template>
         <template #body="{ data, field }">
-          <div v-if="data[field] === null" class="placeholder" >
-            {{$t(column.placeholder || 'no-value')}}
+          <div v-if="data[field] === null" class="placeholder">
+            {{ $t(column.placeholder || 'no-value') }}
           </div>
           <div v-else>
-            <span v-if="!column.type || column.type === MoreTableFieldType.string" :class="'table-value table-value-' +field+'-'+ toClassName(data[field])">
+            <span
+              v-if="!column.type || column.type === MoreTableFieldType.string"
+              :class="
+                'table-value table-value-' +
+                field +
+                '-' +
+                toClassName(data[field])
+              "
+            >
               <span v-if="column.arrayLabels">
-                <span v-for="(value, index) in getLabelForMultiSelectValue(data[field], column.arrayLabels)" :key="index" class="multiselect-item">{{ value }}</span>
+                <span
+                  v-for="(value, index) in getLabelForMultiSelectValue(
+                    data[field],
+                    column.arrayLabels
+                  )"
+                  :key="index"
+                  class="multiselect-item"
+                  >{{ value }}</span
+                >
               </span>
-              <span v-else>{{data[field]}}</span>
+              <span v-else>{{ data[field] }}</span>
             </span>
-            <span v-if="column.type === MoreTableFieldType.choice">{{getLabelForChoiceValue(data[field], column.editable.values)}}</span>
-            <span v-if="column.type === MoreTableFieldType.calendar">{{dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')}}</span>
-            <span v-if="column.type === MoreTableFieldType.longtext">{{shortenFieldText(data[field])}} </span>
+            <span v-if="column.type === MoreTableFieldType.choice">{{
+              getLabelForChoiceValue(data[field], column.editable.values)
+            }}</span>
+            <span v-if="column.type === MoreTableFieldType.calendar">{{
+              dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')
+            }}</span>
+            <span v-if="column.type === MoreTableFieldType.longtext"
+              >{{ shortenFieldText(data[field]) }}
+            </span>
             <span v-if="column.type === MoreTableFieldType.multiselect">
-              <span v-for="(value, index) in getLabelForMultiSelectValue(data[field])" :key="index" class="multiselect-item">{{ value }}</span>
+              <span
+                v-for="(value, index) in getLabelForMultiSelectValue(
+                  data[field]
+                )"
+                :key="index"
+                class="multiselect-item"
+                >{{ value }}</span
+              >
             </span>
           </div>
         </template>
       </Column>
 
-      <Column
-        key="actions"
-        :row-hover="true"
-        class="row-actions"
-      >
+      <Column key="actions" :row-hover="true" class="row-actions">
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
-              <Button v-if="isVisible(action, slotProps.data)" type="button" :title="action.label" :icon="action.icon" @click="rowActionHandler(action, slotProps.data) ">
+              <Button
+                v-if="isVisible(action, slotProps.data)"
+                type="button"
+                :title="action.label"
+                :icon="action.icon"
+                @click="rowActionHandler(action, slotProps.data)"
+              >
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
-            <Button v-if="isEditable(slotProps.data, slotProps)" type="button" icon="pi pi-pencil" @click="edit(slotProps.data)">
+            <Button
+              v-if="isEditable(slotProps.data, slotProps)"
+              type="button"
+              icon="pi pi-pencil"
+              @click="edit(slotProps.data)"
+            >
             </Button>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">
-            <Button type="button" icon="pi pi-check" @click="save(slotProps.data)"></Button>
-            <Button type="button" icon="pi pi-times" @click="cancel(slotProps.data)"></Button>
+            <Button
+              type="button"
+              icon="pi pi-check"
+              @click="save(slotProps.data)"
+            ></Button>
+            <Button
+              type="button"
+              icon="pi pi-times"
+              @click="cancel(slotProps.data)"
+            ></Button>
           </div>
         </template>
       </Column>
       <template #empty>
         {{ emptyMessage }}
       </template>
-      <template #loading>
-
-      </template>
+      <template #loading> </template>
     </DataTable>
   </div>
 </template>
@@ -455,7 +658,7 @@ async function setDynamicActions(values: Promise<any>) {
     }
 
     table tbody tr {
-      font-size: 0.906rem!important;
+      font-size: 0.906rem !important;
 
       td:last-child {
         width: 1%;
@@ -469,7 +672,7 @@ async function setDynamicActions(values: Promise<any>) {
 
     .placeholder {
       font-style: italic;
-      color:#ccc
+      color: #ccc;
     }
 
     .p-multiselect {
@@ -478,31 +681,31 @@ async function setDynamicActions(values: Promise<any>) {
 
     .multiselect-item {
       &:after {
-        content: ', '
+        content: ', ';
       }
       &:last-of-type:after {
-        content: ''
+        content: '';
       }
     }
 
     .p-dropdown .p-dropdown-label.p-placeholder {
-      color: var(--surface-a)!important;
+      color: var(--surface-a) !important;
     }
     .p-dropdown-trigger {
-      display: none!important;
+      display: none !important;
     }
     .dropdown-search {
-      padding: 0!important;
+      padding: 0 !important;
     }
   }
   .dropdown-search-panel {
-    min-width:350px!important;
+    min-width: 350px !important;
     width: 450px;
     left: 705px;
-    min-height:250px;
+    min-height: 250px;
 
     ul li {
-      display:flex;
+      display: flex;
     }
   }
 </style>
