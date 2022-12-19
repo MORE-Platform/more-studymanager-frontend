@@ -9,6 +9,7 @@
     Trigger,
     ComponentFactory,
     StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -36,7 +37,12 @@
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
+
+  const actionsVisible =
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
@@ -89,15 +95,25 @@
   ];
 
   const tableActions: MoreTableAction[] = [
-    { id: 'create', icon: 'pi pi-plus', label: 'Add Intervention' },
+    {
+      id: 'create',
+      icon: 'pi pi-plus',
+      label: 'Add Intervention',
+      visible: () => actionsVisible,
+    },
   ];
 
   const rowActions: MoreTableAction[] = [
-    { id: 'clone', label: 'Clone' },
+    {
+      id: 'clone',
+      label: 'Clone',
+      visible: () => actionsVisible,
+    },
     {
       id: 'delete',
       label: 'Delete',
       icon: 'pi pi-trash',
+      visible: () => actionsVisible,
       confirm: {
         header: 'Delete Study',
         message:
@@ -425,6 +441,7 @@
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"
       :loading="loader.loading.value"
+      :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       empty-message="No interventions yet"
       @onselect="openEditIntervetion($event)"

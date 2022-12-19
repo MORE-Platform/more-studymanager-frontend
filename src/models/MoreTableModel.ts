@@ -63,7 +63,6 @@ export interface MoreTableActionOptions {
   values: MoreTableActionOption[];
   valuesCallback?: MoreTableActionOptionCallback;
   uploadOptions?: MoreTableActionFileUpload;
-  query?: string;
 }
 
 export interface MoreTableActionFileUpload {
