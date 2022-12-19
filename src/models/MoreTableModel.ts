@@ -55,7 +55,7 @@ export interface MoreTableActionResult {
 }
 
 export interface MoreTableActionOptions {
-  type: 'menu'|'split'|'search'
+  type: 'menu'|'split'|'search'|'fileUpload'
   values: MoreTableActionOption[]
   valuesCallback?: MoreTableActionOptionCallback
   uploadOptions?: MoreTableActionFileUpload
