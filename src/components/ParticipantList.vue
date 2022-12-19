@@ -39,7 +39,9 @@
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
   });
 
-  //const readableAccess = props.statusStatus === StudyStatus.Closed || props.statusStatus !==
+  const actionsVisible =
+    props.statusStatus === StudyStatus.Draft ||
+    props.statusStatus === StudyStatus.Paused;
 
   const groupStatuses: Ref<MoreTableChoice[]> = ref(
     props.studyGroups.map(
@@ -52,7 +54,7 @@
   );
   groupStatuses.value.push({ label: 'No Group', value: null });
 
-  const participantsColumns: MoreTableColumn[] = [
+  const participantsColumns: MoreTableColumn[] =[
     { field: 'participantId', header: 'id', sortable: true },
     {
       field: 'alias',
@@ -83,14 +85,10 @@
       id: 'delete',
       label: 'Delete',
       icon: 'pi pi-trash',
-      visible: () => props.statusStatus !== StudyStatus.Closed,
+      visible: () => actionsVisible,
       confirm: { header: 'Confirm', message: 'Really delete participant?' },
     },
   ];
-
-  const actionsVisible =
-    props.statusStatus === StudyStatus.Draft ||
-    props.statusStatus === StudyStatus.Paused;
 
   const tableActions: MoreTableAction[] = [
     {
@@ -298,7 +296,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.loading.value"
-      :editable-access="props.statusStatus !== StudyStatus.Closed"
+      :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       empty-message="No participants yet"
       @onaction="execute($event)"

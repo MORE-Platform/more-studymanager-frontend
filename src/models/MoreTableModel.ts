@@ -3,6 +3,7 @@ export interface MoreTableColumn {
   header: string;
   type?: MoreTableFieldType; //default is string
   editable?:
+    | MoreTableChoiceOptions
     | MoreTableEditableChoiceProperties
     | boolean
     | ((data?: any) => boolean);
@@ -62,7 +63,6 @@ export interface MoreTableActionOptions {
   values: MoreTableActionOption[];
   valuesCallback?: MoreTableActionOptionCallback;
   uploadOptions?: MoreTableActionFileUpload;
-  query?: string;
 }
 
 export interface MoreTableActionFileUpload {

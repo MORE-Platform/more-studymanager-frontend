@@ -5,7 +5,7 @@
     ComponentFactory,
     Observation,
     StudyGroup,
-    StudyRole,
+    StudyRole, StudyStatus,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -32,7 +32,12 @@
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    studyStatus: { type: String as PropType<StudyStatus>, required: true}
   });
+
+  const actionsVisible =
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
@@ -94,16 +99,18 @@
       id: 'create',
       icon: 'pi pi-plus',
       label: 'Add Observation',
+      visible: () => actionsVisible,
       options: { type: 'menu', values: observationTypes },
     },
   ];
 
   const rowActions: MoreTableAction[] = [
-    { id: 'clone', label: 'Clone' },
+    { id: 'clone', label: 'Clone', visible: () => actionsVisible },
     {
       id: 'delete',
       label: 'Delete',
       icon: 'pi pi-trash',
+      visible: () => actionsVisible,
       confirm: {
         header: 'Delete Study',
         message:
@@ -261,6 +268,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"
+      :editable-access="actionsVisible"
       :loading="loader.loading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       empty-message="No observations yet"
