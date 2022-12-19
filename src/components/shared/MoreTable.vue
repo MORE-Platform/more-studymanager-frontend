@@ -396,9 +396,10 @@
                 class="p-dropdown-item"
                 @click="actionHandler({ id: action.id }, slotProps.option)"
               >
-                <span class="mr-1 inline-block font-medium color-primary">{{ item.label }}</span>
-               <span v-if="item.institution" class="
-               block">
+                <span class="color-primary mr-1 inline-block font-medium">
+                  {{ item.label }}
+                </span>
+                <span v-if="item.institution" class="block">
                   ({{ item.institution }})
                 </span>
               </div>

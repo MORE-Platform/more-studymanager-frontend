@@ -16,7 +16,6 @@
   ];
   const placeholder: string =
     dialogRef.value.data?.placeholder || 'Choose Option';
-  
   const roleValues: Ref<MoreTableChoice[]> = ref([]);
   const warning: Ref<string | undefined> = ref(undefined);
 
