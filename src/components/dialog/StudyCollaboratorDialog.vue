@@ -16,8 +16,6 @@
   ];
   const placeholder: string =
     dialogRef.value.data?.placeholder || 'Choose Option';
-
-  console.log(collaborator);
   const roleValues: Ref<MoreTableChoice[]> = ref([]);
   const warning: Ref<string | undefined> = ref(undefined);
 
@@ -46,7 +44,7 @@
     <div class="mb-4">
       Add
       <span class="font-bold"
-        >{{ collaborator.label }} ({{ collaborator.institution }})
+        >{{ collaborator.name }} ({{ collaborator.institution }})
       </span>
       to your study collaborators.
     </div>
