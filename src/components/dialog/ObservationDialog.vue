@@ -112,29 +112,29 @@
       studyGroupId: studyGroupId.value,
     } as Observation;
 
-    if(JSON.stringify(scheduler.value) !== '{}') {
+    if (JSON.stringify(scheduler.value) !== '{}') {
       dialogRef.value.close(returnObservation);
     }
   }
 
   const errors: Ref<Array<any>> = ref([]);
-  const schedulerError: Ref<Boolean> = ref(false);
+  const schedulerError: Ref<boolean> = ref(false);
 
   function checkRequiredFields() {
     errors.value = [];
     schedulerError.value = false;
-    if(!title.value) {
-      errors.value.push('Observation Title')
+    if (!title.value) {
+      errors.value.push('Observation Title');
     }
-    if(JSON.stringify(scheduler.value) === '{}') {
-      errors.value.push('Scheduler')
+    if (JSON.stringify(scheduler.value) === '{}') {
+      errors.value.push('Scheduler');
       schedulerError.value = true;
     }
-    if(!participantInfo.value) {
-      errors.value.push('Participants Information')
+    if (!participantInfo.value) {
+      errors.value.push('Participants Information');
     }
-    if(properties.value === '{}') {
-      errors.value.push('Configuration')
+    if (properties.value === '{}') {
+      errors.value.push('Configuration');
     }
   }
 
@@ -235,14 +235,16 @@
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-
       <div v-if="errors.length" class="error col-span-8">
         <span class="font-medium">
           Please fill out following information fields:
         </span>
         <div>
           <span v-for="(error, index) in errors" :key="index">
-            {{error}}<span v-if="index < errors.length -1" class="mr-0.5 inline">,</span>
+            {{ error }}
+            <span v-if="index < errors.length - 1" class="mr-0.5 inline"
+              >,</span
+            >
           </span>
         </div>
       </div>
@@ -377,7 +379,9 @@
               </div>
             </div>
             <div v-else class="text-gray-400">
-              <span v-if="schedulerError" class="error">Please set schedule for your observation.</span>
+              <span v-if="schedulerError" class="error"
+                >Please set schedule for your observation.
+              </span>
               <span v-else>Schedule is not set yet.</span>
             </div>
           </div>
