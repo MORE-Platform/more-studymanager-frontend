@@ -27,6 +27,7 @@
   const title = ref(observation.title);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
+  // properties = configuration
   const properties = ref(
     JSON.stringify(
       observation.properties
@@ -110,7 +111,31 @@
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
     } as Observation;
-    dialogRef.value.close(returnObservation);
+
+    if(JSON.stringify(scheduler.value) !== '{}') {
+      dialogRef.value.close(returnObservation);
+    }
+  }
+
+  const errors: Ref<Array<any>> = ref([]);
+  const schedulerError: Ref<Boolean> = ref(false);
+
+  function checkRequiredFields() {
+    errors.value = [];
+    schedulerError.value = false;
+    if(!title.value) {
+      errors.value.push('Observation Title')
+    }
+    if(JSON.stringify(scheduler.value) === '{}') {
+      errors.value.push('Scheduler')
+      schedulerError.value = true;
+    }
+    if(!participantInfo.value) {
+      errors.value.push('Participants Information')
+    }
+    if(properties.value === '{}') {
+      errors.value.push('Configuration')
+    }
   }
 
   function cancel() {
@@ -204,13 +229,31 @@
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-html="factory.description"></h6>
     </div>
-    <div class="grid grid-cols-8 items-center gap-4">
+
+    <form
+      id="observationDialogForm"
+      class="grid grid-cols-8 items-center gap-4"
+      @submit.prevent="validate()"
+    >
+
+      <div v-if="errors.length" class="error col-span-8">
+        <span class="font-medium">
+          Please fill out following information fields:
+        </span>
+        <div>
+          <span v-for="(error, index) in errors" :key="index">
+            {{error}}<span v-if="index < errors.length -1" class="mr-0.5 inline">,</span>
+          </span>
+        </div>
+      </div>
       <div class="col-start-0 col-span-2">
         <h5>{{ $t('observation') }} {{ $t('title') }}</h5>
       </div>
       <div class="col-span-6 col-start-3">
         <InputText
           v-model="title"
+          type="text"
+          required
           :placeholder="$t('placeholder.title')"
           style="width: 100%"
         ></InputText>
@@ -333,7 +376,10 @@
                 {{ scheduler.rrule.until }}
               </div>
             </div>
-            <div v-else class="text-gray-400">Schedule is not set</div>
+            <div v-else class="text-gray-400">
+              <span v-if="schedulerError" class="error">Please set schedule for your observation.</span>
+              <span v-else>Schedule is not set yet.</span>
+            </div>
           </div>
           <div class="col-span-2 grid grid-cols-1 gap-1">
             <Button class="justify-center" type="button" @click="openScheduler"
@@ -362,6 +408,7 @@
         <h5 class="mb-2">{{ $t('participantInfo') }}</h5>
         <Textarea
           v-model="participantInfo"
+          required
           :placeholder="$t('placeholder.participantInfo')"
           :auto-resize="true"
           style="width: 100%"
@@ -373,6 +420,7 @@
         <div class="col-start-0 col-span-8">
           <Textarea
             v-model="properties"
+            required
             placeholder="Enter the main purpose and intention of the study."
             :auto-resize="true"
             style="width: 100%"
@@ -399,9 +447,9 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button @click="validate()">Save</Button>
+        <Button type="submit" @click="checkRequiredFields()">Save</Button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
