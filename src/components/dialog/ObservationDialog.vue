@@ -133,9 +133,6 @@
     if (!participantInfo.value) {
       errors.value.push('Participants Information');
     }
-    if (properties.value === '{}') {
-      errors.value.push('Configuration');
-    }
   }
 
   function cancel() {
