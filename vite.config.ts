@@ -21,21 +21,15 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: process.env.LOCAL_BACKEND
+        target: process.env.VITE_LOCAL_BACKEND
           ? 'http://localhost:8080/api'
           : 'https://studymanager.platform-test.more.redlink.io/api',
-        //target: 'http://localhost:8080/api', // local
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
           return path.replace(/^\/api/, '');
         },
-        /*configure: (proxy, options) => {
-          const username = 'more-mmb'
-          const password = 'more-mmb'
-          options.auth = `${username}:${password}`
-        },*/
-      },
+      }
     },
   },
 });
