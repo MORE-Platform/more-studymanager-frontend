@@ -146,7 +146,13 @@
           actions: actionsProps,
           removeActions: removeActions.value,
         };
-        dialogRef.value.close(returnObject);
+        actionJsonError.value = [];
+        triggerEmptyError.value = '';
+        triggerJsonError.value = '';
+
+        if (actionsArray.value.length) {
+          dialogRef.value.close(returnObject);
+        }
       })
       .catch((reason) => {
         if (reason.component === 'trigger') {
@@ -158,6 +164,21 @@
           console.log(actionErrors);
         }
       });
+  }
+
+  const errors: Ref<Array<any>> = ref([]);
+
+  function checkRequiredFields() {
+    errors.value = [];
+    if (!title.value) {
+      errors.value.push('Intervention Title');
+    }
+    if (!triggerProp.value) {
+      errors.value.push('Trigger Type and Config');
+    }
+    if (!actionsArray.value.length) {
+      errors.value.push('At least 1 Action');
+    }
   }
 
   function cancel() {
@@ -197,13 +218,32 @@
 
 <template>
   <div class="intervention-dialog">
-    <div class="grid grid-cols-8 items-center gap-4">
+    <form
+      id="interventionDialogForm"
+      class="grid grid-cols-8 items-center gap-4"
+      @submit.prevent="save()"
+    >
+      <div v-if="errors.length" class="error col-span-8">
+        <span class="font-medium">
+          Please fill out following information:
+        </span>
+        <div>
+          <span v-for="(error, index) in errors" :key="index">
+            {{ error }}
+            <span v-if="index < errors.length - 1" class="mr-0.5 inline"
+              >,
+            </span>
+          </span>
+        </div>
+      </div>
       <div class="col-start-0 col-span-2">
         <h5>{{ $t('intervention') }} {{ $t('title') }}</h5>
       </div>
       <div class="col-span-6 col-start-3">
         <InputText
           v-model="title"
+          type="text"
+          required
           :placeholder="$t('placeholder.title')"
           style="width: 100%"
         ></InputText>
@@ -227,6 +267,7 @@
           class="col-span-1"
           option-label="label"
           option-value="value"
+          required
           :placeholder="$t('placeholder.trigger')"
           @change="setTriggerDescription(triggerType)"
         />
@@ -244,6 +285,7 @@
           </div>
           <Textarea
             v-model="triggerProp"
+            required
             placeholder="Enter the config for the trigger"
             :auto-resize="true"
             style="width: 100%"
@@ -286,6 +328,7 @@
               v-model="actionsArray[index].properties"
               class="col-span-9"
               placeholder="Enter the config for the action"
+              required
               :auto-resize="true"
               style="width: 100%"
             />
@@ -317,9 +360,9 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button @click="save()">Save</Button>
+        <Button type="submit" @click="checkRequiredFields()">Save</Button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
