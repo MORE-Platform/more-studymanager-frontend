@@ -15,7 +15,6 @@
 
   function openWelcomeMessage() {
     const storageItem = localStorage.getItem('welcomeMsg');
-    console.log(userStore.user);
     if (userStore.user?.uid && !storageItem) {
       dialog.open(InfoDialog, {
         data: {
