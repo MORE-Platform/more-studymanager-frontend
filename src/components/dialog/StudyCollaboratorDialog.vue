@@ -16,8 +16,6 @@
   ];
   const placeholder: string =
     dialogRef.value.data?.placeholder || 'Choose Option';
-
-  console.log(collaborator);
   const roleValues: Ref<MoreTableChoice[]> = ref([]);
   const warning: Ref<string | undefined> = ref(undefined);
 
@@ -46,7 +44,7 @@
     <div class="mb-4">
       Add
       <span class="font-bold"
-        >{{ collaborator.label }} ({{ collaborator.institution }})
+        >{{ collaborator.name }} ({{ collaborator.institution }})
       </span>
       to your study collaborators.
     </div>
@@ -58,7 +56,9 @@
       :options="roleList"
       option-label="label"
       :placeholder="$t(placeholder)"
-    ></MultiSelect>
+      :show-toggle-all="false"
+    >
+    </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
       <Button class="p-button-secondary" @click="cancel()">Cancel</Button>

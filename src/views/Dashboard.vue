@@ -2,7 +2,6 @@
   import StudyList from '../components/StudyList.vue';
   import User from '../components/User.vue';
   import { useDialog } from 'primevue/usedialog';
-  import DynamicDialog from 'primevue/dynamicdialog';
   import InfoDialog from '../components/dialog/InfoDialog.vue';
   import { useUserStore } from '../stores/userStore';
   import { useI18n } from 'vue-i18n';

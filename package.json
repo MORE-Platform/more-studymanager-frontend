@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "dev:local": "LOCAL_BACKEND=true vite",
+    "dev:local": "VITE_LOCAL_BACKEND=true vite",
     "package:quick": "npm run generate:api && vite build",
     "package": "npm run generate:api && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
@@ -34,7 +34,7 @@
     "pg": "^8.8.0",
     "pinia": "2.0.28",
     "primeicons": "^5.0.0",
-    "primevue": "^3.15.0",
+    "primevue": "3.17.0",
     "starwars-names": "^1.6.0",
     "storybook-i18n": "^1.1.2",
     "vue": "^3.2.25",
