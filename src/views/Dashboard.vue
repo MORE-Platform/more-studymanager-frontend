@@ -1,44 +1,28 @@
 <script setup lang="ts">
   import StudyList from '../components/StudyList.vue';
   import User from '../components/User.vue';
-  import { useUsersApi } from '../composable/useApi';
-  import { ref, Ref } from 'vue';
-  import { UserInfo } from '../generated-sources/openapi';
-  import { AxiosResponse } from 'axios';
   import { useDialog } from 'primevue/usedialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import InfoDialog from '../components/dialog/InfoDialog.vue';
+  import { useUserStore } from '../stores/userStore';
+  import { useI18n } from 'vue-i18n';
 
-  const { usersApi } = useUsersApi();
+  const userStore = useUserStore();
   const dialog = useDialog();
+  const { t } = useI18n();
 
-  const user: Ref<UserInfo | undefined> = ref();
+  userStore.getUser().then(() => openWelcomeMessage());
 
-  async function getUser(): Promise<void> {
-    try {
-      user.value = await usersApi
-        .getCurrentUser()
-        .then((response: AxiosResponse) => {
-          openWelcomeMessage(response.data);
-          return response.data;
-        });
-    } catch (e) {
-      console.error('cannot read user', e);
-    }
-  }
-
-  function openWelcomeMessage(user: UserInfo | undefined) {
+  function openWelcomeMessage() {
     const storageItem = localStorage.getItem('welcomeMsg');
-    if (user && !storageItem) {
-      const msg =
-        'Dear ' +
-        user.name +
-        ' (' +
-        user.institution +
-        '), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.';
+    console.log(userStore.user);
+    if (userStore.user?.uid && !storageItem) {
       dialog.open(InfoDialog, {
         data: {
-          message: msg,
+          message: t('welcomeMessage', {
+            userName: userStore.userName,
+            userInstitution: userStore.userInstitution,
+          }),
         },
         props: {
           header: 'Welcome to More',
@@ -57,15 +41,11 @@
       });
     }
   }
-
-  getUser();
 </script>
 
 <template>
   <div class="container m-auto mt-10 rounded-lg bg-white p-10">
-    <div v-if="user">
-      <User :user="user"></User>
-    </div>
+    <User v-if="userStore.user"></User>
     <div class="mt-10">
       <StudyList />
     </div>

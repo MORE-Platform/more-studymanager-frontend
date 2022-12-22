@@ -88,7 +88,7 @@
   "noGroup": "No Group",
   "entireStudy": "Entire Study",
   "no-value": "-",
-
+  "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.';",
   "tooltips": {
     "deleteBtn": "Delete",
     "editBtn": "Edit",

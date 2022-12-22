@@ -14,6 +14,7 @@ import axios from 'axios';
 // i18n
 import { createI18n } from 'vue-i18n';
 import en from './i18n/en.json';
+import { createPinia } from 'pinia';
 
 const i18n = createI18n({
   legacy: false,
@@ -50,6 +51,8 @@ axios.interceptors.request.use(
   }
 );
 
+const pinia = createPinia();
+
 const app = createApp(App);
 app.provide('authService', authService);
 
@@ -58,6 +61,7 @@ app.use(i18n);
 app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(DialogService);
+app.use(pinia);
 
 app.mount('#app');
 

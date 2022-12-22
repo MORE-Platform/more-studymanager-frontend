@@ -32,6 +32,7 @@
     "licensee": "^9.0.0",
     "normalize.css": "^8.0.1",
     "pg": "^8.8.0",
+    "pinia": "2.0.28",
     "primeicons": "^5.0.0",
     "primevue": "^3.15.0",
     "starwars-names": "^1.6.0",
