@@ -104,11 +104,12 @@
           @onchange="updateStudyStatus"
         ></StudyStatusChange>
         <Button
-          v-if="props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
-      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft"
+          v-if="props.study.status !== StudyStatus.Closed"
           class="buttons"
           type="button"
           title="Edit Study Details"
+          :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
+      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
           @click="openEditDialog()"
           ><span>Edit</span></Button
         >
