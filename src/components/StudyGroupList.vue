@@ -36,10 +36,6 @@
       type: String as PropType<StudyStatus>,
       required: true,
     },
-    editAccess: {
-      type: Boolean,
-      default: false,
-    },
   });
 
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
