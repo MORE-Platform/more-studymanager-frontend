@@ -199,13 +199,10 @@
     triggerDescription.value =
       triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
         ?.description || 'Choose a trigger type';
-    triggerProp.value = triggerProp.value
-      ? triggerProp.value
-      : JSON.stringify(
-          triggerFactories.find(
-            (t: ComponentFactory) => t.componentId === tType
-          )?.defaultProperties
-        );
+    triggerProp.value = JSON.stringify(
+      triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
+        ?.defaultProperties
+    );
   }
   function getActionDescription(actionType?: string) {
     return (
