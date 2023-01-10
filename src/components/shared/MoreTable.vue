@@ -535,7 +535,7 @@
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="`Search by name - ${filterModel.matchMode}`"
+            :placeholder="`Filter by name`"
             @keydown.enter="filterCallback()"
           />
         </template>
