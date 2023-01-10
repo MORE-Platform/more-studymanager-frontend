@@ -59,6 +59,11 @@
 
 <template>
   <div>
+    <div class="mb-4">
+      <h5>{{ $t('dialogDescription.studyDialogTitle') }}</h5>
+      <!-- eslint-disable vue/no-v-html -->
+      <h6 v-html="$t('dialogDescription.studyDialog')"></h6>
+    </div>
     <form
       id="studyDialogForm"
       class="grid grid-cols-6 items-center gap-4"

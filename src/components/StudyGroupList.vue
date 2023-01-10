@@ -162,7 +162,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :edit-access-roles="editableRoles"
-      empty-message="No groups yet"
+      :empty-message="$t('listDescription.emptyStudyGroupList')"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

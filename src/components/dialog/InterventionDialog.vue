@@ -215,6 +215,11 @@
 
 <template>
   <div class="intervention-dialog">
+    <div class="mb-4">
+      <h5>{{ $t('dialogDescription.interventionsDialogTitle') }}</h5>
+      <!-- eslint-disable vue/no-v-html -->
+      <h6 v-html="$t('dialogDescription.interventionDialog')"></h6>
+    </div>
     <form
       id="interventionDialogForm"
       class="grid grid-cols-8 items-center gap-4"
