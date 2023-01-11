@@ -658,6 +658,13 @@
 
     td.row-actions {
       justify-content: flex-end;
+      pointer-events: none;
+      .p-button {
+        pointer-events: all;
+        &.p-disabled {
+          pointer-events: none;
+        }
+      }
     }
 
     .placeholder {
