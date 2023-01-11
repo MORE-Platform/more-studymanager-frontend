@@ -3,7 +3,7 @@
   import InputText from 'primevue/inputtext';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
-  import SplitButton from 'primevue/splitbutton';
+  import Menu from 'primevue/menu';
   import Dropdown from 'primevue/dropdown';
   import { useComponentsApi } from '../../composable/useApi';
   import {
@@ -211,10 +211,20 @@
       )?.description || 'No description available'
     );
   }
+
+  const actionMenu = ref();
+  function actionToggle(event: PointerEvent) {
+    actionMenu.value.toggle(event);
+  }
 </script>
 
 <template>
   <div class="intervention-dialog">
+    <div class="mb-4">
+      <h5>{{ $t('dialogDescription.interventionsDialogTitle') }}</h5>
+      <!-- eslint-disable vue/no-v-html -->
+      <h6 v-html="$t('dialogDescription.interventionDialog')"></h6>
+    </div>
     <form
       id="interventionDialogForm"
       class="grid grid-cols-8 items-center gap-4"
@@ -293,13 +303,17 @@
       <div class="col-start-0 col-span-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="mb-2 lg:col-span-2">{{ $t('action') }}</h5>
-          <SplitButton
+          <Button
             class="splitButton disable-left lg:cols-pan-1 w-full"
             type="button"
             :label="'New Action'"
             :icon="'pi pi-plus'"
-            :model="actionTypesOptions"
-          ></SplitButton>
+            aria-haspopup="true"
+            aria-controls="overlay_menu"
+            @click="actionToggle"
+          ></Button>
+          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
+          </Menu>
         </div>
         <div v-if="actionsEmptyError" class="error col-span-8">
           {{ actionsEmptyError }}
@@ -373,7 +387,7 @@
     .splitButton {
       background-color: var(--primary-color);
       color: white;
-      padding: 0 6px;
+      padding: 0 20px;
       justify-content: center;
       align-items: center;
 

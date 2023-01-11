@@ -120,7 +120,9 @@
       <h5>{{ $t('purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
-        <span v-else>Enter information about the {{ $t('purpose') }}</span>
+        <span v-else class="placeholder">
+          {{ $t('placeholder.emptyPurposeOnOverview') }}
+        </span>
       </div>
     </div>
     <div class="mb-6">
@@ -165,5 +167,9 @@
         color: var(--primary-color);
       }
     }
+  }
+
+  .overview-edit-details .placeholder {
+    color: var(--surface-400);
   }
 </style>
