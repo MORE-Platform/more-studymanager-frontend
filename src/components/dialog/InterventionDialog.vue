@@ -214,8 +214,8 @@
 
   const actionMenu = ref();
   function actionToggle(event: PointerEvent) {
-    actionMenu.value.toggle(event)
-  };
+    actionMenu.value.toggle(event);
+  }
 </script>
 
 <template>
@@ -310,11 +310,9 @@
             :icon="'pi pi-plus'"
             aria-haspopup="true"
             aria-controls="overlay_menu"
-            @click="actionToggle"></Button>
-          <Menu
-            ref="actionMenu"
-            :model="actionTypesOptions"
-            :popup="true">
+            @click="actionToggle"
+          ></Button>
+          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
           </Menu>
         </div>
         <div v-if="actionsEmptyError" class="error col-span-8">
