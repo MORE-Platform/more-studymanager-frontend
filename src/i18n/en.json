@@ -107,7 +107,7 @@
     "searchCollaborators": "Type to search collaborators",
     "addCollaborator": "Add Collaborator",
     "noResultsFound": "No results found",
-    "emptyPurposeOnOverview": "Purpose information hasn't been added yet. To add purpose information edit the study details.",
+    "emptyPurposeOnOverview": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
     "observationScheduler": "Please provide a schedule for your observation.",
     "interventionScheduler": "Please provide a schedule for your intervention",
     "dialogErrorMessage": "Please fill out the following information fields."
@@ -115,7 +115,7 @@
   "listDescription": {
     "participantList": "This is the list of participants of your study. You can add or import participants.",
     "emptyParticipantList": "Add and manage your study's participants. Your participants will be listed here.",
-    "studyList": "This is the list of your studies and studies where you were invited as collaborator.",
+    "studyList": "This is the list of your studies and studies you were invited to as a collaborator.",
     "emptyStudyGroupList": "Add groups to your study to use group functionalities. Your study groups will be listed here.",
     "emptyObservationList": "Add and manage your study's observations. Your observations will be listed here.",
     "emptyInterventionList": "Add and manage your study's interventions. Your interventions will be listed here.",
@@ -123,7 +123,7 @@
   },
   "dialogDescription": {
     "studyDialogTitle": "Study Details",
-    "studyDialog": "Enter your studies base information to provide basic information for collaborators and participants.",
+    "studyDialog": "Enter the base information of your study to provide basic information for collaborators and participants.",
     "interventionsDialogTitle": "Intervention Details",
     "interventionDialog": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
   },
