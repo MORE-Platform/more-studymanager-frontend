@@ -443,7 +443,7 @@
       :loading="loader.loading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      empty-message="No interventions yet"
+      :empty-message="$t('listDescription.emptyInterventionList')"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

@@ -272,7 +272,7 @@
       :editable-access="actionsVisible"
       :loading="loader.loading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      empty-message="No observations yet"
+      :empty-message="$t('listDescription.emptyObservationList')"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
       @onchange="updateObservation($event)"

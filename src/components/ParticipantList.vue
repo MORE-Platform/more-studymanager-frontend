@@ -298,7 +298,7 @@
       :loading="loader.loading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      empty-message="No participants yet"
+      :empty-message="$t('listDescription.emptyParticipantList')"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

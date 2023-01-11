@@ -26,8 +26,7 @@
       <div class="data-header-textblock">
         <h3>Data</h3>
         <h4>
-          Data collected during the study will be visualized at this within this
-          dashboard.
+          {{ $t('listDescription.data') }}
         </h4>
       </div>
       <DataView />
