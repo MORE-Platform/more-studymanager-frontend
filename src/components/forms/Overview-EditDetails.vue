@@ -120,7 +120,9 @@
       <h5>{{ $t('purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
-        <span v-else class="placeholder">{{ $t('placeholder.emptyPurposeOnOverview') }}</span>
+        <span v-else class="placeholder">
+          {{ $t('placeholder.emptyPurposeOnOverview') }}
+        </span>
       </div>
     </div>
     <div class="mb-6">
