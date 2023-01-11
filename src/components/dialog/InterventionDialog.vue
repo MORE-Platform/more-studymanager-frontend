@@ -304,7 +304,7 @@
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="mb-2 lg:col-span-2">{{ $t('action') }}</h5>
           <Button
-            class="splitButton disable-left lg:cols-pan-1 w-full pr-5 pl-5"
+            class="splitButton disable-left lg:cols-pan-1 w-full"
             type="button"
             :label="'New Action'"
             :icon="'pi pi-plus'"
