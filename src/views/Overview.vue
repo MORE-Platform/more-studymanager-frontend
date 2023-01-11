@@ -2,7 +2,7 @@
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import { useStudiesApi } from '../composable/useApi';
   import { useRoute } from 'vue-router';
-  import { Ref } from 'vue';
+  import { Ref, ref } from 'vue';
   import { Study, StudyStatus } from '../generated-sources/openapi';
   import StudyGroupList from '../components/StudyGroupList.vue';
   import OverviewEditDetails from '../components/forms/Overview-EditDetails.vue';
@@ -27,6 +27,7 @@
   async function updateStudyStatus(status: StudyStatus) {
     const statusBefore = study.value.status;
     study.value.status = status;
+    studyStatus.value = status;
     studiesApi
       .setStatus(studyId, { status: status })
       .then(() => studiesApi.getStudy(studyId))
@@ -41,7 +42,7 @@
   }
 
   const studyId = +route.params.studyId;
-  const studyStatus: StudyStatus = study.value.status as StudyStatus;
+  const studyStatus: Ref<StudyStatus> = ref(study.value.status as StudyStatus);
 </script>
 
 <template>

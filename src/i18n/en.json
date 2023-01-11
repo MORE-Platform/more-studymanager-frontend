@@ -99,17 +99,33 @@
     "trigger": "Choose a trigger type",
     "group": "Choose a group",
     "action": "Choose an action",
-    "purpose": "Please provide short description of your research purpose for your collaborators.",
+    "purpose": "Please provide a short description of your research purpose for your collaborators.",
     "participantInfo": "Please provide information for study participants. This description will be visible at the participant's app.",
     "title": "Please provide a short title.",
     "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
     "chooseRole": "Choose the collaborator's roles",
     "searchCollaborators": "Type to search collaborators",
     "addCollaborator": "Add Collaborator",
-    "noResultsFound": "No results found"
+    "noResultsFound": "No results found",
+    "emptyPurposeOnOverview": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
+    "observationScheduler": "Please provide a schedule for your observation.",
+    "interventionScheduler": "Please provide a schedule for your intervention",
+    "dialogErrorMessage": "Please fill out the following information fields."
   },
   "listDescription": {
-    "participantList": "This is the list of participants of your study. You can add or import participants."
+    "participantList": "This is the list of participants of your study. You can add or import participants.",
+    "emptyParticipantList": "Add and manage your study's participants. Your participants will be listed here.",
+    "studyList": "This is the list of your studies and studies you were invited to as a collaborator.",
+    "emptyStudyGroupList": "Add groups to your study to use group functionalities. Your study groups will be listed here.",
+    "emptyObservationList": "Add and manage your study's observations. Your observations will be listed here.",
+    "emptyInterventionList": "Add and manage your study's interventions. Your interventions will be listed here.",
+    "data": "Data collected during the study will be visualized within this dashboard."
+  },
+  "dialogDescription": {
+    "studyDialogTitle": "Study Details",
+    "studyDialog": "Enter the base information of your study to provide basic information for collaborators and participants.",
+    "interventionsDialogTitle": "Intervention Details",
+    "interventionDialog": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
   },
   "user": {
     "institution": "Organisation"

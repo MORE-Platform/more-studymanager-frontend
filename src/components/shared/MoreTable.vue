@@ -337,37 +337,32 @@
       <div class="actions flex flex-1 justify-end">
         <div v-for="action in tableActions" :key="action.id" class="action">
           <Button
-            v-if="isVisible(action) && !action.options"
+            v-if="!action.options"
             type="button"
             :label="action.label"
             :icon="action.icon"
+            :disabled="isVisible(action) === false"
             @click="actionHandler(action)"
           ></Button>
           <SplitButton
-            v-if="
-              isVisible(action) &&
-              !!action.options &&
-              action.options.type === 'split'
-            "
+            v-if="!!action.options && action.options.type === 'split'"
             type="button"
             :label="action.label"
             :icon="action.icon"
             :model="action.options.values"
+            :disabled="isVisible(action) === false"
             @click="actionHandler(action)"
           ></SplitButton>
 
           <Dropdown
-            v-if="
-              action.options &&
-              action.options.type === 'search' &&
-              isVisible(action)
-            "
+            v-if="action.options && action.options.type === 'search'"
             class="button p-button dropdown-search"
             :filter="true"
             :options="searchActions"
             option-label="label"
             option-value="value"
             :icon="action.icon"
+            :disabled="isVisible(action) === false"
             panel-class="dropdown-search-panel"
             :empty-message="$t(action.options.valuesCallback.filterPlaceholder)"
             :empty-filter-message="
@@ -406,17 +401,12 @@
             </template>
           </Dropdown>
 
-          <div
-            v-if="
-              isVisible(action) &&
-              !!action.options &&
-              action.options.type === 'menu'
-            "
-          >
+          <div v-if="!!action.options && action.options.type === 'menu'">
             <Button
               type="button"
               :label="action.label"
               :icon="action.icon"
+              :disabled="isVisible(action) === false"
               @click="toggle(action, $event)"
             ></Button>
             <Menu
@@ -426,17 +416,14 @@
             />
           </div>
           <FileUpload
-            v-if="
-              isVisible(action) &&
-              !!action.options &&
-              action.options.type === 'fileUpload'
-            "
+            v-if="!!action.options && action.options.type === 'fileUpload'"
             :mode="action.options.uploadOptions?.mode || 'basic'"
             :choose-label="action.label"
             :icon="action.icon"
             :multiple="action.options.uploadOptions?.multiple || false"
             :custom-upload="true"
             :auto="true"
+            :disabled="isVisible(action) === false"
             @uploader="actionHandler(action, $event)"
           ></FileUpload>
         </div>
@@ -594,19 +581,19 @@
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
               <Button
-                v-if="isVisible(action, slotProps.data)"
                 type="button"
                 :title="action.label"
                 :icon="action.icon"
+                :disabled="isVisible(action, slotProps.data) === false"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
             <Button
-              v-if="isEditable(slotProps.data, slotProps)"
               type="button"
               icon="pi pi-pencil"
+              :disabled="isEditable(slotProps.data, slotProps) === false"
               @click="edit(slotProps.data)"
             >
             </Button>

@@ -40,11 +40,14 @@
 
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  const editAccess =
-    (props.userRoles.some((r) => editableRoles.includes(r)) &&
-      props.studyStatus === StudyStatus.Draft) ||
-    (props.userRoles.some((r) => editableRoles.includes(r)) &&
-      props.studyStatus === StudyStatus.Paused);
+  function getEditAccess(): boolean {
+    return (
+      (props.userRoles.some((r) => editableRoles.includes(r)) &&
+        props.studyStatus === StudyStatus.Draft) ||
+      (props.userRoles.some((r) => editableRoles.includes(r)) &&
+        props.studyStatus === StudyStatus.Paused)
+    );
+  }
 
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: 'id', sortable: true },
@@ -67,7 +70,7 @@
       id: 'delete',
       label: 'Delete',
       icon: 'pi pi-trash',
-      visible: () => editAccess,
+      visible: () => getEditAccess(),
       confirm: { header: 'Confirm', message: 'Really delete study group?' },
     },
   ];
@@ -77,7 +80,7 @@
       id: 'create',
       label: 'Create Group',
       icon: 'pi pi-plus',
-      visible: () => editAccess,
+      visible: () => getEditAccess(),
     },
   ];
 
@@ -155,11 +158,11 @@
       :title="$t('studyGroups')"
       :columns="studyGroupColumns"
       :rows="studyGroupList"
-      :editable-access="editAccess"
+      :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :edit-access-roles="editableRoles"
-      empty-message="No groups yet"
+      :empty-message="$t('listDescription.emptyStudyGroupList')"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

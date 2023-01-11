@@ -234,7 +234,7 @@
     >
       <div v-if="errors.length" class="error col-span-8">
         <span class="font-medium">
-          Please fill out following information fields:
+          {{ $t('placeholder.dialogErrorMessage') }}
         </span>
         <div>
           <span v-for="(error, index) in errors" :key="index">
@@ -379,7 +379,7 @@
               <span v-if="schedulerError" class="error"
                 >Please set schedule for your observation.
               </span>
-              <span v-else>Schedule is not set yet.</span>
+              <span v-else>{{ $t('placeholder.observationScheduler') }}</span>
             </div>
           </div>
           <div class="col-span-2 grid grid-cols-1 gap-1">
