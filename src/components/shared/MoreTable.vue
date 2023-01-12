@@ -701,8 +701,11 @@
     .dropdown-search {
       padding: 0 !important;
 
-      &:hover, &:active, &:focus {
-        border: var(--border-weight) var(--border-style) var(--primary-color--secondary);
+      &:hover,
+      &:active,
+      &:focus {
+        border: var(--border-weight) var(--border-style)
+          var(--primary-color--secondary);
         background-color: var(--primary-color--secondary);
       }
     }
