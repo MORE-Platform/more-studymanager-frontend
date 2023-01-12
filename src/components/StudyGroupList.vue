@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { PropType, Ref } from 'vue';
+  import { PropType } from 'vue';
   import { useStudyGroupsApi } from '../composable/useApi';
   import {
     MoreTableAction,
@@ -13,16 +13,13 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  import { useRoute } from 'vue-router';
   import { useI18n } from 'vue-i18n';
+  import { useStudyStore } from '../stores/studyStore';
 
   const { studyGroupsApi } = useStudyGroupsApi();
-  const route = useRoute();
   const { t } = useI18n();
-  const studyGroupList: Ref<StudyGroup[]> = route.meta['studyGroups'] as Ref<
-    StudyGroup[]
-  >;
 
+  const studyStore = useStudyStore();
   const props = defineProps({
     studyId: {
       type: Number,
@@ -83,7 +80,7 @@
 
   async function listStudyGroups(): Promise<void> {
     try {
-      studyGroupList.value = await studyGroupsApi
+      studyStore.studyGroups = await studyGroupsApi
         .listStudyGroups(props.studyId)
         .then((response) => response.data);
     } catch (e) {
@@ -104,11 +101,11 @@
 
   function getTitle() {
     let title = undefined;
-    let count = studyGroupList.value.length;
+    let count = studyStore.studyGroups.length;
     while (title === undefined) {
       count += 1;
       const _title = t('group') + ' ' + count;
-      if (!studyGroupList.value.find((g) => g.title === _title)) {
+      if (!studyStore.studyGroups.find((g) => g.title === _title)) {
         title = _title;
       }
     }
@@ -125,11 +122,11 @@
   }
 
   function changeValue(studyGroup: StudyGroup) {
-    const i = studyGroupList.value.findIndex(
+    const i = studyStore.studyGroups.findIndex(
       (v) => v.studyGroupId === studyGroup.studyGroupId
     );
     if (i > -1) {
-      studyGroupList.value[i] = studyGroup;
+      studyStore.studyGroups[i] = studyGroup;
       studyGroupsApi.updateStudyGroup(
         studyGroup.studyId as number,
         studyGroup.studyGroupId as number,
@@ -154,7 +151,7 @@
       row-id="studyGroupId"
       :title="$t('studyGroups')"
       :columns="studyGroupColumns"
-      :rows="studyGroupList"
+      :rows="studyStore.studyGroups"
       :editable-access="editAccess"
       :row-actions="rowActions"
       :table-actions="tableActions"

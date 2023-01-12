@@ -1,4 +1,4 @@
-<script async setup lang="ts">
+<script setup lang="ts">
   import { ref, Ref, PropType } from 'vue';
   import { useObservationsApi, useComponentsApi } from '../composable/useApi';
   import {
