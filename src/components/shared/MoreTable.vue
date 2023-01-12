@@ -522,7 +522,7 @@
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="`Filter by name`"
+            :placeholder="`Filter by ` + $t(column.header).toLowerCase()"
             @keydown.enter="filterCallback()"
           />
         </template>
@@ -658,6 +658,13 @@
 
     td.row-actions {
       justify-content: flex-end;
+      pointer-events: none;
+      .p-button {
+        pointer-events: all;
+        &.p-disabled {
+          pointer-events: none;
+        }
+      }
     }
 
     .placeholder {
