@@ -161,7 +161,6 @@
             email: item.user.email,
             roles: getRoleChoices(item.roles),
           }));
-          //return response.data
         });
     } catch (e) {
       console.error('Cannot list collaborators: ' + props.studyId, e);
