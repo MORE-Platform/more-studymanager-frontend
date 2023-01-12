@@ -13,6 +13,7 @@
     ComponentFactory,
     ValidationReport,
   } from '../../generated-sources/openapi';
+  import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
 
   const { componentsApi } = useComponentsApi();
 
@@ -285,13 +286,16 @@
           <div v-if="triggerJsonError" class="error mb-4">
             {{ triggerJsonError }}
           </div>
-          <Textarea
+          <!-- <Textarea
             v-model="triggerProp"
             required
             placeholder="Enter the config for the trigger"
             :auto-resize="true"
             style="width: 100%"
-          ></Textarea>
+          ></Textarea> -->
+          <CronSchedulerConfiguration>
+
+          </CronSchedulerConfiguration>
         </div>
       </div>
 
