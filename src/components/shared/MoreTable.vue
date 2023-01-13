@@ -7,6 +7,7 @@
     MoreTableRowActionResult,
     MoreTableActionResult,
     MoreTableChoice,
+    MoreTableActionOption,
   } from '../../models/MoreTableModel';
   import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
   import Column from 'primevue/column';
@@ -229,7 +230,10 @@
   }
 
   const menus: any = {};
-  props.tableActions.forEach((action) => {
+
+  const searchActionsMap = ref(new Map<number, MoreTableActionOption[]>());
+
+  props.tableActions.forEach((action, index) => {
     if (
       action.options &&
       action.options.values &&
@@ -246,6 +250,14 @@
       }
     } else if (action.options && action.options.type === 'fileUpload') {
       actionHandler(action, action.options?.uploadOptions);
+    }
+
+    if (
+      action.options &&
+      action.options.valuesCallback &&
+      action.options.type === 'search'
+    ) {
+      searchActionsMap.value.set(index, action.options.values);
     }
   });
 
@@ -309,20 +321,12 @@
     return text;
   }
 
-  const searchActions: Ref<MoreTableChoice[]> = ref([]);
-  async function setDynamicActions(values: Promise<any>) {
-    if (values) {
-      Promise.resolve(values).then((response) => {
-        if (response.length) {
-          searchActions.value = response.map((v: any) => ({
-            label: v.label,
-            value: v.value,
-            institution: v.institution,
-          }));
-        } else {
-          searchActions.value = [];
-        }
-      });
+  async function filterActionHandler(properties: any) {
+    if (properties.query && properties.callback) {
+      searchActionsMap.value.set(
+        properties.index,
+        await properties.callback(properties.query)
+      );
     }
   }
 </script>
@@ -335,7 +339,11 @@
         <h4 v-if="subtitle">{{ subtitle }}</h4>
       </div>
       <div class="actions flex flex-1 justify-end">
-        <div v-for="action in tableActions" :key="action.id" class="action">
+        <div
+          v-for="(action, actionIndex) in tableActions"
+          :key="action.id"
+          class="action"
+        >
           <Button
             v-if="!action.options"
             type="button"
@@ -358,7 +366,7 @@
             v-if="action.options && action.options.type === 'search'"
             class="button p-button dropdown-search"
             :filter="true"
-            :options="searchActions"
+            :options="searchActionsMap.get(actionIndex)"
             option-label="label"
             option-value="value"
             :icon="action.icon"
@@ -369,12 +377,11 @@
               $t(action.options.valuesCallback.noResultsPlaceholder)
             "
             @filter="
-              setDynamicActions(
-                action.options.valuesCallback.callback(
-                  $event.value,
-                  action.options.type
-                )
-              )
+              filterActionHandler({
+                query: $event.value,
+                index: actionIndex,
+                callback: action.options.valuesCallback.callback,
+              })
             "
           >
             <template #value="">
@@ -693,6 +700,14 @@
     }
     .dropdown-search {
       padding: 0 !important;
+
+      &:hover,
+      &:active,
+      &:focus {
+        border: var(--border-weight) var(--border-style)
+          var(--primary-color--secondary);
+        background-color: var(--primary-color--secondary);
+      }
     }
   }
   .dropdown-search-panel {
