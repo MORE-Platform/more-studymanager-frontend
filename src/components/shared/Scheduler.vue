@@ -409,7 +409,10 @@
           v-if="repeatFreq === Frequency.Weekly"
           class="col-start-0 col-span-6 mb-4 mt-4"
         />
-        <div v-if="repeatFreq" class="col-start-0 col-span-1 font-medium">
+        <div
+          v-if="repeatFreq"
+          class="col-start-0 col-span-1 self-center font-medium"
+        >
           Repetition ends
         </div>
         <div
@@ -421,7 +424,8 @@
             :options="repeatEndOptionArray"
             :option-label="'label'"
             :option-value="'value'"
-            class="col-span-1"
+            class="col-span-2 w-80"
+            placeholder="Choose repetition end"
             @change="resetRepeatEndOptions"
           />
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
