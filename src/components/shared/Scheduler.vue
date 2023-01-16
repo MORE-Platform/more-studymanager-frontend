@@ -409,7 +409,7 @@
           v-if="repeatFreq === Frequency.Weekly"
           class="col-start-0 col-span-6 mb-4 mt-4"
         />
-        <div v-if="repeatFreq" class="col-start-0 col-span-1 font-medium">
+        <div v-if="repeatFreq" class="col-start-0 col-span-1 font-medium self-center">
           Repetition ends
         </div>
         <div
