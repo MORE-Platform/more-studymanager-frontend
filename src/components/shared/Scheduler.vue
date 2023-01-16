@@ -421,7 +421,8 @@
             :options="repeatEndOptionArray"
             :option-label="'label'"
             :option-value="'value'"
-            class="col-span-1"
+            class="col-span-2 w-80"
+            placeholder="Choose repetition end"
             @change="resetRepeatEndOptions"
           />
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
