@@ -1,5 +1,5 @@
 # build stage
-FROM node:lts-alpine as build-stage
+FROM node:16.19.0-alpine as build-stage
 RUN apk add openjdk8-jre
 WORKDIR /app
 COPY package*.json ./
