@@ -284,3 +284,9 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="postcss">
+  .action .dropdown-search .p-dropdown-trigger-icon:before {
+    color: white;
+  }
+</style>

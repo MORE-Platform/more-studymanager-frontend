@@ -460,7 +460,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .scheduler {
     min-height: 37.5rem;
 

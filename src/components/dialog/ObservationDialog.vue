@@ -454,7 +454,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .observation-dialog {
     .buttons {
       button {

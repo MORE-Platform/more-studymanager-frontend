@@ -172,7 +172,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .buttons {
     button {
       margin-left: 10px;

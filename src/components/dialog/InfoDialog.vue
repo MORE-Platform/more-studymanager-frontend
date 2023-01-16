@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<style>
+<style scoped lang="postcss">
   .info-dialog {
     font-size: 1rem;
   }

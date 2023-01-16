@@ -13,7 +13,7 @@
   </footer>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .footer {
     z-index: 1000;
     position: fixed;

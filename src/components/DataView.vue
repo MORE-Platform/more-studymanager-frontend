@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .dataview {
     a {
       color: var(--primary-color);

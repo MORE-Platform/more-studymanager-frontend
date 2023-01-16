@@ -377,7 +377,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .intervention-dialog {
     .buttons {
       button {

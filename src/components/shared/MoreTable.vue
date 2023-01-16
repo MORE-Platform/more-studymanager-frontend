@@ -627,7 +627,13 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
+  :deep(.more-table .row-actions) {
+    pointer-events: none;
+  }
+  :deep(.more-table td.row-actions div) {
+    justify-content: flex-end;
+  }
   .more-table {
     .p-datatable-loading-overlay {
       filter: blur(5px);
@@ -643,8 +649,12 @@
     }
 
     .row-actions {
+      pointer-events: none;
       button {
         margin: 0 0.188rem;
+      }
+      div {
+        display: flex;
       }
     }
 
@@ -663,9 +673,11 @@
       }
     }
 
-    td.row-actions {
-      justify-content: flex-end;
+    :deep(td.row-actions) {
       pointer-events: none;
+      div {
+        place-content: end;
+      }
       .p-button {
         pointer-events: all;
         &.p-disabled {

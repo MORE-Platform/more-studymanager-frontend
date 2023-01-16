@@ -53,9 +53,13 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .buttons {
     display: flex;
     margin-right: 10px;
+
+    :deep(button:first-of-type) {
+      margin-right: 10px;
+    }
   }
 </style>
