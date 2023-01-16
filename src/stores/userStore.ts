@@ -4,11 +4,12 @@ import { useUsersApi } from '../composable/useApi';
 import { CurrentUser } from '../generated-sources/openapi';
 
 export const useUserStore = defineStore('user', () => {
-  const user: Ref<CurrentUser | null> = ref(null);
   const { usersApi } = useUsersApi();
 
-  const userName = computed(() => user.value?.name || '');
-  const userInstitution = computed(() => user.value?.institution || '');
+  // State
+  const user: Ref<CurrentUser | null> = ref(null);
+
+  // Actions
   async function getUser(): Promise<void> {
     if (!user.value) {
       try {
@@ -20,6 +21,10 @@ export const useUserStore = defineStore('user', () => {
       }
     }
   }
+
+  // Getters
+  const userName = computed(() => user.value?.name || '');
+  const userInstitution = computed(() => user.value?.institution || '');
 
   return { user, userName, userInstitution, getUser };
 });
