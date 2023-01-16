@@ -1,6 +1,4 @@
 <script setup lang="ts">
-  import { ref, Ref } from 'vue';
-  import { useStudiesApi } from '../composable/useApi';
   import { useRouter } from 'vue-router';
   import {
     MoreTableAction,
@@ -13,14 +11,12 @@
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyDialog from './dialog/StudyDialog.vue';
-  import { AxiosResponse } from 'axios';
   import { useDialog } from 'primevue/usedialog';
   import InfoDialog from './dialog/InfoDialog.vue';
   import useLoader from '../composable/useLoader';
-  //import {UserRolesEnum} from '../models/UserModel';
+  import { useStudyStore } from '../stores/studyStore';
 
-  const { studiesApi } = useStudiesApi();
-  const studyList: Ref<Study[]> = ref([]);
+  const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
@@ -57,7 +53,6 @@
       ],
     },
   ];
-
   const studyColumnsDraft: MoreTableColumn[] = [
     ...studyColumns,
     {
@@ -75,11 +70,9 @@
       sortable: true,
     },
   ];
-
   const tableActions: MoreTableAction[] = [
     { id: 'create', icon: 'pi pi-plus', label: 'Add new study' },
   ];
-
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
@@ -100,29 +93,16 @@
   const frontRowActions: MoreTableAction[] = [
     { id: 'copyId', label: 'Copy Url', icon: 'pi pi-copy' },
   ];
-
-  async function listStudies(): Promise<void> {
-    try {
-      studyList.value = await studiesApi
-        .listStudies()
-        .then((response: AxiosResponse) => response.data);
-    } catch (e) {
-      console.error('cannot list studies', e);
-    }
-  }
-
-  async function createStudy(study: Study): Promise<void> {
-    await studiesApi.createStudy(study).then(listStudies);
-  }
+  const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
   function goToStudy(id: string | unknown) {
     router.push({ name: 'Overview', params: { studyId: id as string } });
   }
 
-  function execute(action: MoreTableRowActionResult<Study>) {
+  function executeAction(action: MoreTableRowActionResult<Study>) {
     switch (action.id) {
       case 'delete':
-        return deleteStudy(action.row);
+        return studyStore.deleteStudy(action.row.studyId);
       case 'create':
         return openCreateDialog();
       case 'copyId':
@@ -132,17 +112,8 @@
     }
   }
 
-  function changeValue(study: Study) {
-    study = study as Study;
-    const i = studyList.value.findIndex((v) => v.studyId === study.studyId);
-    if (i > -1) {
-      studyList.value[i] = study;
-      studiesApi.updateStudy(study.studyId as number, study);
-    }
-  }
-
-  function deleteStudy(study: Study) {
-    studiesApi.deleteStudy(study.studyId as number).then(listStudies);
+  function updateStudyInPlace(study: Study) {
+    studyStore.updateStudyInStudies(study);
   }
 
   function openCreateDialog() {
@@ -160,7 +131,7 @@
       },
       onClose: (options) => {
         if (options?.data) {
-          createStudy(options.data as Study);
+          studyStore.createStudy(options.data as Study);
         }
       },
     });
@@ -203,9 +174,7 @@
   }
 
   loader.enable();
-  listStudies().finally(() => loader.disable());
-
-  const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  studyStore.listStudies().finally(() => loader.disable());
 </script>
 
 <template>
@@ -215,7 +184,7 @@
       :title="$t('dashboardTitle')"
       subtitle="This is the list of my own studies and studies where I am added as collaborator."
       :columns="studyColumnsDraft"
-      :rows="studyList"
+      :rows="studyStore.studies"
       :row-actions="rowActions"
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
@@ -226,8 +195,8 @@
       :loading="loader.loading.value"
       empty-message="No studies yet"
       @onselect="goToStudy($event)"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
+      @onaction="executeAction($event)"
+      @onchange="updateStudyInPlace($event)"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />

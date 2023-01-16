@@ -7,14 +7,20 @@ import {
   StudyStatus,
 } from '../generated-sources/openapi';
 import { useStudiesApi, useStudyGroupsApi } from '../composable/useApi';
+import { AxiosResponse } from 'axios';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { studyGroupsApi } = useStudyGroupsApi();
+
+  // State
   const studyGroups: Ref<StudyGroup[]> = ref([]);
   const study: Ref<Study> = ref({});
+  const studies: Ref<Study[]> = ref([]);
+
+  // Actions
   async function getStudy(studyId: number): Promise<void> {
-    if (!study.value.studyId) {
+    if (!study.value.studyId || study.value.studyId !== studyId) {
       study.value = await studiesApi
         .getStudy(studyId)
         .then((response) => response.data);
@@ -53,6 +59,39 @@ export const useStudyStore = defineStore('study', () => {
       console.error('Could not update study status', e);
     }
   }
+  async function listStudies(): Promise<void> {
+    try {
+      studies.value = await studiesApi
+        .listStudies()
+        .then((response: AxiosResponse<Study[]>) => response.data);
+    } catch (e) {
+      console.error('cannot list studies', e);
+    }
+  }
+
+  async function createStudy(study: Study): Promise<void> {
+    await studiesApi.createStudy(study).then(listStudies);
+  }
+
+  async function deleteStudy(studyId: number | undefined) {
+    if (studyId) {
+      await studiesApi.deleteStudy(studyId).then(listStudies);
+    }
+  }
+  async function updateStudyInStudies(changedStudy: Study) {
+    const i = studies.value.findIndex(
+      (studyItem) => studyItem.studyId === changedStudy.studyId
+    );
+    if (i > -1) {
+      studies.value.splice(i, 1, changedStudy);
+      await studiesApi.updateStudy(
+        changedStudy.studyId as number,
+        changedStudy
+      );
+    }
+  }
+
+  // Getters
   const studyUserRoles: ComputedRef<Array<StudyRole>> = computed(() => [
     ...(study.value.userRoles || []),
   ]);
@@ -60,10 +99,15 @@ export const useStudyStore = defineStore('study', () => {
   return {
     study,
     studyGroups,
+    studies,
     getStudy,
     getStudyGroups,
     updateStudy,
     updateStudyStatus,
+    listStudies,
+    createStudy,
+    deleteStudy,
+    updateStudyInStudies,
     studyUserRoles,
   };
 });
