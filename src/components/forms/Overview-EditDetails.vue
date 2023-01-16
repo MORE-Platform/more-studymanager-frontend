@@ -104,11 +104,12 @@
           @onchange="updateStudyStatus"
         ></StudyStatusChange>
         <Button
-          v-if="props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
-      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft"
+          v-if="props.study.status !== StudyStatus.Closed"
           class="buttons"
           type="button"
           title="Edit Study Details"
+          :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
+      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
           @click="openEditDialog()"
           ><span>Edit</span></Button
         >
@@ -119,7 +120,9 @@
       <h5>{{ $t('purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
-        <span v-else>Enter information about the {{ $t('purpose') }}</span>
+        <span v-else class="placeholder">
+          {{ $t('placeholder.emptyPurposeOnOverview') }}
+        </span>
       </div>
     </div>
     <div class="mb-6">
@@ -164,5 +167,9 @@
         color: var(--primary-color);
       }
     }
+  }
+
+  .overview-edit-details .placeholder {
+    color: var(--surface-400);
   }
 </style>

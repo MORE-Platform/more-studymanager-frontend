@@ -171,7 +171,7 @@
     <MoreTable
       row-id="studyId"
       :title="$t('dashboardTitle')"
-      subtitle="This is the list of my own studies and studies where I am added as collaborator."
+      :subtitle="$t('listDescription.studyList')"
       :columns="studyColumnsDraft"
       :rows="studyStore.studies"
       :row-actions="rowActions"
