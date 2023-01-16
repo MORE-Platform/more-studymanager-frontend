@@ -15,11 +15,13 @@
   import InfoDialog from './dialog/InfoDialog.vue';
   import useLoader from '../composable/useLoader';
   import { useStudyStore } from '../stores/studyStore';
+  import { useI18n } from 'vue-i18n';
 
   const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
+  const { t } = useI18n();
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: 'studyId', sortable: true },
@@ -140,23 +142,10 @@
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
       const studyUrl = location.host + '/studies/' + studyId;
-      navigator.clipboard.writeText(studyUrl).then(
-        function () {
-          console.log('Copied Study ' + title + ': ' + studyUrl);
-        },
-        function (error) {
-          console.error('copy to clipboard error', error);
-        }
-      );
-
+      navigator.clipboard.writeText(studyUrl);
       dialog.open(InfoDialog, {
         data: {
-          message:
-            'URL for StudyId ' +
-            studyId +
-            ' Study (' +
-            title +
-            ') was copied to your clipboard.',
+          message: t('linkCopy', { studyId, title }),
         },
         props: {
           header: 'Copied ID',
