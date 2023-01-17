@@ -1,13 +1,98 @@
 <script setup lang="ts">
   import { ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
+  import { TriggerSchedule } from '../../models/CronSchedulerModel';
+  import cron from 'cron-validate';
 
-  const seconds: Ref<number | string> = ref('');
-  const minutes: Ref<number | string> = ref('');
-  const hours: Ref<number | string> = ref('');
-  const months: Ref<number | string> = ref('');
-  const dayOfMonth: Ref<number | string> = ref('');
-  const dayOfWeek: Ref<number | string> = ref('');
+  const props = defineProps({
+    triggerSchedule: {
+      type: String,
+      default: '* * * * * *',
+    },
+  });
+
+  const triggerSchedule: Ref<TriggerSchedule> = ref({
+    seconds: '',
+    minutes: '',
+    hours: '',
+    dayOfMonth: '',
+    months: '',
+    dayOfWeek: '',
+  });
+
+  parseCronScheduleToString();
+
+  // TODO parse schedule string to object
+
+  const emit = defineEmits<{
+    (e: 'onValidSchedule', triggerSchedule: string): string;
+    (e: 'onCronError', errorMessage: string[]): string[];
+  }>();
+
+  function validate() {
+    // TODO parse trigger schedule back to string
+    // TODO validate
+    const parsedTriggerSchedule =
+      triggerSchedule.value.minutes +
+      ' ' +
+      triggerSchedule.value.hours +
+      ' ' +
+      triggerSchedule.value.dayOfMonth +
+      ' ' +
+      triggerSchedule.value.months +
+      ' ' +
+      triggerSchedule.value.dayOfWeek;
+    const validCronValue = cron(parsedTriggerSchedule);
+    if (validCronValue.isValid()) {
+      emit('onValidSchedule', parsedTriggerSchedule);
+    } else {
+      console.log(validCronValue.getError());
+      emit('onCronError', validCronValue.getError());
+    }
+  }
+
+  function parseCronScheduleToString() {
+    // TODO error on mistake in seconds
+    const cronStringWithoutSeconds = props.triggerSchedule?.substring(
+      0,
+      props.triggerSchedule?.length - 1
+    );
+    console.log(cron(cronStringWithoutSeconds));
+    const cronValue = cron(cronStringWithoutSeconds).getValue();
+    const minutes =
+      typeof cronValue.minutes === 'string'
+        ? cronValue.minutes
+        : cronValue.minutes?.lowerLimit + '-' + cronValue.minutes?.upperLimit;
+    const hours =
+      typeof cronValue.hours === 'string'
+        ? cronValue.hours
+        : cronValue.hours?.lowerLimit + '-' + cronValue.hours?.upperLimit;
+    const dayOfMonth =
+      typeof cronValue.daysOfMonth === 'string'
+        ? cronValue.daysOfMonth
+        : cronValue.daysOfMonth?.lowerLimit +
+          '-' +
+          cronValue.daysOfMonth?.upperLimit;
+    const month =
+      typeof cronValue.months === 'string'
+        ? cronValue.months
+        : cronValue.months?.lowerLimit + '-' + cronValue.months?.upperLimit;
+    const dayOfWeek =
+      typeof cronValue.daysOfWeek === 'string'
+        ? cronValue.daysOfWeek
+        : cronValue.daysOfWeek?.lowerLimit +
+          '-' +
+          cronValue.daysOfWeek?.upperLimit;
+
+    triggerSchedule.value = {
+      seconds: '?',
+      minutes,
+      hours,
+      dayOfMonth,
+      months: month,
+      dayOfWeek,
+    };
+  }
 
   const isDialogOpen = ref(false);
 
@@ -47,11 +132,12 @@
         <label for="seconds"
           >{{ $t('cronSchedule.labels.seconds') }}
           <InputText
-            v-model="seconds"
+            v-model="triggerSchedule.seconds"
             type="text"
             required
             class="w-full"
             :placeholder="$t('cronSchedule.placeholders.secondsAndMinutes')"
+            @change="validate"
           ></InputText>
         </label>
       </div>
@@ -59,12 +145,13 @@
         <label for="minutes"
           >{{ $t('cronSchedule.labels.minutes') }}
           <InputText
-            v-model="minutes"
+            v-model="triggerSchedule.minutes"
             type="text"
             :placeholder="$t('cronSchedule.placeholders.secondsAndMinutes')"
             :auto-resize="true"
             class="w-full"
             required
+            @change="validate"
           ></InputText>
         </label>
       </div>
@@ -72,12 +159,13 @@
         <label for="hours"
           >{{ $t('cronSchedule.labels.hours') }}
           <InputText
-            v-model="hours"
+            v-model="triggerSchedule.hours"
             type="text"
             :placeholder="$t('cronSchedule.placeholders.hours')"
             :auto-resize="true"
             class="w-full"
             required
+            @change="validate"
           ></InputText>
         </label>
       </div>
@@ -85,12 +173,13 @@
         <label for="dayOfMonth"
           >{{ $t('cronSchedule.labels.dayOfMonth') }}
           <InputText
-            v-model="dayOfMonth"
+            v-model="triggerSchedule.dayOfMonth"
             type="text"
             :placeholder="$t('cronSchedule.placeholders.dayOfMonth')"
             :auto-resize="true"
             class="w-full"
             required
+            @change="validate"
           ></InputText>
         </label>
       </div>
@@ -98,12 +187,13 @@
         <label for="months"
           >{{ $t('cronSchedule.labels.months') }}
           <InputText
-            v-model="months"
+            v-model="triggerSchedule.months"
             type="text"
             :placeholder="$t('cronSchedule.placeholders.months')"
             :auto-resize="true"
             class="w-full"
             required
+            @change="validate"
           ></InputText>
         </label>
       </div>
@@ -111,12 +201,13 @@
         <label for="dayOfWeek"
           >{{ $t('cronSchedule.labels.dayOfWeek') }}
           <InputText
-            v-model="dayOfWeek"
+            v-model="triggerSchedule.dayOfWeek"
             type="text"
             :placeholder="$t('cronSchedule.placeholders.dayOfWeek')"
             :auto-resize="true"
             class="w-full"
             required
+            @change="validate"
           ></InputText>
         </label>
       </div>

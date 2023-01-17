@@ -26,6 +26,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "^3.4.0",
     "axios": "^0.27.2",
+    "cron-validate": "^1.4.5",
     "dayjs": "^1.11.6",
     "jsdom": "^20.0.0",
     "keycloak-js": "^20.0.1",

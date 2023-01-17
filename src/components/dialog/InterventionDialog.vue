@@ -40,6 +40,9 @@
   );
   const triggerType = ref(triggerData ? triggerData.type : undefined);
   const triggerDescription = ref();
+  const cronSchedule: Ref<string | undefined> = ref(undefined);
+  const showScheduleInput = ref(false);
+  const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
   setTriggerDescription(triggerData?.type);
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -125,6 +128,7 @@
             ? JSON.parse(triggerProp.value.toString())
             : '{}',
         };
+
         const actionsProps = actionsArray.value.map((item) => ({
           actionId: item?.actionId,
           type: item.type,
@@ -200,9 +204,25 @@
     triggerDescription.value =
       triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
         ?.description || 'Choose a trigger type';
+    const trigger = triggerFactories.find(
+      (t: ComponentFactory) => t.componentId === tType
+    );
+    showScheduleInput.value = trigger;
+    cronSchedule.value = JSON.stringify(
+      trigger?.defaultProperties.cronSchedule
+    );
+    showScheduleInput.value = trigger?.defaultProperties.cronSchedule;
     triggerProp.value = JSON.stringify(
-      triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
-        ?.defaultProperties
+      trigger?.defaultProperties,
+      (key, value) => {
+        if (key === 'cronSchedule') {
+          hasAdditionalTriggerConfig.value = false;
+          return undefined;
+        } else {
+          hasAdditionalTriggerConfig.value = value;
+          return value;
+        }
+      }
     );
   }
   function getActionDescription(actionType?: string) {
@@ -216,6 +236,11 @@
   const actionMenu = ref();
   function actionToggle(event: PointerEvent) {
     actionMenu.value.toggle(event);
+  }
+
+  function setCronSchedule(e: string) {
+    console.log(e);
+    // TODO set cron schedule string in ref prop
   }
 </script>
 
@@ -266,13 +291,12 @@
           style="width: 100%"
         ></Textarea>
       </div>
-
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="mb-2 lg:col-span-2">{{ $t('trigger') }}</h5>
         <Dropdown
           v-model="triggerType"
           :options="triggerTypesOptions"
-          class="col-span-1"
+          class="col-span-1 mb-4"
           option-label="label"
           option-value="value"
           required
@@ -287,20 +311,24 @@
         </div>
         <div class="col-start-0 col-span-3">
           <!-- eslint-disable vue/no-v-html -->
-          <div class="mb-4" v-html="triggerDescription"></div>
           <div v-if="triggerJsonError" class="error mb-4">
             {{ triggerJsonError }}
           </div>
-          <!-- <Textarea
+          <CronSchedulerConfiguration
+            v-show="showScheduleInput"
+            v-model="cronSchedule"
+            class="mb-4"
+            :trigger-schedule="cronSchedule"
+            @on-valid-schedule="setCronSchedule($event)"
+          ></CronSchedulerConfiguration>
+          <Textarea
+            v-show="hasAdditionalTriggerConfig"
             v-model="triggerProp"
             required
             placeholder="Enter the config for the trigger"
             :auto-resize="true"
             style="width: 100%"
-          ></Textarea> -->
-          <CronSchedulerConfiguration>
-
-          </CronSchedulerConfiguration>
+          ></Textarea>
         </div>
       </div>
 
