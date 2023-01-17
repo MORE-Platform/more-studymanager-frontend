@@ -8,6 +8,8 @@
     MoreTableActionResult,
     MoreTableChoice,
     MoreTableActionOption,
+    MoreTableChoiceOptions,
+    MoreTableEditableChoiceProperties,
   } from '../../models/MoreTableModel';
   import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
   import Column from 'primevue/column';
@@ -329,6 +331,28 @@
       );
     }
   }
+
+  function isEditableWithValues(
+    editable:
+      | boolean
+      | MoreTableChoiceOptions
+      | MoreTableEditableChoiceProperties
+      | ((data?: any) => boolean)
+      | undefined
+  ): MoreTableChoice[] {
+    if (
+      typeof editable !== 'undefined' &&
+      typeof editable !== 'boolean' &&
+      typeof editable !== 'function'
+    ) {
+      if (Object.prototype.hasOwnProperty.call(editable, 'values')) {
+        const editableWithValues = editable as MoreTableChoiceOptions;
+        return editableWithValues.values as MoreTableChoice[];
+      }
+    }
+
+    return [] as MoreTableChoice[];
+  }
 </script>
 
 <template>
@@ -363,7 +387,11 @@
           ></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search'"
+            v-if="
+              action.options &&
+              action.options.type === 'search' &&
+              action.options.valuesCallback
+            "
             class="button p-button dropdown-search"
             :filter="true"
             :options="searchActionsMap.get(actionIndex)"
@@ -372,23 +400,32 @@
             :icon="action.icon"
             :disabled="isVisible(action) === false"
             panel-class="dropdown-search-panel"
-            :empty-message="$t(action.options.valuesCallback.filterPlaceholder)"
+            :empty-message="
+              action.options.valuesCallback.filterPlaceholder
+                ? $t(action.options.valuesCallback.filterPlaceholder)
+                : ''
+            "
             :empty-filter-message="
-              $t(action.options.valuesCallback.noResultsPlaceholder)
+              action.options.valuesCallback.noResultsPlaceholder
+                ? $t(action.options.valuesCallback.noResultsPlaceholder)
+                : ''
             "
             @filter="
               filterActionHandler({
                 query: $event.value,
                 index: actionIndex,
-                callback: action.options.valuesCallback.callback,
+                callback: action.options?.valuesCallback?.callback,
               })
             "
           >
-            <template #value="">
+            <template #value>
               <span :class="action.icon" class="mr-2 text-white"></span>
-              <span class="text-white">{{
-                $t(action.options.valuesCallback.placeholder)
-              }}</span>
+              <span
+                v-if="action.options.valuesCallback.placeholder"
+                class="text-white"
+              >
+                {{ $t(action.options.valuesCallback.placeholder) }}
+              </span>
             </template>
             <template #option="slotProps">
               <div
@@ -396,7 +433,7 @@
                 :key="index"
                 :value="item.value"
                 class="p-dropdown-item"
-                @click="actionHandler({ id: action.id }, slotProps.option)"
+                @click="actionHandler(action, slotProps.option)"
               >
                 <span class="color-primary mr-1 inline-block font-medium">
                   {{ item.label }}
@@ -487,9 +524,9 @@
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText
             v-if="
-              !column.type ||
               column.type === MoreTableFieldType.string ||
-              column.type === MoreTableFieldType.longtext
+              column.type === MoreTableFieldType.longtext ||
+              !column.type
             "
             v-model="data[field]"
             style="width: 100%"
@@ -507,17 +544,19 @@
             v-if="column.type === MoreTableFieldType.choice"
             v-model="data[field]"
             class="w-full"
-            :options="column.editable.values"
+            :options="isEditableWithValues(column.editable)"
             option-label="label"
             option-value="value"
-            :placeholder="$t(column.placeholder)"
+            :placeholder="
+              column.placeholder ? $t(column.placeholder) : 'Choose option'
+            "
           ></Dropdown>
           <MultiSelect
             v-if="column.type === MoreTableFieldType.multiselect"
             v-model="data[field]"
-            :options="column.editable.values"
+            :options="isEditableWithValues(column.editable)"
             option-label="label"
-            :placeholder="$t(column.placeholder)"
+            :placeholder="column.placeholder ? $t(column.placeholder) : ''"
             :show-toggle-all="false"
           />
         </template>
@@ -539,7 +578,7 @@
           </div>
           <div v-else>
             <span
-              v-if="!column.type || column.type === MoreTableFieldType.string"
+              v-if="column.type === MoreTableFieldType.string || !column.type"
               :class="
                 'table-value table-value-' +
                 field +
@@ -561,7 +600,10 @@
               <span v-else>{{ data[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
-              getLabelForChoiceValue(data[field], column.editable.values)
+              getLabelForChoiceValue(
+                data[field],
+                isEditableWithValues(column.editable)
+              )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{
               dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')
@@ -600,7 +642,7 @@
             <Button
               type="button"
               icon="pi pi-pencil"
-              :disabled="isEditable(slotProps.data, slotProps) === false"
+              :disabled="isEditable(slotProps.data) === false"
               @click="edit(slotProps.data)"
             >
             </Button>

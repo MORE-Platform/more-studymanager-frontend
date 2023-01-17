@@ -66,7 +66,7 @@ export interface MoreTableActionOptions {
 }
 
 export interface MoreTableActionFileUpload {
-  mode?: string;
+  mode?: FileUploadModeType;
   multiple?: boolean;
   acceptType?: string;
   maxFileSize?: number;
@@ -96,6 +96,11 @@ export enum MoreTableFieldType {
   calendar,
   multiselect = 3,
   longtext = 4,
+}
+
+export enum FileUploadModeType {
+  advanced = 'advanced',
+  basic = 'basic',
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
