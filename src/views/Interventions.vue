@@ -1,24 +1,25 @@
 <script setup lang="ts">
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { Study, StudyGroup, StudyRole } from '../generated-sources/openapi';
-  import { useRoute } from 'vue-router';
+  import { StudyRole } from '../generated-sources/openapi';
   import InterventionsList from '../components/InterventionsList.vue';
-  const route = useRoute();
-  const study = route.meta['study'] as Study;
-  const studyGroups = route.meta['studyGroups'] as StudyGroup[];
+  import { useStudyStore } from '../stores/studyStore';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
+
+  const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
 </script>
 
 <template>
   <div class="container m-auto mt-10">
-    <StudyHeader :study="study"></StudyHeader>
+    <StudyHeader :study="studyStore.study"></StudyHeader>
     <MoreTabNav
-      :study-id="study?.studyId"
-      :study-roles="study?.userRoles"
+      :study-id="studyStore.study?.studyId"
+      :study-roles="studyStore.studyUserRoles"
     ></MoreTabNav>
     <div
       v-if="
-        study?.userRoles.some((r) =>
+        studyStore.studyUserRoles.some((r) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r)
         )
       "
@@ -26,9 +27,9 @@
     >
       <suspense>
         <InterventionsList
-          :study-groups="studyGroups"
-          :study-id="study.studyId"
-          :study-status="study.status"
+          :study-groups="studyGroupStore.studyGroups"
+          :study-id="studyStore.study.studyId"
+          :study-status="studyStore.study.status"
         />
       </suspense>
     </div>

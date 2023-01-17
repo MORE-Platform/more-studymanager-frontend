@@ -17,7 +17,7 @@
   const props = defineProps({
     study: { type: Object as PropType<Study>, required: true },
     styleModifier: { type: String, default: '' },
-    userRoles: { type: Array as PropType<Array<StudyRole[]>>, required: true },
+    userRoles: { type: Array as PropType<Array<StudyRole>>, required: true },
   });
 
   const emit = defineEmits<{

@@ -1,18 +1,13 @@
 <script setup lang="ts">
-  import { PropType } from 'vue';
-  import { UserInfo } from '../generated-sources/openapi';
-
-  defineProps({
-    user: {
-      type: Object as PropType<UserInfo>,
-      required: true,
-    },
-  });
+  import { useUserStore } from '../stores/userStore';
+  const userStore = useUserStore();
 </script>
 
 <template>
   <div>
-    <h2 v-if="user && user.name">{{ user.name }}</h2>
-    <h3 v-if="user && user.institution">{{ user.institution }}</h3>
+    <h2 v-if="userStore.userName">{{ userStore.userName }}</h2>
+    <h3 v-if="userStore.userInstitution">
+      {{ userStore.userInstitution }}
+    </h3>
   </div>
 </template>
