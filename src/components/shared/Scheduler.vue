@@ -479,4 +479,10 @@
       font-weight: 500;
     }
   }
+
+  .buttons {
+    button {
+      margin-left: 10px;
+    }
+  }
 </style>

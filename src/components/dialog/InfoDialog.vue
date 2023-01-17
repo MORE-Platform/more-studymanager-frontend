@@ -23,4 +23,8 @@
   .info-dialog {
     font-size: 1rem;
   }
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
+  }
 </style>

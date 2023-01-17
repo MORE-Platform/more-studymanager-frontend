@@ -178,4 +178,8 @@
       margin-left: 10px;
     }
   }
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
+  }
 </style>
