@@ -9,11 +9,18 @@ import Observations from '../views/Observations.vue';
 import Data from '../views/Data.vue';
 import StudyOverview from '../views/StudyOverview.vue';
 import { useStudyStore } from '../stores/studyStore';
+import { useStudyGroupStore } from '../stores/studyGroupStore';
 
 const studyResolver = async (to: any, from: any, next: any) => {
   const studyStore = useStudyStore();
-  await studyStore.getStudy(to.params.studyId);
-  await studyStore.getStudyGroups(to.params.studyId);
+  const studyGroupStore = useStudyGroupStore();
+  if (
+    !studyStore.study.studyId ||
+    studyStore.study.studyId !== to.params.studyId
+  ) {
+    await studyStore.getStudy(to.params.studyId);
+    await studyGroupStore.getStudyGroups(to.params.studyId);
+  }
   next();
 };
 const routes = [

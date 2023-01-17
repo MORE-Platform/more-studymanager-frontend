@@ -1,6 +1,5 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import { useStudyGroupsApi } from '../composable/useApi';
   import {
     MoreTableAction,
     MoreTableColumn,
@@ -13,13 +12,10 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  import { useI18n } from 'vue-i18n';
-  import { useStudyStore } from '../stores/studyStore';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
 
-  const { studyGroupsApi } = useStudyGroupsApi();
-  const { t } = useI18n();
+  const studyGroupStore = useStudyGroupStore();
 
-  const studyStore = useStudyStore();
   const props = defineProps({
     studyId: {
       type: Number,
@@ -36,16 +32,6 @@
   });
 
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
-
-  function getEditAccess(): boolean {
-    return (
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Draft) ||
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Paused)
-    );
-  }
-
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: 'id', sortable: true },
     {
@@ -61,7 +47,6 @@
       placeholder: 'Set a proper purpose for this group',
     },
   ];
-
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
@@ -71,7 +56,6 @@
       confirm: { header: 'Confirm', message: 'Really delete study group?' },
     },
   ];
-
   const tableActions: MoreTableAction[] = [
     {
       id: 'create',
@@ -81,70 +65,27 @@
     },
   ];
 
-  async function listStudyGroups(): Promise<void> {
-    try {
-      studyStore.studyGroups = await studyGroupsApi
-        .listStudyGroups(props.studyId)
-        .then((response) => response.data);
-    } catch (e) {
-      console.error('cannot list studies', e);
-    }
+  function getEditAccess(): boolean {
+    return (
+      (props.userRoles.some((r) => editableRoles.includes(r)) &&
+        props.studyStatus === StudyStatus.Draft) ||
+      (props.userRoles.some((r) => editableRoles.includes(r)) &&
+        props.studyStatus === StudyStatus.Paused)
+    );
   }
 
-  function execute(action: MoreTableRowActionResult<StudyGroup>) {
+  function executeAction(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete':
-        return deleteStudyGroup(action.row);
+        return studyGroupStore.deleteStudyGroup(action.row);
       case 'create':
-        return createStudyGroup();
+        return studyGroupStore.createStudyGroup(props.studyId);
       default:
         console.error('no handler for action', action);
     }
   }
-
-  function getTitle() {
-    let title = undefined;
-    let count = studyStore.studyGroups.length;
-    while (title === undefined) {
-      count += 1;
-      const _title = t('group') + ' ' + count;
-      if (!studyStore.studyGroups.find((g) => g.title === _title)) {
-        title = _title;
-      }
-    }
-    return title;
-  }
-
-  function createStudyGroup() {
-    studyGroupsApi
-      .createStudyGroup(props.studyId, {
-        studyId: props.studyId,
-        title: getTitle(),
-      })
-      .then(listStudyGroups);
-  }
-
-  function changeValue(studyGroup: StudyGroup) {
-    const i = studyStore.studyGroups.findIndex(
-      (v) => v.studyGroupId === studyGroup.studyGroupId
-    );
-    if (i > -1) {
-      studyStore.studyGroups[i] = studyGroup;
-      studyGroupsApi.updateStudyGroup(
-        studyGroup.studyId as number,
-        studyGroup.studyGroupId as number,
-        studyGroup
-      );
-    }
-  }
-
-  function deleteStudyGroup(studyGroup: StudyGroup) {
-    studyGroupsApi
-      .deleteStudyGroup(
-        studyGroup.studyId as number,
-        studyGroup.studyGroupId as number
-      )
-      .then(listStudyGroups);
+  function changeValueInPlace(studyGroup: StudyGroup) {
+    studyGroupStore.updateStudyGroup(studyGroup);
   }
 </script>
 
@@ -154,14 +95,14 @@
       row-id="studyGroupId"
       :title="$t('studyGroups')"
       :columns="studyGroupColumns"
-      :rows="studyStore.studyGroups"
+      :rows="studyGroupStore.studyGroups"
       :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :edit-access-roles="editableRoles"
       :empty-message="$t('listDescription.emptyStudyGroupList')"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
+      @onaction="executeAction($event)"
+      @onchange="changeValueInPlace($event)"
     />
     <ConfirmDialog></ConfirmDialog>
   </div>

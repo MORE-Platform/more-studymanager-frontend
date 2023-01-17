@@ -4,8 +4,10 @@
   import { StudyRole } from '../generated-sources/openapi';
   import ObservationList from '../components/ObservationList.vue';
   import { useStudyStore } from '../stores/studyStore';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
 
   const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
 </script>
 
 <template>
@@ -13,7 +15,7 @@
     <StudyHeader :study="studyStore.study"></StudyHeader>
     <MoreTabNav
       :study-id="studyStore.study?.studyId"
-      :study-roles="studyStore.study?.userRoles"
+      :study-roles="studyStore.studyUserRoles"
     ></MoreTabNav>
     <div
       v-if="
@@ -25,7 +27,7 @@
     >
       <Suspense>
         <ObservationList
-          :study-groups="studyStore.studyGroups"
+          :study-groups="studyGroupStore.studyGroups"
           :study-id="studyStore.study.studyId"
           :study-status="studyStore.study.status"
         />

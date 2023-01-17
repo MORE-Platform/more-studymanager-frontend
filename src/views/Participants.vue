@@ -4,7 +4,9 @@
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '../generated-sources/openapi';
   import { useStudyStore } from '../stores/studyStore';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
   const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
 </script>
 
 <template>
@@ -23,7 +25,7 @@
       class="container rounded-lg bg-white p-10"
     >
       <ParticipantList
-        :study-groups="studyStore.studyGroups"
+        :study-groups="studyGroupStore.studyGroups"
         :status-status="studyStore.study?.status"
         :study-id="studyStore.study?.studyId"
       ></ParticipantList>

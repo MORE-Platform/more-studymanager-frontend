@@ -6,13 +6,15 @@
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import StudyCollaboratorList from '../components/StudyCollaboratorList.vue';
   import { useStudyStore } from '../stores/studyStore';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
 
   const route = useRoute();
   const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
   studyStore.getStudy(studyId);
-  studyStore.getStudyGroups(studyId);
+  studyGroupStore.getStudyGroups(studyId);
 </script>
 
 <template>

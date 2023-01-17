@@ -11,22 +11,8 @@ import DialogService from 'primevue/dialogservice';
 import { Router } from './router';
 import AuthService from './service/AuthService';
 import axios from 'axios';
-// i18n
-import { createI18n } from 'vue-i18n';
-import en from './i18n/en.json';
 import { createPinia } from 'pinia';
-
-const i18n = createI18n({
-  legacy: false,
-  globalInjection: true,
-  locale: 'en',
-  defaultLanguage: 'en',
-  fallbackLocale: 'en', // set fallback locale
-  availableLocales: ['en'],
-  messages: Object.assign({ en: en }), // set locale messages
-  // If you need to specify other options, you can set other options
-  // ...
-});
+import i18n from './i18n/i18n';
 
 const authService = new AuthService({
   url: 'https://auth.more.redlink.io',
@@ -56,8 +42,8 @@ const pinia = createPinia();
 const app = createApp(App);
 app.provide('authService', authService);
 
-app.use(Router);
 app.use(i18n);
+app.use(Router);
 app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(DialogService);
