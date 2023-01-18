@@ -39,6 +39,7 @@
   );
   const triggerType = ref(triggerData ? triggerData.type : undefined);
   const triggerDescription = ref();
+  const prevTriggerType: Ref<string> = ref('');
   setTriggerDescription(triggerData?.type);
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -199,14 +200,29 @@
     triggerDescription.value =
       triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
         ?.description || 'Choose a trigger type';
-    triggerProp.value = triggerProp.value
-      ? triggerProp.value
-      : JSON.stringify(
-          triggerFactories.find(
-            (t: ComponentFactory) => t.componentId === tType
-          )?.defaultProperties
-        );
+    setTriggerConfig(tType);
   }
+
+  function setTriggerConfig(tType?: string) {
+    if (tType === triggerData?.type) {
+      triggerProp.value = JSON.stringify(triggerData?.properties);
+    } else if (prevTriggerType.value === tType) {
+      triggerProp.value = triggerProp.value
+        ? triggerProp.value
+        : JSON.stringify(
+            triggerFactories.find(
+              (t: ComponentFactory) => t.componentId === tType
+            )?.defaultProperties
+          );
+    } else {
+      triggerProp.value = JSON.stringify(
+        triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
+          ?.defaultProperties
+      );
+    }
+    prevTriggerType.value = tType ? tType : '';
+  }
+
   function getActionDescription(actionType?: string) {
     return (
       actionFactories.find(
@@ -279,7 +295,7 @@
           option-value="value"
           required
           :placeholder="$t('placeholder.trigger')"
-          @change="setTriggerDescription(triggerType)"
+          @change="setTriggerConfig(triggerType)"
         />
         <div
           v-if="triggerEmptyError"
