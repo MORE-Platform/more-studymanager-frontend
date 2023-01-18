@@ -7,7 +7,7 @@
   const props = defineProps({
     triggerSchedule: {
       type: String,
-      default: '* * * * * *',
+      default: '',
     },
   });
 
@@ -20,18 +20,17 @@
     dayOfWeek: '',
   });
 
-  parseCronScheduleToString();
+  const cronError: Ref<string> = ref('');
+  const hasCronError: Ref<boolean> = ref(false);
 
-  // TODO parse schedule string to object
+  parseCronScheduleToString();
 
   const emit = defineEmits<{
     (e: 'onValidSchedule', triggerSchedule: string): string;
-    (e: 'onCronError', errorMessage: string[]): string[];
+    (e: 'onCronError', errorMessage: string): string;
   }>();
 
   function validate() {
-    // TODO parse trigger schedule back to string
-    // TODO validate
     const parsedTriggerSchedule =
       triggerSchedule.value.minutes +
       ' ' +
@@ -44,54 +43,62 @@
       triggerSchedule.value.dayOfWeek;
     const validCronValue = cron(parsedTriggerSchedule);
     if (validCronValue.isValid()) {
-      emit('onValidSchedule', parsedTriggerSchedule);
+      hasCronError.value = false;
+      emit('onValidSchedule', '0 ' + parsedTriggerSchedule);
     } else {
       console.log(validCronValue.getError());
-      emit('onCronError', validCronValue.getError());
+      hasCronError.value = true;
+      const error = validCronValue.getError().pop();
+      if (error) {
+        cronError.value = error;
+        emit('onCronError', error);
+      }
     }
   }
 
   function parseCronScheduleToString() {
-    // TODO error on mistake in seconds
-    const cronStringWithoutSeconds = props.triggerSchedule?.substring(
-      0,
-      props.triggerSchedule?.length - 1
-    );
-    console.log(cron(cronStringWithoutSeconds));
-    const cronValue = cron(cronStringWithoutSeconds).getValue();
-    const minutes =
-      typeof cronValue.minutes === 'string'
-        ? cronValue.minutes
-        : cronValue.minutes?.lowerLimit + '-' + cronValue.minutes?.upperLimit;
-    const hours =
-      typeof cronValue.hours === 'string'
-        ? cronValue.hours
-        : cronValue.hours?.lowerLimit + '-' + cronValue.hours?.upperLimit;
-    const dayOfMonth =
-      typeof cronValue.daysOfMonth === 'string'
-        ? cronValue.daysOfMonth
-        : cronValue.daysOfMonth?.lowerLimit +
-          '-' +
-          cronValue.daysOfMonth?.upperLimit;
-    const month =
-      typeof cronValue.months === 'string'
-        ? cronValue.months
-        : cronValue.months?.lowerLimit + '-' + cronValue.months?.upperLimit;
-    const dayOfWeek =
-      typeof cronValue.daysOfWeek === 'string'
-        ? cronValue.daysOfWeek
-        : cronValue.daysOfWeek?.lowerLimit +
-          '-' +
-          cronValue.daysOfWeek?.upperLimit;
+    console.log(props.triggerSchedule);
+    if (props.triggerSchedule !== '') {
+      const cronStringWithoutSeconds = props.triggerSchedule
+        .replace('?', '*')
+        .replaceAll('"', '')
+        .substring(props.triggerSchedule?.indexOf(' '));
+      console.log(cron(cronStringWithoutSeconds));
+      const cronValue = cron(cronStringWithoutSeconds).getValue();
+      const minutes =
+        typeof cronValue.minutes === 'string'
+          ? cronValue.minutes
+          : cronValue.minutes?.lowerLimit + '-' + cronValue.minutes?.upperLimit;
+      const hours =
+        typeof cronValue.hours === 'string'
+          ? cronValue.hours
+          : cronValue.hours?.lowerLimit + '-' + cronValue.hours?.upperLimit;
+      const dayOfMonth =
+        typeof cronValue.daysOfMonth === 'string'
+          ? cronValue.daysOfMonth
+          : cronValue.daysOfMonth?.lowerLimit +
+            '-' +
+            cronValue.daysOfMonth?.upperLimit;
+      const month =
+        typeof cronValue.months === 'string'
+          ? cronValue.months
+          : cronValue.months?.lowerLimit + '-' + cronValue.months?.upperLimit;
+      const dayOfWeek =
+        typeof cronValue.daysOfWeek === 'string'
+          ? cronValue.daysOfWeek
+          : cronValue.daysOfWeek?.lowerLimit +
+            '-' +
+            cronValue.daysOfWeek?.upperLimit;
 
-    triggerSchedule.value = {
-      seconds: '?',
-      minutes,
-      hours,
-      dayOfMonth,
-      months: month,
-      dayOfWeek,
-    };
+      triggerSchedule.value = {
+        seconds: '?',
+        minutes,
+        hours,
+        dayOfMonth,
+        months: month,
+        dayOfWeek,
+      };
+    }
   }
 
   const isDialogOpen = ref(false);
@@ -127,20 +134,7 @@
         </div>
       </div>
     </div>
-    <form class="grid grid-cols-6 grid-rows-2 items-center gap-4">
-      <div class="col-span-1 row-span-2">
-        <label for="seconds"
-          >{{ $t('cronSchedule.labels.seconds') }}
-          <InputText
-            v-model="triggerSchedule.seconds"
-            type="text"
-            required
-            class="w-full"
-            :placeholder="$t('cronSchedule.placeholders.secondsAndMinutes')"
-            @change="validate"
-          ></InputText>
-        </label>
-      </div>
+    <form class="mb-4 grid grid-cols-5 grid-rows-2 items-center gap-4">
       <div class="col-span-1 row-span-2">
         <label for="minutes"
           >{{ $t('cronSchedule.labels.minutes') }}
@@ -212,6 +206,7 @@
         </label>
       </div>
     </form>
+    <div v-show="hasCronError" class="error mb-4">{{ cronError }}</div>
   </div>
 </template>
 
@@ -238,5 +233,9 @@
     border-radius: 0.25rem;
     padding: 8px 12px 8px;
     z-index: 1;
+  }
+
+  .error {
+    color: #d57575;
   }
 </style>

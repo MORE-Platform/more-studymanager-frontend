@@ -38,6 +38,7 @@
   const triggerProp = ref(
     triggerData ? JSON.stringify(triggerData.properties) : undefined
   );
+  console.log('Trigger data: ' + triggerProp.value);
   const triggerType = ref(triggerData ? triggerData.type : undefined);
   const triggerDescription = ref();
   const cronSchedule: Ref<string | undefined> = ref(undefined);
@@ -105,6 +106,7 @@
   }
 
   function save() {
+    parseBackTriggerProps();
     Promise.all(
       [
         ...actionsArray.value.map((item, id) => ({
@@ -122,6 +124,7 @@
       ].map((v) => validate(v.component, v.type, v.properties, v.id))
     )
       .then(() => {
+        console.log('TRIGGER PROP: ' + triggerProp.value);
         const triggerProps = {
           type: triggerType.value,
           properties: triggerProp.value
@@ -207,24 +210,30 @@
     const trigger = triggerFactories.find(
       (t: ComponentFactory) => t.componentId === tType
     );
-    showScheduleInput.value = trigger;
-    cronSchedule.value = JSON.stringify(
-      trigger?.defaultProperties.cronSchedule
-    );
-    showScheduleInput.value = trigger?.defaultProperties.cronSchedule;
-    triggerProp.value = JSON.stringify(
-      trigger?.defaultProperties,
-      (key, value) => {
-        if (key === 'cronSchedule') {
-          hasAdditionalTriggerConfig.value = false;
-          return undefined;
-        } else {
-          hasAdditionalTriggerConfig.value = value;
-          return value;
+    console.log(JSON.stringify(trigger));
+    showScheduleInput.value = trigger.defaultProperties.cronSchedule;
+    if (!triggerProp.value) {
+      cronSchedule.value = JSON.stringify(
+        trigger?.defaultProperties.cronSchedule
+      );
+      showScheduleInput.value = trigger?.defaultProperties.cronSchedule;
+      triggerProp.value = JSON.stringify(
+        trigger?.defaultProperties,
+        (key, value) => {
+          if (key === 'cronSchedule') {
+            hasAdditionalTriggerConfig.value = false;
+            return undefined;
+          } else {
+            hasAdditionalTriggerConfig.value = value;
+            return value;
+          }
         }
-      }
-    );
+      );
+    } else {
+      cronSchedule.value = JSON.parse(triggerProp.value).cronSchedule;
+    }
   }
+
   function getActionDescription(actionType?: string) {
     return (
       actionFactories.find(
@@ -239,8 +248,16 @@
   }
 
   function setCronSchedule(e: string) {
-    console.log(e);
-    // TODO set cron schedule string in ref prop
+    cronSchedule.value = e;
+  }
+
+  function parseBackTriggerProps() {
+    if (triggerProp.value && cronSchedule.value) {
+      const triggerPropJson = JSON.parse(triggerProp.value);
+      console.log('cronSchedule: ' + cronSchedule.value);
+      triggerPropJson.cronSchedule = cronSchedule.value;
+      triggerProp.value = JSON.stringify(triggerPropJson);
+    }
   }
 </script>
 
@@ -316,9 +333,10 @@
           </div>
           <CronSchedulerConfiguration
             v-show="showScheduleInput"
+            v-if="showScheduleInput"
             v-model="cronSchedule"
             class="mb-4"
-            :trigger-schedule="cronSchedule"
+            :trigger-schedule="triggerData"
             @on-valid-schedule="setCronSchedule($event)"
           ></CronSchedulerConfiguration>
           <Textarea
