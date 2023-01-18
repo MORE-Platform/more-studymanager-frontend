@@ -66,3 +66,9 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="postcss">
+  .buttons button:first-of-type {
+    margin-right: 10px;
+  }
+</style>

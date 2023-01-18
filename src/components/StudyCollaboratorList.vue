@@ -286,7 +286,10 @@
 </template>
 
 <style scoped lang="postcss">
-  .action .dropdown-search .p-dropdown-trigger-icon:before {
+  :deep(.action .dropdown-search .p-dropdown-trigger-icon:before) {
     color: white;
+  }
+  :deep(.action .dropdown-search .p-dropdown-trigger) {
+    display: none;
   }
 </style>

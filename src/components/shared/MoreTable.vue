@@ -635,7 +635,7 @@
     justify-content: flex-end;
   }
   .more-table {
-    .p-datatable-loading-overlay {
+    :deep(.p-datatable-loading-overlay) {
       filter: blur(5px);
       background-color: #ffffff99;
     }
