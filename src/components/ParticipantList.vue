@@ -3,6 +3,7 @@
   import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
 
   import {
+    FileUploadModeType,
     MoreTableAction,
     MoreTableActionResult,
     MoreTableChoice,
@@ -107,8 +108,9 @@
       },
       options: {
         type: 'fileUpload',
+        values: [],
         uploadOptions: {
-          mode: 'basic',
+          mode: FileUploadModeType.basic,
         },
       },
     },
@@ -217,7 +219,8 @@
       .then(listParticipant);
   }
 
-  function changeValue(participant: Participant) {
+  function changeValue(unknownParticipant: unknown) {
+    const participant: Participant = unknownParticipant as Participant;
     const i = participantsList.value.findIndex(
       (v) => v.participantId === participant.participantId
     );

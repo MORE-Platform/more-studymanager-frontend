@@ -272,7 +272,7 @@
       <Calendar
         v-model="start"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"
@@ -283,7 +283,7 @@
       <Calendar
         v-model="end"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"

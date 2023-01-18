@@ -6,6 +6,7 @@
   import { useStudyStore } from '../stores/studyStore';
 
   const studyStore = useStudyStore();
+  const accessRoles: StudyRole[] = [StudyRole.Viewer, StudyRole.Admin];
 </script>
 
 <template>
@@ -17,8 +18,8 @@
     ></MoreTabNav>
     <div
       v-if="
-        studyStore.studyUserRoles.some((r) =>
-          [StudyRole.Viewer, StudyRole.Admin].includes(r)
+        studyStore.studyUserRoles.some((r: StudyRole) =>
+          accessRoles.includes(r)
         )
       "
       class="container rounded-lg bg-white p-10"

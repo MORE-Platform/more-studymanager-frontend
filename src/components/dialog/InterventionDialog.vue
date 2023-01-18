@@ -232,7 +232,7 @@
   }
 
   const actionMenu = ref();
-  function actionToggle(event: PointerEvent) {
+  function actionToggle(event: MouseEvent) {
     actionMenu.value.toggle(event);
   }
 </script>

@@ -8,6 +8,8 @@
 
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+
+  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 </script>
 
 <template>
@@ -18,11 +20,7 @@
       :study-roles="studyStore.studyUserRoles"
     ></MoreTabNav>
     <div
-      v-if="
-        studyStore.studyUserRoles.some((r) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
-        )
-      "
+      v-if="studyStore.studyUserRoles.some((r) => accessRoles.includes(r))"
       class="container rounded-lg bg-white p-10"
     >
       <suspense>

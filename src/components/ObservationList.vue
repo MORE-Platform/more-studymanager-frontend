@@ -148,7 +148,8 @@
     }
   }
 
-  async function updateObservation(observation: Observation) {
+  async function updateObservation(unknownObservation: unknown) {
+    const observation: Observation = unknownObservation as Observation;
     try {
       //do change immediately (ux)
       const i = observationList.value.findIndex(
@@ -246,7 +247,8 @@
     }
   }
 
-  function openEditObservation(observationId: number) {
+  function openEditObservation(unknownObservationId: unknown) {
+    const observationId: number = unknownObservationId as number;
     const observation = observationList.value.find(
       (o) => o.observationId === observationId
     );
