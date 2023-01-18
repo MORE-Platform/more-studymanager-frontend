@@ -44,6 +44,7 @@
   const cronSchedule: Ref<string | undefined> = ref(undefined);
   const showScheduleInput = ref(false);
   const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
+  const prevTriggerType: Ref<string> = ref('');
   setTriggerDescription(triggerData?.type);
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -232,6 +233,27 @@
     } else {
       cronSchedule.value = JSON.parse(triggerProp.value).cronSchedule;
     }
+    setTriggerConfig(tType);
+  }
+
+  function setTriggerConfig(tType?: string) {
+    if (tType === triggerData?.type) {
+      triggerProp.value = JSON.stringify(triggerData?.properties);
+    } else if (prevTriggerType.value === tType) {
+      triggerProp.value = triggerProp.value
+        ? triggerProp.value
+        : JSON.stringify(
+            triggerFactories.find(
+              (t: ComponentFactory) => t.componentId === tType
+            )?.defaultProperties
+          );
+    } else {
+      triggerProp.value = JSON.stringify(
+        triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
+          ?.defaultProperties
+      );
+    }
+    prevTriggerType.value = tType ? tType : '';
   }
 
   function getActionDescription(actionType?: string) {
@@ -318,7 +340,7 @@
           option-value="value"
           required
           :placeholder="$t('placeholder.trigger')"
-          @change="setTriggerDescription(triggerType)"
+          @change="setTriggerConfig(triggerType)"
         />
         <div
           v-if="triggerEmptyError"
