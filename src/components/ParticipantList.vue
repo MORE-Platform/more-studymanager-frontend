@@ -306,7 +306,8 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
+  /* participant status styling template*/
   .table-value-status-new {
     display: block;
     margin: 0.063rem 0.188rem 0 0;
