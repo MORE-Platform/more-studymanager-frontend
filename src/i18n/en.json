@@ -155,7 +155,7 @@
       "dayOfWeek": "Day of Week"
     },
     "info": {
-      "example": "Example: 0 0 12 ? * * means every day at 12.",
+      "example": "Example: 0 12 ? * * means every day at 12.",
       "generalInfo": "Provide a number, a list of numbers (e.g. 1,2,3) or a range (e.g. 12-14)",
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
