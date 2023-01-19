@@ -38,14 +38,15 @@
   const triggerProp = ref(
     triggerData ? JSON.stringify(triggerData.properties) : undefined
   );
-  console.log('Trigger data: ' + triggerProp.value);
   const triggerType = ref(triggerData ? triggerData.type : undefined);
-  const triggerDescription = ref();
-  const cronSchedule: Ref<string | undefined> = ref(undefined);
   const showScheduleInput = ref(false);
   const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
-  const prevTriggerType: Ref<string> = ref('');
-  setTriggerDescription(triggerData?.type);
+  const nonScheduleInput: Ref<string> = ref(
+    triggerProp?.value ? triggerProp.value : ''
+  );
+  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+  setTriggerConfig(triggerData?.type ? triggerData.type : '');
+  setNonScheduleTriggerConfig(triggerData?.properties);
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
   const triggerJsonError: Ref<string | undefined> = ref();
@@ -107,7 +108,6 @@
   }
 
   function save() {
-    parseBackTriggerProps();
     Promise.all(
       [
         ...actionsArray.value.map((item, id) => ({
@@ -125,7 +125,7 @@
       ].map((v) => validate(v.component, v.type, v.properties, v.id))
     )
       .then(() => {
-        console.log('TRIGGER PROP: ' + triggerProp.value);
+        updateProps();
         const triggerProps = {
           type: triggerType.value,
           properties: triggerProp.value
@@ -170,7 +170,6 @@
           const actionErrors = [];
           actionErrors[reason.i] = reason.msg;
           actionJsonError.value = actionErrors;
-          console.log(actionErrors);
         }
       });
   }
@@ -204,56 +203,34 @@
       (a: ComponentFactory) => a.componentId === actionType
     )?.label;
   }
-  function setTriggerDescription(tType?: string) {
-    triggerDescription.value =
-      triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
-        ?.description || 'Choose a trigger type';
+  function setTriggerConfig(tType: string) {
+    let props;
     const trigger = triggerFactories.find(
       (t: ComponentFactory) => t.componentId === tType
     );
-    console.log(JSON.stringify(trigger));
-    showScheduleInput.value = trigger.defaultProperties.cronSchedule;
-    if (!triggerProp.value) {
-      cronSchedule.value = JSON.stringify(
-        trigger?.defaultProperties.cronSchedule
-      );
-      showScheduleInput.value = trigger?.defaultProperties.cronSchedule;
-      triggerProp.value = JSON.stringify(
-        trigger?.defaultProperties,
-        (key, value) => {
-          if (key === 'cronSchedule') {
-            hasAdditionalTriggerConfig.value = false;
-            return undefined;
-          } else {
-            hasAdditionalTriggerConfig.value = value;
-            return value;
-          }
-        }
-      );
-    } else {
-      cronSchedule.value = JSON.parse(triggerProp.value).cronSchedule;
+    if (!prevTriggerType.value || prevTriggerType.value !== tType) {
+      triggerProp.value = JSON.stringify(trigger?.defaultProperties);
+      props = trigger?.defaultProperties;
     }
-    setTriggerConfig(tType);
+    if (triggerData && tType === triggerData?.type) {
+      triggerProp.value = JSON.stringify(triggerData?.properties);
+      props = triggerData?.properties;
+    }
+    setNonScheduleTriggerConfig(props);
+
+    prevTriggerType.value = tType;
   }
 
-  function setTriggerConfig(tType?: string) {
-    if (tType === triggerData?.type) {
-      triggerProp.value = JSON.stringify(triggerData?.properties);
-    } else if (prevTriggerType.value === tType) {
-      triggerProp.value = triggerProp.value
-        ? triggerProp.value
-        : JSON.stringify(
-            triggerFactories.find(
-              (t: ComponentFactory) => t.componentId === tType
-            )?.defaultProperties
-          );
-    } else {
-      triggerProp.value = JSON.stringify(
-        triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
-          ?.defaultProperties
-      );
-    }
-    prevTriggerType.value = tType ? tType : '';
+  function setNonScheduleTriggerConfig(triggerProperties?: object) {
+    nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
+      if (key === 'cronSchedule') {
+        showScheduleInput.value = true;
+        return undefined;
+      } else {
+        hasAdditionalTriggerConfig.value = value;
+        return value;
+      }
+    });
   }
 
   function getActionDescription(actionType?: string) {
@@ -270,15 +247,15 @@
   }
 
   function setCronSchedule(e: string) {
-    cronSchedule.value = e;
+    triggerProp.value = e;
   }
 
-  function parseBackTriggerProps() {
-    if (triggerProp.value && cronSchedule.value) {
+  function updateProps() {
+    if (triggerProp.value) {
+      const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
-      console.log('cronSchedule: ' + cronSchedule.value);
-      triggerPropJson.cronSchedule = cronSchedule.value;
-      triggerProp.value = JSON.stringify(triggerPropJson);
+      nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
+      triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
     }
   }
 </script>
@@ -356,14 +333,14 @@
           <CronSchedulerConfiguration
             v-show="showScheduleInput"
             v-if="showScheduleInput"
-            v-model="cronSchedule"
+            v-model="triggerProp"
             class="mb-4"
-            :trigger-schedule="triggerData"
+            :trigger-props="triggerProp"
             @on-valid-schedule="setCronSchedule($event)"
           ></CronSchedulerConfiguration>
           <Textarea
             v-show="hasAdditionalTriggerConfig"
-            v-model="triggerProp"
+            v-model="nonScheduleInput"
             required
             placeholder="Enter the config for the trigger"
             :auto-resize="true"

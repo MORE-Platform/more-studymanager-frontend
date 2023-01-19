@@ -5,7 +5,7 @@
   import cron from 'cron-validate';
 
   const props = defineProps({
-    triggerSchedule: {
+    triggerProps: {
       type: String,
       default: '',
     },
@@ -26,7 +26,7 @@
   parseCronScheduleToString();
 
   const emit = defineEmits<{
-    (e: 'onValidSchedule', triggerSchedule: string): string;
+    (e: 'onValidSchedule', triggerProps: string): string;
     (e: 'onCronError', errorMessage: string): string;
   }>();
 
@@ -43,10 +43,11 @@
       triggerSchedule.value.dayOfWeek;
     const validCronValue = cron(parsedTriggerSchedule);
     if (validCronValue.isValid()) {
+      const parsedTriggerProps = JSON.parse(props.triggerProps);
+      parsedTriggerProps.cronSchedule = '0 ' + parsedTriggerSchedule;
       hasCronError.value = false;
-      emit('onValidSchedule', '0 ' + parsedTriggerSchedule);
+      emit('onValidSchedule', JSON.stringify(parsedTriggerProps));
     } else {
-      console.log(validCronValue.getError());
       hasCronError.value = true;
       const error = validCronValue.getError().pop();
       if (error) {
@@ -57,13 +58,12 @@
   }
 
   function parseCronScheduleToString() {
-    console.log(props.triggerSchedule);
-    if (props.triggerSchedule !== '') {
-      const cronStringWithoutSeconds = props.triggerSchedule
-        .replace('?', '*')
+    if (props.triggerProps) {
+      const schedule = JSON.parse(props.triggerProps).cronSchedule;
+      const cronStringWithoutSeconds = schedule
+        .replace('?', '*') // TODO fix in backend
         .replaceAll('"', '')
-        .substring(props.triggerSchedule?.indexOf(' '));
-      console.log(cron(cronStringWithoutSeconds));
+        .substring(schedule.indexOf(' '));
       const cronValue = cron(cronStringWithoutSeconds).getValue();
       const minutes =
         typeof cronValue.minutes === 'string'
@@ -99,6 +99,7 @@
         dayOfWeek,
       };
     }
+    validate();
   }
 
   const isDialogOpen = ref(false);
@@ -218,7 +219,7 @@
     color: var(--primary-color);
 
     &.hover-circle:hover {
-      color: #1f2d40ff;
+      color: var(--primary-color--secondary);
     }
   }
 
@@ -233,6 +234,7 @@
     border-radius: 0.25rem;
     padding: 8px 12px 8px;
     z-index: 1;
+    border: 1px solid lightgray;
   }
 
   .error {
