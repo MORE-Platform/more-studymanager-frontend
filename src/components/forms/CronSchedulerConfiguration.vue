@@ -3,12 +3,49 @@
   import InputText from 'primevue/inputtext';
   import { TriggerSchedule } from '../../models/CronSchedulerModel';
   import cron from 'cron-validate';
+  import { registerOptionPreset } from 'cron-validate/lib/option';
 
   const props = defineProps({
     triggerProps: {
       type: String,
       default: '',
     },
+  });
+
+  registerOptionPreset('default-preset', {
+    presetId: 'default-preset',
+    allowOnlyOneBlankDayField: false,
+    daysOfMonth: {
+      minValue: 1,
+      maxValue: 31,
+    },
+    daysOfWeek: {
+      minValue: 1,
+      maxValue: 7,
+    },
+    hours: {
+      minValue: 0,
+      maxValue: 23,
+    },
+    minutes: {
+      minValue: 0,
+      maxValue: 59,
+    },
+    months: {
+      minValue: 1,
+      maxValue: 12,
+    },
+    seconds: {
+      minValue: 0,
+      maxValue: 59,
+    },
+    useSeconds: false,
+    useYears: false,
+    years: {
+      minValue: 1,
+      maxValue: 31,
+    },
+    useBlankDay: true,
   });
 
   const triggerSchedule: Ref<TriggerSchedule> = ref({
@@ -41,7 +78,9 @@
       triggerSchedule.value.months +
       ' ' +
       triggerSchedule.value.dayOfWeek;
-    const validCronValue = cron(parsedTriggerSchedule);
+    const validCronValue = cron(parsedTriggerSchedule, {
+      preset: 'default-preset',
+    });
     if (validCronValue.isValid()) {
       const parsedTriggerProps = JSON.parse(props.triggerProps);
       parsedTriggerProps.cronSchedule = '0 ' + parsedTriggerSchedule;
@@ -61,10 +100,11 @@
     if (props.triggerProps) {
       const schedule = JSON.parse(props.triggerProps).cronSchedule;
       const cronStringWithoutSeconds = schedule
-        .replace('?', '*') // TODO fix in backend
         .replaceAll('"', '')
         .substring(schedule.indexOf(' '));
-      const cronValue = cron(cronStringWithoutSeconds).getValue();
+      const cronValue = cron(cronStringWithoutSeconds, {
+        preset: 'default-preset',
+      }).getValue();
       const minutes =
         typeof cronValue.minutes === 'string'
           ? cronValue.minutes
