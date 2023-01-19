@@ -27,7 +27,7 @@
 
   const emit = defineEmits<{
     (e: 'onValidSchedule', triggerProps: string): string;
-    (e: 'onCronError', errorMessage: string): string;
+    (e: 'onError', errorMessage: string): string;
   }>();
 
   function validate() {
@@ -52,7 +52,7 @@
       const error = validCronValue.getError().pop();
       if (error) {
         cronError.value = error;
-        emit('onCronError', error);
+        emit('onError', error);
       }
     }
   }

@@ -108,76 +108,77 @@
   }
 
   function save() {
-    Promise.all(
-      [
-        ...actionsArray.value.map((item, id) => ({
-          component: 'action',
-          type: item.type,
-          properties: item.properties,
-          id,
-        })),
-        {
-          component: 'trigger',
-          type: triggerType.value,
-          properties: triggerProp.value,
-          id: -1,
-        },
-      ].map((v) => validate(v.component, v.type, v.properties, v.id))
-    )
-      .then(() => {
-        updateProps();
-        const triggerProps = {
-          type: triggerType.value,
-          properties: triggerProp.value
-            ? JSON.parse(triggerProp.value.toString())
-            : '{}',
-        };
+    if (externalErrors.value.length === 0)
+      Promise.all(
+        [
+          ...actionsArray.value.map((item, id) => ({
+            component: 'action',
+            type: item.type,
+            properties: item.properties,
+            id,
+          })),
+          {
+            component: 'trigger',
+            type: triggerType.value,
+            properties: triggerProp.value,
+            id: -1,
+          },
+        ].map((v) => validate(v.component, v.type, v.properties, v.id))
+      )
+        .then(() => {
+          updateProps();
+          const triggerProps = {
+            type: triggerType.value,
+            properties: triggerProp.value
+              ? JSON.parse(triggerProp.value.toString())
+              : '{}',
+          };
 
-        const actionsProps = actionsArray.value.map((item) => ({
-          actionId: item?.actionId,
-          type: item.type,
-          properties: JSON.parse(item.properties),
-        }));
+          const actionsProps = actionsArray.value.map((item) => ({
+            actionId: item?.actionId,
+            type: item.type,
+            properties: JSON.parse(item.properties),
+          }));
 
-        const returnIntervention = {
-          interventionId: intervention.interventionId,
-          title: title.value,
-          purpose: purpose.value,
-          trigger: {},
-          actions: [],
-          studyGroupId: studyGroupId.value,
-          scheduler: intervention.schedule,
-        } as Intervention;
+          const returnIntervention = {
+            interventionId: intervention.interventionId,
+            title: title.value,
+            purpose: purpose.value,
+            trigger: {},
+            actions: [],
+            studyGroupId: studyGroupId.value,
+            scheduler: intervention.schedule,
+          } as Intervention;
 
-        const returnObject = {
-          intervention: returnIntervention,
-          trigger: triggerProps,
-          actions: actionsProps,
-          removeActions: removeActions.value,
-        };
-        actionJsonError.value = [];
-        triggerEmptyError.value = '';
-        triggerJsonError.value = '';
+          const returnObject = {
+            intervention: returnIntervention,
+            trigger: triggerProps,
+            actions: actionsProps,
+            removeActions: removeActions.value,
+          };
+          actionJsonError.value = [];
+          triggerEmptyError.value = '';
+          triggerJsonError.value = '';
 
-        if (actionsArray.value.length) {
-          dialogRef.value.close(returnObject);
-        }
-      })
-      .catch((reason) => {
-        if (reason.component === 'trigger') {
-          triggerJsonError.value = reason.msg;
-        } else {
-          const actionErrors = [];
-          actionErrors[reason.i] = reason.msg;
-          actionJsonError.value = actionErrors;
-        }
-      });
+          if (actionsArray.value.length) {
+            dialogRef.value.close(returnObject);
+          }
+        })
+        .catch((reason) => {
+          if (reason.component === 'trigger') {
+            triggerJsonError.value = reason.msg;
+          } else {
+            const actionErrors = [];
+            actionErrors[reason.i] = reason.msg;
+            actionJsonError.value = actionErrors;
+          }
+        });
   }
 
   const errors: Ref<Array<any>> = ref([]);
+  const externalErrors: Ref<Array<any>> = ref([]);
 
-  function checkRequiredFields() {
-    errors.value = [];
+  function checkErrors() {
     if (!title.value) {
       errors.value.push('Intervention Title');
     }
@@ -187,6 +188,11 @@
     if (!actionsArray.value.length) {
       errors.value.push('At least 1 Action');
     }
+  }
+
+  function checkExternalErrors(e?: string) {
+    externalErrors.value = [];
+    if (e) externalErrors.value.push(e);
   }
 
   function cancel() {
@@ -227,10 +233,10 @@
         showScheduleInput.value = true;
         return undefined;
       } else {
-        hasAdditionalTriggerConfig.value = value;
         return value;
       }
     });
+    hasAdditionalTriggerConfig.value = nonScheduleInput.value !== '{}';
   }
 
   function getActionDescription(actionType?: string) {
@@ -248,6 +254,7 @@
 
   function setCronSchedule(e: string) {
     triggerProp.value = e;
+    checkExternalErrors();
   }
 
   function updateProps() {
@@ -337,6 +344,7 @@
             class="mb-4"
             :trigger-props="triggerProp"
             @on-valid-schedule="setCronSchedule($event)"
+            @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
           <Textarea
             v-show="hasAdditionalTriggerConfig"
@@ -420,7 +428,7 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button type="submit" @click="checkRequiredFields()">Save</Button>
+        <Button type="submit" @click="checkErrors()">Save</Button>
       </div>
     </form>
   </div>
