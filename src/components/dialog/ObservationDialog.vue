@@ -458,7 +458,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .observation-dialog {
     .buttons {
       button {
@@ -479,5 +479,9 @@
     .groupIdValue {
       color: var(--text-color);
     }
+  }
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
   }
 </style>

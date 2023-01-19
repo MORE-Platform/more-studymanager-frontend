@@ -396,7 +396,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .intervention-dialog {
     .buttons {
       button {
@@ -419,5 +419,9 @@
     .error {
       color: #d57575;
     }
+  }
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
   }
 </style>

@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<style lang="pcss">
+<style scoped lang="postcss">
   .data-header-textblock {
     h3 {
       font-weight: 600;

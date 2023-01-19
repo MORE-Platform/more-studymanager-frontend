@@ -11,7 +11,7 @@
   <Footer />
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   main {
     min-height: 85vh;
     margin-bottom: 5.5rem;

@@ -181,7 +181,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .more-tab-nav {
     margin-top: -0.938rem;
     .tab-parent {
