@@ -27,7 +27,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .study-header {
     .status {
       font-size: 1.75rem;

@@ -145,7 +145,7 @@
   <DynamicDialog />
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   h5 {
     font-size: 18px;
     font-weight: bold;

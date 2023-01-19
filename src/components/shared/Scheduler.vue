@@ -460,7 +460,7 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .scheduler {
     min-height: 37.5rem;
 
@@ -477,6 +477,12 @@
     h6 {
       color: var(--primary-color);
       font-weight: 500;
+    }
+  }
+
+  .buttons {
+    button {
+      margin-left: 10px;
     }
   }
 </style>

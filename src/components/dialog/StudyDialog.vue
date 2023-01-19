@@ -172,10 +172,14 @@
   </div>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   .buttons {
     button {
       margin-left: 10px;
     }
+  }
+  h5 {
+    font-size: 18px;
+    font-weight: bold;
   }
 </style>

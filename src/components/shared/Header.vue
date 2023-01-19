@@ -129,7 +129,7 @@
   </header>
 </template>
 
-<style lang="postcss">
+<style scoped lang="postcss">
   header {
     position: fixed;
     top: 0;

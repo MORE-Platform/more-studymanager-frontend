@@ -284,3 +284,12 @@
     </div>
   </div>
 </template>
+
+<style scoped lang="postcss">
+  :deep(.action .dropdown-search .p-dropdown-trigger-icon:before) {
+    color: white;
+  }
+  :deep(.action .dropdown-search .p-dropdown-trigger) {
+    display: none;
+  }
+</style>
