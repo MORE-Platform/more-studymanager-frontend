@@ -141,15 +141,12 @@
   ];
 
   async function listParticipant(): Promise<void> {
-    loader.enable();
     try {
       participantsList.value = await participantsApi
         .listParticipants(props.studyId)
         .then((response) => response.data);
     } catch (e) {
       console.error('cannot list participants', e);
-    } finally {
-      loader.disable();
     }
   }
 
@@ -295,7 +292,7 @@
       :rows="participantsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :loading="loader.loading.value"
+      :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('listDescription.emptyParticipantList')"

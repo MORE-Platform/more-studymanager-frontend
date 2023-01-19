@@ -122,11 +122,9 @@
 
   async function listObservations(): Promise<void> {
     try {
-      loader.enable();
       observationList.value = await observationsApi
         .listObservations(props.studyId)
-        .then((response: AxiosResponse) => response.data)
-        .finally(loader.disable);
+        .then((response: AxiosResponse) => response.data);
     } catch (e) {
       console.error('cannot list studies', e);
       loader.reset();
@@ -157,15 +155,14 @@
       if (i > -1) {
         observationList.value[i] = observation;
       }
-      loader.enable();
+
       await observationsApi
         .updateObservation(
           props.studyId,
           observation.observationId as number,
           observation
         )
-        .then(listObservations)
-        .finally(loader.disable);
+        .then(listObservations);
     } catch (e) {
       console.error("Couldn't update opservation " + observation.title);
       loader.reset();
@@ -174,14 +171,12 @@
 
   async function deleteObservation(requestObservation: Observation) {
     try {
-      loader.enable();
       await observationsApi
         .deleteObservation(
           props.studyId,
           requestObservation.observationId as number
         )
-        .then(listObservations)
-        .finally(loader.disable);
+        .then(listObservations);
     } catch (e) {
       console.error(
         'Cannot delete observation ' + requestObservation.observationId,
@@ -235,14 +230,11 @@
 
   function createObservation(newObservation: Observation) {
     try {
-      loader.enable();
       observationsApi
         .addObservation(props.studyId, newObservation)
-        .then(listObservations)
-        .finally(loader.disable);
+        .then(listObservations);
     } catch (e) {
       console.error('cannot create observation', e);
-      loader.disable();
     }
   }
 
@@ -270,7 +262,7 @@
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"
       :editable-access="actionsVisible"
-      :loading="loader.loading.value"
+      :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('listDescription.emptyObservationList')"
       @onselect="openEditObservation($event)"

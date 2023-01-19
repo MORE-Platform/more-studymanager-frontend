@@ -17,7 +17,7 @@ const loader = {
     loaderSemaphore.value = 0;
     loaderValue.value = false;
   },
-  loading: readonly(loaderValue),
+  isLoading: readonly(loaderValue),
 };
 export default () => {
   return loader;
