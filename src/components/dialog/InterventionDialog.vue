@@ -217,8 +217,10 @@
     );
     if (!prevTriggerType.value || prevTriggerType.value !== tType) {
       props = trigger?.defaultProperties;
-    }
-    if (triggerData && tType === triggerData?.type) {
+      if (!triggerData) {
+        triggerProp.value = JSON.stringify(props);
+      }
+    } else if (triggerData && tType === triggerData?.type) {
       props = triggerData?.properties;
     }
     setNonScheduleTriggerConfig(props);
@@ -235,7 +237,8 @@
         return value;
       }
     });
-    hasAdditionalTriggerConfig.value = nonScheduleInput.value !== '{}';
+    hasAdditionalTriggerConfig.value =
+      triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
   }
 
   function getActionDescription(actionType?: string) {
@@ -258,7 +261,6 @@
 
   function updateProps() {
     if (triggerProp.value) {
-      console.log(nonScheduleInput.value);
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
