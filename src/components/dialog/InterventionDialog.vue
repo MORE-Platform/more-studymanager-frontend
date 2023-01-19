@@ -108,7 +108,8 @@
   }
 
   function save() {
-    if (externalErrors.value.length === 0)
+    if (externalErrors.value.length === 0) {
+      updateProps();
       Promise.all(
         [
           ...actionsArray.value.map((item, id) => ({
@@ -126,7 +127,6 @@
         ].map((v) => validate(v.component, v.type, v.properties, v.id))
       )
         .then(() => {
-          updateProps();
           const triggerProps = {
             type: triggerType.value,
             properties: triggerProp.value
@@ -173,6 +173,7 @@
             actionJsonError.value = actionErrors;
           }
         });
+    }
   }
 
   const errors: Ref<Array<any>> = ref([]);
@@ -210,16 +211,14 @@
     )?.label;
   }
   function setTriggerConfig(tType: string) {
-    let props;
+    let props: object | undefined;
     const trigger = triggerFactories.find(
       (t: ComponentFactory) => t.componentId === tType
     );
     if (!prevTriggerType.value || prevTriggerType.value !== tType) {
-      triggerProp.value = JSON.stringify(trigger?.defaultProperties);
       props = trigger?.defaultProperties;
     }
     if (triggerData && tType === triggerData?.type) {
-      triggerProp.value = JSON.stringify(triggerData?.properties);
       props = triggerData?.properties;
     }
     setNonScheduleTriggerConfig(props);
@@ -259,6 +258,7 @@
 
   function updateProps() {
     if (triggerProp.value) {
+      console.log(nonScheduleInput.value);
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;

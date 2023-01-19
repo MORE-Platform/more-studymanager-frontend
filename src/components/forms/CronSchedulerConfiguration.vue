@@ -167,7 +167,8 @@
           <div>?...{{ $t('cronSchedule.info.questionMark') }}</div>
           <div>*...{{ $t('cronSchedule.info.asterisk') }}</div>
           <a
-            href="http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"
+            href="https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"
+            target="_blank"
           >
             <i class="pi pi-external-link"></i>
             <span> Further info on cron values </span>
