@@ -15,7 +15,7 @@
   <div class="participant-view container m-auto mt-10">
     <StudyHeader :study="studyStore.study"></StudyHeader>
     <MoreTabNav
-      :study-id="studyStore.study?.studyId"
+      :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
     ></MoreTabNav>
     <div
@@ -24,8 +24,8 @@
     >
       <ParticipantList
         :study-groups="studyGroupStore.studyGroups"
-        :status-status="studyStore.study?.status"
-        :study-id="studyStore.study?.studyId"
+        :status-status="studyStore.studyStatus"
+        :study-id="studyStore.studyId"
       ></ParticipantList>
     </div>
   </div>

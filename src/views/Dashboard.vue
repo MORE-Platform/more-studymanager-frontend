@@ -45,6 +45,5 @@
   <div class="container m-auto mt-10 rounded-lg bg-white p-10">
     <User v-if="userStore.user"></User>
     <StudyList class="mt-10" />
-    <DynamicDialog />
   </div>
 </template>

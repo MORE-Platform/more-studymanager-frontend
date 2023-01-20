@@ -16,7 +16,7 @@
   <div class="container m-auto mt-10">
     <StudyHeader :study="studyStore.study"></StudyHeader>
     <MoreTabNav
-      :study-id="studyStore.study?.studyId"
+      :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
     ></MoreTabNav>
     <div
@@ -26,8 +26,8 @@
       <suspense>
         <InterventionsList
           :study-groups="studyGroupStore.studyGroups"
-          :study-id="studyStore.study.studyId"
-          :study-status="studyStore.study.status"
+          :study-id="studyStore.studyId"
+          :study-status="studyStore.studyStatus"
         />
       </suspense>
     </div>
