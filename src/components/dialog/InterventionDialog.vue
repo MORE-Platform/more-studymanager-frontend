@@ -13,6 +13,7 @@
     ComponentFactory,
     ValidationReport,
   } from '../../generated-sources/openapi';
+  import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
 
   const { componentsApi } = useComponentsApi();
 
@@ -38,9 +39,14 @@
     triggerData ? JSON.stringify(triggerData.properties) : undefined
   );
   const triggerType = ref(triggerData ? triggerData.type : undefined);
-  const triggerDescription = ref();
-  const prevTriggerType: Ref<string> = ref('');
-  setTriggerDescription(triggerData?.type);
+  const showScheduleInput = ref(false);
+  const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
+  const nonScheduleInput: Ref<string> = ref(
+    triggerProp?.value ? triggerProp.value : ''
+  );
+  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+  setTriggerConfig(triggerData?.type ? triggerData.type : '');
+  setNonScheduleTriggerConfig(triggerData?.properties);
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
   const triggerJsonError: Ref<string | undefined> = ref();
@@ -102,75 +108,78 @@
   }
 
   function save() {
-    Promise.all(
-      [
-        ...actionsArray.value.map((item, id) => ({
-          component: 'action',
-          type: item.type,
-          properties: item.properties,
-          id,
-        })),
-        {
-          component: 'trigger',
-          type: triggerType.value,
-          properties: triggerProp.value,
-          id: -1,
-        },
-      ].map((v) => validate(v.component, v.type, v.properties, v.id))
-    )
-      .then(() => {
-        const triggerProps = {
-          type: triggerType.value,
-          properties: triggerProp.value
-            ? JSON.parse(triggerProp.value.toString())
-            : '{}',
-        };
-        const actionsProps = actionsArray.value.map((item) => ({
-          actionId: item?.actionId,
-          type: item.type,
-          properties: JSON.parse(item.properties),
-        }));
+    if (externalErrors.value.length === 0) {
+      updateProps();
+      Promise.all(
+        [
+          ...actionsArray.value.map((item, id) => ({
+            component: 'action',
+            type: item.type,
+            properties: item.properties,
+            id,
+          })),
+          {
+            component: 'trigger',
+            type: triggerType.value,
+            properties: triggerProp.value,
+            id: -1,
+          },
+        ].map((v) => validate(v.component, v.type, v.properties, v.id))
+      )
+        .then(() => {
+          const triggerProps = {
+            type: triggerType.value,
+            properties: triggerProp.value
+              ? JSON.parse(triggerProp.value.toString())
+              : '{}',
+          };
 
-        const returnIntervention = {
-          interventionId: intervention.interventionId,
-          title: title.value,
-          purpose: purpose.value,
-          trigger: {},
-          actions: [],
-          studyGroupId: studyGroupId.value,
-          scheduler: intervention.schedule,
-        } as Intervention;
+          const actionsProps = actionsArray.value.map((item) => ({
+            actionId: item?.actionId,
+            type: item.type,
+            properties: JSON.parse(item.properties),
+          }));
 
-        const returnObject = {
-          intervention: returnIntervention,
-          trigger: triggerProps,
-          actions: actionsProps,
-          removeActions: removeActions.value,
-        };
-        actionJsonError.value = [];
-        triggerEmptyError.value = '';
-        triggerJsonError.value = '';
+          const returnIntervention = {
+            interventionId: intervention.interventionId,
+            title: title.value,
+            purpose: purpose.value,
+            trigger: {},
+            actions: [],
+            studyGroupId: studyGroupId.value,
+            scheduler: intervention.schedule,
+          } as Intervention;
 
-        if (actionsArray.value.length) {
-          dialogRef.value.close(returnObject);
-        }
-      })
-      .catch((reason) => {
-        if (reason.component === 'trigger') {
-          triggerJsonError.value = reason.msg;
-        } else {
-          const actionErrors = [];
-          actionErrors[reason.i] = reason.msg;
-          actionJsonError.value = actionErrors;
-          console.log(actionErrors);
-        }
-      });
+          const returnObject = {
+            intervention: returnIntervention,
+            trigger: triggerProps,
+            actions: actionsProps,
+            removeActions: removeActions.value,
+          };
+          actionJsonError.value = [];
+          triggerEmptyError.value = '';
+          triggerJsonError.value = '';
+
+          if (actionsArray.value.length) {
+            dialogRef.value.close(returnObject);
+          }
+        })
+        .catch((reason) => {
+          if (reason.component === 'trigger') {
+            triggerJsonError.value = reason.msg;
+          } else {
+            const actionErrors = [];
+            actionErrors[reason.i] = reason.msg;
+            actionJsonError.value = actionErrors;
+          }
+        });
+    }
   }
 
   const errors: Ref<Array<any>> = ref([]);
+  const externalErrors: Ref<Array<any>> = ref([]);
 
-  function checkRequiredFields() {
-    errors.value = [];
+  function checkErrors() {
     if (!title.value) {
       errors.value.push('Intervention Title');
     }
@@ -180,6 +189,11 @@
     if (!actionsArray.value.length) {
       errors.value.push('At least 1 Action');
     }
+  }
+
+  function checkExternalErrors(e?: string) {
+    externalErrors.value = [];
+    if (e) externalErrors.value.push(e);
   }
 
   function cancel() {
@@ -196,31 +210,35 @@
       (a: ComponentFactory) => a.componentId === actionType
     )?.label;
   }
-  function setTriggerDescription(tType?: string) {
-    triggerDescription.value =
-      triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
-        ?.description || 'Choose a trigger type';
-    setTriggerConfig(tType);
+  function setTriggerConfig(tType: string) {
+    let props: object | undefined;
+    const trigger = triggerFactories.find(
+      (t: ComponentFactory) => t.componentId === tType
+    );
+    if (!prevTriggerType.value || prevTriggerType.value !== tType) {
+      props = trigger?.defaultProperties;
+      if (!triggerData) {
+        triggerProp.value = JSON.stringify(props);
+      }
+    } else if (triggerData && tType === triggerData?.type) {
+      props = triggerData?.properties;
+    }
+    setNonScheduleTriggerConfig(props);
+
+    prevTriggerType.value = tType;
   }
 
-  function setTriggerConfig(tType?: string) {
-    if (tType === triggerData?.type) {
-      triggerProp.value = JSON.stringify(triggerData?.properties);
-    } else if (prevTriggerType.value === tType) {
-      triggerProp.value = triggerProp.value
-        ? triggerProp.value
-        : JSON.stringify(
-            triggerFactories.find(
-              (t: ComponentFactory) => t.componentId === tType
-            )?.defaultProperties
-          );
-    } else {
-      triggerProp.value = JSON.stringify(
-        triggerFactories.find((t: ComponentFactory) => t.componentId === tType)
-          ?.defaultProperties
-      );
-    }
-    prevTriggerType.value = tType ? tType : '';
+  function setNonScheduleTriggerConfig(triggerProperties?: object) {
+    nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
+      if (key === 'cronSchedule') {
+        showScheduleInput.value = true;
+        return undefined;
+      } else {
+        return value;
+      }
+    });
+    hasAdditionalTriggerConfig.value =
+      triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
   }
 
   function getActionDescription(actionType?: string) {
@@ -234,6 +252,20 @@
   const actionMenu = ref();
   function actionToggle(event: PointerEvent) {
     actionMenu.value.toggle(event);
+  }
+
+  function setCronSchedule(e: string) {
+    triggerProp.value = e;
+    checkExternalErrors();
+  }
+
+  function updateProps() {
+    if (triggerProp.value) {
+      const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
+      const triggerPropJson = JSON.parse(triggerProp.value);
+      nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
+      triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
+    }
   }
 </script>
 
@@ -284,13 +316,12 @@
           style="width: 100%"
         ></Textarea>
       </div>
-
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="mb-2 lg:col-span-2">{{ $t('trigger') }}</h5>
         <Dropdown
           v-model="triggerType"
           :options="triggerTypesOptions"
-          class="col-span-1"
+          class="col-span-1 mb-4"
           option-label="label"
           option-value="value"
           required
@@ -305,12 +336,21 @@
         </div>
         <div class="col-start-0 col-span-3">
           <!-- eslint-disable vue/no-v-html -->
-          <div class="mb-4" v-html="triggerDescription"></div>
           <div v-if="triggerJsonError" class="error mb-4">
             {{ triggerJsonError }}
           </div>
-          <Textarea
+          <CronSchedulerConfiguration
+            v-show="showScheduleInput"
+            v-if="showScheduleInput"
             v-model="triggerProp"
+            class="mb-4"
+            :trigger-props="triggerProp"
+            @on-valid-schedule="setCronSchedule($event)"
+            @on-error="checkExternalErrors($event)"
+          ></CronSchedulerConfiguration>
+          <Textarea
+            v-show="hasAdditionalTriggerConfig"
+            v-model="nonScheduleInput"
             required
             placeholder="Enter the config for the trigger"
             :auto-resize="true"
@@ -390,7 +430,7 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button type="submit" @click="checkRequiredFields()">Save</Button>
+        <Button type="submit" @click="checkErrors()">Save</Button>
       </div>
     </form>
   </div>

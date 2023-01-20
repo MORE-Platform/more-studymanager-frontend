@@ -136,5 +136,30 @@
     "STUDY_ADMIN": "Study Administrator",
     "STUDY_OPERATOR": "Study Operator",
     "STUDY_VIEWER": "Study Viewer"
+  },
+
+  "cronSchedule": {
+    "placeholders": {
+      "secondsAndMinutes": "0-59",
+      "hours": "0-23",
+      "months": "1-12",
+      "dayOfMonth": "1-31",
+      "dayOfWeek": "1-7"
+    },
+    "labels": {
+      "seconds": "Seconds",
+      "minutes": "Minutes",
+      "hours": "Hours",
+      "months": "Months",
+      "dayOfMonth": "Day of Month",
+      "dayOfWeek": "Day of Week"
+    },
+    "info": {
+      "example": "Example: 0 12 ? * * means every day at 12.",
+      "generalInfo": "Provide a number, a list of numbers (e.g. 1,2,3) or a range (e.g. 12-14)",
+      "questionMark": "No specific value (e.g. any day of the week)",
+      "asterisk": "All values (e.g. every minute)"
+    },
+    "formTitle": "Configure your Cron Schedule"
   }
 }
