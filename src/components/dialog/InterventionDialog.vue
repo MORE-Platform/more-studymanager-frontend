@@ -210,22 +210,24 @@
       (a: ComponentFactory) => a.componentId === actionType
     )?.label;
   }
-  function setTriggerConfig(tType: string) {
+  function setTriggerConfig(tType: string | undefined) {
     let props: object | undefined;
-    const trigger = triggerFactories.find(
-      (t: ComponentFactory) => t.componentId === tType
-    );
-    if (!prevTriggerType.value || prevTriggerType.value !== tType) {
-      props = trigger?.defaultProperties;
-      if (!triggerData) {
-        triggerProp.value = JSON.stringify(props);
+    if (tType) {
+      const trigger = triggerFactories.find(
+        (t: ComponentFactory) => t.componentId === tType
+      );
+      if (!prevTriggerType.value || prevTriggerType.value !== tType) {
+        props = trigger?.defaultProperties;
+        if (!triggerData) {
+          triggerProp.value = JSON.stringify(props);
+        }
+      } else if (triggerData && tType === triggerData?.type) {
+        props = triggerData?.properties;
       }
-    } else if (triggerData && tType === triggerData?.type) {
-      props = triggerData?.properties;
-    }
-    setNonScheduleTriggerConfig(props);
+      setNonScheduleTriggerConfig(props);
 
-    prevTriggerType.value = tType;
+      prevTriggerType.value = tType;
+    }
   }
 
   function setNonScheduleTriggerConfig(triggerProperties?: object) {
