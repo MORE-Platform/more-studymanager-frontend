@@ -22,10 +22,12 @@
   import { useDialog } from 'primevue/usedialog';
   import ObservationDialog from '../components/dialog/ObservationDialog.vue';
   import useLoader from '../composable/useLoader';
+  import { useStudyStore } from '../stores/studyStore';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
+  const studyStore = useStudyStore();
 
   const observationList: Ref<Observation[]> = ref([]);
   const dialog = useDialog();
@@ -37,8 +39,8 @@
   });
 
   const actionsVisible =
-    props.studyStatus === StudyStatus.Draft ||
-    props.studyStatus === StudyStatus.Paused;
+    studyStore.study.status === StudyStatus.Draft ||
+    studyStore.study.status === StudyStatus.Paused;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
