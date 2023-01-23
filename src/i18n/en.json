@@ -1,4 +1,109 @@
 {
+  "global": {
+    "dialog": {
+      "close": "Close",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "placeholder": {
+      "entireStudy": "Entire study"
+    },
+    "new": "New",
+    "start": "Start",
+    "end": "End"
+  },
+
+  "studyNavigation": {
+    "accessDialog": {
+      "header": "Access denied",
+      "permissionWarningMsg": ". Please contact your study administrator if you require access to this section.",
+      "accessInformation": "-section can't be viewd. Acccess requires following permissions: "
+    }
+  },
+
+  "study": {
+    "singular": "Study",
+    "plural": "Studies",
+    "dialog": {
+      "editHeader": "Edit study",
+      "createHeader": "Create study",
+      "description": "Enter the base information of your study to provide basic information for collaborators and participants.",
+      "error": {
+        "missedFieldsMsg": "Please fill out the following information fields: "
+      }
+    },
+    "props": {
+      "title": "Title",
+      "plannedStart": "Planned start",
+      "actualStart": "Actual start",
+      "plannedEnd": "Planned end",
+      "actualEnd": "Actual End",
+      "purpose": "Purpose",
+      "participantInfo": "Participant Information",
+      "consentInfo": "Consent Information",
+      "language": "Language",
+      "studyGroup":  "Study group"
+    },
+    "error": {
+      "addTitle": "Study Title",
+      "addConsentInfo": "Consent Info",
+      "addParticipantInfo": "Participant Info"
+    },
+    "placeholder": {
+      "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
+      "emptyConsentInfo": "Enter your description for the consent information.",
+      "titleInput": "Please provide a short title.",
+      "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
+      "participantInfoInput": "Please provide information for study participants. This description will be visible at the participant's app.",
+      "consentInfoInput": "Please provide information on the data that will be collected. This description will be visible at the participant's app."
+    }
+  },
+
+  "studyCollaborator":{
+    "dialog": {
+      "addRole": "Please choose at least one role to continue or cancel.",
+      "addCollaboratorInfo": "will be added to your Collaboratorlist. ",
+      "chooseRoles": "Choose your callaborator's roles:"
+    }
+  },
+
+  "observation": {
+    "singular": "Observation",
+    "plural": "Observations",
+    "error":  {
+      "noValidJson": "Cannot parse properties. No valid JSON.",
+      "addTitle":  "Observation Title",
+      "addScheduler": "Scheduler",
+      "addParticipantInfo": "Participant Information",
+      "addSchedulerMsg": "Please set the scheduler for your observation."
+    },
+    "placeholder": {
+      "emptySchedulerMsg": "Please provide a schedule for your observation."
+    }
+  },
+
+  "intervention": {
+    "singular": "Intervention",
+    "plural": "Interventions",
+    "props": {
+      "trigger": "Trigger",
+      "action": "Action"
+    },
+    "error":  {
+      "addTitle": "Intervention Title",
+      "addTriggerTypeConfig": "Trigger Type and Config",
+      "addAction": "At least 1 action"
+    },
+    "placeholder": {
+      "noDescription": "No description available",
+      "trigger": "Choose a trigger type"
+    },
+    "dialog":  {
+      "title": "Intervention Details",
+      "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
+    }
+  },
+
   "id": "Id",
   "message": "testing message",
   "studies":  "Study List",
@@ -6,22 +111,15 @@
   "studyCollaborators": "Study Collaborators",
   "studyId": "Study ID",
   "title": "Title",
-  "purpose": "Purpose",
   "start": "Start",
   "end": "End",
-  "plannedStart": "Planned Start",
-  "actualStart": "Actual Start",
-  "plannedEnd": "Planned End",
-  "actualEnd": "Actual End",
   "actions": "Actions",
   "action": "Action",
   "frontAction": "Copy Id",
   "status": "Status",
   "description": "Description",
   "roles": "Role(s)",
-  "trigger": "Trigger",
-  "intervention": "Intervention",
-  "interventions": "Interventions",
+
   "name": "Name",
   "email": "E-Mail",
 
@@ -75,14 +173,9 @@
   "noModulesMsg": "Studies has no modules yet.",
   "deleteMsg": "Are you sure you want to delete ",
 
-  "participantInfo": "Participant Information",
-  "consentInfo": "Consent Information",
-  "language": "Language",
-
   "dashboardTitle": "My dashboard of studies",
 
-  "observations": "Observations",
-  "observation": "Observation",
+
   "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
   "interventionListDescr": "An intervention describes an action delivered to the app triggered by rules on data.",
   "noGroup": "No Group",
@@ -97,21 +190,16 @@
   },
   "placeholder": {
     "roleMultiselect": "Select one to two roles",
-    "trigger": "Choose a trigger type",
+
     "group": "Choose a group",
     "action": "Choose an action",
-    "purpose": "Please provide a short description of your research purpose for your collaborators.",
-    "participantInfo": "Please provide information for study participants. This description will be visible at the participant's app.",
-    "title": "Please provide a short title.",
-    "consentInfo": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
+
     "chooseRole": "Choose the collaborator's roles",
     "searchCollaborators": "Type to search collaborators",
     "addCollaborator": "Add Collaborator",
     "noResultsFound": "No results found",
     "emptyPurposeOnOverview": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
-    "observationScheduler": "Please provide a schedule for your observation.",
-    "interventionScheduler": "Please provide a schedule for your intervention",
-    "dialogErrorMessage": "Please fill out the following information fields."
+    "interventionScheduler": "Please provide a schedule for your intervention"
   },
   "listDescription": {
     "participantList": "This is the list of participants of your study. You can add or import participants.",
@@ -123,11 +211,7 @@
     "data": "Data collected during the study will be visualized within this dashboard."
   },
   "dialogDescription": {
-    "studyDialogTitle": "Study Details",
-    "studyDialog": "Enter the base information of your study to provide basic information for collaborators and participants.",
-    "interventionsDialogTitle": "Intervention Details",
-    "interventionDialog": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
-  },
+          },
   "user": {
     "institution": "Organisation"
   },
@@ -161,6 +245,56 @@
       "asterisk": "All values (e.g. every minute)"
     },
     "formTitle": "Configure your Cron Schedule",
-    "formTitleDisabled": "Configuration of your Cron Schedule"
+    "formTitleDisabled": "Configuration of your Cron Schedule",
+    "additionalConfig":  "Additional Configuration"
+  },
+
+  "scheduler": {
+    "singular": "Scheduler",
+    "dialogTitle": "Manage Schedule",
+    "frequency": {
+      "hours": "hour(s)",
+      "days": "day(s)",
+      "weeks": "week(s)",
+      "months": "month(s)",
+      "years": "year(s)"
+    },
+    "byMonthDayLabel": {
+      "first": "st",
+      "second": "nd",
+      "third": "rd",
+      "fourth": "th"
+    },
+    "months":{
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "mai": "Mai",
+      "june": "June",
+      "july": "July",
+      "august":  "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "bySetPosLabel": {
+      "first": "first",
+      "second": "second",
+      "third": "third",
+      "fourth": "fourth",
+      "last":  "last"
+    },
+    "labels":  {
+      "daysSelected": "Days selected",
+      "repetitionEnd": "Repetition end",
+      "after":  "after",
+      "on": "on",
+      "openScheduler":  "Open Scheduler",
+      "removeScheduler":  "Remove Scheduler",
+      "every":  "Every",
+      "frequency":  "Frequency"
+    }
   }
 }

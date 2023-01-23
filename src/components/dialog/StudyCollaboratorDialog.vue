@@ -7,6 +7,7 @@
     MoreTableCollaboratorItem,
   } from '../../models/MoreTableModel';
   import Button from 'primevue/button';
+  import {useI18n} from "vue-i18n";
 
   const dialogRef: any = inject('dialogRef');
   const collaborator: MoreTableCollaboratorItem =
@@ -18,10 +19,11 @@
     dialogRef.value.data?.placeholder || 'Choose Option';
   const roleValues: Ref<MoreTableChoice[]> = ref([]);
   const warning: Ref<string | undefined> = ref(undefined);
+  const { t } = useI18n();
 
   function save() {
     if (!roleValues.value.length) {
-      warning.value = 'Please choose at least one role to continue or cancel.';
+      warning.value = t('studyCollaborator.dialog.addRole');
     } else {
       const returnCollaborator: MoreTableCollaboratorItem = {
         uid: collaborator.uid,
@@ -42,14 +44,13 @@
 <template>
   <div class="study-collaborator-dialog">
     <div class="mb-4">
-      Add
       <span class="font-bold"
         >{{ collaborator.name }} ({{ collaborator.institution }})
       </span>
-      to your study collaborators.
+      {{ $t('studyCollaborator.dialog.addCollaboratorInfo') }}
     </div>
 
-    <h6>Choose your calloberator's roles:</h6>
+    <h6 class="mb-2">{{ $t('studyCollaborator.dialog.chooseRoles') }}</h6>
     <div v-if="warning" class="error mb-3">{{ warning }}</div>
     <MultiSelect
       v-model="roleValues"
@@ -61,8 +62,8 @@
     </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
-      <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-      <Button @click="save()">Save</Button>
+      <Button class="p-button-secondary" @click="cancel()">{{ $t('global.dialog.cancel') }}</Button>
+      <Button @click="save()">{{ $t('global.dialog.save') }}</Button>
     </div>
   </div>
 </template>

@@ -6,8 +6,10 @@
   import { useDialog } from 'primevue/usedialog';
   import AccessDialog from 'primevue/dynamicdialog';
   import { MoreTableChoice } from '../../models/MoreTableModel';
+  import {useI18n} from "vue-i18n";
 
   const accessDialog = useDialog();
+  const { t } = useI18n();
 
   const props = defineProps({
     studyId: {
@@ -86,7 +88,7 @@
             message: msg,
           },
           props: {
-            header: 'Access Denied',
+            header: t('studyNavigation.accessDialog.header'),
             style: {
               width: '50vw',
             },
@@ -105,7 +107,7 @@
 
   function getDialogMsg(activeTab: Tab) {
     const msg: Ref<string> = ref(
-      'Access to the ' + activeTab.name + '-section requires '
+      activeTab.name + t('studyNavigation.accessDialog.accessInformation')
     );
     activeTab.access.forEach((r, index) => {
       const role: MoreTableChoice = studyRoleValues.find(
@@ -114,11 +116,11 @@
       if (index > 0 && activeTab.access.length > 1) {
         msg.value = msg.value + ', ';
       }
-      msg.value = msg.value + '"' + role.label + '"-';
+      msg.value = msg.value + '"' + role.label + '"';
       if (index === activeTab.access.length - 1) {
         msg.value =
           msg.value +
-          'Permission. Please contact your study-administrator if you require access to this section.';
+          t('studyNavigation.accessDialog.permissionWarningMsg');
       }
     });
     return msg.value;

@@ -14,7 +14,7 @@
   <div class="info-dialog">
     <div class="mb-8">{{ message }}</div>
     <div class="flex justify-end">
-      <Button type="button" class="p-button" @click="closeDialog">Close</Button>
+      <Button type="button" class="p-button" @click="closeDialog">{{ $t('global.dialog.close') }}</Button>
     </div>
   </div>
 </template>
