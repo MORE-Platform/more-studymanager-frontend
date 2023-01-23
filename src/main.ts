@@ -13,6 +13,8 @@ import AuthService from './service/AuthService';
 import axios from 'axios';
 import { createPinia } from 'pinia';
 import i18n from './i18n/i18n';
+import { useErrorHandling } from './composable/useErrorHandling';
+import useLoader from './composable/useLoader';
 
 const authService = new AuthService({
   url: 'https://auth.more.redlink.io',
@@ -36,7 +38,8 @@ axios.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-
+useErrorHandling().activateGlobalErrorHandlingInterceptor();
+useLoader().activateLoadingInterceptor();
 const pinia = createPinia();
 
 const app = createApp(App);
