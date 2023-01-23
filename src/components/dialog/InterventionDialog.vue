@@ -12,10 +12,13 @@
     Intervention,
     ComponentFactory,
     ValidationReport,
+    StudyStatus,
   } from '../../generated-sources/openapi';
   import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
+  import { useStudyStore } from '../../stores/studyStore';
 
   const { componentsApi } = useComponentsApi();
+  const studyStore = useStudyStore();
 
   const dialogRef: any = inject('dialogRef');
   const intervention: Intervention = dialogRef.value.data?.intervention || {};
@@ -54,6 +57,10 @@
   const actionsEmptyError: Ref<string> = ref('');
   const triggerEmptyError: Ref<string> = ref('');
   const removeActions: Ref<number[]> = ref([]);
+
+  const editable =
+    studyStore.study.status === StudyStatus.Draft ||
+    studyStore.study.status === StudyStatus.Paused;
 
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
@@ -270,18 +277,21 @@
 </script>
 
 <template>
-  <div class="intervention-dialog">
-    <div class="mb-4">
-      <h5>{{ $t('dialogDescription.interventionsDialogTitle') }}</h5>
+  <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
+    <div class="mb-4" :class="editable ? '' : 'pb-4'">
+      <h5 class="mb-1">
+        {{ $t('dialogDescription.interventionsDialogTitle') }}
+      </h5>
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-html="$t('dialogDescription.interventionDialog')"></h6>
     </div>
     <form
       id="interventionDialogForm"
       class="grid grid-cols-8 items-center gap-4"
+      :class="editable ? '' : 'gap-y-2'"
       @submit.prevent="save()"
     >
-      <div v-if="errors.length" class="error col-span-8">
+      <div v-if="errors.length && editable" class="error col-span-8">
         <span class="font-medium">
           Please fill out following information:
         </span>
@@ -294,16 +304,17 @@
           </span>
         </div>
       </div>
-      <div class="col-start-0 col-span-2">
+      <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
         <h5>{{ $t('intervention') }} {{ $t('title') }}</h5>
       </div>
-      <div class="col-span-6 col-start-3">
+      <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
         <InputText
           v-model="title"
           type="text"
           required
           :placeholder="$t('placeholder.title')"
           style="width: 100%"
+          :disabled="!editable"
         ></InputText>
       </div>
 
@@ -314,29 +325,37 @@
           :placeholder="$t('placeholder.purpose')"
           :auto-resize="true"
           style="width: 100%"
+          :disabled="!editable"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
-        <h5 class="mb-2 lg:col-span-2">{{ $t('trigger') }}</h5>
-        <Dropdown
-          v-model="triggerType"
-          :options="triggerTypesOptions"
-          class="col-span-1 mb-4"
-          option-label="label"
-          option-value="value"
-          required
-          :placeholder="$t('placeholder.trigger')"
-          @change="setTriggerConfig(triggerType)"
-        />
+        <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
+          {{ $t('trigger') }}
+        </h5>
+        <div class="col-span-1" :class="editable ? '' : 'text-end'">
+          <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
+          <Dropdown
+            v-model="triggerType"
+            :options="triggerTypesOptions"
+            class="col-span-1"
+            :class="editable ? 'mb-4' : 'p-0'"
+            option-label="label"
+            option-value="value"
+            required
+            :disabled="!editable"
+            :placeholder="$t('placeholder.trigger')"
+            @change="setTriggerConfig(triggerType)"
+          />
+        </div>
         <div
-          v-if="triggerEmptyError"
+          v-if="triggerEmptyError && editable"
           class="error col-start-0 col-span-8 lg:col-span-3"
         >
           {{ triggerEmptyError }}
         </div>
         <div class="col-start-0 col-span-3">
           <!-- eslint-disable vue/no-v-html -->
-          <div v-if="triggerJsonError" class="error mb-4">
+          <div v-if="triggerJsonError && editable" class="error mb-4">
             {{ triggerJsonError }}
           </div>
           <CronSchedulerConfiguration
@@ -345,13 +364,18 @@
             v-model="triggerProp"
             class="mb-4"
             :trigger-props="triggerProp"
+            :editable="editable"
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
+          <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
+            Additional Configuration
+          </div>
           <Textarea
             v-show="hasAdditionalTriggerConfig"
             v-model="nonScheduleInput"
             required
+            :disabled="!editable"
             placeholder="Enter the config for the trigger"
             :auto-resize="true"
             style="width: 100%"
@@ -361,14 +385,18 @@
 
       <div class="col-start-0 col-span-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
-          <h5 class="mb-2 lg:col-span-2">{{ $t('action') }}</h5>
+          <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
+            {{ $t('action') }}
+          </h5>
           <Button
+            v-if="editable"
             class="splitButton disable-left lg:cols-pan-1 w-full"
             type="button"
             :label="'New Action'"
             :icon="'pi pi-plus'"
             aria-haspopup="true"
             aria-controls="overlay_menu"
+            :disabled="!editable"
             @click="actionToggle"
           ></Button>
           <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
@@ -391,20 +419,24 @@
             <!-- eslint-disable vue/no-v-html -->
             <div class="mb-4" v-html="getActionDescription(action.type)"></div>
             <div class="col-span-4 justify-end"></div>
-            <div v-if="actionJsonError[index]" class="error mb-4">
+            <div v-if="actionJsonError[index] && editable" class="error mb-4">
               {{ actionJsonError[index] }}
             </div>
+
             <Textarea
               v-model="actionsArray[index].properties"
-              class="col-span-9"
+              class="border-disabled col-span-9"
               placeholder="Enter the config for the action"
               required
+              :disabled="!editable"
               :auto-resize="true"
               style="width: 100%"
             />
-            <div class="buttons col-span-9 mt-2 justify-end">
+            <div class="buttons col-span-9 mt-2 text-end">
               <Button
+                v-if="editable"
                 :icon="'pi pi-trash'"
+                :disabled="!editable"
                 @click="deleteAction(actionsArray[index].actionId, index)"
               />
             </div>
@@ -413,11 +445,13 @@
       </div>
 
       <div class="col-start-0 col-span-8">
+        <h5 v-if="!editable" class="pb-2 font-bold">Study Group</h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"
           option-label="label"
           option-value="value"
+          :disabled="!editable"
           :placeholder="$t(groupPlaceholder)"
         >
           <template #option="optionProps">
@@ -429,39 +463,22 @@
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button type="submit" @click="checkErrors()">Save</Button>
+        <Button class="p-button-secondary" @click="cancel()">
+          <span v-if="editable">Cancel</span>
+          <span v-else>Close</span>
+        </Button>
+        <Button
+          v-if="editable"
+          type="submit"
+          :disabled="!editable"
+          @click="checkErrors()"
+          >Save</Button
+        >
       </div>
     </form>
   </div>
 </template>
 
 <style scoped lang="postcss">
-  .intervention-dialog {
-    .buttons {
-      button {
-        margin-left: 10px;
-      }
-    }
-    .splitButton {
-      background-color: var(--primary-color);
-      color: white;
-      padding: 0 20px;
-      justify-content: center;
-      align-items: center;
-
-      &.disable-left {
-        .p-splitbutton-defaultbutton {
-          pointer-events: none;
-        }
-      }
-    }
-    .error {
-      color: #d57575;
-    }
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
+  @import '../../styles/components/moreTable-dialogs.pcss';
 </style>

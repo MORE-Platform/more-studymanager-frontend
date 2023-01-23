@@ -10,6 +10,10 @@
       type: String,
       default: '',
     },
+    editable: {
+      type: Boolean,
+      required: true,
+    },
   });
 
   registerOptionPreset('default-preset', {
@@ -150,9 +154,15 @@
 </script>
 
 <template>
-  <div>
+  <div
+    class="cron-schedule-config"
+    :class="editable ? '' : 'schedule-disabled'"
+  >
     <div class="flex items-center gap-4">
-      <div class="mb-4 flex-none">{{ $t('cronSchedule.formTitle') }}:</div>
+      <div class="mb-4 flex-none">
+        <span v-if="editable">{{ $t('cronSchedule.formTitle') }}</span>
+        <span v-else>{{ $t('cronSchedule.formTitleDisabled') }}</span>
+      </div>
       <div class="relative">
         <div
           class="pi pi-info-circle info-circle hover-circle mb-4 flex-none"
@@ -187,6 +197,7 @@
             :auto-resize="true"
             class="w-full"
             required
+            :disabled="!editable"
             @change="validate"
           ></InputText>
         </label>
@@ -201,6 +212,7 @@
             :auto-resize="true"
             class="w-full"
             required
+            :disabled="!editable"
             @change="validate"
           ></InputText>
         </label>
@@ -215,6 +227,7 @@
             :auto-resize="true"
             class="w-full"
             required
+            :disabled="!editable"
             @change="validate"
           ></InputText>
         </label>
@@ -229,6 +242,7 @@
             :auto-resize="true"
             class="w-full"
             required
+            :disabled="!editable"
             @change="validate"
           ></InputText>
         </label>
@@ -243,12 +257,15 @@
             :auto-resize="true"
             class="w-full"
             required
+            :disabled="!editable"
             @change="validate"
           ></InputText>
         </label>
       </div>
     </form>
-    <div v-show="hasCronError" class="error mb-4">{{ cronError }}</div>
+    <div v-show="hasCronError && editable" class="error mb-4">
+      {{ cronError }}
+    </div>
   </div>
 </template>
 
@@ -280,5 +297,12 @@
 
   .error {
     color: #d57575;
+  }
+
+  .cron-schedule-config.schedule-disabled {
+    form {
+      border: 1px solid var(--gray-200);
+      padding: 10px;
+    }
   }
 </style>
