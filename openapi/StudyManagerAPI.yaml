@@ -1012,7 +1012,6 @@ components:
           readOnly: true
         userRoles:
           type: array
-          default: []
           description: the roles the _current user_ has within _this_ study.
           items:
             $ref: '#/components/schemas/StudyRole'
@@ -1301,7 +1300,6 @@ components:
           $ref: '#/components/schemas/UserInfo'
         roles:
           type: array
-          default: []
           items:
             $ref: '#/components/schemas/StudyRole'
           uniqueItems: true
@@ -1318,7 +1316,6 @@ components:
           $ref: '#/components/schemas/UserInfo'
         roles:
           type: array
-          default: []
           items:
             title: CollaboratorRoleDetails
             type: object
