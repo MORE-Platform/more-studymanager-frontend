@@ -9,20 +9,26 @@
     Event,
     Frequency,
     ValidationReport,
+    StudyStatus,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import Scheduler from '../shared/Scheduler.vue';
   import { useDialog } from 'primevue/usedialog';
   import dayjs from 'dayjs';
   import { useComponentsApi } from '../../composable/useApi';
+  import { useStudyStore } from '../../stores/studyStore';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
+  const studyStore = useStudyStore();
 
   const dialogRef: any = inject('dialogRef');
   const observation = dialogRef.value.data.observation as Observation;
   const groupStates = dialogRef.value.data.groupStates || [];
   const factory = dialogRef.value.data.factory;
+  const editable =
+    studyStore.study.status === StudyStatus.Draft ||
+    studyStore.study.status === StudyStatus.Paused;
 
   const title = ref(observation.title);
   const purpose = ref(observation.purpose);
@@ -220,9 +226,9 @@
 </script>
 
 <template>
-  <div class="observation-dialog">
-    <div class="mb-4">
-      <h5>{{ factory.title }}</h5>
+  <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
+    <div class="mb-4" :class="editable ? '' : 'pb-4'">
+      <h5 class="mb-1">{{ factory.title }}</h5>
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-html="factory.description"></h6>
     </div>
@@ -232,7 +238,7 @@
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-      <div v-if="errors.length" class="error col-span-8">
+      <div v-if="errors.length && editable" class="error col-span-8">
         <span class="font-medium">
           {{ $t('placeholder.dialogErrorMessage') }}
         </span>
@@ -245,24 +251,31 @@
           </span>
         </div>
       </div>
-      <div class="col-start-0 col-span-2">
+      <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
         <h5>{{ $t('observation') }} {{ $t('title') }}</h5>
       </div>
-      <div class="col-span-6 col-start-3">
+      <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
         <InputText
           v-model="title"
           type="text"
           required
           :placeholder="$t('placeholder.title')"
           style="width: 100%"
+          :disabled="!editable"
         ></InputText>
       </div>
-      <div class="col-start-0 col-span-8 grid grid-cols-8">
+      <div
+        class="col-start-0 col-span-8 grid grid-cols-8"
+        :class="editable ? '' : 'scheduler-not-editable pb-4'"
+      >
         <h5 class="col-start-0 col-span-8">Scheduler</h5>
         <div
           class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
         >
-          <div class="col-span-5">
+          <div
+            class="scheduler-info col-span-5"
+            :class="editable ? '' : 'border-disabled  col-span-7 mt-2'"
+          >
             <div
               v-if="scheduler.dtstart"
               class="grid grid-cols-2 gap-x-4 gap-y-1"
@@ -382,14 +395,19 @@
               <span v-else>{{ $t('placeholder.observationScheduler') }}</span>
             </div>
           </div>
-          <div class="col-span-2 grid grid-cols-1 gap-1">
-            <Button class="justify-center" type="button" @click="openScheduler"
+          <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
+            <Button
+              class="justify-center"
+              type="button"
+              :disabeld="!editable"
+              @click="openScheduler"
               >Open Scheduler</Button
             >
             <Button
               v-if="scheduler.dtstart"
               class="justify-center"
               type="button"
+              :disabled="!editable"
               @click="removeScheduler"
               >Remove Schedule</Button
             >
@@ -403,6 +421,7 @@
           :placeholder="$t('placeholder.purpose')"
           :auto-resize="true"
           style="width: 100%"
+          :disabled="!editable"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
@@ -413,6 +432,7 @@
           :placeholder="$t('placeholder.participantInfo')"
           :auto-resize="true"
           style="width: 100%"
+          :disabled="!editable"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
@@ -425,6 +445,8 @@
             placeholder="Enter the main purpose and intention of the study."
             :auto-resize="true"
             style="width: 100%"
+            class="border-disabled"
+            :disabled="!editable"
           ></Textarea>
         </div>
       </div>
@@ -433,11 +455,13 @@
         class="col-start-0 col-span-8"
         :class="[studyGroupId ? 'groupIdValue' : '']"
       >
+        <h5 v-if="!editable" class="pb-2 font-bold">Study Group</h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"
           option-label="label"
           option-value="value"
+          :disabled="!editable"
           :placeholder="
             getLabelForChoiceValue(studyGroupId, groupStates) ||
             $t('entireStudy')
@@ -447,23 +471,25 @@
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button type="submit" @click="checkRequiredFields()">Save</Button>
+        <Button class="p-button-secondary" @click="cancel()">
+          <span v-if="editable">Cancel</span>
+          <span v-else>Close</span>
+        </Button>
+        <Button
+          v-if="editable"
+          :type="editable ? 'submit' : ''"
+          :disabled="!editable"
+          @click="checkRequiredFields()"
+          >Save</Button
+        >
       </div>
     </form>
   </div>
 </template>
 
 <style scoped lang="postcss">
-  .observation-dialog {
-    .buttons {
-      button {
-        margin-left: 10px;
-      }
-    }
-    .error {
-      color: #d57575;
-    }
+  @import '../../styles/components/moreTable-dialogs.pcss';
+  .dialog {
     .day {
       &:after {
         content: ', ';
@@ -475,9 +501,5 @@
     .groupIdValue {
       color: var(--text-color);
     }
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
   }
 </style>

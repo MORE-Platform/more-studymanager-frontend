@@ -160,6 +160,7 @@
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
     },
-    "formTitle": "Configure your Cron Schedule"
+    "formTitle": "Configure your Cron Schedule",
+    "formTitleDisabled": "Configuration of your Cron Schedule"
   }
 }
