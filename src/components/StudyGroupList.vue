@@ -4,7 +4,6 @@
     MoreTableAction,
     MoreTableColumn,
     MoreTableRowActionResult,
-    MoreTableActionResult,
   } from '../models/MoreTableModel';
   import {
     StudyGroup,
@@ -75,11 +74,7 @@
     );
   }
 
-  function executeAction(
-    unknownAction: MoreTableActionResult | MoreTableRowActionResult<unknown>
-  ) {
-    const action: MoreTableRowActionResult<StudyGroup> =
-      unknownAction as MoreTableRowActionResult<StudyGroup>;
+  function executeAction(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete':
         return studyGroupStore.deleteStudyGroup(action.row);
@@ -89,8 +84,7 @@
         console.error('no handler for action', action);
     }
   }
-  function changeValueInPlace(unknownStudyGroup: unknown) {
-    const studyGroup: StudyGroup = unknownStudyGroup as StudyGroup;
+  function changeValueInPlace(studyGroup: StudyGroup) {
     studyGroupStore.updateStudyGroup(studyGroup);
   }
 </script>

@@ -17,7 +17,6 @@
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
-    MoreTableActionResult,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -156,10 +155,7 @@
     }
   }
 
-  function execute(
-    unknownAction: MoreTableRowActionResult<unknown> | MoreTableActionResult
-  ) {
-    const action = unknownAction as MoreTableRowActionResult<StudyGroup>;
+  function execute(action: MoreTableRowActionResult<StudyGroup>) {
     switch (action.id) {
       case 'delete':
         return deleteIntervention(action.row);
@@ -172,8 +168,7 @@
     }
   }
 
-  async function changeValue(unknownIntervention: unknown) {
-    const intervention = unknownIntervention as Intervention;
+  async function changeValue(intervention: Intervention) {
     try {
       //do change immediately (ux)
       const i = interventionList.value.findIndex(
@@ -366,8 +361,7 @@
     }
   }
 
-  function openEditIntervetion(unknownInterventionId: unknown) {
-    const interventionId = unknownInterventionId as number;
+  function openEditIntervetion(interventionId: number) {
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId
     );

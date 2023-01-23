@@ -218,8 +218,7 @@
       .then(listParticipant);
   }
 
-  function changeValue(unknownParticipant: unknown) {
-    const participant: Participant = unknownParticipant as Participant;
+  function changeValue(participant: Participant) {
     const i = participantsList.value.findIndex(
       (v) => v.participantId === participant.participantId
     );

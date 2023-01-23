@@ -4,8 +4,6 @@
     MoreTableColumn,
     MoreTableAction,
     MoreTableSortOptions,
-    MoreTableRowActionResult,
-    MoreTableActionResult,
     MoreTableChoice,
     MoreTableActionOption,
     MoreTableChoiceOptions,
@@ -131,12 +129,10 @@
   const editMode = ref([]);
 
   const emit = defineEmits<{
-    (e: 'onselect', row: unknown): void;
-    (
-      e: 'onaction',
-      result: MoreTableRowActionResult<unknown> | MoreTableActionResult
-    ): void;
-    (e: 'onchange', row: unknown): void;
+    (e: 'onselect', row: any): void;
+    //use MoreTableRowActionResult<any> or MoreTableActionResult
+    (e: 'onaction', result: any): void;
+    (e: 'onchange', row: any): void;
   }>();
 
   function selectHandler(rowKey: string) {
@@ -147,7 +143,7 @@
     emit('onaction', { id: action.id, properties });
   }
 
-  function rowActionHandler(action: MoreTableAction, row: unknown) {
+  function rowActionHandler(action: MoreTableAction, row: any) {
     if (action.confirm) {
       confirm.require({
         header: action.confirm.header,
@@ -161,7 +157,7 @@
     }
   }
 
-  function isVisible(action: MoreTableAction, row: unknown = undefined) {
+  function isVisible(action: MoreTableAction, row: any = undefined) {
     return action.visible === undefined || action.visible(row);
   }
 
@@ -187,7 +183,7 @@
     );
   }
 
-  function save(row: unknown) {
+  function save(row: any) {
     emit('onchange', clean(row));
     cancel(row);
   }

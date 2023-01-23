@@ -238,11 +238,13 @@
           until: repeatUntil.value
             ? dateToDateString(repeatUntil.value)
             : undefined,
-          count: getNumberFromStringNullable(repeatCount.value),
+          count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
           interval: repeatInterval.value,
           byday: repeatByDay.value,
           bymonth: repeatByMonth.value,
-          bymonthday: getNumberFromStringNullable(repeatByMonthDay.value),
+          bymonthday: repeatByMonthDay.value
+            ? parseInt(repeatByMonthDay.value)
+            : undefined,
           bysetpos: repeatBySetPos.value,
         };
       }
@@ -250,13 +252,6 @@
       dialogRef.value.close(returnEvent);
     } catch (e) {
       console.error('Cannot send schedule event ', e);
-    }
-  }
-
-  function getNumberFromStringNullable(value: Nullable<string>) {
-    if (value) {
-      console.log(parseInt(value));
-      return parseInt(value);
     }
   }
 

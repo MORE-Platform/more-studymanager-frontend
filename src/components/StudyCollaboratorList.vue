@@ -137,10 +137,8 @@
   ];
 
   function execute(
-    unknownAction: MoreTableActionResult | MoreTableRowActionResult<unknown>
+    action: MoreTableRowActionResult<MoreTableCollaboratorItem>
   ) {
-    const action: MoreTableRowActionResult<MoreTableCollaboratorItem> =
-      unknownAction as MoreTableRowActionResult<MoreTableCollaboratorItem>;
     switch (action.id) {
       case 'deleteCollab':
         return deleteStudyCollaborator(action.row);
@@ -201,9 +199,7 @@
     return roleChoices;
   }
 
-  function changeValue(unknownCollabListItem: unknown) {
-    const collabListItem: MoreTableCollaboratorItem =
-      unknownCollabListItem as MoreTableCollaboratorItem;
+  function changeValue(collabListItem: MoreTableCollaboratorItem) {
     const collaborator: Collaborator = {
       roles: collabListItem.roles.map(
         (v: MoreTableChoice) => v.value as StudyRole
