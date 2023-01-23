@@ -226,9 +226,9 @@
 </script>
 
 <template>
-  <div class="observation-dialog">
+  <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
     <div class="mb-4" :class="editable ? '' : 'pb-4'">
-      <h5>{{ factory.title }}</h5>
+      <h5 class="mb-1">{{ factory.title }}</h5>
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-html="factory.description"></h6>
     </div>
@@ -272,7 +272,10 @@
         <div
           class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
         >
-          <div class="scheduler-info col-span-5">
+          <div
+            class="scheduler-info col-span-5"
+            :class="editable ? '' : 'border-disabled  col-span-7 mt-2'"
+          >
             <div
               v-if="scheduler.dtstart"
               class="grid grid-cols-2 gap-x-4 gap-y-1"
@@ -392,11 +395,11 @@
               <span v-else>{{ $t('placeholder.observationScheduler') }}</span>
             </div>
           </div>
-          <div class="col-span-2 grid grid-cols-1 gap-1">
+          <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
             <Button
               class="justify-center"
               type="button"
-              :disabled="!editable"
+              :disabeld="!editable"
               @click="openScheduler"
               >Open Scheduler</Button
             >
@@ -442,6 +445,7 @@
             placeholder="Enter the main purpose and intention of the study."
             :auto-resize="true"
             style="width: 100%"
+            class="border-disabled"
             :disabled="!editable"
           ></Textarea>
         </div>
@@ -451,6 +455,7 @@
         class="col-start-0 col-span-8"
         :class="[studyGroupId ? 'groupIdValue' : '']"
       >
+        <h5 v-if="!editable" class="pb-2 font-bold">Study Group</h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"
@@ -466,13 +471,12 @@
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
+        <Button class="p-button-secondary" @click="cancel()">
+          <span v-if="editable">Cancel</span>
+          <span v-else>Close</span>
+        </Button>
         <Button
-          class="p-button-secondary"
-          :disabled="!editable"
-          @click="cancel()"
-          >Cancel</Button
-        >
-        <Button
+          v-if="editable"
           :type="editable ? 'submit' : ''"
           :disabled="!editable"
           @click="checkRequiredFields()"
@@ -484,15 +488,8 @@
 </template>
 
 <style scoped lang="postcss">
-  .observation-dialog {
-    .buttons {
-      button {
-        margin-left: 10px;
-      }
-    }
-    .error {
-      color: #d57575;
-    }
+  @import '../../styles/components/moreTable-dialogs.pcss';
+  .dialog {
     .day {
       &:after {
         content: ', ';
@@ -504,36 +501,5 @@
     .groupIdValue {
       color: var(--text-color);
     }
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  /* active inactive study - disabled editable dialog  */
-  input[disabled],
-  textarea[disabled],
-  dropdown[disabled] {
-    border: none;
-    color: var(--text-color) !important;
-    opacity: 1;
-    font-size: calc(var(--default-font-size) * 1.1);
-    padding: 0;
-    height: auto !important;
-  }
-  .scheduler-not-editable .scheduler-info {
-    padding-top: 10px;
-    font-size: calc(var(--default-font-size) * 1.1);
-  }
-  .p-dropdown.p-disabled {
-    border: none;
-    opacity: 1;
-  }
-  :deep(.p-dropdown.p-disabled .p-dropdown-label.p-placeholder) {
-    color: var(--text-color);
-    font-size: calc(var(--default-font-size) * 1.1) !important;
-  }
-  :deep(.p-dropdown.p-disabled .p-dropdown-trigger) {
-    display: none;
   }
 </style>
