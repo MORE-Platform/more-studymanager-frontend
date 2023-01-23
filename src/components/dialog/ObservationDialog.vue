@@ -481,7 +481,7 @@
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : ''"
+          :type="editable ? 'submit' : undefined"
           :disabled="!editable"
           @click="checkRequiredFields()"
           >Save</Button
