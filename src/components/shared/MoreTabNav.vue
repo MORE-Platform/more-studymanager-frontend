@@ -6,7 +6,7 @@
   import { useDialog } from 'primevue/usedialog';
   import AccessDialog from 'primevue/dynamicdialog';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const accessDialog = useDialog();
   const { t } = useI18n();
@@ -119,8 +119,7 @@
       msg.value = msg.value + '"' + role.label + '"';
       if (index === activeTab.access.length - 1) {
         msg.value =
-          msg.value +
-          t('studyNavigation.accessDialog.permissionWarningMsg');
+          msg.value + t('studyNavigation.accessDialog.permissionWarningMsg');
       }
     });
     return msg.value;

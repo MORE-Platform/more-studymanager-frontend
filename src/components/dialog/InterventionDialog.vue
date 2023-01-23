@@ -16,7 +16,7 @@
   } from '../../generated-sources/openapi';
   import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
   import { useStudyStore } from '../../stores/studyStore';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -447,7 +447,9 @@
       </div>
 
       <div class="col-start-0 col-span-8">
-        <h5 v-if="!editable" class="pb-2 font-bold">{{ $t('study.props.studyGroup') }}</h5>
+        <h5 v-if="!editable" class="pb-2 font-bold">
+          {{ $t('study.props.studyGroup') }}
+        </h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"

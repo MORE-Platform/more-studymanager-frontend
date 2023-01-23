@@ -17,7 +17,7 @@
   import dayjs from 'dayjs';
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -300,8 +300,10 @@
                 class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1"
               >
                 <div>
-                  <span class="font-medium">{{ $t('scheduler.labels.frequency') }}: </span
-                  > {{ scheduler.rrule.freq }}
+                  <span class="font-medium"
+                    >{{ $t('scheduler.labels.frequency') }}:
+                  </span>
+                  {{ scheduler.rrule.freq }}
                 </div>
                 <div v-if="scheduler?.rrule?.interval">
                   For {{ scheduler.rrule.interval }}
@@ -361,7 +363,9 @@
                 "
                 class="col-span-2"
               >
-                <span class="font-medium">{{ $t('scheduler.labels.daysSelected')}}: </span>
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.daysSelected') }}:
+                </span>
                 <span
                   v-for="(day, index) in scheduler.rrule.byday"
                   :key="index"
@@ -375,7 +379,9 @@
                 v-if="scheduler.rrule && scheduler.rrule.count"
                 class="col-span-2"
               >
-                <span class="font-medium">{{ $t('scheduler.labels.repetitionEnd') }}:</span>
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.repetitionEnd') }}:</span
+                >
                 {{ $t('scheduler.labels.after') }}
                 <span v-if="scheduler.rrule?.byday?.length">{{
                   scheduler.rrule.count / scheduler.rrule.byday.length
@@ -387,7 +393,9 @@
                 v-if="scheduler.rrule && scheduler.rrule.until"
                 class="col-span-2"
               >
-                <span class="font-medium">{{ $t('scheduler.labels.repetitionEnd') }}: </span>{{$t('scheduler.labels.on')}}
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.repetitionEnd') }}: </span
+                >{{ $t('scheduler.labels.on') }}
                 {{ scheduler.rrule.until }}
               </div>
             </div>
@@ -395,7 +403,9 @@
               <span v-if="schedulerError" class="error"
                 >{{ $t('observation.error.addSchedulerMsg') }}
               </span>
-              <span v-else>{{ $t('observation.placeholder.emptySchedulerMsg') }}</span>
+              <span v-else>{{
+                $t('observation.placeholder.emptySchedulerMsg')
+              }}</span>
             </div>
           </div>
           <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
@@ -458,7 +468,9 @@
         class="col-start-0 col-span-8"
         :class="[studyGroupId ? 'groupIdValue' : '']"
       >
-        <h5 v-if="!editable" class="pb-2 font-bold">{{ $t('study.props.studyGroup') }}</h5>
+        <h5 v-if="!editable" class="pb-2 font-bold">
+          {{ $t('study.props.studyGroup') }}
+        </h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"

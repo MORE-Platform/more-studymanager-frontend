@@ -7,7 +7,7 @@
     MoreTableCollaboratorItem,
   } from '../../models/MoreTableModel';
   import Button from 'primevue/button';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const dialogRef: any = inject('dialogRef');
   const collaborator: MoreTableCollaboratorItem =
@@ -62,7 +62,9 @@
     </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
-      <Button class="p-button-secondary" @click="cancel()">{{ $t('global.dialog.cancel') }}</Button>
+      <Button class="p-button-secondary" @click="cancel()">{{
+        $t('global.dialog.cancel')
+      }}</Button>
       <Button @click="save()">{{ $t('global.dialog.save') }}</Button>
     </div>
   </div>

@@ -7,7 +7,7 @@
   import Dropdown from 'primevue/dropdown';
   import { Study } from '../../generated-sources/openapi';
   import { dateToDateString } from '../../utils/dateUtils';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -62,7 +62,7 @@
 <template>
   <div>
     <div class="mb-4">
-      <h5>{{ $t('study.singular')}} {{$t('study.props.title')}}</h5>
+      <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-html="$t('study.dialog.description')"></h6>
     </div>
@@ -87,7 +87,7 @@
         </ul>
       </div>
       <div class="col-start-0 col-span-1">
-        <h5>{{ $t('study.singular') }} {{$t('study.props.title')}}</h5>
+        <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
       </div>
       <div class="col-span-5 col-start-2">
         <InputText
@@ -113,7 +113,9 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">{{ $t('study.singular') }} {{$t('global.start')}}</h5>
+        <h5 class="mb-2">
+          {{ $t('study.singular') }} {{ $t('global.start') }}
+        </h5>
         <Calendar
           v-model="start"
           :name="'start'"
@@ -124,7 +126,7 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">{{ $t('study.singular') }} {{$t('study.end')}}</h5>
+        <h5 class="mb-2">{{ $t('study.singular') }} {{ $t('study.end') }}</h5>
         <Calendar
           v-model="end"
           :name="'end'"
@@ -167,8 +169,12 @@
         ></Textarea>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">{{ $t('global.dialog.cancel') }}</Button>
-        <Button type="submit" @click="checkRequiredFields()">{{ $t('global.dialog.save') }}</Button>
+        <Button class="p-button-secondary" @click="cancel()">{{
+          $t('global.dialog.cancel')
+        }}</Button>
+        <Button type="submit" @click="checkRequiredFields()">{{
+          $t('global.dialog.save')
+        }}</Button>
       </div>
     </form>
   </div>

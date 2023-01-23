@@ -11,7 +11,7 @@
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
   import dayjs from 'dayjs';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -132,7 +132,8 @@
       <div>
         <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
         <span v-else
-          >Enter information about the {{ $t('study.props.participantInfo') }}</span
+          >Enter information about the
+          {{ $t('study.props.participantInfo') }}</span
         >
       </div>
     </div>
