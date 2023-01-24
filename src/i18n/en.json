@@ -9,7 +9,8 @@
       "cancel": "Cancel"
     },
     "placeholder": {
-      "entireStudy": "Entire study"
+      "entireStudy": "Entire study",
+      "chooseDropdownOptionDefault": "Choose option"
     },
     "header": {
       "privateBeta": "Private Beta",
@@ -25,6 +26,13 @@
       "header": "Access denied",
       "permissionWarningMsg": ". Please contact your study administrator if you require access to this section.",
       "accessInformation": "-section can't be viewd. Acccess requires following permissions: "
+    },
+    "tabs": {
+      "overview": "Overview",
+      "data": "Data",
+      "participants": "Participants",
+      "observations": "Observations",
+      "interventions": "Interventions"
     }
   },
 
@@ -70,7 +78,18 @@
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
       "participantInfoInput": "Please provide information for study participants. This description will be visible at the participant's app.",
       "consentInfoInput": "Please provide information on the data that will be collected. This description will be visible at the participant's app."
+    },
+    "roles": {
+      "admin": "Study Administrator",
+      "operator": "Study Operator",
+      "viewer": "Study Viewer"
     }
+  },
+
+  "roleTypes": {
+    "STUDY_ADMIN": "Study Administrator",
+    "STUDY_OPERATOR": "Study Operator",
+    "STUDY_VIEWER": "Study Viewer"
   },
 
   "studyCollaborator":{
@@ -116,6 +135,11 @@
       "title": "Intervention Details",
       "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
     }
+  },
+
+  "moreTable": {
+    "defaultEmptyMsg": "No records",
+    "filterBy": "Filter by"
   },
 
   "id": "Id",
@@ -230,12 +254,6 @@
     "institution": "Organisation"
   },
 
-  "roleTypes": {
-    "STUDY_ADMIN": "Study Administrator",
-    "STUDY_OPERATOR": "Study Operator",
-    "STUDY_VIEWER": "Study Viewer"
-  },
-
   "cronSchedule": {
     "placeholders": {
       "secondsAndMinutes": "0-59",
@@ -272,13 +290,35 @@
       "days": "day(s)",
       "weeks": "week(s)",
       "months": "month(s)",
-      "years": "year(s)"
+      "years": "year(s)",
+      "labels": {
+        "daily": "Daily",
+        "weekly": "Weekly"
+      }
     },
     "byMonthDayLabel": {
       "first": "st",
       "second": "nd",
       "third": "rd",
       "fourth": "th"
+    },
+    "weekday": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday",
+      "short": {
+        "monday": "MO",
+        "tuesday": "TU",
+        "wednesday": "WE",
+        "thursday": "TH",
+        "friday": "FR",
+        "saturday": "SA",
+        "sunday": "SU"
+      }
     },
     "months":{
       "january": "January",
@@ -292,7 +332,21 @@
       "september": "September",
       "october": "October",
       "november": "November",
-      "december": "December"
+      "december": "December",
+      "short": {
+        "january": "Jan",
+        "february": "Feb",
+        "march": "Mar",
+        "april": "Apr",
+        "mai": "Mai",
+        "june": "Jun",
+        "july": "Jul",
+        "august":  "Aug",
+        "september": "Sep",
+        "october": "Oct",
+        "november": "Nov",
+        "december": "Dec"
+      }
     },
     "bySetPosLabel": {
       "first": "first",
@@ -302,14 +356,33 @@
       "last":  "last"
     },
     "labels":  {
-      "daysSelected": "Days selected",
-      "repetitionEnd": "Repetition end",
-      "after":  "after",
-      "on": "on",
+      "after":  "After",
+      "on": "On",
+      "every":  "Every",
       "openScheduler":  "Open Scheduler",
       "removeScheduler":  "Remove Scheduler",
-      "every":  "Every",
-      "frequency":  "Frequency"
+      "frequency":  "Frequency",
+      "repetitionEnd": "Repetition end",
+      "repeat": "Repeat",
+      "selection":{
+        "secificDay": "On a specific day",
+        "allDaysInWeek": "All days in week",
+        "allWeekdays": "All weekdays",
+        "allWeekendDays": "All weekend days",
+        "daysSelected": "Days selected"
+      },
+      "event": {
+        "first": "First Event",
+        "allDay": "All Day Event"
+      }
+    },
+    "placeholder": {
+      "chooseMonth": "Choose Month",
+      "enterDayOfMonth": "Enter Day of Month",
+      "chooseGeneralInterval": "Choose general interval",
+      "chooseDayInterval": "Choose day interval",
+      "chooseRepetitionEnd": "Choose repetition end",
+      "enterRepeatCount": "Enter repeat count"
     }
   }
 }

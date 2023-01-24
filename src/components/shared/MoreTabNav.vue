@@ -35,41 +35,41 @@
 
   const tabs: Tab[] = [
     {
-      title: 'Overview',
-      name: 'Overview',
+      title: t('studyNavigation.tabs.overview'),
+      name: t('studyNavigation.tabs.overview'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer],
     },
     {
-      title: 'Data',
-      name: 'Data',
+      title: t('studyNavigation.tabs.data'),
+      name: t('studyNavigation.tabs.data'),
       params: { studyId: props.studyId },
       access: [StudyRole.Viewer, StudyRole.Admin],
     },
     {
-      title: 'Participants',
-      name: 'Participants',
+      title: t('studyNavigation.tabs.participants'),
+      name: t('studyNavigation.tabs.participants'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
-      title: 'Observations',
-      name: 'Observations',
+      title: t('studyNavigation.tabs.observations'),
+      name: t('studyNavigation.tabs.observations'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
-      title: 'Interventions',
-      name: 'Interventions',
+      title: t('studyNavigation.tabs.interventions'),
+      name: t('studyNavigation.tabs.interventions'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
   ] as Tab[];
 
   const studyRoleValues: MoreTableChoice[] = [
-    { label: 'Study Administrator', value: StudyRole.Admin },
-    { label: 'Study Operator', value: StudyRole.Operator },
-    { label: 'Study Viewer', value: StudyRole.Viewer },
+    { label: t('study.roles.admin'), value: StudyRole.Admin },
+    { label: t('study.roles.operator'), value: StudyRole.Operator },
+    { label: t('study.roles.viewer'), value: StudyRole.Viewer },
   ];
 
   const activeTab = tabs.find((r) => r.name === route.name);
