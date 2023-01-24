@@ -380,7 +380,7 @@
             v-model="nonScheduleInput"
             required
             :disabled="!editable"
-            placeholder="Enter the config for the trigger"
+            :placeholder="$t('intervention.description.provideTriggerConfig')"
             :auto-resize="true"
             style="width: 100%"
           ></Textarea>
@@ -396,7 +396,9 @@
             v-if="editable"
             class="splitButton disable-left lg:cols-pan-1 w-full"
             type="button"
-            :label="t('global.new') + ' ' + t('intervention.props.action')"
+            :label="
+              t('global.labels.new') + ' ' + t('intervention.props.action')
+            "
             :icon="'pi pi-plus'"
             aria-haspopup="true"
             aria-controls="overlay_menu"
@@ -430,7 +432,7 @@
             <Textarea
               v-model="actionsArray[index].properties"
               class="border-disabled col-span-9"
-              placeholder="Enter the config for the action"
+              :placeholder="'intervention.description.provideActionConfig'"
               required
               :disabled="!editable"
               :auto-resize="true"
@@ -458,7 +460,7 @@
           option-label="label"
           option-value="value"
           :disabled="!editable"
-          :placeholder="$t(groupPlaceholder)"
+          :placeholder="groupPlaceholder"
         >
           <template #option="optionProps">
             <div class="p-dropdown-car-option">
@@ -470,15 +472,15 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">
-          <span v-if="editable">{{ $t('global.dialog.cancel') }}</span>
-          <span v-else>{{ $t('global.dialog.close') }}</span>
+          <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
+          <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>
         <Button
           v-if="editable"
           type="submit"
           :disabled="!editable"
           @click="checkErrors()"
-          >{{ $t('global.dialog.save') }}</Button
+          >{{ $t('global.labels.save') }}</Button
         >
       </div>
     </form>

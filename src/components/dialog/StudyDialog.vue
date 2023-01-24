@@ -109,12 +109,12 @@
           :name="'language'"
           option-label="name"
           option-value="value"
-          placeholder="Select a language"
+          :placeholder="t('study.placeholder.selectLanguage')"
         />
       </div>
       <div class="col-start-0 col-span-2">
         <h5 class="mb-2">
-          {{ $t('study.singular') }} {{ $t('global.start') }}
+          {{ $t('study.singular') }} {{ $t('global.labels.start') }}
         </h5>
         <Calendar
           v-model="start"
@@ -126,7 +126,9 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">{{ $t('study.singular') }} {{ $t('study.end') }}</h5>
+        <h5 class="mb-2">
+          {{ $t('study.singular') }} {{ $t('global.labels.end') }}
+        </h5>
         <Calendar
           v-model="end"
           :name="'end'"
@@ -170,10 +172,10 @@
       </div>
       <div class="buttons col-start-0 col-span-6 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">{{
-          $t('global.dialog.cancel')
+          $t('global.labels.cancel')
         }}</Button>
         <Button type="submit" @click="checkRequiredFields()">{{
-          $t('global.dialog.save')
+          $t('global.labels.save')
         }}</Button>
       </div>
     </form>

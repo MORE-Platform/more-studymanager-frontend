@@ -31,7 +31,7 @@
       type="button"
       title="Close"
       @click="emit('onchange', StudyStatus.Closed)"
-      >{{ $t('global.close') }}</Button
+      >{{ $t('global.labels.close') }}</Button
     >
     <!--icon="pi pi-stop-circle"-->
   </div>

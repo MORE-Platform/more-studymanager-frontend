@@ -15,7 +15,7 @@
     <div class="mb-8">{{ message }}</div>
     <div class="flex justify-end">
       <Button type="button" class="p-button" @click="closeDialog">{{
-        $t('global.dialog.close')
+        $t('global.labels.close')
       }}</Button>
     </div>
   </div>

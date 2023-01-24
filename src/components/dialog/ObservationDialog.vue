@@ -283,7 +283,9 @@
               class="grid grid-cols-2 gap-x-4 gap-y-1"
             >
               <div>
-                <span class="font-medium">{{ $t('global.start') }}: </span>
+                <span class="font-medium"
+                  >{{ $t('global.labels.start') }}:
+                </span>
                 <span>
                   {{
                     dayjs(scheduler.dtstart).format('DD/MM/YYYY, HH:mm')
@@ -291,7 +293,7 @@
                 >
               </div>
               <div>
-                <span class="font-medium">{{ $t('global.end') }}: </span
+                <span class="font-medium">{{ $t('global.labels.end') }}: </span
                 >{{ dayjs(scheduler.dtend).format('DD/MM/YYYY, HH:mm') }}
               </div>
 
@@ -366,7 +368,7 @@
                 class="col-span-2"
               >
                 <span class="font-medium"
-                  >{{ $t('scheduler.labels.daysSelected') }}:
+                  >{{ $t('scheduler.labels.selection.daysSelected') }}:
                 </span>
                 <span
                   v-for="(day, index) in scheduler.rrule.byday"
@@ -453,13 +455,13 @@
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">Configuration</h5>
+        <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
           <Textarea
             v-model="properties"
             required
-            placeholder="Enter the main purpose and intention of the study."
+            :placeholder="t('observation.placeholder.enterMainPurpose')"
             :auto-resize="true"
             style="width: 100%"
             class="border-disabled"
@@ -491,15 +493,15 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">
-          <span v-if="editable">{{ $t('global.dialog.cancel') }}</span>
-          <span v-else>{{ $t('global.dialog.close') }}</span>
+          <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
+          <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>
         <Button
           v-if="editable"
           :type="editable ? 'submit' : undefined"
           :disabled="!editable"
           @click="checkRequiredFields()"
-          >{{ $t('global.dialog.save') }}</Button
+          >{{ $t('global.labels.save') }}</Button
         >
       </div>
     </form>

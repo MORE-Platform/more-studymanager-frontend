@@ -41,7 +41,7 @@
         study: props.study,
       },
       props: {
-        header: t('study.dialog.editHeader'),
+        header: t('study.dialog.header.edit'),
         style: {
           width: '50vw',
         },

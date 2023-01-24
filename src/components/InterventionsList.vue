@@ -25,10 +25,12 @@
   import { useDialog } from 'primevue/usedialog';
   import InterventionDialog from '../components/dialog/InterventionDialog.vue';
   import useLoader from '../composable/useLoader';
+  import { useI18n } from 'vue-i18n';
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
   const { componentsApi } = useComponentsApi();
+  const { t } = useI18n();
 
   const interventionList: Ref<Intervention[]> = ref([]);
   const dialog = useDialog();
@@ -72,25 +74,25 @@
   const interventionColumns: MoreTableColumn[] = [
     {
       field: 'title',
-      header: 'title',
+      header: t('study.props.title'),
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'purpose',
-      header: 'purpose',
+      header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
     },
     {
       field: 'studyGroupId',
-      header: 'group',
+      header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
       editable: { values: groupStatuses },
       sortable: true,
       filterable: { showFilterMatchModes: false },
-      placeholder: 'entireStudy',
+      placeholder: t('global.placeholder.entireStudy'),
     },
   ];
 
@@ -98,7 +100,7 @@
     {
       id: 'create',
       icon: 'pi pi-plus',
-      label: 'Add Intervention',
+      label: t('intervention.interventionList.action.add'),
       visible: () => actionsVisible,
     },
   ];
@@ -106,18 +108,17 @@
   const rowActions: MoreTableAction[] = [
     {
       id: 'clone',
-      label: 'Clone',
+      label: t('global.labels.clone'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
       confirm: {
-        header: 'Delete Study',
-        message:
-          'Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ...',
+        header: t('intervention.dialog.header.delete'),
+        message: t('intervention.dialog.msg.delete'),
       },
     },
   ];
@@ -160,9 +161,13 @@
       case 'delete':
         return deleteIntervention(action.row);
       case 'create':
-        return openInterventionDialog('Create Intervention');
+        return openInterventionDialog(t('intervention.dialog.header.create'));
       case 'clone':
-        return openInterventionDialog('Clone Intervention', action.row, true);
+        return openInterventionDialog(
+          t('intervention.dialog.header.clone'),
+          action.row,
+          true
+        );
       default:
         console.error('no handler for action', action);
     }
@@ -188,7 +193,7 @@
         .then(listInterventions)
         .finally(loader.disable);
     } catch (e) {
-      console.error("Couldn't update opservation " + intervention.title);
+      console.error("Couldn't update intervention " + intervention.title);
       loader.reset();
     }
   }
@@ -366,12 +371,12 @@
       (i) => i.interventionId === interventionId
     );
     if (intervention) {
-      let dialogTitle = 'Edit intervention';
+      let dialogTitle = t('intervention.dialog.header.edit');
       if (
         props.studyStatus === StudyStatus.Active ||
         props.studyStatus === StudyStatus.Closed
       ) {
-        dialogTitle = 'Intervention Details';
+        dialogTitle = t('intervention.dialog.header.view');
       }
       openInterventionDialog(dialogTitle, intervention);
     }
@@ -440,8 +445,8 @@
   <div class="interventions-list">
     <MoreTable
       row-id="interventionId"
-      :title="$t('interventions')"
-      :subtitle="$t('interventionListDescr')"
+      :title="$t('intervention.interventionList.title')"
+      :subtitle="$t('intervention.interventionList.description')"
       :columns="interventionColumns"
       :rows="interventionList"
       :row-actions="rowActions"
@@ -450,7 +455,7 @@
       :loading="loader.loading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      :empty-message="$t('listDescription.emptyInterventionList')"
+      :empty-message="$t('intervention.interventionList.emptyListMsg')"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

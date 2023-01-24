@@ -25,9 +25,9 @@
       class="container rounded-lg bg-white p-10"
     >
       <div class="data-header-textblock">
-        <h3>Data</h3>
+        <h3>{{ $t('data.title') }}</h3>
         <h4>
-          {{ $t('listDescription.data') }}
+          {{ $t('data.description') }}
         </h4>
       </div>
       <DataView />

@@ -1,16 +1,35 @@
 {
+  "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
+
   "global": {
-    "new": "New",
-    "start": "Start",
-    "end": "End",
-    "dialog": {
+    "labels": {
       "close": "Close",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "new": "New",
+      "add": "Add",
+      "start": "Start",
+      "end": "End",
+      "confirm": "Confirm",
+      "id": "Id",
+      "clone": "Clone",
+      "description": "Description",
+      "edit": "Edit",
+      "lastEdited": "Last Edited",
+      "isRequired": "Required",
+      "isNotRequired": "Not required",
+      "modules": "Modules",
+      "no-value": "-",
+      "config": "Configuration",
+      "notFound": "Not found",
+      "noRecords": "No records"
     },
     "placeholder": {
-      "entireStudy": "Entire study",
-      "chooseDropdownOptionDefault": "Choose option"
+      "entireStudy": "Entire Study",
+      "chooseDropdownOptionDefault": "Choose Option",
+      "chooseRole": "Choose Role",
+      "noGroup": "No Group"
     },
     "header": {
       "privateBeta": "Private Beta",
@@ -39,25 +58,25 @@
   "study": {
     "singular": "Study",
     "plural": "Studies",
-    "dialog": {
-      "editHeader": "Edit study",
-      "createHeader": "Create study",
-      "description": "Enter the base information of your study to provide basic information for collaborators and participants.",
-      "error": {
-        "missedFieldsMsg": "Please fill out the following information fields: "
-      }
-    },
     "props": {
+      "studyId": "Study ID",
       "title": "Title",
+      "purpose": "Purpose",
+      "status": "Status",
+      "roles": "Role(s)",
       "plannedStart": "Planned start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
       "actualEnd": "Actual End",
-      "purpose": "Purpose",
       "participantInfo": "Participant Information",
       "consentInfo": "Consent Information",
       "language": "Language",
-      "studyGroup":  "Study group"
+      "studyGroup":  "Study Group"
+    },
+    "roles": {
+      "admin": "Study Administrator",
+      "operator": "Study Operator",
+      "viewer": "Study Viewer"
     },
     "statusChange": {
       "start": "Start",
@@ -71,38 +90,174 @@
       "addParticipantInfo": "Participant Info"
     },
     "placeholder": {
-      "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
-      "emptyParticipantInfo": "Participant information hasn't been added yet. To add participant information, edit the study details.",
-      "emptyConsentInfo": "Enter your description for the consent information.",
       "titleInput": "Please provide a short title.",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
       "participantInfoInput": "Please provide information for study participants. This description will be visible at the participant's app.",
-      "consentInfoInput": "Please provide information on the data that will be collected. This description will be visible at the participant's app."
+      "consentInfoInput": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
+      "selectLanguage": "Select a language",
+      "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
+      "emptyParticipantInfo": "Participant information hasn't been added yet. To add participant information, edit the study details.",
+      "emptyConsentInfo": "Enter your description for the consent information."
     },
-    "roles": {
-      "admin": "Study Administrator",
-      "operator": "Study Operator",
-      "viewer": "Study Viewer"
+    "dialog": {
+      "header":{
+        "edit": "Edit Study",
+        "create": "Create Study",
+        "delete": "Delete Study",
+        "urlCopied": "Copied Study Id"
+      },
+      "msg": {
+        "delete": "Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...",
+        "urlCopied": "Link for '{title}' study (ID: {studyId}) was copied to your clipboard."
+      },
+      "description": "Enter the base information of your study to provide basic information for collaborators and participants.",
+      "error": {
+        "missedFieldsMsg": "Please fill out the following information fields: "
+      }
+    },
+    "studyList": {
+      "title": "My dashboard of studies",
+      "description": "This is the list of your studies and studies you were invited to as a collaborator.",
+      "emptyListMsg": "No studies yet",
+      "action": {
+        "addStudy": "Add new study",
+        "copyUrl": "Copy URL"
+      }
     }
   },
 
-  "roleTypes": {
-    "STUDY_ADMIN": "Study Administrator",
-    "STUDY_OPERATOR": "Study Operator",
-    "STUDY_VIEWER": "Study Viewer"
+  "studyGroup": {
+    "singular": "Study Group",
+    "plural": "Study Groups",
+    "dialog": {
+      "header": {
+        "delete": "Delete Group",
+        "create": "Create Group"
+      },
+      "msg": {
+        "delete": "Really delete study group?"
+        }
+      },
+    "groupList": {
+      "placeholder": {
+        "title": "Set a title",
+        "purpose": "Set a proper purpose for this group",
+        "emptyGroupList": "Add groups to your study to use group functionalities. Your study groups will be listed here."
+      },
+      "action": {
+        "create": "Create Group"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Choose a group"
+    }
   },
 
   "studyCollaborator":{
     "dialog": {
       "addRole": "Please choose at least one role to continue or cancel.",
       "addCollaboratorInfo": "will be added to your Collaboratorlist. ",
-      "chooseRoles": "Choose your callaborator's roles:"
+      "chooseRoles": "Choose your callaborator's roles:",
+      "emptyDropdownValues": "Currently there are no roles available.",
+      "header": {
+        "delete": "Delete Study Collaborator",
+        "add": "Add Collaborator"
+      },
+      "msg": {
+        "delete": "Do you really want to delete the collaborator?"
+      }
+    },
+    "collaboratorList": {
+      "title": "Study Collaborators",
+      "props": {
+        "name": "Name",
+        "institution": "Organisation",
+        "email": "E-Mail"
+      },
+      "action": {
+        "add": "Add Collaborator"
+      }
+    },
+    "placeholder": {
+      "addCollaborator": "Add Collaborator",
+      "searchCollaborators": "Type to search collaborators",
+      "noResultsFound": "No results found"
+    }
+  },
+
+  "data": {
+    "title": "Data",
+    "description": "Data collected during the study will be visualized within this dashboard."
+  },
+
+  "participants": {
+    "singular": "Participant",
+    "plural": "Participants",
+    "props":{
+      "participantId": "Participant Id",
+      "alias": "Alias",
+      "token": "Token",
+      "registrationToken": "Registration Token"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Delete Participant",
+        "edit": "Edit Participant",
+        "create": "Create Participant"
+      },
+      "msg": {
+        "delete": "Really delete participant?"
+      }
+    },
+    "participantsList": {
+      "title": "Participants",
+      "description": "This is the list of participants of your study. You can add or import participants.",
+      "emptyListMsg": "Add and manage your study's participants. Your participants will be listed here.",
+      "action": {
+        "distribute": "Distribute Participants",
+        "import": "Import Participants",
+        "export": "Export Participants",
+        "add": "Add Participants"
+      },
+      "labels": {
+        "add3": "Add 3",
+        "add10": "Add 10",
+        "add25": "Add 25",
+        "add50": "Add 50"
+      }
     }
   },
 
   "observation": {
     "singular": "Observation",
     "plural": "Observations",
+    "props": {
+      "type": "Type",
+      "observationType": {
+        "smartphoneAccelerometer": "Smartphone Accelerometer",
+        "heartRateMeter": "Heart Rate Meter"
+      }
+    },
+    "observationList": {
+      "title": "Observations",
+      "description": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
+      "emptyListMsg": "Add and manage your study's observations. Your observations will be listed here.",
+      "action": {
+        "add": "Add Observation"
+      }
+    },
+    "dialog": {
+      "header": {
+        "delete": "Delete Observation",
+        "clone": "Clone Observation",
+        "create": "Create Observation",
+        "edit": "Edit observation",
+        "view": "Observation Details"
+      },
+      "msg": {
+        "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ..."
+      }
+    },
     "error":  {
       "noValidJson": "Cannot parse properties. No valid JSON.",
       "addTitle":  "Observation Title",
@@ -111,7 +266,8 @@
       "addSchedulerMsg": "Please set the scheduler for your observation."
     },
     "placeholder": {
-      "emptySchedulerMsg": "Please provide a schedule for your observation."
+      "emptySchedulerMsg": "Please provide a schedule for your observation.",
+      "enterMainPurpose": "Enter the main purpose and intention of the study."
     }
   },
 
@@ -120,7 +276,30 @@
     "plural": "Interventions",
     "props": {
       "trigger": "Trigger",
-      "action": "Action"
+      "action": "Action",
+      "actions": "Actions"
+    },
+    "dialog":  {
+      "title": "Intervention",
+      "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue.",
+      "header": {
+        "delete": "Delete Intervention",
+        "create": "Create Intervention",
+        "clone": "Clone Intervention",
+        "edit": "Edit Intervention",
+        "view": "Intervention Details"
+      },
+      "msg": {
+        "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."
+      }
+    },
+    "interventionList": {
+      "title": "Interventions",
+      "description": "An intervention describes an action delivered to the app triggered by rules on data.",
+      "emptyListMsg": "Add and manage your study's interventions. Your interventions will be listed here.",
+      "action": {
+        "add": "Add Intervention"
+      }
     },
     "error":  {
       "addTitle": "Intervention Title",
@@ -129,129 +308,20 @@
     },
     "placeholder": {
       "noDescription": "No description available",
-      "trigger": "Choose a trigger type"
+      "trigger": "Choose a trigger type",
+
+      "chooseAction": "Choose an action",
+      "emptyScheduler": "Please provide a schedule for your intervention"
     },
-    "dialog":  {
-      "title": "Intervention",
-      "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
+    "description": {
+      "provideTriggerConfig": "Enter the config for the trigger",
+      "provideActionConfig": "Enter the config for the action"
     }
   },
 
   "moreTable": {
     "defaultEmptyMsg": "No records",
     "filterBy": "Filter by"
-  },
-
-  "id": "Id",
-  "message": "testing message",
-  "studies":  "Study List",
-  "studyGroups":  "Study Groups",
-  "studyCollaborators": "Study Collaborators",
-  "studyId": "Study ID",
-  "title": "Title",
-  "start": "Start",
-  "end": "End",
-  "actions": "Actions",
-  "action": "Action",
-  "frontAction": "Copy Id",
-  "status": "Status",
-  "description": "Description",
-  "roles": "Role(s)",
-
-  "name": "Name",
-  "email": "E-Mail",
-
-  "participants": "Participants",
-  "token": "Token",
-  "group": "Study Group",
-  "participantId": "Participant Id",
-  "editParticipant": "Edit Participant",
-  "createParticipant": "Create Participant",
-  "alias": "Alias",
-  "edited": "Last Edited",
-  "externalId": "External Id",
-  "edit": "Edit",
-  "setReady": "Set Ready",
-  "save": "Save",
-  "cancel": "Cancel",
-  "registrationToken": "Registration Token",
-  "delete": "Delete",
-  "isRequired": "Required",
-  "isNotRequired": "Not required",
-  "New": "New",
-  "add": "Add",
-  "type": "Type",
-  "modules": "Modules",
-
-  "researcherRole": "Role",
-  "roleViewer": "Viewer",
-  "roleOwner": "Owner",
-
-  "statusActive": "active",
-  "statusApproved": "approved",
-  "statusCompleted": "completed",
-  "statusInactive": "inactive",
-  "statusInvited": "invited",
-  "statusAccepted": "accepted",
-  "statusDropout": "dropped out",
-
-  "statusPrep": "In Preparation",
-  "statusNew": "New",
-
-  "prepStudies": "In Preparation",
-  "activeStudies": "Active Studies",
-  "completedStudies": "Completed Studies",
-
-  "createStudy": "Create study",
-  "updateStudy": "Edit study",
-
-  "smartphoneAccelerometer": "Smartphone Accelerometer",
-  "heartRateMeter": "Heart Rate Meter",
-
-  "noModulesMsg": "Studies has no modules yet.",
-  "deleteMsg": "Are you sure you want to delete ",
-
-  "dashboardTitle": "My dashboard of studies",
-
-
-  "observationListDescr": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
-  "interventionListDescr": "An intervention describes an action delivered to the app triggered by rules on data.",
-  "noGroup": "No Group",
-  "entireStudy": "Entire Study",
-  "no-value": "-",
-  "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
-  "linkCopy": "Link for '{title}' study (ID: {studyId}) was copied to your clipboard.",
-  "tooltips": {
-    "deleteBtn": "Delete",
-    "editBtn": "Edit",
-    "downloadBtn": "Download"
-  },
-  "placeholder": {
-    "roleMultiselect": "Select one to two roles",
-
-    "group": "Choose a group",
-    "action": "Choose an action",
-
-    "chooseRole": "Choose the collaborator's roles",
-    "searchCollaborators": "Type to search collaborators",
-    "addCollaborator": "Add Collaborator",
-    "noResultsFound": "No results found",
-    "emptyPurposeOnOverview": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
-    "interventionScheduler": "Please provide a schedule for your intervention"
-  },
-  "listDescription": {
-    "participantList": "This is the list of participants of your study. You can add or import participants.",
-    "emptyParticipantList": "Add and manage your study's participants. Your participants will be listed here.",
-    "studyList": "This is the list of your studies and studies you were invited to as a collaborator.",
-    "emptyStudyGroupList": "Add groups to your study to use group functionalities. Your study groups will be listed here.",
-    "emptyObservationList": "Add and manage your study's observations. Your observations will be listed here.",
-    "emptyInterventionList": "Add and manage your study's interventions. Your interventions will be listed here.",
-    "data": "Data collected during the study will be visualized within this dashboard."
-  },
-  "dialogDescription": {
-          },
-  "user": {
-    "institution": "Organisation"
   },
 
   "cronSchedule": {
@@ -365,7 +435,7 @@
       "repetitionEnd": "Repetition end",
       "repeat": "Repeat",
       "selection":{
-        "secificDay": "On a specific day",
+        "specificDay": "On a specific day",
         "allDaysInWeek": "All days in week",
         "allWeekdays": "All weekdays",
         "allWeekendDays": "All weekend days",
@@ -384,5 +454,21 @@
       "chooseRepetitionEnd": "Choose repetition end",
       "enterRepeatCount": "Enter repeat count"
     }
+  },
+
+  "tooltips": {
+    "deleteBtn": "Delete",
+    "editBtn": "Edit",
+    "downloadBtn": "Download"
+  },
+
+  "userstatus": {
+    "active": "active",
+    "approved": "approved",
+    "inactive": "inactive",
+    "invited": "invited",
+    "accepted": "accepted",
+    "droppedOut": "dropped out",
+    "kickedOut": "kicked out"
   }
 }

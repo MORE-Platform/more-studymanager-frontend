@@ -19,11 +19,12 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  //import {useI18n} from 'vue-i18n';
   import { AxiosResponse } from 'axios';
   import StudyCollaboratorDialog from './dialog/StudyCollaboratorDialog.vue';
+  import { useI18n } from 'vue-i18n';
 
   const dialog = useDialog();
+  const { t } = useI18n();
 
   const props = defineProps({
     studyId: {
@@ -45,14 +46,13 @@
   });
 
   const roleList = [
-    { label: 'Study Administrator', value: StudyRole.Admin },
-    { label: 'Study Operator', value: StudyRole.Operator },
-    { label: 'Study Viewer', value: StudyRole.Viewer },
+    { label: t('study.roles.admin'), value: StudyRole.Admin },
+    { label: t('study.roles.operator'), value: StudyRole.Operator },
+    { label: t('study.roles.viewer'), value: StudyRole.Viewer },
   ];
 
   const { collaboratorsApi } = useCollaboratorsApi();
   const { usersApi } = useUsersApi();
-  //const {t} = useI18n();
 
   const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
@@ -65,43 +65,47 @@
   const collaboratorColumns: MoreTableColumn[] = [
     {
       field: 'name',
-      header: 'name',
+      header: t('studyCollaborator.collaboratorList.props.name'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'institution',
-      header: 'user.institution',
+      header: t('studyCollaborator.collaboratorList.props.institution'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
-    { field: 'email', header: 'email', sortable: true },
+    {
+      field: 'email',
+      header: t('studyCollaborator.collaboratorList.props.email'),
+      sortable: true,
+    },
     {
       field: 'roles',
-      header: 'roles',
+      header: t('study.props.roles'),
       type: MoreTableFieldType.multiselect,
       editable: {
         values: [
-          { label: 'Study Administrator', value: StudyRole.Admin },
-          { label: 'Study Operator', value: StudyRole.Operator },
-          { label: 'Study Viewer', value: StudyRole.Viewer },
+          { label: t('study.roles.admin'), value: StudyRole.Admin },
+          { label: t('study.roles.operator'), value: StudyRole.Operator },
+          { label: t('study.roles.viewer'), value: StudyRole.Viewer },
         ],
       },
       sortable: true,
       filterable: { showFilterMatchModes: false },
-      placeholder: 'choose Role',
+      placeholder: t('global.placeholder.chooseRole'),
     },
   ];
 
   const rowActions: MoreTableAction[] = [
     {
       id: 'deleteCollab',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => editAccess,
       confirm: {
-        header: 'Confirm',
-        message: 'Really delete the collaborator?',
+        header: t('studyCollaborator.dialog.header.delete'),
+        message: t('studyCollaborator.dialog.msg.delete'),
       },
     },
   ];
@@ -109,16 +113,20 @@
   const tableActions: MoreTableAction[] = [
     {
       id: 'create',
-      label: 'Add Collaborator',
+      label: t('studyCollaborator.collaboratorList.action.add'),
       icon: 'pi pi-plus',
       visible: () => editAccess,
       options: {
         type: 'search',
         values: [],
         valuesCallback: {
-          placeholder: 'placeholder.addCollaborator',
-          filterPlaceholder: 'placeholder.searchCollaborators',
-          noResultsPlaceholder: 'placeholder.noResultsFound',
+          placeholder: t('studyCollaborator.placeholder.addCollaborator'),
+          filterPlaceholder: t(
+            'studyCollaborator.placeholder.searchCollaborators'
+          ),
+          noResultsPlaceholder: t(
+            'studyCollaborator.placeholder.noResultsFound'
+          ),
           callback: (query: string) => {
             return usersApi.findUsers(query).then((response: AxiosResponse) => {
               const resultList = response.data.result.users.map(
@@ -182,18 +190,21 @@
     roles.forEach((item) => {
       if (item === StudyRole.Admin) {
         roleChoices.push({
-          label: 'Study Administrator',
+          label: t('study.roles.admin'),
           value: StudyRole.Admin,
         });
       }
       if (item === StudyRole.Operator) {
         roleChoices.push({
-          label: 'Study Operator',
+          label: t('study.roles.operator'),
           value: StudyRole.Operator,
         });
       }
       if (item === StudyRole.Viewer) {
-        roleChoices.push({ label: 'Study Viewer', value: StudyRole.Viewer });
+        roleChoices.push({
+          label: t('study.roles.viewer'),
+          value: StudyRole.Viewer,
+        });
       }
     });
     return roleChoices;
@@ -239,11 +250,11 @@
           institution: action.properties.institution,
           uid: action.properties.value,
         } as MoreTableCollaboratorItem,
-        placeholder: 'placeholder.chooseRole',
+        placeholder: t('global.placeholder.chooseRole'),
         roleList,
       },
       props: {
-        header: 'Add Collaborator',
+        header: t('studyCollaborator.dialog.header.add'),
         style: {
           width: '50vw',
         },
@@ -267,7 +278,7 @@
   <div class="collaborator-list">
     <MoreTable
       row-id="studyGroupId"
-      :title="$t('studyCollaborators')"
+      :title="$t('studyCollaborator.collaboratorList.title')"
       :columns="collaboratorColumns"
       :rows="collaboratorsList"
       :row-actions="rowActions"

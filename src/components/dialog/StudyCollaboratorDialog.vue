@@ -9,17 +9,19 @@
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
+
   const dialogRef: any = inject('dialogRef');
   const collaborator: MoreTableCollaboratorItem =
     dialogRef.value.data?.collaborator || {};
   const roleList: StudyRole[] = dialogRef.value.data?.roleList || [
-    { label: 'Currently are no roles available', value: null },
+    { label: t('studyCollaborator.dialog.emptyDropdownValues'), value: null },
   ];
   const placeholder: string =
-    dialogRef.value.data?.placeholder || 'Choose Option';
+    dialogRef.value.data?.placeholder ||
+    t('global.placeholder.chooseDropdownOptionDefault');
   const roleValues: Ref<MoreTableChoice[]> = ref([]);
   const warning: Ref<string | undefined> = ref(undefined);
-  const { t } = useI18n();
 
   function save() {
     if (!roleValues.value.length) {
@@ -56,16 +58,16 @@
       v-model="roleValues"
       :options="roleList"
       option-label="label"
-      :placeholder="$t(placeholder)"
+      :placeholder="placeholder"
       :show-toggle-all="false"
     >
     </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
       <Button class="p-button-secondary" @click="cancel()">{{
-        $t('global.dialog.cancel')
+        $t('global.labels.cancel')
       }}</Button>
-      <Button @click="save()">{{ $t('global.dialog.save') }}</Button>
+      <Button @click="save()">{{ $t('global.labels.save') }}</Button>
     </div>
   </div>
 </template>

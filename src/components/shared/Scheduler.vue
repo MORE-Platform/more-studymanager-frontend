@@ -294,7 +294,7 @@
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
       <h6 class="col-span-6">{{ $t('scheduler.labels.event.first') }}</h6>
-      <div class="col-span-1">{{ $t('start') }}</div>
+      <div class="col-span-1">{{ $t('global.labels.start') }}</div>
       <Calendar
         v-model="start"
         date-format="dd/mm/yy"
@@ -305,7 +305,7 @@
         style="width: 100%"
         :class="'col-span-5'"
       />
-      <div class="col-span-1">{{ $t('end') }}</div>
+      <div class="col-span-1">{{ $t('global.labels.end') }}</div>
       <Calendar
         v-model="end"
         date-format="dd/mm/yy"
@@ -480,9 +480,9 @@
     <div class="pos-bottom grid grid-cols-6">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">{{
-          $t('global.dialog.cancel')
+          $t('global.labels.cancel')
         }}</Button>
-        <Button @click="save()">{{ $t('global.dialog.save') }}</Button>
+        <Button @click="save()">{{ $t('global.labels.save') }}</Button>
       </div>
     </div>
   </div>
