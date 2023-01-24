@@ -125,7 +125,7 @@
   "dialogDescription": {
     "studyDialogTitle": "Study Details",
     "studyDialog": "Enter the base information of your study to provide basic information for collaborators and participants.",
-    "interventionsDialogTitle": "Intervention Details",
+    "interventionsDialogTitle": "Intervention",
     "interventionDialog": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
   },
   "user": {

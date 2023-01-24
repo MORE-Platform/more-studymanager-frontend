@@ -366,7 +366,14 @@
       (i) => i.interventionId === interventionId
     );
     if (intervention) {
-      openInterventionDialog('Edit intervention', intervention);
+      let dialogTitle = 'Edit intervention';
+      if (
+        props.studyStatus === StudyStatus.Active ||
+        props.studyStatus === StudyStatus.Closed
+      ) {
+        dialogTitle = 'Intervention Details';
+      }
+      openInterventionDialog(dialogTitle, intervention);
     }
   }
 
