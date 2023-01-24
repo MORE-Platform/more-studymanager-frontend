@@ -35,12 +35,12 @@
       <StudyGroupList
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"
-        :study-status="studyStore.study.status"
+        :study-status="studyStore.studyStatus"
       ></StudyGroupList>
       <StudyCollaboratorList
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"
-        :study-status="studyStore.study.status"
+        :study-status="studyStore.studyStatus"
         :use-confirm-dialog="false"
         class="mt-20"
       />
