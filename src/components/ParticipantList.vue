@@ -1,7 +1,9 @@
 <script setup lang="ts">
   import { PropType, ref, Ref } from 'vue';
   import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
+
   import {
+    FileUploadModeType,
     MoreTableAction,
     MoreTableActionResult,
     MoreTableChoice,
@@ -17,7 +19,6 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  // @ts-ignore
   import * as names from 'starwars-names';
   import useLoader from '../composable/useLoader';
   import { AxiosResponse } from 'axios';
@@ -106,8 +107,9 @@
       },
       options: {
         type: 'fileUpload',
+        values: [],
         uploadOptions: {
-          mode: 'basic',
+          mode: FileUploadModeType.basic,
         },
       },
     },
@@ -311,8 +313,8 @@
   .table-value-status-new {
     display: block;
     margin: 0.063rem 0.188rem 0 0;
-    //padding-left: 1.2rem;
-    //color: var(--primary-color);
+    /*padding-left: 1.2rem;
+    color: var(--primary-color);*/
     position: relative;
 
     /*&:before {

@@ -102,7 +102,7 @@
       <div class="flex justify-items-end">
         <StudyStatusChange
           v-if="props.userRoles.find((r) => r === StudyRole.Admin)"
-          :status="study.status"
+          :status="study.status || ''"
           @onchange="updateStudyStatus"
         ></StudyStatusChange>
         <Button

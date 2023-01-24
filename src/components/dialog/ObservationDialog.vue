@@ -352,7 +352,9 @@
                     >
                     in
                   </span>
-                  {{ getMonthLabel(scheduler.rrule.bymonth) }}
+                  <span v-if="scheduler.rrule.bymonth">
+                    {{ getMonthLabel(scheduler.rrule.bymonth) }}
+                  </span>
                 </div>
               </div>
               <div
@@ -387,7 +389,9 @@
                   scheduler.rrule.count / scheduler.rrule.byday.length
                 }}</span>
                 <span v-else>{{ scheduler.rrule.count }}</span>
-                {{ getFrequencyLabel(scheduler.rrule.freq) }}
+                <span v-if="scheduler.rrule.freq">
+                  {{ getFrequencyLabel(scheduler.rrule.freq) }}
+                </span>
               </div>
               <div
                 v-if="scheduler.rrule && scheduler.rrule.until"
@@ -492,7 +496,7 @@
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : ''"
+          :type="editable ? 'submit' : undefined"
           :disabled="!editable"
           @click="checkRequiredFields()"
           >{{ $t('global.dialog.save') }}</Button
