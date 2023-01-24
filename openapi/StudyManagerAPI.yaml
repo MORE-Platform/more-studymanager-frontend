@@ -264,7 +264,6 @@ paths:
           application/json:
             schema:
               type: array
-              default: []
               items:
                 $ref: '#/components/schemas/StudyRole'
               uniqueItems: true
