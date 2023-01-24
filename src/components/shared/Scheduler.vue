@@ -10,7 +10,7 @@
   import { MoreTableEditableChoicePropertyValues } from '../../models/MoreTableModel';
   import { dateToDateString } from '../../utils/dateUtils';
   import { Nullable } from 'vitest';
-  import {useI18n} from "vue-i18n";
+  import { useI18n } from 'vue-i18n';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -18,8 +18,18 @@
   const scheduler: any = dialogRef.value.data.scheduler;
 
   const repeatFreqArray = [
-    { label: t('scheduler.frequency.labels.daily'), value: Frequency.Daily, active: true, unit: t('scheduler.frequency.days') },
-    { label: t('scheduler.frequency.labels.weekly'), value: Frequency.Weekly, active: true, unit: t('scheduler.frequency.weeks') },
+    {
+      label: t('scheduler.frequency.labels.daily'),
+      value: Frequency.Daily,
+      active: true,
+      unit: t('scheduler.frequency.days'),
+    },
+    {
+      label: t('scheduler.frequency.labels.weekly'),
+      value: Frequency.Weekly,
+      active: true,
+      unit: t('scheduler.frequency.weeks'),
+    },
     //{label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'}
   ];
   const repeatWeekdayArray = [
@@ -80,7 +90,10 @@
       label: t('scheduler.labels.selection.allWeekdays'),
       value: [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr],
     },
-    { label: t('scheduler.labels.selection.allWeekendDays'), value: [Weekday.Sa, Weekday.Su] },
+    {
+      label: t('scheduler.labels.selection.allWeekendDays'),
+      value: [Weekday.Sa, Weekday.Su],
+    },
   ];
 
   const repeatEndOptionArray: Ref<MoreTableEditableChoicePropertyValues[]> =
@@ -466,7 +479,9 @@
     <div style="height: 100px"></div>
     <div class="pos-bottom grid grid-cols-6">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">{{ $t('global.dialog.cancel') }}</Button>
+        <Button class="p-button-secondary" @click="cancel()">{{
+          $t('global.dialog.cancel')
+        }}</Button>
         <Button @click="save()">{{ $t('global.dialog.save') }}</Button>
       </div>
     </div>

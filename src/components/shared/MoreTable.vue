@@ -25,9 +25,6 @@
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
-  import {useI18n} from "vue-i18n";
-
-  const { t } = useI18n();
 
   const props = defineProps({
     title: {
@@ -93,7 +90,7 @@
     },
   });
 
-  console.log(props.emptyMessage)
+  console.log(props.emptyMessage);
 
   const tableFilter = createTableFilter();
 
@@ -549,7 +546,9 @@
             option-label="label"
             option-value="value"
             :placeholder="
-              column.placeholder ? $t(column.placeholder) : $t('global.placeholder.chooseDropdownOptionDefault')
+              column.placeholder
+                ? $t(column.placeholder)
+                : $t('global.placeholder.chooseDropdownOptionDefault')
             "
           ></Dropdown>
           <MultiSelect
@@ -569,7 +568,9 @@
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="$t('moreTable.filterBy') + ` ` + $t(column.header).toLowerCase()"
+            :placeholder="
+              $t('moreTable.filterBy') + ` ` + $t(column.header).toLowerCase()
+            "
             @keydown.enter="filterCallback()"
           />
         </template>
