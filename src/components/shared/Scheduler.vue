@@ -9,6 +9,7 @@
   import { Frequency, Weekday, Event } from '../../generated-sources/openapi';
   import { MoreTableEditableChoicePropertyValues } from '../../models/MoreTableModel';
   import { dateToDateString } from '../../utils/dateUtils';
+  import { Nullable } from 'vitest';
 
   const dialogRef: any = inject('dialogRef');
 
@@ -111,7 +112,7 @@
       ? scheduler.rrule.interval
       : undefined
   ); // hourly/daily/weekly/monthly/yearly
-  const repeatCount: Ref<number | undefined> = ref(
+  const repeatCount: Ref<Nullable<string>> = ref(
     scheduler.rrule && scheduler.rrule.count ? scheduler.rrule.count : undefined
   ); // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
   const repeatUntil: Ref<Date | undefined> = ref(
@@ -125,7 +126,7 @@
       ? scheduler.rrule.bymonth
       : undefined
   ); // monthly/yearly
-  const repeatByMonthDay: Ref<number | undefined> = ref(
+  const repeatByMonthDay: Ref<Nullable<string>> = ref(
     scheduler.rrule && scheduler.rrule.bymonthday
       ? scheduler.rrule.bymonthday
       : undefined
@@ -150,7 +151,9 @@
   }
 
   if (repeatCount.value && repeatByDay.value?.length) {
-    repeatCount.value = repeatCount.value / repeatByDay.value?.length || 1;
+    repeatCount.value = (
+      parseInt(repeatCount.value) / repeatByDay.value?.length || 1
+    ).toString();
   }
 
   if (repeatCount.value || repeatUntil.value) {
@@ -177,10 +180,14 @@
     }
   }
 
-  function setRepeatCountLabel(repeatFreq: string) {
-    repeatCountLabel.value = repeatFreqArray.find(
-      (f: any) => f.value === repeatFreq
-    )?.unit;
+  function setRepeatCountLabel(repeatFreq: string | undefined) {
+    if (repeatFreq) {
+      repeatCountLabel.value = repeatFreqArray.find(
+        (f: any) => f.value === repeatFreq
+      )?.unit;
+    } else {
+      return '';
+    }
   }
 
   function resetYearlyInterval() {
@@ -215,7 +222,9 @@
     }
 
     if (repeatCount.value && repeatByDay.value?.length) {
-      repeatCount.value = repeatCount.value * repeatByDay.value?.length;
+      repeatCount.value = (
+        parseInt(repeatCount.value) * repeatByDay.value?.length
+      ).toString();
     }
     try {
       const returnEvent: Event = {
@@ -229,11 +238,13 @@
           until: repeatUntil.value
             ? dateToDateString(repeatUntil.value)
             : undefined,
-          count: repeatCount.value,
+          count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
           interval: repeatInterval.value,
           byday: repeatByDay.value,
           bymonth: repeatByMonth.value,
-          bymonthday: repeatByMonthDay.value,
+          bymonthday: repeatByMonthDay.value
+            ? parseInt(repeatByMonthDay.value)
+            : undefined,
           bysetpos: repeatBySetPos.value,
         };
       }
@@ -272,7 +283,7 @@
       <Calendar
         v-model="start"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"
@@ -283,7 +294,7 @@
       <Calendar
         v-model="end"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"

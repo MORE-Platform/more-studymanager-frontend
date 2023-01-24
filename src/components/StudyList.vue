@@ -97,8 +97,8 @@
   ];
   const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  function goToStudy(id: string | unknown) {
-    router.push({ name: 'Overview', params: { studyId: id as string } });
+  function goToStudy(id: string) {
+    router.push({ name: 'Overview', params: { studyId: id } });
   }
 
   function executeAction(action: MoreTableRowActionResult<Study>) {

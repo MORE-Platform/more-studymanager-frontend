@@ -97,6 +97,10 @@ export const useStudyStore = defineStore('study', () => {
   const studyUserRoles: ComputedRef<Array<StudyRole>> = computed(() => [
     ...(study.value.userRoles || []),
   ]);
+  const studyStatus: ComputedRef<StudyStatus> = computed(
+    () => study.value.status || StudyStatus.Draft
+  );
+  const studyId: ComputedRef<number> = computed(() => study.value.studyId || 0);
 
   return {
     study,
@@ -109,5 +113,7 @@ export const useStudyStore = defineStore('study', () => {
     deleteStudy,
     updateStudyInStudies,
     studyUserRoles,
+    studyStatus,
+    studyId,
   };
 });
