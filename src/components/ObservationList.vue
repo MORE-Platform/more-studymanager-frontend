@@ -253,7 +253,14 @@
       (o) => o.observationId === observationId
     );
     if (observation) {
-      openObservationDialog('Edit observation', observation);
+      let dialogTitle = 'Edit observation';
+      if (
+        props.studyStatus === StudyStatus.Active ||
+        props.studyStatus === StudyStatus.Closed
+      ) {
+        dialogTitle = 'Observation Details';
+      }
+      openObservationDialog(dialogTitle, observation);
     }
   }
 
