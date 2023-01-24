@@ -181,7 +181,7 @@
             target="_blank"
           >
             <i class="pi pi-external-link"></i>
-            <span> Further info on cron values </span>
+            <span class="pl-2"> {{ $t('cronSchedule.cronScheduleTip') }} </span>
           </a>
         </div>
       </div>

@@ -73,7 +73,7 @@
     >
       <div v-if="errors.length" class="error col-span-6">
         <span class="font-medium">
-          {{ $t('study.dialog.error.missedFieldMsg') }}
+          {{ $t('study.dialog.error.missedFieldsMsg') }}
         </span>
         <ul>
           <li

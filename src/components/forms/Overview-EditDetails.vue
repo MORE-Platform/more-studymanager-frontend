@@ -131,9 +131,9 @@
       <h5>{{ $t('study.props.participantInfo') }}</h5>
       <div>
         <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
-        <span v-else
-          >Enter information about the
-          {{ $t('study.props.participantInfo') }}</span
+        <span v-else class="placeholder"
+          >
+          {{ $t('study.placeholder.emptyParticipantInfo') }}</span
         >
       </div>
     </div>

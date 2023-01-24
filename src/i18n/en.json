@@ -1,5 +1,8 @@
 {
   "global": {
+    "new": "New",
+    "start": "Start",
+    "end": "End",
     "dialog": {
       "close": "Close",
       "save": "Save",
@@ -8,9 +11,13 @@
     "placeholder": {
       "entireStudy": "Entire study"
     },
-    "new": "New",
-    "start": "Start",
-    "end": "End"
+    "header": {
+      "privateBeta": "Private Beta",
+      "logout": "Log Out"
+    },
+    "footer": {
+      "aboutMore": "About More"
+    }
   },
 
   "studyNavigation": {
@@ -44,6 +51,12 @@
       "language": "Language",
       "studyGroup":  "Study group"
     },
+    "statusChange": {
+      "start": "Start",
+      "pause": "Pause",
+      "resume": "Resume",
+      "complete": "Close"
+    },
     "error": {
       "addTitle": "Study Title",
       "addConsentInfo": "Consent Info",
@@ -51,6 +64,7 @@
     },
     "placeholder": {
       "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
+      "emptyParticipantInfo": "Participant information hasn't been added yet. To add participant information, edit the study details.",
       "emptyConsentInfo": "Enter your description for the consent information.",
       "titleInput": "Please provide a short title.",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
@@ -246,7 +260,8 @@
     },
     "formTitle": "Configure your Cron Schedule",
     "formTitleDisabled": "Configuration of your Cron Schedule",
-    "additionalConfig":  "Additional Configuration"
+    "additionalConfig":  "Additional Configuration",
+    "cronScheduleTip": "Further info on cron values"
   },
 
   "scheduler": {
