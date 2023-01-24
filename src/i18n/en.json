@@ -132,7 +132,7 @@
       "trigger": "Choose a trigger type"
     },
     "dialog":  {
-      "title": "Intervention Details",
+      "title": "Intervention",
       "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue."
     }
   },
