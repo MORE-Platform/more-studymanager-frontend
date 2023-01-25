@@ -1,0 +1,71 @@
+/* general */
+.dialog {
+  :deep(.error) {
+    color: #d57575;
+  }
+  :deep(h5) {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  :deep(.buttons) {
+    button {
+      margin-left: 10px;
+    }
+  }
+  :deep(.splitButton) {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+
+    &.disable-left {
+      .p-splitbutton-defaultbutton {
+        pointer-events: none;
+      }
+    }
+  }
+  :deep(.error) {
+    color: #d57575;
+  }
+}
+
+
+/* active inactive study - disabled editable dialog  */
+.dialog-disabled {
+  :deep(input[disabled]),
+  :deep(textarea[disabled]),
+  :deep(dropdown[disabled]) {
+    border: none;
+    color: var(--text-color) !important;
+    opacity: 1;
+    font-size: calc(var(--default-font-size) * 1.1);
+    padding: 0;
+    height: auto !important;
+
+    &.border-disabled {
+      border: 1px solid var(--gray-200);
+      padding: 10px;
+    }
+  }
+  .scheduler-not-editable .scheduler-info {
+    padding-top: 10px;
+    font-size: calc(var(--default-font-size) * 1.1);
+  }
+  .p-dropdown.p-disabled {
+    border: none;
+    opacity: 1;
+  }
+  :deep(.p-dropdown.p-disabled .p-dropdown-label.p-placeholder) {
+    color: var(--text-color);
+    font-size: calc(var(--default-font-size) * 1.1) !important;
+    padding: 0;
+  }
+  :deep(.p-dropdown.p-disabled .p-dropdown-trigger) {
+    display: none;
+  }
+  :deep(.border-disabled) {
+    border: 1px solid var(--gray-200);
+    padding: 10px;
+  }
+}

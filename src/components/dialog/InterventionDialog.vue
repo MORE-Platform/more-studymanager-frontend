@@ -14,7 +14,6 @@
     ValidationReport,
     StudyStatus,
   } from '../../generated-sources/openapi';
-  import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
 

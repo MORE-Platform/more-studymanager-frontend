@@ -1,4 +1,4 @@
-import { createApp } from 'vue';
+import { createApp, defineAsyncComponent } from 'vue';
 import App from './App.vue';
 import './index.pcss';
 import '../src/style.pcss';
@@ -41,6 +41,9 @@ const pinia = createPinia();
 
 const app = createApp(App);
 app.provide('authService', authService);
+
+const CronSchedulerConfiguration = defineAsyncComponent(() => import('remote_app/CronSchedulerConfiguration'));
+app.component('CronSchedulerConfiguration', CronSchedulerConfiguration);
 
 app.use(i18n);
 app.use(Router);

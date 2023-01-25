@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
-  import { TriggerSchedule } from '../../models/CronSchedulerModel';
+  import { TriggerSchedule } from '../models/CronSchedulerModel';
   import cron from 'cron-validate';
   import { registerOptionPreset } from 'cron-validate/lib/option';
 

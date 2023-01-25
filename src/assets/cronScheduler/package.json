@@ -1,5 +1,5 @@
 {
-  "name": "more-studymanager-frontend",
+  "name": "remote-app",
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
@@ -46,6 +46,8 @@
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
     "@openapitools/openapi-generator-cli": "^2.2.8",
     "@originjs/vite-plugin-federation": "^1.1.14",
+    "@rollup/plugin-dynamic-import-vars": "^2.0.3",
+    "@rollup/plugin-json": "^6.0.0",
     "@tailwindcss/aspect-ratio": "^0.4.0",
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/line-clamp": "^0.3.1",
