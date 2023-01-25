@@ -15,7 +15,7 @@
       type="button"
       title="Start"
       @click="emit('onchange', StudyStatus.Active)"
-      >Start</Button
+      >{{ $t('study.statusChange.start') }}</Button
     >
     <!--icon="pi pi-play"-->
   </div>
@@ -24,14 +24,14 @@
       type="button"
       title="Pause"
       @click="emit('onchange', StudyStatus.Paused)"
-      >Pause</Button
+      >{{ $t('study.statusChange.pause') }}</Button
     >
     <!--icon="pi pi-pause"-->
     <Button
       type="button"
       title="Close"
       @click="emit('onchange', StudyStatus.Closed)"
-      >Close</Button
+      >{{ $t('global.labels.close') }}</Button
     >
     <!--icon="pi pi-stop-circle"-->
   </div>
@@ -40,14 +40,14 @@
       type="button"
       title="Resume"
       @click="emit('onchange', StudyStatus.Active)"
-      >Resume</Button
+      >{{ $t('study.statusChange.resume') }}</Button
     >
     <!--icon="pi pi-play"-->
     <Button
       type="button"
       title="Close"
       @click="emit('onchange', StudyStatus.Closed)"
-      >Close</Button
+      >{{ $t('study.statusChange.complete') }}</Button
     >
     <!-- icon="pi pi-stop-circle"-->
   </div>

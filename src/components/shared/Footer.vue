@@ -7,7 +7,7 @@
         href="https://dhp.lbg.ac.at/more/"
         target="_blank"
         class="link text-base uppercase"
-        >About More</a
+        >{{ $t('global.footer.aboutMore') }}</a
       >
     </div>
   </footer>

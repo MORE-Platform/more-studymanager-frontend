@@ -398,12 +398,12 @@
             panel-class="dropdown-search-panel"
             :empty-message="
               action.options.valuesCallback.filterPlaceholder
-                ? $t(action.options.valuesCallback.filterPlaceholder)
+                ? action.options.valuesCallback.filterPlaceholder
                 : ''
             "
             :empty-filter-message="
               action.options.valuesCallback.noResultsPlaceholder
-                ? $t(action.options.valuesCallback.noResultsPlaceholder)
+                ? action.options.valuesCallback.noResultsPlaceholder
                 : ''
             "
             @filter="
@@ -420,7 +420,7 @@
                 v-if="action.options.valuesCallback.placeholder"
                 class="text-white"
               >
-                {{ $t(action.options.valuesCallback.placeholder) }}
+                {{ action.options.valuesCallback.placeholder }}
               </span>
             </template>
             <template #option="slotProps">
@@ -510,7 +510,7 @@
         v-for="column in columns"
         :key="column.field"
         :field="column.field"
-        :header="$t(column.header)"
+        :header="column.header"
         :data-key="column.field"
         :row-hover="true"
         :sortable="column.sortable"
@@ -544,7 +544,9 @@
             option-label="label"
             option-value="value"
             :placeholder="
-              column.placeholder ? $t(column.placeholder) : 'Choose option'
+              column.placeholder
+                ? column.placeholder
+                : $t('global.placeholder.chooseDropdownOptionDefault')
             "
           ></Dropdown>
           <MultiSelect
@@ -552,7 +554,11 @@
             v-model="data[field]"
             :options="isEditableWithValues(column.editable)"
             option-label="label"
-            :placeholder="column.placeholder ? $t(column.placeholder) : ''"
+            :placeholder="
+              column.placeholder
+                ? column.placeholder
+                : $t('global.labels.chooseDropdownOptionDefault')
+            "
             :show-toggle-all="false"
           />
         </template>
@@ -564,13 +570,15 @@
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="`Filter by ` + $t(column.header).toLowerCase()"
+            :placeholder="
+              $t('moreTable.filterBy') + ` ` + column.header.toLowerCase()
+            "
             @keydown.enter="filterCallback()"
           />
         </template>
         <template #body="{ data, field }">
           <div v-if="data[field] === null" class="placeholder">
-            {{ $t(column.placeholder || 'no-value') }}
+            {{ column.placeholder || $t('global.labels.no-value') }}
           </div>
           <div v-else>
             <span

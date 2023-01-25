@@ -93,7 +93,7 @@
       <div
         class="beta-tag text-l rounded border-2 border-gray-400 px-3 py-2 font-bold uppercase text-gray-400"
       >
-        Private Beta
+        {{ $t('global.header.privateBeta') }}
       </div>
 
       <div class="user flex">
@@ -101,7 +101,7 @@
           class="logout mr-2 border-0 bg-transparent font-bold"
           @click="logout()"
         >
-          Log Out
+          {{ $t('global.header.logout') }}
         </button>
         <div>
           <svg

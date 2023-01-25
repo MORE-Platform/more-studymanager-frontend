@@ -16,9 +16,11 @@
   } from '../../generated-sources/openapi';
   import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
   import { useStudyStore } from '../../stores/studyStore';
+  import { useI18n } from 'vue-i18n';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
+  const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
   const intervention: Intervention = dialogRef.value.data?.intervention || {};
@@ -188,13 +190,13 @@
 
   function checkErrors() {
     if (!title.value) {
-      errors.value.push('Intervention Title');
+      errors.value.push(t('intervention.error.addTitle'));
     }
     if (!triggerProp.value) {
-      errors.value.push('Trigger Type and Config');
+      errors.value.push(t('intervention.error.addTriggerTypeConfig'));
     }
     if (!actionsArray.value.length) {
-      errors.value.push('At least 1 Action');
+      errors.value.push(t('intervention.error.addAction'));
     }
   }
 
@@ -254,7 +256,7 @@
     return (
       actionFactories.find(
         (a: ComponentFactory) => a.componentId === actionType
-      )?.description || 'No description available'
+      )?.description || t('intervention.placeholder.noDescription')
     );
   }
 
@@ -282,10 +284,10 @@
   <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
     <div class="mb-4" :class="editable ? '' : 'pb-4'">
       <h5 class="mb-1">
-        {{ $t('dialogDescription.interventionsDialogTitle') }}
+        {{ $t('intervention.dialog.title') }}
       </h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="$t('dialogDescription.interventionDialog')"></h6>
+      <h6 v-html="$t('intervention.dialog.description')"></h6>
     </div>
     <form
       id="interventionDialogForm"
@@ -295,7 +297,7 @@
     >
       <div v-if="errors.length && editable" class="error col-span-8">
         <span class="font-medium">
-          Please fill out following information:
+          {{ $t('study.dialog.error.missedFieldMsg') }}
         </span>
         <div>
           <span v-for="(error, index) in errors" :key="index">
@@ -307,24 +309,24 @@
         </div>
       </div>
       <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
-        <h5>{{ $t('intervention') }} {{ $t('title') }}</h5>
+        <h5>{{ $t('intervention.singular') }} {{ $t('study.props.title') }}</h5>
       </div>
       <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
         <InputText
           v-model="title"
           type="text"
           required
-          :placeholder="$t('placeholder.title')"
+          :placeholder="$t('study.placeholder.titleInput')"
           style="width: 100%"
           :disabled="!editable"
         ></InputText>
       </div>
 
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">{{ $t('purpose') }}</h5>
+        <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
-          :placeholder="$t('placeholder.purpose')"
+          :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
           style="width: 100%"
           :disabled="!editable"
@@ -332,20 +334,20 @@
       </div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
-          {{ $t('trigger') }}
+          {{ $t('intervention.props.trigger') }}
         </h5>
         <div class="col-span-1" :class="editable ? '' : 'text-end'">
           <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
           <Dropdown
             v-model="triggerType"
             :options="triggerTypesOptions"
-            class="col-span-1"
+            class="col-span-1 w-full"
             :class="editable ? 'mb-4' : 'p-0'"
             option-label="label"
             option-value="value"
             required
             :disabled="!editable"
-            :placeholder="$t('placeholder.trigger')"
+            :placeholder="$t('intervention.placeholder.trigger')"
             @change="setTriggerConfig(triggerType)"
           />
         </div>
@@ -371,14 +373,14 @@
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
           <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
-            Additional Configuration
+            {{ $t('cronSchedule.additionalConfig') }}
           </div>
           <Textarea
             v-show="hasAdditionalTriggerConfig"
             v-model="nonScheduleInput"
             required
             :disabled="!editable"
-            placeholder="Enter the config for the trigger"
+            :placeholder="$t('intervention.description.provideTriggerConfig')"
             :auto-resize="true"
             style="width: 100%"
           ></Textarea>
@@ -388,13 +390,15 @@
       <div class="col-start-0 col-span-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
-            {{ $t('action') }}
+            {{ $t('intervention.props.action') }}
           </h5>
           <Button
             v-if="editable"
             class="splitButton disable-left lg:cols-pan-1 w-full"
             type="button"
-            :label="'New Action'"
+            :label="
+              t('global.labels.new') + ' ' + t('intervention.props.action')
+            "
             :icon="'pi pi-plus'"
             aria-haspopup="true"
             aria-controls="overlay_menu"
@@ -428,7 +432,7 @@
             <Textarea
               v-model="actionsArray[index].properties"
               class="border-disabled col-span-9"
-              placeholder="Enter the config for the action"
+              :placeholder="'intervention.description.provideActionConfig'"
               required
               :disabled="!editable"
               :auto-resize="true"
@@ -447,14 +451,16 @@
       </div>
 
       <div class="col-start-0 col-span-8">
-        <h5 v-if="!editable" class="pb-2 font-bold">Study Group</h5>
+        <h5 v-if="!editable" class="pb-2 font-bold">
+          {{ $t('study.props.studyGroup') }}
+        </h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"
           option-label="label"
           option-value="value"
           :disabled="!editable"
-          :placeholder="$t(groupPlaceholder)"
+          :placeholder="groupPlaceholder"
         >
           <template #option="optionProps">
             <div class="p-dropdown-car-option">
@@ -466,15 +472,15 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">
-          <span v-if="editable">Cancel</span>
-          <span v-else>Close</span>
+          <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
+          <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>
         <Button
           v-if="editable"
           type="submit"
           :disabled="!editable"
           @click="checkErrors()"
-          >Save</Button
+          >{{ $t('global.labels.save') }}</Button
         >
       </div>
     </form>

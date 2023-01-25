@@ -11,8 +11,10 @@
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
   import dayjs from 'dayjs';
+  import { useI18n } from 'vue-i18n';
 
   const dialog = useDialog();
+  const { t } = useI18n();
 
   const props = defineProps({
     study: { type: Object as PropType<Study>, required: true },
@@ -39,7 +41,7 @@
         study: props.study,
       },
       props: {
-        header: 'Edit Study',
+        header: t('study.dialog.header.edit'),
         style: {
           width: '50vw',
         },
@@ -75,22 +77,22 @@
         "
       >
         <div>
-          <span class="font-bold">{{ $t('plannedStart') }}: </span
+          <span class="font-bold">{{ $t('study.props.plannedStart') }}: </span
           >{{ dayjs(study.plannedStart).format('DD/MM/YYYY') }}
         </div>
         <div>
-          <span class="font-bold">{{ $t('actualStart') }}: </span>
+          <span class="font-bold">{{ $t('study.props.actualStart') }}: </span>
           <span v-if="study.start">{{
             dayjs(study.start).format('DD/MM/YYYY')
           }}</span
           ><span v-else>-</span>
         </div>
         <div>
-          <span class="font-bold">{{ $t('plannedEnd') }}: </span
+          <span class="font-bold">{{ $t('study.props.plannedEnd') }}: </span
           >{{ dayjs(study.plannedEnd).format('DD/MM/YYYY') }}
         </div>
         <div>
-          <span class="font-bold">{{ $t('actualEnd') }}: </span>
+          <span class="font-bold">{{ $t('study.props.actualEnd') }}: </span>
           <span v-if="study.end">{{
             dayjs(study.end).format('DD/MM/YYYY')
           }}</span
@@ -117,28 +119,28 @@
     </div>
 
     <div class="mb-6">
-      <h5>{{ $t('purpose') }}</h5>
+      <h5>{{ $t('study.props.purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
         <span v-else class="placeholder">
-          {{ $t('placeholder.emptyPurposeOnOverview') }}
+          {{ $t('study.placeholder.emptyPurpose') }}
         </span>
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('participantInfo') }}</h5>
+      <h5>{{ $t('study.props.participantInfo') }}</h5>
       <div>
         <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
-        <span v-else
-          >Enter information about the {{ $t('participantInfo') }}</span
+        <span v-else class="placeholder">
+          {{ $t('study.placeholder.emptyParticipantInfo') }}</span
         >
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('consentInfo') }}</h5>
+      <h5>{{ $t('study.props.consentInfo') }}</h5>
       <div>
         <span v-if="study.consentInfo">{{ study.consentInfo }}</span>
-        <span v-else>Enter information about the {{ $t('consentInfo') }}</span>
+        <span v-else>{{ $t('study.placeholder.emptyConsentInfo') }}</span>
       </div>
     </div>
   </div>
