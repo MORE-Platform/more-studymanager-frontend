@@ -18,18 +18,20 @@
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import { AxiosResponse } from 'axios';
+  import { AxiosError, AxiosResponse } from 'axios';
   import { useDialog } from 'primevue/usedialog';
   import ObservationDialog from '../components/dialog/ObservationDialog.vue';
   import useLoader from '../composable/useLoader';
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
+  import { useErrorHandling } from '../composable/useErrorHandling';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
   const { t } = useI18n();
+  const { handleIndividualError } = useErrorHandling();
 
   const observationList: Ref<Observation[]> = ref([]);
   const dialog = useDialog();
@@ -131,14 +133,12 @@
   ];
 
   async function listObservations(): Promise<void> {
-    try {
-      observationList.value = await observationsApi
-        .listObservations(props.studyId)
-        .then((response: AxiosResponse) => response.data);
-    } catch (e) {
-      console.error('cannot list studies', e);
-      loader.reset();
-    }
+    observationList.value = await observationsApi
+      .listObservations(props.studyId)
+      .then((response: AxiosResponse) => response.data)
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, 'cannot list observations')
+      );
   }
 
   function execute(action: any) {
@@ -161,43 +161,42 @@
   }
 
   async function updateObservation(observation: Observation) {
-    try {
-      //do change immediately (ux)
-      const i = observationList.value.findIndex(
-        (o: Observation) => o.observationId === observation.observationId
-      );
-      if (i > -1) {
-        observationList.value[i] = observation;
-      }
-
-      await observationsApi
-        .updateObservation(
-          props.studyId,
-          observation.observationId as number,
-          observation
-        )
-        .then(listObservations);
-    } catch (e) {
-      console.error("Couldn't update opservation " + observation.title);
-      loader.reset();
+    //do change immediately (ux)
+    const i = observationList.value.findIndex(
+      (o: Observation) => o.observationId === observation.observationId
+    );
+    if (i > -1) {
+      observationList.value[i] = observation;
     }
+
+    await observationsApi
+      .updateObservation(
+        props.studyId,
+        observation.observationId as number,
+        observation
+      )
+      .then(listObservations)
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          "Couldn't update opservation " + observation.title
+        )
+      );
   }
 
   async function deleteObservation(requestObservation: Observation) {
-    try {
-      await observationsApi
-        .deleteObservation(
-          props.studyId,
-          requestObservation.observationId as number
+    await observationsApi
+      .deleteObservation(
+        props.studyId,
+        requestObservation.observationId as number
+      )
+      .then(listObservations)
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          'Cannot delete observation ' + requestObservation.observationId
         )
-        .then(listObservations);
-    } catch (e) {
-      console.error(
-        'Cannot delete observation ' + requestObservation.observationId,
-        e
       );
-      loader.reset();
-    }
   }
 
   function factoryForType(type?: string) {
@@ -243,13 +242,12 @@
   }
 
   function createObservation(newObservation: Observation) {
-    try {
-      observationsApi
-        .addObservation(props.studyId, newObservation)
-        .then(listObservations);
-    } catch (e) {
-      console.error('cannot create observation', e);
-    }
+    observationsApi
+      .addObservation(props.studyId, newObservation)
+      .then(listObservations)
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, 'Cannot create observation')
+      );
   }
 
   function openEditObservation(observationId: number) {

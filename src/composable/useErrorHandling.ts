@@ -1,12 +1,15 @@
 import axios, { AxiosError } from 'axios';
+import useLoader from './useLoader';
 
 export function useErrorHandling() {
+  const loader = useLoader();
   const handleIndividualError = (
     error: AxiosError & { globallyHandled?: boolean },
     messageKey?: string
   ) => {
     if (!error.globallyHandled) {
       console.error(`CALL ERROR HANDLING: ${error.config.url} - ${messageKey}`);
+      loader.reset();
     }
   };
   const activateGlobalErrorHandlingInterceptor = () => {
@@ -25,6 +28,7 @@ export function useErrorHandling() {
             (error as AxiosError).config.url
           );
           globallyHandled = true;
+          loader.reset();
         }
         return Promise.reject({ ...error, globallyHandled });
       }
