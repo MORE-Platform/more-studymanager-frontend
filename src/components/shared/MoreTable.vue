@@ -4,10 +4,10 @@
     MoreTableColumn,
     MoreTableAction,
     MoreTableSortOptions,
-    MoreTableRowActionResult,
-    MoreTableActionResult,
     MoreTableChoice,
     MoreTableActionOption,
+    MoreTableChoiceOptions,
+    MoreTableEditableChoiceProperties,
   } from '../../models/MoreTableModel';
   import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
   import Column from 'primevue/column';
@@ -129,12 +129,10 @@
   const editMode = ref([]);
 
   const emit = defineEmits<{
-    (e: 'onselect', row: unknown): void;
-    (
-      e: 'onaction',
-      result: MoreTableRowActionResult<unknown> | MoreTableActionResult
-    ): void;
-    (e: 'onchange', row: unknown): void;
+    (e: 'onselect', row: any): void;
+    //use MoreTableRowActionResult<any> or MoreTableActionResult
+    (e: 'onaction', result: any): void;
+    (e: 'onchange', row: any): void;
   }>();
 
   function selectHandler(rowKey: string) {
@@ -145,7 +143,7 @@
     emit('onaction', { id: action.id, properties });
   }
 
-  function rowActionHandler(action: MoreTableAction, row: unknown) {
+  function rowActionHandler(action: MoreTableAction, row: any) {
     if (action.confirm) {
       confirm.require({
         header: action.confirm.header,
@@ -159,7 +157,7 @@
     }
   }
 
-  function isVisible(action: MoreTableAction, row: unknown = undefined) {
+  function isVisible(action: MoreTableAction, row: any = undefined) {
     return action.visible === undefined || action.visible(row);
   }
 
@@ -185,7 +183,7 @@
     );
   }
 
-  function save(row: unknown) {
+  function save(row: any) {
     emit('onchange', clean(row));
     cancel(row);
   }
@@ -329,6 +327,28 @@
       );
     }
   }
+
+  function isEditableWithValues(
+    editable:
+      | boolean
+      | MoreTableChoiceOptions
+      | MoreTableEditableChoiceProperties
+      | ((data?: any) => boolean)
+      | undefined
+  ): MoreTableChoice[] {
+    if (
+      typeof editable !== 'undefined' &&
+      typeof editable !== 'boolean' &&
+      typeof editable !== 'function'
+    ) {
+      if (Object.prototype.hasOwnProperty.call(editable, 'values')) {
+        const editableWithValues = editable as MoreTableChoiceOptions;
+        return editableWithValues.values as MoreTableChoice[];
+      }
+    }
+
+    return [] as MoreTableChoice[];
+  }
 </script>
 
 <template>
@@ -363,7 +383,11 @@
           ></SplitButton>
 
           <Dropdown
-            v-if="action.options && action.options.type === 'search'"
+            v-if="
+              action.options &&
+              action.options.type === 'search' &&
+              action.options.valuesCallback
+            "
             class="button p-button dropdown-search"
             :filter="true"
             :options="searchActionsMap.get(actionIndex)"
@@ -372,23 +396,32 @@
             :icon="action.icon"
             :disabled="isVisible(action) === false"
             panel-class="dropdown-search-panel"
-            :empty-message="$t(action.options.valuesCallback.filterPlaceholder)"
+            :empty-message="
+              action.options.valuesCallback.filterPlaceholder
+                ? action.options.valuesCallback.filterPlaceholder
+                : ''
+            "
             :empty-filter-message="
-              $t(action.options.valuesCallback.noResultsPlaceholder)
+              action.options.valuesCallback.noResultsPlaceholder
+                ? action.options.valuesCallback.noResultsPlaceholder
+                : ''
             "
             @filter="
               filterActionHandler({
                 query: $event.value,
                 index: actionIndex,
-                callback: action.options.valuesCallback.callback,
+                callback: action.options?.valuesCallback?.callback,
               })
             "
           >
-            <template #value="">
+            <template #value>
               <span :class="action.icon" class="mr-2 text-white"></span>
-              <span class="text-white">{{
-                $t(action.options.valuesCallback.placeholder)
-              }}</span>
+              <span
+                v-if="action.options.valuesCallback.placeholder"
+                class="text-white"
+              >
+                {{ action.options.valuesCallback.placeholder }}
+              </span>
             </template>
             <template #option="slotProps">
               <div
@@ -396,7 +429,7 @@
                 :key="index"
                 :value="item.value"
                 class="p-dropdown-item"
-                @click="actionHandler({ id: action.id }, slotProps.option)"
+                @click="actionHandler(action, slotProps.option)"
               >
                 <span class="color-primary mr-1 inline-block font-medium">
                   {{ item.label }}
@@ -477,7 +510,7 @@
         v-for="column in columns"
         :key="column.field"
         :field="column.field"
-        :header="$t(column.header)"
+        :header="column.header"
         :data-key="column.field"
         :row-hover="true"
         :sortable="column.sortable"
@@ -487,9 +520,9 @@
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText
             v-if="
-              !column.type ||
               column.type === MoreTableFieldType.string ||
-              column.type === MoreTableFieldType.longtext
+              column.type === MoreTableFieldType.longtext ||
+              !column.type
             "
             v-model="data[field]"
             style="width: 100%"
@@ -507,17 +540,25 @@
             v-if="column.type === MoreTableFieldType.choice"
             v-model="data[field]"
             class="w-full"
-            :options="column.editable.values"
+            :options="isEditableWithValues(column.editable)"
             option-label="label"
             option-value="value"
-            :placeholder="$t(column.placeholder)"
+            :placeholder="
+              column.placeholder
+                ? column.placeholder
+                : $t('global.placeholder.chooseDropdownOptionDefault')
+            "
           ></Dropdown>
           <MultiSelect
             v-if="column.type === MoreTableFieldType.multiselect"
             v-model="data[field]"
-            :options="column.editable.values"
+            :options="isEditableWithValues(column.editable)"
             option-label="label"
-            :placeholder="$t(column.placeholder)"
+            :placeholder="
+              column.placeholder
+                ? column.placeholder
+                : $t('global.labels.chooseDropdownOptionDefault')
+            "
             :show-toggle-all="false"
           />
         </template>
@@ -529,17 +570,19 @@
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="`Filter by ` + $t(column.header).toLowerCase()"
+            :placeholder="
+              $t('moreTable.filterBy') + ` ` + column.header.toLowerCase()
+            "
             @keydown.enter="filterCallback()"
           />
         </template>
         <template #body="{ data, field }">
           <div v-if="data[field] === null" class="placeholder">
-            {{ $t(column.placeholder || 'no-value') }}
+            {{ column.placeholder || $t('global.labels.no-value') }}
           </div>
           <div v-else>
             <span
-              v-if="!column.type || column.type === MoreTableFieldType.string"
+              v-if="column.type === MoreTableFieldType.string || !column.type"
               :class="
                 'table-value table-value-' +
                 field +
@@ -561,7 +604,10 @@
               <span v-else>{{ data[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
-              getLabelForChoiceValue(data[field], column.editable.values)
+              getLabelForChoiceValue(
+                data[field],
+                isEditableWithValues(column.editable)
+              )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">{{
               dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')
@@ -600,7 +646,7 @@
             <Button
               type="button"
               icon="pi pi-pencil"
-              :disabled="isEditable(slotProps.data, slotProps) === false"
+              :disabled="isEditable(slotProps.data) === false"
               @click="edit(slotProps.data)"
             >
             </Button>

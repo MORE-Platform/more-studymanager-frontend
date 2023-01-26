@@ -22,10 +22,14 @@
   import { useDialog } from 'primevue/usedialog';
   import ObservationDialog from '../components/dialog/ObservationDialog.vue';
   import useLoader from '../composable/useLoader';
+  import { useStudyStore } from '../stores/studyStore';
+  import { useI18n } from 'vue-i18n';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
+  const studyStore = useStudyStore();
+  const { t } = useI18n();
 
   const observationList: Ref<Observation[]> = ref([]);
   const dialog = useDialog();
@@ -37,8 +41,8 @@
   });
 
   const actionsVisible =
-    props.studyStatus === StudyStatus.Draft ||
-    props.studyStatus === StudyStatus.Paused;
+    studyStore.study.status === StudyStatus.Draft ||
+    studyStore.study.status === StudyStatus.Paused;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
@@ -47,7 +51,10 @@
         value: item.studyGroupId?.toString(),
       } as MoreTableChoice)
   );
-  groupStatuses.push({ label: 'Entire Study', value: null });
+  groupStatuses.push({
+    label: t('global.placeholder.entireStudy'),
+    value: null,
+  });
 
   async function getFactories() {
     return componentsApi
@@ -67,31 +74,31 @@
   const observationColumns: MoreTableColumn[] = [
     {
       field: 'type',
-      header: 'type',
+      header: t('observation.props.type'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'title',
-      header: 'title',
+      header: t('study.props.title'),
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'purpose',
-      header: 'purpose',
+      header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
     },
     {
       field: 'studyGroupId',
-      header: 'group',
+      header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
       editable: { values: groupStatuses },
       sortable: true,
       filterable: { showFilterMatchModes: false },
-      placeholder: 'entireStudy',
+      placeholder: t('global.placeholder.entireStudy'),
     },
   ];
 
@@ -99,23 +106,26 @@
     {
       id: 'create',
       icon: 'pi pi-plus',
-      label: 'Add Observation',
+      label: t('observation.observationList.action.add'),
       visible: () => actionsVisible,
       options: { type: 'menu', values: observationTypes },
     },
   ];
 
   const rowActions: MoreTableAction[] = [
-    { id: 'clone', label: 'Clone', visible: () => actionsVisible },
+    {
+      id: 'clone',
+      label: t('global.labels.clone'),
+      visible: () => actionsVisible,
+    },
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
       confirm: {
-        header: 'Delete Study',
-        message:
-          'Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...',
+        header: t('observation.dialog.header.delete'),
+        message: t('observation.dialog.msg.delete'),
       },
     },
   ];
@@ -136,11 +146,15 @@
       case 'delete':
         return deleteObservation(action.row);
       case 'create':
-        return openObservationDialog('Create Observation', {
+        return openObservationDialog(t('observation.dialog.header.create'), {
           type: action.properties,
         });
       case 'clone':
-        return openObservationDialog('Clone Observation', action.row, 'clone');
+        return openObservationDialog(
+          t('observation.dialog.header.clone'),
+          action.row,
+          'clone'
+        );
       default:
         console.error('no handler for action', action);
     }
@@ -243,7 +257,14 @@
       (o) => o.observationId === observationId
     );
     if (observation) {
-      openObservationDialog('Edit observation', observation);
+      let dialogTitle = t('observation.dialog.header.edit');
+      if (
+        props.studyStatus === StudyStatus.Active ||
+        props.studyStatus === StudyStatus.Closed
+      ) {
+        dialogTitle = t('observation.dialog.header.view');
+      }
+      openObservationDialog(dialogTitle, observation);
     }
   }
 
@@ -254,8 +275,8 @@
   <div class="observation-list">
     <MoreTable
       row-id="observationId"
-      :title="$t('observations')"
-      :subtitle="$t('observationListDescr')"
+      :title="$t('observation.observationList.title')"
+      :subtitle="$t('observation.observationList.description')"
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
@@ -264,7 +285,7 @@
       :editable-access="actionsVisible"
       :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      :empty-message="$t('listDescription.emptyObservationList')"
+      :empty-message="$t('observation.observationList.emptyListMsg')"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
       @onchange="updateObservation($event)"

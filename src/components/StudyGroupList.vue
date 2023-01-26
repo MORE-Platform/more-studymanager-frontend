@@ -13,8 +13,10 @@
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useI18n } from 'vue-i18n';
 
   const studyGroupStore = useStudyGroupStore();
+  const { t } = useI18n();
 
   const props = defineProps({
     studyId: {
@@ -33,33 +35,36 @@
 
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
   const studyGroupColumns: MoreTableColumn[] = [
-    { field: 'studyGroupId', header: 'id', sortable: true },
+    { field: 'studyGroupId', header: t('global.labels.id'), sortable: true },
     {
       field: 'title',
-      placeholder: 'Set a title',
-      header: 'title',
+      placeholder: t('studyGroup.groupList.placeholder.title'),
+      header: t('study.props.title'),
       editable: true,
     },
     {
       field: 'purpose',
-      header: 'purpose',
+      header: t('study.props.purpose'),
       editable: true,
-      placeholder: 'Set a proper purpose for this group',
+      placeholder: t('studyGroup.groupList.placeholder.purpose'),
     },
   ];
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => getEditAccess(),
-      confirm: { header: 'Confirm', message: 'Really delete study group?' },
+      confirm: {
+        header: t('studyGroup.dialog.header.delete'),
+        message: t('studyGroup.dialog.msg.delete'),
+      },
     },
   ];
   const tableActions: MoreTableAction[] = [
     {
       id: 'create',
-      label: 'Create Group',
+      label: t('studyGroup.dialog.header.create'),
       icon: 'pi pi-plus',
       visible: () => getEditAccess(),
     },
@@ -93,14 +98,14 @@
   <div>
     <MoreTable
       row-id="studyGroupId"
-      :title="$t('studyGroups')"
+      :title="$t('studyGroup.plural')"
       :columns="studyGroupColumns"
       :rows="studyGroupStore.studyGroups"
       :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :edit-access-roles="editableRoles"
-      :empty-message="$t('listDescription.emptyStudyGroupList')"
+      :empty-message="$t('studyGroup.groupList.placeholder.emptyGroupList')"
       @onaction="executeAction($event)"
       @onchange="changeValueInPlace($event)"
     />
