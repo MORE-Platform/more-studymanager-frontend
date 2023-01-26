@@ -42,7 +42,9 @@ const pinia = createPinia();
 const app = createApp(App);
 app.provide('authService', authService);
 
-const CronSchedulerConfiguration = defineAsyncComponent(() => import('remote_app/CronSchedulerConfiguration'));
+const CronSchedulerConfiguration = defineAsyncComponent(
+  () => import('remote_app/CronSchedulerConfiguration')
+);
 app.component('CronSchedulerConfiguration', CronSchedulerConfiguration);
 
 app.use(i18n);

@@ -8,9 +8,7 @@ import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
 // Router
-import axios from 'axios';
 import { createPinia } from 'pinia';
-
 
 const pinia = createPinia();
 
