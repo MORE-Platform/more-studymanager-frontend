@@ -1,4 +1,5 @@
 import { readonly, ref } from 'vue';
+import axios from 'axios';
 
 const loaderSemaphore = ref(0);
 const loaderValue = ref(false);
@@ -17,7 +18,63 @@ const loader = {
     loaderSemaphore.value = 0;
     loaderValue.value = false;
   },
-  loading: readonly(loaderValue),
+  isLoading: readonly(loaderValue),
+  activateLoadingInterceptor: () => {
+    axios.interceptors.request.use(
+      (config) => {
+        return {
+          ...config,
+          startTimestampRequest: performance.now(),
+        };
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // loader will be shown
+    axios.interceptors.response.use(
+      async (response: any) => {
+        const minimumDelay = 300;
+        const latency =
+          performance.now() - response.config.startTimestampRequest;
+        const shouldNotDelay = minimumDelay < latency;
+
+        if (shouldNotDelay) {
+          return response;
+        }
+
+        const remainder = minimumDelay - latency;
+        const [responseWithDelay] = await Promise.all([
+          response,
+          new Promise((resolve) => setTimeout(resolve, remainder)),
+        ]);
+
+        return responseWithDelay;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    axios.interceptors.request.use(
+      (config) => {
+        loader.enable();
+        return config;
+      },
+      (error) => {
+        loader.disable();
+
+        return Promise.reject(error);
+      }
+    );
+    axios.interceptors.response.use(
+      (response) => {
+        loader.disable();
+        return response;
+      },
+      (error) => {
+        loader.disable();
+        return Promise.reject(error);
+      }
+    );
+  },
 };
 export default () => {
   return loader;

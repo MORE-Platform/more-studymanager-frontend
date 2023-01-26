@@ -172,8 +172,7 @@
     }
   }
 
-  loader.enable();
-  studyStore.listStudies().finally(() => loader.disable());
+  studyStore.listStudies();
 </script>
 
 <template>
@@ -191,7 +190,7 @@
       :sort-options="{ sortField: 'studyId', sortOrder: -1 }"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       :edit-access-roles="editAccessRoles"
-      :loading="loader.loading.value"
+      :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
       @onselect="goToStudy($event)"
       @onaction="executeAction($event)"

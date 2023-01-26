@@ -19,12 +19,14 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  import { AxiosResponse } from 'axios';
+  import { AxiosError, AxiosResponse } from 'axios';
   import StudyCollaboratorDialog from './dialog/StudyCollaboratorDialog.vue';
   import { useI18n } from 'vue-i18n';
+  import { useErrorHandling } from '../composable/useErrorHandling';
 
   const dialog = useDialog();
   const { t } = useI18n();
+  const { handleIndividualError } = useErrorHandling();
 
   const props = defineProps({
     studyId: {
@@ -129,14 +131,13 @@
           ),
           callback: (query: string) => {
             return usersApi.findUsers(query).then((response: AxiosResponse) => {
-              const resultList = response.data.result.users.map(
+              return response.data.result.users.map(
                 (u: MoreTableCollaboratorItem) => ({
                   label: u.name,
                   value: u.uid,
                   institution: u.institution,
                 })
               );
-              return resultList;
             });
           },
         },
@@ -158,21 +159,20 @@
   }
 
   async function listCollaborators() {
-    try {
-      await collaboratorsApi
-        .listStudyCollaborators(props.studyId)
-        .then((response: AxiosResponse) => {
-          collaboratorsList.value = response.data.map((item: Collaborator) => ({
-            uid: item.user.uid,
-            name: item.user.name,
-            institution: item.user.institution,
-            email: item.user.email,
-            roles: getRoleChoices(item.roles),
-          }));
-        });
-    } catch (e) {
-      console.error('Cannot list collaborators: ' + props.studyId, e);
-    }
+    await collaboratorsApi
+      .listStudyCollaborators(props.studyId)
+      .then((response: AxiosResponse) => {
+        collaboratorsList.value = response.data.map((item: Collaborator) => ({
+          uid: item.user.uid,
+          name: item.user.name,
+          institution: item.user.institution,
+          email: item.user.email,
+          roles: getRoleChoices(item.roles),
+        }));
+      })
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, 'Cannot list collaborators: ' + props.studyId)
+      );
   }
 
   function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {

@@ -21,14 +21,16 @@
   import ConfirmDialog from 'primevue/confirmdialog';
   import * as names from 'starwars-names';
   import useLoader from '../composable/useLoader';
-  import { AxiosResponse } from 'axios';
+  import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
+  import { useErrorHandling } from '../composable/useErrorHandling';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
+  const { handleIndividualError } = useErrorHandling();
 
   const props = defineProps({
     studyId: {
@@ -151,16 +153,13 @@
   ];
 
   async function listParticipant(): Promise<void> {
-    loader.enable();
-    try {
-      participantsList.value = await participantsApi
-        .listParticipants(props.studyId)
-        .then((response) => response.data);
-    } catch (e) {
-      console.error('cannot list participants', e);
-    } finally {
-      loader.disable();
-    }
+    participantsList.value = await participantsApi
+      .listParticipants(props.studyId)
+      .then((response) => response.data)
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list participants');
+        return participantsList.value;
+      });
   }
 
   function distributeGroups(): void {
@@ -305,7 +304,7 @@
       :rows="participantsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :loading="loader.loading.value"
+      :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"

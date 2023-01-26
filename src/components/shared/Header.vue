@@ -6,8 +6,7 @@
 
   const auth = inject('authService') as AuthService;
 
-  const loading = useLoader().loading;
-
+  const loading = useLoader().isLoading;
   function logout() {
     auth.logout();
   }
@@ -20,9 +19,7 @@
         <div class="logo">
           <svg
             id="Liniengrafik"
-            version="1.1"
             xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
             y="0px"
             viewBox="0 0 493.2 215.4"
@@ -107,7 +104,6 @@
           <svg
             width="20pt"
             height="20pt"
-            version="1.1"
             viewBox="0 0 1200 1200"
             xmlns="http://www.w3.org/2000/svg"
           >
