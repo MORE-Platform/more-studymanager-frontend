@@ -477,7 +477,7 @@
     </div>
 
     <div style="height: 100px"></div>
-    <div class="pos-bottom grid grid-cols-6">
+    <div class="pos-bottom grid grid-cols-6 w-full">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">{{
           $t('global.labels.cancel')
