@@ -1,7 +1,9 @@
 <script setup lang="ts">
   import { PropType, ref, Ref } from 'vue';
   import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
+
   import {
+    FileUploadModeType,
     MoreTableAction,
     MoreTableActionResult,
     MoreTableChoice,
@@ -17,15 +19,18 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  // @ts-ignore
   import * as names from 'starwars-names';
   import useLoader from '../composable/useLoader';
-  import { AxiosResponse } from 'axios';
+  import { AxiosError, AxiosResponse } from 'axios';
+  import { useI18n } from 'vue-i18n';
+  import { useErrorHandling } from '../composable/useErrorHandling';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
+  const { t } = useI18n();
+  const { handleIndividualError } = useErrorHandling();
 
   const props = defineProps({
     studyId: {
@@ -52,75 +57,82 @@
         } as MoreTableChoice)
     )
   );
-  groupStatuses.value.push({ label: 'No Group', value: null });
+  groupStatuses.value.push({
+    label: t('global.placeholder.noGroup'),
+    value: null,
+  });
 
   const participantsColumns: MoreTableColumn[] = [
-    { field: 'participantId', header: 'id', sortable: true },
+    { field: 'participantId', header: t('global.labels.id'), sortable: true },
     {
       field: 'alias',
-      header: 'alias',
+      header: t('participants.props.alias'),
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
-    { field: 'registrationToken', header: 'token' },
+    { field: 'registrationToken', header: t('participants.props.token') },
     {
       field: 'status',
-      header: 'status',
+      header: t('study.props.status'),
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'studyGroupId',
-      header: 'group',
+      header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
       editable: { values: groupStatuses.value },
       sortable: true,
       filterable: { showFilterMatchModes: false },
-      placeholder: 'noGroup',
+      placeholder: t('global.placeholder.noGroup'),
     },
   ];
 
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
-      confirm: { header: 'Confirm', message: 'Really delete participant?' },
+      confirm: {
+        header: t('participants.dialog.header.delete'),
+        message: t('participants.dialog.msg.delete'),
+      },
     },
   ];
 
   const tableActions: MoreTableAction[] = [
     {
       id: 'distribute',
-      label: 'Distribute Participants',
+      label: t('participants.participantsList.action.distribute'),
       visible: () => {
         return actionsVisible;
       },
     },
     {
       id: 'import',
-      label: 'Import Participants',
+      label: t('participants.participantsList.action.import'),
       visible: () => {
         return actionsVisible;
       },
       options: {
         type: 'fileUpload',
+        values: [],
         uploadOptions: {
-          mode: 'basic',
+          mode: FileUploadModeType.basic,
         },
       },
     },
     {
       id: 'export',
-      label: 'Export Participants',
+      label: t('participants.participantsList.action.export'),
       visible: () => {
         return participantsList.value.length > 0;
       },
     },
     {
       id: 'create',
-      label: 'Add Participants',
+      label: t('participants.participantsList.action.add'),
       icon: 'pi pi-plus',
       visible: () => {
         return (
@@ -131,26 +143,23 @@
       options: {
         type: 'split',
         values: [
-          { label: 'Add 3', value: 3 },
-          { label: 'Add 10', value: 10 },
-          { label: 'Add 25', value: 25 },
-          { label: 'Add 50', value: 50 },
+          { label: t('participants.participantsList.labels.add3'), value: 3 },
+          { label: t('participants.participantsList.labels.add10'), value: 10 },
+          { label: t('participants.participantsList.labels.add25'), value: 25 },
+          { label: t('participants.participantsList.labels.add50'), value: 50 },
         ],
       },
     },
   ];
 
   async function listParticipant(): Promise<void> {
-    loader.enable();
-    try {
-      participantsList.value = await participantsApi
-        .listParticipants(props.studyId)
-        .then((response) => response.data);
-    } catch (e) {
-      console.error('cannot list participants', e);
-    } finally {
-      loader.disable();
-    }
+    participantsList.value = await participantsApi
+      .listParticipants(props.studyId)
+      .then((response) => response.data)
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list participants');
+        return participantsList.value;
+      });
   }
 
   function distributeGroups(): void {
@@ -289,16 +298,16 @@
     <MoreTable
       row-id="participantId"
       :sort-options="{ sortField: 'alias', sortOrder: 1 }"
-      :title="$t('participants')"
-      :subtitle="$t('listDescription.participantList')"
+      :title="$t('participants.participantsList.title')"
+      :subtitle="$t('participants.participantsList.description')"
       :columns="participantsColumns"
       :rows="participantsList"
       :row-actions="rowActions"
       :table-actions="tableActions"
-      :loading="loader.loading.value"
+      :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      :empty-message="$t('listDescription.emptyParticipantList')"
+      :empty-message="$t('participants.participantsList.emptyListMsg')"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />
@@ -311,8 +320,8 @@
   .table-value-status-new {
     display: block;
     margin: 0.063rem 0.188rem 0 0;
-    //padding-left: 1.2rem;
-    //color: var(--primary-color);
+    /*padding-left: 1.2rem;
+    color: var(--primary-color);*/
     position: relative;
 
     /*&:before {

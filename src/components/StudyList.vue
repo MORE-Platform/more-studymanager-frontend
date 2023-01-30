@@ -24,34 +24,34 @@
   const { t } = useI18n();
 
   const studyColumns: MoreTableColumn[] = [
-    { field: 'studyId', header: 'studyId', sortable: true },
+    { field: 'studyId', header: t('study.props.studyId'), sortable: true },
     {
       field: 'title',
-      header: 'title',
+      header: t('study.props.title'),
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'purpose',
-      header: 'purpose',
+      header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
     },
     {
       field: 'status',
-      header: 'status',
+      header: t('study.props.status'),
       filterable: { showFilterMatchModes: false },
     },
     {
       field: 'userRoles',
-      header: 'roles',
+      header: t('study.props.roles'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
       arrayLabels: [
-        { label: 'Study Administrator', value: StudyRole.Admin },
-        { label: 'Study Operator', value: StudyRole.Operator },
-        { label: 'Study Viewer', value: StudyRole.Viewer },
+        { label: t('study.roles.admin'), value: StudyRole.Admin },
+        { label: t('study.roles.operator'), value: StudyRole.Operator },
+        { label: t('study.roles.viewer'), value: StudyRole.Viewer },
       ],
     },
   ];
@@ -59,31 +59,34 @@
     ...studyColumns,
     {
       field: 'plannedStart',
-      header: 'plannedStart',
+      header: t('study.props.plannedStart'),
       type: MoreTableFieldType.calendar,
       editable: true,
       sortable: true,
     },
     {
       field: 'plannedEnd',
-      header: 'plannedEnd',
+      header: t('study.props.plannedEnd'),
       type: MoreTableFieldType.calendar,
       editable: true,
       sortable: true,
     },
   ];
   const tableActions: MoreTableAction[] = [
-    { id: 'create', icon: 'pi pi-plus', label: 'Add new study' },
+    {
+      id: 'create',
+      icon: 'pi pi-plus',
+      label: t('study.studyList.action.addStudy'),
+    },
   ];
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
-      label: 'Delete',
+      label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       confirm: {
-        header: 'Delete Study',
-        message:
-          'Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...',
+        header: t('study.dialog.header.delete'),
+        message: t('study.dialog.msg.delete'),
       },
       visible: (data) =>
         data.status === StudyStatus.Draft &&
@@ -93,12 +96,19 @@
     },
   ];
   const frontRowActions: MoreTableAction[] = [
-    { id: 'copyId', label: 'Copy Url', icon: 'pi pi-copy' },
+    {
+      id: 'copyId',
+      label: t('study.studyList.action.copyUrl'),
+      icon: 'pi pi-copy',
+    },
   ];
   const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  function goToStudy(id: string | unknown) {
-    router.push({ name: 'Overview', params: { studyId: id as string } });
+  function goToStudy(id: string) {
+    router.push({
+      name: t('studyNavigation.tabs.overview'),
+      params: { studyId: id },
+    });
   }
 
   function executeAction(action: MoreTableRowActionResult<Study>) {
@@ -121,7 +131,7 @@
   function openCreateDialog() {
     dialog.open(StudyDialog, {
       props: {
-        header: 'Create Study',
+        header: t('study.dialog.header.create'),
         style: {
           width: '50vw',
         },
@@ -145,10 +155,10 @@
       navigator.clipboard.writeText(studyUrl);
       dialog.open(InfoDialog, {
         data: {
-          message: t('linkCopy', { studyId, title }),
+          message: t('study.dialog.msg.urlCopied', { studyId, title }),
         },
         props: {
-          header: 'Copied ID',
+          header: t('study.dialog.header.urlCopied'),
           style: {
             width: '50vw',
           },
@@ -162,16 +172,15 @@
     }
   }
 
-  loader.enable();
-  studyStore.listStudies().finally(() => loader.disable());
+  studyStore.listStudies();
 </script>
 
 <template>
   <div>
     <MoreTable
       row-id="studyId"
-      :title="$t('dashboardTitle')"
-      :subtitle="$t('listDescription.studyList')"
+      :title="$t('study.studyList.title')"
+      :subtitle="$t('study.studyList.description')"
       :columns="studyColumnsDraft"
       :rows="studyStore.studies"
       :row-actions="rowActions"
@@ -181,8 +190,8 @@
       :sort-options="{ sortField: 'studyId', sortOrder: -1 }"
       :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       :edit-access-roles="editAccessRoles"
-      :loading="loader.loading.value"
-      empty-message="No studies yet"
+      :loading="loader.isLoading.value"
+      :empty-message="$t('study.studyList.emptyListMsg')"
       @onselect="goToStudy($event)"
       @onaction="executeAction($event)"
       @onchange="updateStudyInPlace($event)"

@@ -62,7 +62,7 @@ jobs:
 #          path: "target/testResults.xml"
 
       - name: Run build
-        run: npm run package:quick
+        run: npm run package
 
   build-and-push-image:
     name: Build and Push Docker Image

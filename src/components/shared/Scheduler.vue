@@ -9,60 +9,73 @@
   import { Frequency, Weekday, Event } from '../../generated-sources/openapi';
   import { MoreTableEditableChoicePropertyValues } from '../../models/MoreTableModel';
   import { dateToDateString } from '../../utils/dateUtils';
+  import { Nullable } from 'vitest';
+  import { useI18n } from 'vue-i18n';
 
+  const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
 
   const scheduler: any = dialogRef.value.data.scheduler;
 
   const repeatFreqArray = [
-    { label: 'Daily', value: Frequency.Daily, active: true, unit: 'day(s)' },
-    { label: 'Weekly', value: Frequency.Weekly, active: true, unit: 'week(s)' },
+    {
+      label: t('scheduler.frequency.labels.daily'),
+      value: Frequency.Daily,
+      active: true,
+      unit: t('scheduler.frequency.days'),
+    },
+    {
+      label: t('scheduler.frequency.labels.weekly'),
+      value: Frequency.Weekly,
+      active: true,
+      unit: t('scheduler.frequency.weeks'),
+    },
     //{label: 'Monthly', value: Frequency.Monthly, active: true, unit: 'month(s)'}
   ];
   const repeatWeekdayArray = [
-    { label: 'MO', value: Weekday.Mo },
-    { label: 'TU', value: Weekday.Tu },
-    { label: 'WE', value: Weekday.We },
-    { label: 'TH', value: Weekday.Th },
-    { label: 'FR', value: Weekday.Fr },
-    { label: 'SA', value: Weekday.Sa },
-    { label: 'SO', value: Weekday.Su },
+    { label: t('scheduler.weekday.short.monday'), value: Weekday.Mo },
+    { label: t('scheduler.weekday.short.tuesday'), value: Weekday.Tu },
+    { label: t('scheduler.weekday.short.wednesday'), value: Weekday.We },
+    { label: t('scheduler.weekday.short.thursday'), value: Weekday.Th },
+    { label: t('scheduler.weekday.short.friday'), value: Weekday.Fr },
+    { label: t('scheduler.weekday.short.saturday'), value: Weekday.Sa },
+    { label: t('scheduler.weekday.short.sunday'), value: Weekday.Su },
   ];
   const repeatYearOptionArray = [
-    { label: 'On a specific day', value: 'onSpecific' },
+    { label: t('scheduler.labels.selection.specificDay'), value: 'onSpecific' },
     //{label: 'On specific options', value: 'onOptions'}
   ];
   const repeatBySetPosOptionArray = [
-    { label: 'First', value: 1 },
-    { label: 'Second', value: 2 },
-    { label: 'Third', value: 3 },
-    { label: 'Fourth', value: 4 },
-    { label: 'Last', value: -1 },
+    { label: t('scheduler.bySetPosLabel.first'), value: 1 },
+    { label: t('scheduler.bySetPosLabel.second'), value: 2 },
+    { label: t('scheduler.bySetPosLabel.third'), value: 3 },
+    { label: t('scheduler.bySetPosLabel.fourth'), value: 4 },
+    { label: t('scheduler.bySetPosLabel.last'), value: -1 },
   ];
   const repeatByMonthOptionArray = [
-    { label: 'Jan', value: 1 },
-    { label: 'Feb', value: 2 },
-    { label: 'Mar', value: 3 },
-    { label: 'Apr', value: 4 },
-    { label: 'Mai', value: 5 },
-    { label: 'Jun', value: 6 },
-    { label: 'Jul', value: 7 },
-    { label: 'Aug', value: 8 },
-    { label: 'Sep', value: 9 },
-    { label: 'Oct', value: 10 },
-    { label: 'Nov', value: 11 },
-    { label: 'Dez', value: 12 },
+    { label: t('scheduler.months.short.january'), value: 1 },
+    { label: t('scheduler.months.short.january'), value: 2 },
+    { label: t('scheduler.months.short.january'), value: 3 },
+    { label: t('scheduler.months.short.january'), value: 4 },
+    { label: t('scheduler.months.short.january'), value: 5 },
+    { label: t('scheduler.months.short.january'), value: 6 },
+    { label: t('scheduler.months.short.january'), value: 7 },
+    { label: t('scheduler.months.short.january'), value: 8 },
+    { label: t('scheduler.months.short.january'), value: 9 },
+    { label: t('scheduler.months.short.january'), value: 10 },
+    { label: t('scheduler.months.short.january'), value: 11 },
+    { label: t('scheduler.months.short.january'), value: 12 },
   ];
   const repeatByDayForYearArray = [
-    { label: 'Monday', value: [Weekday.Mo] },
-    { label: 'Tuesday', value: [Weekday.Tu] },
-    { label: 'Wednesday', value: [Weekday.We] },
-    { label: 'Thursday', value: [Weekday.Th] },
-    { label: 'Friday', value: [Weekday.Fr] },
-    { label: 'Saturday', value: [Weekday.Sa] },
-    { label: 'Sunday', value: [Weekday.Su] },
+    { label: t('scheduler.weekday.monday'), value: [Weekday.Mo] },
+    { label: t('scheduler.weekday.tuesday'), value: [Weekday.Tu] },
+    { label: t('scheduler.weekday.wednesday'), value: [Weekday.We] },
+    { label: t('scheduler.weekday.thursday'), value: [Weekday.Th] },
+    { label: t('scheduler.weekday.friday'), value: [Weekday.Fr] },
+    { label: t('scheduler.weekday.saturday'), value: [Weekday.Sa] },
+    { label: t('scheduler.weekday.sunday'), value: [Weekday.Su] },
     {
-      label: 'All days in week',
+      label: t('scheduler.labels.selection.allDaysInWeek'),
       value: [
         Weekday.Mo,
         Weekday.Tu,
@@ -74,16 +87,19 @@
       ],
     },
     {
-      label: 'All weekdays',
+      label: t('scheduler.labels.selection.allWeekdays'),
       value: [Weekday.Mo, Weekday.Tu, Weekday.We, Weekday.Th, Weekday.Fr],
     },
-    { label: 'All weekend days', value: [Weekday.Sa, Weekday.Su] },
+    {
+      label: t('scheduler.labels.selection.allWeekendDays'),
+      value: [Weekday.Sa, Weekday.Su],
+    },
   ];
 
   const repeatEndOptionArray: Ref<MoreTableEditableChoicePropertyValues[]> =
     ref([
       /*{label: 'Never', value: 'never'},*/
-      { label: 'After', value: 'after' },
+      { label: t('scheduler.labels.after'), value: 'after' },
       //{label: 'On Date', value: 'onDate'}
     ]);
 
@@ -111,7 +127,7 @@
       ? scheduler.rrule.interval
       : undefined
   ); // hourly/daily/weekly/monthly/yearly
-  const repeatCount: Ref<number | undefined> = ref(
+  const repeatCount: Ref<Nullable<string>> = ref(
     scheduler.rrule && scheduler.rrule.count ? scheduler.rrule.count : undefined
   ); // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
   const repeatUntil: Ref<Date | undefined> = ref(
@@ -125,7 +141,7 @@
       ? scheduler.rrule.bymonth
       : undefined
   ); // monthly/yearly
-  const repeatByMonthDay: Ref<number | undefined> = ref(
+  const repeatByMonthDay: Ref<Nullable<string>> = ref(
     scheduler.rrule && scheduler.rrule.bymonthday
       ? scheduler.rrule.bymonthday
       : undefined
@@ -150,7 +166,9 @@
   }
 
   if (repeatCount.value && repeatByDay.value?.length) {
-    repeatCount.value = repeatCount.value / repeatByDay.value?.length || 1;
+    repeatCount.value = (
+      parseInt(repeatCount.value) / repeatByDay.value?.length || 1
+    ).toString();
   }
 
   if (repeatCount.value || repeatUntil.value) {
@@ -177,10 +195,14 @@
     }
   }
 
-  function setRepeatCountLabel(repeatFreq: string) {
-    repeatCountLabel.value = repeatFreqArray.find(
-      (f: any) => f.value === repeatFreq
-    )?.unit;
+  function setRepeatCountLabel(repeatFreq: string | undefined) {
+    if (repeatFreq) {
+      repeatCountLabel.value = repeatFreqArray.find(
+        (f: any) => f.value === repeatFreq
+      )?.unit;
+    } else {
+      return '';
+    }
   }
 
   function resetYearlyInterval() {
@@ -215,7 +237,9 @@
     }
 
     if (repeatCount.value && repeatByDay.value?.length) {
-      repeatCount.value = repeatCount.value * repeatByDay.value?.length;
+      repeatCount.value = (
+        parseInt(repeatCount.value) * repeatByDay.value?.length
+      ).toString();
     }
     try {
       const returnEvent: Event = {
@@ -229,11 +253,13 @@
           until: repeatUntil.value
             ? dateToDateString(repeatUntil.value)
             : undefined,
-          count: repeatCount.value,
+          count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
           interval: repeatInterval.value,
           byday: repeatByDay.value,
           bymonth: repeatByMonth.value,
-          bymonthday: repeatByMonthDay.value,
+          bymonthday: repeatByMonthDay.value
+            ? parseInt(repeatByMonthDay.value)
+            : undefined,
           bysetpos: repeatBySetPos.value,
         };
       }
@@ -267,23 +293,23 @@
 <template>
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
-      <h6 class="col-span-6">First Event</h6>
-      <div class="col-span-1">{{ $t('start') }}</div>
+      <h6 class="col-span-6">{{ $t('scheduler.labels.event.first') }}</h6>
+      <div class="col-span-1">{{ $t('global.labels.start') }}</div>
       <Calendar
         v-model="start"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"
         style="width: 100%"
         :class="'col-span-5'"
       />
-      <div class="col-span-1">{{ $t('end') }}</div>
+      <div class="col-span-1">{{ $t('global.labels.end') }}</div>
       <Calendar
         v-model="end"
         date-format="dd/mm/yy"
-        hour-format="hh:mm"
+        hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
         autocomplete="off"
@@ -291,7 +317,7 @@
         :class="'col-span-5'"
       />
       <div class="col-span-2 col-start-2">
-        All Day Event:
+        {{ $t('scheduler.labels.event.allDay') }}:
         <Checkbox
           v-model="allDayChecked"
           class="ml-2"
@@ -300,7 +326,7 @@
         />
       </div>
       <div class="col-span-2">
-        Repeat:
+        {{ $t('scheduler.labels.repeat') }}:
         <Checkbox
           v-model="repeatChecked"
           class="ml-2"
@@ -369,11 +395,11 @@
               :options="repeatByMonthOptionArray"
               :option-label="'label'"
               :option-value="'value'"
-              :placeholder="'Choose Month'"
+              :placeholder="$t('scheduler.placeholder.chooseMonth')"
             />
             <InputText
               v-model="repeatByMonthDay"
-              :placeholder="'Enter Day of Month'"
+              :placeholder="$t('scheduler.placeholder.enterDayOfMonth')"
             />
           </div>
           <div
@@ -385,14 +411,14 @@
               :options="repeatBySetPosOptionArray"
               :option-label="'label'"
               :option-value="'value'"
-              :placeholder="'Choose General Interval'"
+              :placeholder="$t('scheduler.placeholder.chooseGeneralInterval')"
             />
             <Dropdown
               v-model="repeatByDay"
               :options="repeatByDayForYearArray"
               :option-label="'label'"
               :option-value="'value'"
-              :placeholder="'Choose Day Interval'"
+              :placeholder="$t('scheduler.placeholder.chooseDayInterval')"
             />
             <Dropdown
               v-if="repeatFreq === Frequency.Yearly"
@@ -400,7 +426,7 @@
               :options="repeatByMonthOptionArray"
               :option-label="'label'"
               :option-value="'value'"
-              :placeholder="'Choose Month'"
+              :placeholder="$t('scheduler.placeholder.chooseMonth')"
             />
           </div>
         </div>
@@ -413,7 +439,7 @@
           v-if="repeatFreq"
           class="col-start-0 col-span-1 self-center font-medium"
         >
-          Repetition ends
+          {{ $t('scheduler.labels.repetitionEnd') }}
         </div>
         <div
           v-if="repeatFreq"
@@ -425,14 +451,14 @@
             :option-label="'label'"
             :option-value="'value'"
             class="col-span-2 w-80"
-            placeholder="Choose repetition end"
+            :placeholder="$t('scheduler.placeholder.chooseRepetitionEnd')"
             @change="resetRepeatEndOptions"
           />
           <div v-if="repeatEndOption === 'after'" class="col-span-2">
             <InputText
               v-model="repeatCount"
               type="text"
-              :placeholder="'Enter repeat count'"
+              :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
             />
             <span class="ml-2">{{ repeatCountLabel }}</span>
           </div>
@@ -451,10 +477,12 @@
     </div>
 
     <div style="height: 100px"></div>
-    <div class="pos-bottom grid grid-cols-6">
+    <div class="pos-bottom grid w-full grid-cols-6">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button @click="save()">Save</Button>
+        <Button class="p-button-secondary" @click="cancel()">{{
+          $t('global.labels.cancel')
+        }}</Button>
+        <Button @click="save()">{{ $t('global.labels.save') }}</Button>
       </div>
     </div>
   </div>

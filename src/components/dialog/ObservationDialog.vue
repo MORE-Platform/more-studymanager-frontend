@@ -17,10 +17,12 @@
   import dayjs from 'dayjs';
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
+  import { useI18n } from 'vue-i18n';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
+  const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
   const observation = dialogRef.value.data.observation as Observation;
@@ -62,7 +64,7 @@
         scheduler: scheduler.value,
       },
       props: {
-        header: 'Manage Schedule',
+        header: t('scheduler.dialogTitle'),
         style: {
           width: '50vw',
         },
@@ -102,7 +104,7 @@
           }
         });
     } catch (e) {
-      jsonError.value = 'Cannot parse properties, no valid json';
+      jsonError.value = t('observation.error.noValidJson');
     }
   }
 
@@ -130,14 +132,14 @@
     errors.value = [];
     schedulerError.value = false;
     if (!title.value) {
-      errors.value.push('Observation Title');
+      errors.value.push(t('observation.error.addTitle'));
     }
     if (JSON.stringify(scheduler.value) === '{}') {
-      errors.value.push('Scheduler');
+      errors.value.push(t('observation.error.addScheduler'));
       schedulerError.value = true;
     }
     if (!participantInfo.value) {
-      errors.value.push('Participants Information');
+      errors.value.push(t('observation.error.addParticipantInfo'));
     }
   }
 
@@ -148,15 +150,15 @@
   function getFrequencyLabel(frequency: Frequency) {
     switch (frequency) {
       case Frequency.Hourly:
-        return 'hour(s)';
+        return t('scheduler.frequency.hours');
       case Frequency.Daily:
-        return 'day(s)';
+        return t('scheduler.frequency.days');
       case Frequency.Weekly:
-        return 'week(s)';
+        return t('scheduler.frequency.weeks');
       case Frequency.Monthly:
-        return 'month(s)';
+        return t('scheduler.frequency.months');
       case Frequency.Yearly:
-        return 'year(s)';
+        return t('scheduler.frequency.years');
     }
   }
 
@@ -164,57 +166,57 @@
     if (monthDay > 3 && monthDay < 21) return 'th';
     switch (monthDay % 10) {
       case 1:
-        return 'st';
+        return t('scheduler.byMonthDayLabel.first');
       case 2:
-        return 'nd';
+        return t('scheduler.byMonthDayLabel.second');
       case 3:
-        return 'rd';
+        return t('scheduler.byMonthDayLabel.third');
       default:
-        return 'th';
+        return t('scheduler.byMonthDayLabel.fourth');
     }
   }
 
   function getMonthLabel(month: number) {
     switch (month) {
       case 1:
-        return 'January';
+        return t('scheduler.months.january');
       case 2:
-        return 'February';
+        return t('scheduler.months.february');
       case 3:
-        return 'March';
+        return t('scheduler.months.march');
       case 4:
-        return 'April';
+        return t('scheduler.months.april');
       case 5:
-        return 'Mai';
+        return t('scheduler.months.mai');
       case 6:
-        return 'June';
+        return t('scheduler.months.june');
       case 7:
-        return 'July';
+        return t('scheduler.months.july');
       case 8:
-        return 'August';
+        return t('scheduler.months.august');
       case 9:
-        return 'September';
+        return t('scheduler.months.september');
       case 10:
-        return 'October';
+        return t('scheduler.months.october');
       case 11:
-        return 'November';
+        return t('scheduler.months.november');
       case 12:
-        return 'Dezember';
+        return t('scheduler.months.december');
     }
   }
 
   function getByStepPosLabel(setPos: number) {
     switch (setPos) {
       case 1:
-        return 'first';
+        return t('scheduler.bySetPosLabel.first');
       case 2:
-        return 'second';
+        return t('scheduler.bySetPosLabel.second');
       case 3:
-        return 'third';
+        return t('scheduler.bySetPosLabel.third');
       case 4:
-        return 'fourth';
+        return t('scheduler.bySetPosLabel.fourth');
       case -1:
-        return 'last';
+        return t('scheduler.bySetPosLabel.last');
     }
   }
 
@@ -240,7 +242,7 @@
     >
       <div v-if="errors.length && editable" class="error col-span-8">
         <span class="font-medium">
-          {{ $t('placeholder.dialogErrorMessage') }}
+          {{ $t('study.dialog.error.missedFieldsMsg') }}
         </span>
         <div>
           <span v-for="(error, index) in errors" :key="index">
@@ -252,14 +254,14 @@
         </div>
       </div>
       <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
-        <h5>{{ $t('observation') }} {{ $t('title') }}</h5>
+        <h5>{{ $t('observation.singular') }} {{ $t('study.props.title') }}</h5>
       </div>
       <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
         <InputText
           v-model="title"
           type="text"
           required
-          :placeholder="$t('placeholder.title')"
+          :placeholder="$t('study.placeholder.titleInput')"
           style="width: 100%"
           :disabled="!editable"
         ></InputText>
@@ -268,7 +270,7 @@
         class="col-start-0 col-span-8 grid grid-cols-8"
         :class="editable ? '' : 'scheduler-not-editable pb-4'"
       >
-        <h5 class="col-start-0 col-span-8">Scheduler</h5>
+        <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}</h5>
         <div
           class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
         >
@@ -281,7 +283,9 @@
               class="grid grid-cols-2 gap-x-4 gap-y-1"
             >
               <div>
-                <span class="font-medium">{{ $t('start') }}: </span>
+                <span class="font-medium"
+                  >{{ $t('global.labels.start') }}:
+                </span>
                 <span>
                   {{
                     dayjs(scheduler.dtstart).format('DD/MM/YYYY, HH:mm')
@@ -289,7 +293,7 @@
                 >
               </div>
               <div>
-                <span class="font-medium">{{ $t('end') }}: </span
+                <span class="font-medium">{{ $t('global.labels.end') }}: </span
                 >{{ dayjs(scheduler.dtend).format('DD/MM/YYYY, HH:mm') }}
               </div>
 
@@ -298,8 +302,10 @@
                 class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1"
               >
                 <div>
-                  <span class="font-medium">Frequency: </span
-                  >{{ scheduler.rrule.freq }}
+                  <span class="font-medium"
+                    >{{ $t('scheduler.labels.frequency') }}:
+                  </span>
+                  {{ scheduler.rrule.freq }}
                 </div>
                 <div v-if="scheduler?.rrule?.interval">
                   For {{ scheduler.rrule.interval }}
@@ -334,7 +340,7 @@
                   v-if="scheduler.rrule.freq === Frequency.Yearly"
                   class="col-span-1 col-start-2"
                 >
-                  Every
+                  {{ $t('scheduler.labels.every') }}
                   <span v-if="scheduler.rrule.bymonthday"
                     >{{ scheduler.rrule.bymonthday
                     }}{{ getByMonthDayLabel(scheduler.rrule.bymonthday) }}</span
@@ -348,7 +354,9 @@
                     >
                     in
                   </span>
-                  {{ getMonthLabel(scheduler.rrule.bymonth) }}
+                  <span v-if="scheduler.rrule.bymonth">
+                    {{ getMonthLabel(scheduler.rrule.bymonth) }}
+                  </span>
                 </div>
               </div>
               <div
@@ -359,7 +367,9 @@
                 "
                 class="col-span-2"
               >
-                <span class="font-medium">Days selected: </span>
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.selection.daysSelected') }}:
+                </span>
                 <span
                   v-for="(day, index) in scheduler.rrule.byday"
                   :key="index"
@@ -373,26 +383,35 @@
                 v-if="scheduler.rrule && scheduler.rrule.count"
                 class="col-span-2"
               >
-                <span class="font-medium">Repetition end:</span> after
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.repetitionEnd') }}:</span
+                >
+                {{ $t('scheduler.labels.after') }}
                 <span v-if="scheduler.rrule?.byday?.length">{{
                   scheduler.rrule.count / scheduler.rrule.byday.length
                 }}</span>
                 <span v-else>{{ scheduler.rrule.count }}</span>
-                {{ getFrequencyLabel(scheduler.rrule.freq) }}
+                <span v-if="scheduler.rrule.freq">
+                  {{ getFrequencyLabel(scheduler.rrule.freq) }}
+                </span>
               </div>
               <div
                 v-if="scheduler.rrule && scheduler.rrule.until"
                 class="col-span-2"
               >
-                <span class="font-medium">Repetition end: </span> on
+                <span class="font-medium"
+                  >{{ $t('scheduler.labels.repetitionEnd') }}: </span
+                >{{ $t('scheduler.labels.on') }}
                 {{ scheduler.rrule.until }}
               </div>
             </div>
             <div v-else class="text-gray-400">
               <span v-if="schedulerError" class="error"
-                >Please set schedule for your observation.
+                >{{ $t('observation.error.addSchedulerMsg') }}
               </span>
-              <span v-else>{{ $t('placeholder.observationScheduler') }}</span>
+              <span v-else>{{
+                $t('observation.placeholder.emptySchedulerMsg')
+              }}</span>
             </div>
           </div>
           <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
@@ -401,7 +420,7 @@
               type="button"
               :disabeld="!editable"
               @click="openScheduler"
-              >Open Scheduler</Button
+              >{{ $t('scheduler.labels.openScheduler') }}</Button
             >
             <Button
               v-if="scheduler.dtstart"
@@ -409,40 +428,40 @@
               type="button"
               :disabled="!editable"
               @click="removeScheduler"
-              >Remove Schedule</Button
+              >{{ $t('scheduler.labels.removeScheduler') }}</Button
             >
           </div>
         </div>
       </div>
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">{{ $t('purpose') }}</h5>
+        <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
-          :placeholder="$t('placeholder.purpose')"
+          :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
           style="width: 100%"
           :disabled="!editable"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">{{ $t('participantInfo') }}</h5>
+        <h5 class="mb-2">{{ $t('study.props.participantInfo') }}</h5>
         <Textarea
           v-model="participantInfo"
           required
-          :placeholder="$t('placeholder.participantInfo')"
+          :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
           style="width: 100%"
           :disabled="!editable"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">Configuration</h5>
+        <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
           <Textarea
             v-model="properties"
             required
-            placeholder="Enter the main purpose and intention of the study."
+            :placeholder="t('observation.placeholder.enterMainPurpose')"
             :auto-resize="true"
             style="width: 100%"
             class="border-disabled"
@@ -455,7 +474,9 @@
         class="col-start-0 col-span-8"
         :class="[studyGroupId ? 'groupIdValue' : '']"
       >
-        <h5 v-if="!editable" class="pb-2 font-bold">Study Group</h5>
+        <h5 v-if="!editable" class="pb-2 font-bold">
+          {{ $t('study.props.studyGroup') }}
+        </h5>
         <Dropdown
           v-model="studyGroupId"
           :options="groupStates"
@@ -464,7 +485,7 @@
           :disabled="!editable"
           :placeholder="
             getLabelForChoiceValue(studyGroupId, groupStates) ||
-            $t('entireStudy')
+            $t('global.placeholder.entireStudy')
           "
         >
         </Dropdown>
@@ -472,15 +493,15 @@
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
         <Button class="p-button-secondary" @click="cancel()">
-          <span v-if="editable">Cancel</span>
-          <span v-else>Close</span>
+          <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
+          <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : ''"
+          :type="editable ? 'submit' : undefined"
           :disabled="!editable"
           @click="checkRequiredFields()"
-          >Save</Button
+          >{{ $t('global.labels.save') }}</Button
         >
       </div>
     </form>

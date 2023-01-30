@@ -7,9 +7,11 @@
   import Dropdown from 'primevue/dropdown';
   import { Study } from '../../generated-sources/openapi';
   import { dateToDateString } from '../../utils/dateUtils';
+  import { useI18n } from 'vue-i18n';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
+  const { t } = useI18n();
   const language = ref('en');
 
   const returnStudy: Ref<Study> = ref({
@@ -42,13 +44,13 @@
   function checkRequiredFields() {
     errors.value = [];
     if (!returnStudy.value.title) {
-      errors.value.push('Study Title');
+      errors.value.push(t('study.error.addTitle'));
     }
     if (!returnStudy.value.consentInfo) {
-      errors.value.push('Consent Information');
+      errors.value.push(t('study.error.addConsentInfo'));
     }
     if (!returnStudy.value.participantInfo) {
-      errors.value.push('Participant Information');
+      errors.value.push(t('study.error.addParticipantInfo'));
     }
   }
 
@@ -60,9 +62,9 @@
 <template>
   <div>
     <div class="mb-4">
-      <h5>{{ $t('dialogDescription.studyDialogTitle') }}</h5>
+      <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="$t('dialogDescription.studyDialog')"></h6>
+      <h6 v-html="$t('study.dialog.description')"></h6>
     </div>
     <form
       id="studyDialogForm"
@@ -71,7 +73,7 @@
     >
       <div v-if="errors.length" class="error col-span-6">
         <span class="font-medium">
-          Please fill out following information fields:
+          {{ $t('study.dialog.error.missedFieldsMsg') }}
         </span>
         <ul>
           <li
@@ -85,7 +87,7 @@
         </ul>
       </div>
       <div class="col-start-0 col-span-1">
-        <h5>Study Title</h5>
+        <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
       </div>
       <div class="col-span-5 col-start-2">
         <InputText
@@ -93,13 +95,13 @@
           v-model="returnStudy.title"
           type="text"
           required
-          :placeholder="$t('placeholder.title')"
+          :placeholder="$t('study.placeholder.titleInput')"
           style="width: 100%"
           :name="'title'"
         ></InputText>
       </div>
       <div class="col-start-0 col-span-2">
-        <h5>Language</h5>
+        <h5 class="mb-2">{{ $t('study.props.language') }}</h5>
         <Dropdown
           v-model="language"
           style="width: 100%"
@@ -107,11 +109,13 @@
           :name="'language'"
           option-label="name"
           option-value="value"
-          placeholder="Select a language"
+          :placeholder="t('study.placeholder.selectLanguage')"
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5>Study Start</h5>
+        <h5 class="mb-2">
+          {{ $t('study.singular') }} {{ $t('global.labels.start') }}
+        </h5>
         <Calendar
           v-model="start"
           :name="'start'"
@@ -122,7 +126,9 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5>Study End</h5>
+        <h5 class="mb-2">
+          {{ $t('study.singular') }} {{ $t('global.labels.end') }}
+        </h5>
         <Calendar
           v-model="end"
           :name="'end'"
@@ -133,40 +139,44 @@
         />
       </div>
       <div class="col-start-0 col-span-6">
-        <h5>Purpose</h5>
+        <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="returnStudy.purpose"
           :name="'purpose'"
-          :placeholder="$t('placeholder.purpose')"
+          :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
           style="width: 100%"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
-        <h5>{{ $t('participantInfo') }}</h5>
+        <h5 class="mb-2">{{ $t('study.props.participantInfo') }}</h5>
         <Textarea
           v-model="returnStudy.participantInfo"
           :required="true"
           :name="'participantInfo'"
-          :placeholder="$t('placeholder.participantInfo')"
+          :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
           style="width: 100%"
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
-        <h5>{{ $t('consentInfo') }}</h5>
+        <h5 class="mb-2">{{ $t('study.props.consentInfo') }}</h5>
         <Textarea
           v-model="returnStudy.consentInfo"
           :name="'consentInfo'"
           :required="true"
-          :placeholder="$t('placeholder.consentInfo')"
+          :placeholder="$t('study.placeholder.consentInfoInput')"
           :auto-resize="true"
           style="width: 100%"
         ></Textarea>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">Cancel</Button>
-        <Button type="submit" @click="checkRequiredFields()">Save</Button>
+        <Button class="p-button-secondary" @click="cancel()">{{
+          $t('global.labels.cancel')
+        }}</Button>
+        <Button type="submit" @click="checkRequiredFields()">{{
+          $t('global.labels.save')
+        }}</Button>
       </div>
     </form>
   </div>
