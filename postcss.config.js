@@ -13,5 +13,5 @@ module.exports = {
     require('tailwindcss/nesting'),
     require('tailwindcss'),
     //require('autoprefixer')
-  ]
+  ],
 };
