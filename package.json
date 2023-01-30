@@ -61,7 +61,7 @@
     "@vue/test-utils": "^2.0.2",
     "autoprefixer": "^10.4.2",
     "babel-loader": "^8.2.5",
-    "eslint": "8.23.1",
+    "eslint": "8.33.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-vue": "9.5.1",
     "postcss": "^8.4.14",
