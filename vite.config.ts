@@ -19,6 +19,7 @@ export default defineConfig({
     target: 'esnext',
   },
   server: {
+    port: 3000,
     proxy: {
       '/api': {
         target: process.env.VITE_LOCAL_BACKEND
