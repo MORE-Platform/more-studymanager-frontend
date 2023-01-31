@@ -90,8 +90,9 @@ dumb component development in dev process, they can be ignored for now. The API 
 replace storybook development in the future.
 
 
-# NPM Package updates
+# NPM Package update Notes 31.01.2023
 
 - Vite: Update from Vite ^2.0.0 to 3.2.5 was made because of compatibility problems
 - Vite 3.2.5 (to 4.0.4): Vite 4 is relatively new. Many other dependencies are dependent on Vite ^3.0.0. Check on a later date if update to ^4.0.0 is  advisable.
 - Primevue Update from 3.17.0 to 3.23.0: 3.23.0. still has the bug, where table row edit blocks the space. Check on a later date for update patches.
+- Heroicons Update from 1.0.6 to ^2.0.14: All icons were changed to another design. There is no need to update if current design of icons are fine.
