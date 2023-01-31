@@ -88,3 +88,10 @@ The Version of <font color="red">Storybook has 33 Vunerabilites </font> and will
 in a future version of storybook. Since Storybook won't be deployed and is only used for
 dumb component development in dev process, they can be ignored for now. The API will
 replace storybook development in the future.
+
+
+# NPM Package updates
+
+- Vite: Update from Vite ^2.0.0 to 3.2.5 was made because of compatibility problems
+- Vite 3.2.5 (to 4.0.4): Vite 4 is relatively new. Many other dependencies are dependent on Vite ^3.0.0. Check on a later date if update to ^4.0.0 is  advisable.
+- Primevue Update from 3.17.0 to 3.23.0: 3.23.0. still has the bug, where table row edit blocks the space. Check on a later date for update patches.
