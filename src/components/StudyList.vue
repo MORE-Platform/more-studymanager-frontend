@@ -188,7 +188,7 @@
       :table-actions="tableActions"
       :editable-access="true"
       :sort-options="{ sortField: 'studyId', sortOrder: -1 }"
-      :editable="function(data:Study){return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
+      :editable="(data:Study) => {return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
       :edit-access-roles="editAccessRoles"
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
