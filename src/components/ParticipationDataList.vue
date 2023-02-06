@@ -1,5 +1,7 @@
 <script setup lang="ts">
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import DynamicDialog from 'primevue/dynamicdialog';
   import {
     useDataApi,
     useObservationsApi,
@@ -14,21 +16,13 @@
     Participant,
     ParticipationData,
     StudyGroup,
-    StudyRole,
-    StudyStatus,
   } from '../generated-sources/openapi';
   import { ParticipationDataMap } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
-  import {
-    MoreTableAction,
-    MoreTableColumn,
-    MoreTableRowActionResult,
-  } from '../models/MoreTableModel';
-  import { useRouter } from 'vue-router';
+  import { MoreTableColumn } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
 
   const studyGroupStore = useStudyGroupStore();
-  const router = useRouter();
 
   const { dataApi } = useDataApi();
   const { participantsApi } = useParticipantsApi();
@@ -45,18 +39,24 @@
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const studyDataList: Ref<ParticipationData[]> = ref([]);
-  const studyDataListMapped: Ref<ParticipationDataMap[]> = ref([]);
+  const participationDataListMap: Ref<ParticipationDataMap[]> = ref([]);
 
   const studyGroups: StudyGroup[] = studyGroupStore.studyGroups;
 
-  async function listStudyData(): Promise<void> {
-    studyDataList.value = await dataApi
+  async function listParticipationData(): Promise<void> {
+    await dataApi
       .getParticipationData(props.studyId)
-      .then((response) => response.data)
+      .then(async (response) => {
+        const data: ParticipationDataMap[] = await Promise.all(
+          response.data.map(async (item) => {
+            return await getParticipationDataMapping(item);
+          })
+        );
+        participationDataListMap.value = data;
+        return data;
+      })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participants');
-        return studyDataList.value;
       });
   }
 
@@ -65,90 +65,73 @@
       participantsApi.getParticipant(
         props.studyId,
         data.participantId as number
-      ) as Participant,
-      observationsApi.listObservations(props.studyId) as Observation,
+      ),
+      observationsApi.listObservations(props.studyId),
     ]).then(([participantRes, observationRes]) => {
-      return {
-        participant: participantRes.alias,
-        observation: observationRes.title + ' (' + observationRes.type + ')',
-        observationId: data.observationId,
+      const participant: Participant = participantRes.data;
+      const observation: Observation =
+        observationRes.data.find((o: Observation) => {
+          if (o.observationId === data.observationId) {
+            return o;
+          }
+        }) || {};
+
+      const participantDataMapping: ParticipationDataMap = {
+        participant: participant.alias as string,
+        observation: observation.title + ' (' + observation.type + ')',
+        observationId: data.observationId as number,
         studyGroup: getStudyGroupLabel(data.studyGroupId as number),
         dataReceived: getParticipantStatusLabel(data.dataReceived),
         lastDataReceived: data.lastDataReceived as string,
-      } as ParticipationDataMap;
+      };
+      return participantDataMapping;
     });
   }
-  function getStudyGroupLabel(studyGroupId: number) {
-    if (studyGroups.find((group) => group.studyGroupId === studyGroupId)) {
-      studyGroups.find((group) => {
-        if (group.studyGroupId === studyGroupId) {
-          return group.title;
-        }
-      });
-    } else {
-      return studyGroupId.toString();
-    }
+  function getStudyGroupLabel(studyGroupId: number): string {
+    const t = studyGroups.find((group) => group.studyGroupId === studyGroupId);
+    return t?.title ? (t.title as string) : 'Entire Study';
   }
   function getParticipantStatusLabel(status: boolean | undefined) {
     if (status) {
-      return 'active';
+      return t('global.labels.dataReceived');
     } else {
-      return 'waiting';
+      return t('global.labels.noDataReceived');
     }
-  }
-
-  function mapStudyList(): void {
-    studyDataListMapped.value = studyDataList.value.map( (data) =>
-      getParticipationDataMapping(data)
-    );
   }
 
   const studyDataColumns: MoreTableColumn[] = [
     {
       field: 'participant',
       header: t('participants.singular'),
+      editable: false,
       sortable: true,
+      filterable: true,
     },
     { field: 'observation', header: t('observation.singular'), sortable: true },
     {
       field: 'studyGroup',
       header: t('study.props.studyGroup'),
+      editable: false,
       sortable: true,
+      filterable: true,
     },
     {
       field: 'dataReceived',
       header: t('global.labels.dataReceived'),
+      editable: false,
       sortable: true,
+      filterable: true,
     },
     {
       field: 'lastDataReceived',
       header: t('global.labels.lastDataReceived'),
+      editable: false,
       sortable: true,
+      filterable: true,
     },
   ];
 
-  const rowActions: MoreTableAction[] = [
-    {
-      id: 'goToObservation',
-      label: t('global.labels.delete'),
-      icon: 'pi pi-arrow-right',
-      visible: (data) =>
-        data.status === StudyStatus.Draft &&
-        data.userRoles.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
-        ),
-    },
-  ];
-
-  function executeAction(
-    action: MoreTableRowActionResult<ParticipationDataMap>
-  ) {
-    switch (action.id) {
-      case 'goToObservation':
-        return goToObservation(action.row.observationId);
-    }
-  }
-
+  /*
   function goToObservation(observationId: number) {
     console.log(observationId);
     router.push({
@@ -156,9 +139,9 @@
       params: { studyId: props.studyId },
     });
   }
+   */
 
-  listStudyData();
-  mapStudyList();
+  listParticipationData();
 </script>
 
 <template>
@@ -168,14 +151,13 @@
       :title="$t('data.title')"
       :subtitle="$t('data.description')"
       :columns="studyDataColumns"
-      :rows="studyDataListMapped"
-      :row-actions="rowActions"
-      :editable-access="true"
+      :rows="participationDataListMap"
+      :row-actions="[]"
+      :row-edit-btn="false"
       :sort-options="{ sortField: 'participant', sortOrder: -1 }"
       :editable="() => false"
       :loading="loader.isLoading.value"
       :empty-message="$t('data.dataList.emptyListMsg')"
-      @onaction="executeAction($event)"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />

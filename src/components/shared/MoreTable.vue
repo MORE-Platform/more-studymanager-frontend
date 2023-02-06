@@ -72,6 +72,10 @@
       type: Boolean,
       default: true,
     },
+    rowEditBtn: {
+      type: Boolean,
+      default: true,
+    },
     emptyMessage: {
       type: String,
       default: 'No records',
@@ -644,6 +648,7 @@
               </Button>
             </div>
             <Button
+              v-if="rowEditBtn"
               type="button"
               icon="pi pi-pencil"
               :disabled="isEditable(slotProps.data) === false"

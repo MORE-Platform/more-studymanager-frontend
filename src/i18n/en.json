@@ -26,6 +26,7 @@
       "noRecords": "No records",
       "lastCollected": "Last collected",
       "dataReceived": "Data Received",
+      "noDataReceived": "No Data Received",
       "lastDataReceived": "Last Data Received"
     },
     "placeholder": {

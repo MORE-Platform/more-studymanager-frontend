@@ -2,7 +2,6 @@
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '../generated-sources/openapi';
-  import DataView from '../components/DataView.vue';
   import { useStudyStore } from '../stores/studyStore';
   import ParticipationDataList from '../components/ParticipationDataList.vue';
 
@@ -26,10 +25,10 @@
       class="container rounded-lg bg-white p-10"
     >
       <ParticipationDataList :study-id="studyStore.studyId" />
-      <div class="data-header-textblock mt-20">
+      <!--<div class="data-header-textblock mt-20">
         <h3>Kibana</h3>
       </div>
-      <DataView />
+      <DataView />     -->
     </div>
   </div>
 </template>
