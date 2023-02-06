@@ -3,6 +3,6 @@ export interface ParticipationDataMap {
   observation: string;
   observationId: number;
   studyGroup: string;
-  participantStatus: string;
-  timestamp: string;
+  dataReceived: string;
+  lastDataReceived: string;
 }

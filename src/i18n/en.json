@@ -24,7 +24,9 @@
       "config": "Configuration",
       "notFound": "Not found",
       "noRecords": "No records",
-      "lastCollected": "Last collected"
+      "lastCollected": "Last collected",
+      "dataReceived": "Data Received",
+      "lastDataReceived": "Last Data Received"
     },
     "placeholder": {
       "entireStudy": "Entire Study",

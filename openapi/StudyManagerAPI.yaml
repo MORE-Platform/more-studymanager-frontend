@@ -895,8 +895,8 @@ paths:
     get:
       tags:
         - data
-      description: Get Study Data
-      operationId: getStudyData
+      description: Get Study Participation Data
+      operationId: getParticipationData
       parameters:
         - $ref: '#/components/parameters/StudyId'
       responses:
@@ -1146,14 +1146,14 @@ components:
       type: object
       properties:
         observationId:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReference'
         participantId:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/IdReference'
         studyGroupId:
           $ref: '#/components/schemas/IdReference'
-        status:
+        dataReceived:
           type: boolean
-        timestamp:
+        lastDataReceived:
           type: string
           format: date-time
           readOnly: true

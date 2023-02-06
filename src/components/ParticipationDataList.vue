@@ -52,7 +52,7 @@
 
   async function listStudyData(): Promise<void> {
     studyDataList.value = await dataApi
-      .getStudyData(props.studyId)
+      .getParticipationData(props.studyId)
       .then((response) => response.data)
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participants');
@@ -73,8 +73,8 @@
         observation: observationRes.title + ' (' + observationRes.type + ')',
         observationId: data.observationId,
         studyGroup: getStudyGroupLabel(data.studyGroupId as number),
-        participantStatus: getParticipantStatusLabel(data.status),
-        timestamp: data.timestamp as string,
+        dataReceived: getParticipantStatusLabel(data.dataReceived),
+        lastDataReceived: data.lastDataReceived as string,
       } as ParticipationDataMap;
     });
   }
@@ -98,8 +98,8 @@
   }
 
   function mapStudyList(): void {
-    studyDataListMapped.value = studyDataList.value.map(async (data) =>
-      await getParticipationDataMapping(data)
+    studyDataListMapped.value = studyDataList.value.map( (data) =>
+      getParticipationDataMapping(data)
     );
   }
 
@@ -116,13 +116,13 @@
       sortable: true,
     },
     {
-      field: 'participantStatus',
-      header: t('study.props.status'),
+      field: 'dataReceived',
+      header: t('global.labels.dataReceived'),
       sortable: true,
     },
     {
-      field: 'timestamp',
-      header: t('global.labels.lastCollected'),
+      field: 'lastDataReceived',
+      header: t('global.labels.lastDataReceived'),
       sortable: true,
     },
   ];
