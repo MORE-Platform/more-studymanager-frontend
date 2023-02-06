@@ -12,6 +12,7 @@ export default defineConfig({
       compositionOnly: true,
       defaultSFCLang: 'json',
       include: path.resolve('./src/i18n/en'),
+      //include: resolve(dirname(fileURLToPath(import.meta.url)), './path/to/src/locales/**')
     }),
   ],
   build: {
