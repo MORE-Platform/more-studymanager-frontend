@@ -8,7 +8,11 @@ export function useErrorHandling() {
     messageKey?: string
   ) => {
     if (!error.globallyHandled) {
-      console.error(`CALL ERROR HANDLING: ${error.config.url} - ${messageKey}`);
+      console.error(
+        error.config?.url
+          ? `CALL ERROR HANDLING: ${error.config.url} - ${messageKey}`
+          : `ERROR CONFIG IS UNDEFINED - ${messageKey}`
+      );
       loader.reset();
     }
   };
@@ -21,11 +25,11 @@ export function useErrorHandling() {
         // like 401 Unauthorized, no User found
         if (
           error.response?.status === 401 ||
-          error.config.url?.includes('users/me')
+          error.config?.url?.includes('users/me')
         ) {
           console.error(
             'GLOBAL ERROR HANDLING: Request was rejected',
-            (error as AxiosError).config.url
+            (error as AxiosError).config?.url
           );
           globallyHandled = true;
           loader.reset();
