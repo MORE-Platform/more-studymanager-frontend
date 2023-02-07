@@ -21,6 +21,7 @@
   import { AxiosError } from 'axios';
   import { MoreTableColumn } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
+  import dayjs from 'dayjs';
 
   const studyGroupStore = useStudyGroupStore();
 
@@ -82,7 +83,9 @@
         observationId: data.observationId as number,
         studyGroup: getStudyGroupLabel(data.studyGroupId as number),
         dataReceived: getParticipantStatusLabel(data.dataReceived),
-        lastDataReceived: data.lastDataReceived as string,
+        lastDataReceived: data.lastDataReceived
+          ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
+          : '-',
       };
       return participantDataMapping;
     });
@@ -107,11 +110,16 @@
       sortable: true,
       filterable: true,
     },
-    { field: 'observation', header: t('observation.singular'), sortable: true },
     {
       field: 'studyGroup',
       header: t('study.props.studyGroup'),
       editable: false,
+      sortable: true,
+      filterable: true,
+    },
+    {
+      field: 'observation',
+      header: t('observation.singular'),
       sortable: true,
       filterable: true,
     },
