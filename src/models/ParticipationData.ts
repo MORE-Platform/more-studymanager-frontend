@@ -1,8 +1,8 @@
-export interface ParticipationDataMap {
-  participant: string;
-  observation: string;
+export interface ParticipationDataMapping {
+  participantAlias: string;
+  observationTitle: string;
   observationId: number;
-  studyGroup: string;
+  studyGroupTitle: string;
   dataReceived: string;
   lastDataReceived: string;
 }

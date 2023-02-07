@@ -25,10 +25,6 @@
       class="container rounded-lg bg-white p-10"
     >
       <ParticipationDataList :study-id="studyStore.studyId" />
-      <!--<div class="data-header-textblock mt-20">
-        <h3>Kibana</h3>
-      </div>
-      <DataView />     -->
     </div>
   </div>
 </template>

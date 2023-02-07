@@ -17,7 +17,7 @@
     ParticipationData,
     StudyGroup,
   } from '../generated-sources/openapi';
-  import { ParticipationDataMap } from '../models/ParticipationData';
+  import { ParticipationDataMapping } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
   import { MoreTableColumn } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
@@ -40,7 +40,7 @@
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const participationDataListMap: Ref<ParticipationDataMap[]> = ref([]);
+  const participationDataListMap: Ref<ParticipationDataMapping[]> = ref([]);
 
   const studyGroups: StudyGroup[] = studyGroupStore.studyGroups;
 
@@ -48,7 +48,7 @@
     await dataApi
       .getParticipationData(props.studyId)
       .then(async (response) => {
-        const data: ParticipationDataMap[] = await Promise.all(
+        const data: ParticipationDataMapping[] = await Promise.all(
           response.data.map(async (item) => {
             return await getParticipationDataMapping(item);
           })
@@ -77,12 +77,16 @@
           }
         }) || {};
 
-      const participantDataMapping: ParticipationDataMap = {
-        participant: participant.alias as string,
-        observation: observation.title + ' (' + observation.type + ')',
+      const participantDataMapping: ParticipationDataMapping = {
+        participantAlias: participant.alias as string,
+        observationTitle: `${observation.title} (${observation.type})`,
         observationId: data.observationId as number,
-        studyGroup: getStudyGroupLabel(data.studyGroupId as number),
-        dataReceived: getParticipantStatusLabel(data.dataReceived),
+        studyGroupTitle: getStudyGroupLabel(data.studyGroupId as number),
+        dataReceived: t(
+          `global.labels.${
+            data.dataReceived ? 'dataReceived' : 'noDataReceived'
+          }`
+        ),
         lastDataReceived: data.lastDataReceived
           ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
           : '-',
@@ -94,31 +98,24 @@
     const t = studyGroups.find((group) => group.studyGroupId === studyGroupId);
     return t?.title ? (t.title as string) : 'Entire Study';
   }
-  function getParticipantStatusLabel(status: boolean | undefined) {
-    if (status) {
-      return t('global.labels.dataReceived');
-    } else {
-      return t('global.labels.noDataReceived');
-    }
-  }
 
   const studyDataColumns: MoreTableColumn[] = [
     {
-      field: 'participant',
+      field: 'participantAlias',
       header: t('participants.singular'),
       editable: false,
       sortable: true,
       filterable: true,
     },
     {
-      field: 'studyGroup',
+      field: 'studyGroupTitle',
       header: t('study.props.studyGroup'),
       editable: false,
       sortable: true,
       filterable: true,
     },
     {
-      field: 'observation',
+      field: 'observationTitle',
       header: t('observation.singular'),
       sortable: true,
       filterable: true,
