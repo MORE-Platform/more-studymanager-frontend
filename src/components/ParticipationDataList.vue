@@ -68,31 +68,51 @@
         data.participantId as number
       ),
       observationsApi.listObservations(props.studyId),
-    ]).then(([participantRes, observationRes]) => {
-      const participant: Participant = participantRes.data;
-      const observation: Observation =
-        observationRes.data.find((o: Observation) => {
-          if (o.observationId === data.observationId) {
-            return o;
-          }
-        }) || {};
+    ])
+      .then(([participantRes, observationRes]) => {
+        const participant: Participant = participantRes.data;
+        const observation: Observation =
+          observationRes.data.find((o: Observation) => {
+            if (o.observationId === data.observationId) {
+              return o;
+            }
+          }) || {};
 
-      const participantDataMapping: ParticipationDataMapping = {
-        participantAlias: participant.alias as string,
-        observationTitle: `${observation.title} (${observation.type})`,
-        observationId: data.observationId as number,
-        studyGroupTitle: getStudyGroupLabel(data.studyGroupId as number),
-        dataReceived: t(
-          `global.labels.${
-            data.dataReceived ? 'dataReceived' : 'noDataReceived'
-          }`
-        ),
-        lastDataReceived: data.lastDataReceived
-          ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
-          : '-',
-      };
-      return participantDataMapping;
-    });
+        const participantDataMapping: ParticipationDataMapping = {
+          participantAlias: participant.alias as string,
+          observationTitle: `${observation.title} (${observation.type})`,
+          observationId: data.observationId as number,
+          studyGroupTitle: getStudyGroupLabel(data.studyGroupId as number),
+          dataReceived: t(
+            `global.labels.${
+              data.dataReceived ? 'dataReceived' : 'noDataReceived'
+            }`
+          ),
+          lastDataReceived: data.lastDataReceived
+            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
+            : '-',
+        };
+        return participantDataMapping;
+      })
+      .catch((e) => {
+        console.error('ID mismatch while converting id to properties ' + e);
+        const participantDataMapping: ParticipationDataMapping = {
+          participantAlias: data.participantId?.toString() || '',
+          observationTitle: data.observationId?.toString() || '',
+          observationId: data.observationId || 0,
+          studyGroupTitle: data.studyGroupId?.toString() || '',
+          dataReceived: t(
+            `global.labels.${
+              data.dataReceived ? 'dataReceived' : 'noDataReceived'
+            }`
+          ),
+          lastDataReceived: data.lastDataReceived
+            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
+            : '-',
+        };
+
+        return participantDataMapping;
+      });
   }
   function getStudyGroupLabel(studyGroupId: number): string {
     const t = studyGroups.find((group) => group.studyGroupId === studyGroupId);
