@@ -2,8 +2,8 @@
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '../generated-sources/openapi';
-  import DataView from '../components/DataView.vue';
   import { useStudyStore } from '../stores/studyStore';
+  import ParticipationDataList from '../components/ParticipationDataList.vue';
 
   const studyStore = useStudyStore();
   const accessRoles: StudyRole[] = [StudyRole.Viewer, StudyRole.Admin];
@@ -24,13 +24,7 @@
       "
       class="container rounded-lg bg-white p-10"
     >
-      <div class="data-header-textblock">
-        <h3>{{ $t('data.title') }}</h3>
-        <h4>
-          {{ $t('data.description') }}
-        </h4>
-      </div>
-      <DataView />
+      <ParticipationDataList :study-id="studyStore.studyId" />
     </div>
   </div>
 </template>

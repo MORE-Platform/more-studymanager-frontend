@@ -23,7 +23,11 @@
       "no-value": "-",
       "config": "Configuration",
       "notFound": "Not found",
-      "noRecords": "No records"
+      "noRecords": "No records",
+      "lastCollected": "Last collected",
+      "dataReceived": "Data Received",
+      "noDataReceived": "No Data Received",
+      "lastDataReceived": "Last Data Received"
     },
     "placeholder": {
       "entireStudy": "Entire Study",
@@ -187,7 +191,10 @@
 
   "data": {
     "title": "Data",
-    "description": "Data collected during the study will be visualized within this dashboard."
+    "description": "Data collected during the study will be visualized within this dashboard.",
+    "dataList": {
+      "emptyListMsg": "Currently there are no observations to track."
+    }
   },
 
   "participants": {

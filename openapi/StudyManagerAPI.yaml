@@ -891,6 +891,26 @@ paths:
         '400':
           description: bad request
 
+  /studies/{studyId}/data:
+    get:
+      tags:
+        - data
+      description: Get Study Participation Data
+      operationId: getParticipationData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipationData'
+        '404':
+          description: not found
+
   /users/me:
     get:
       tags:
@@ -1118,6 +1138,22 @@ components:
           format: date-time
           readOnly: true
         modified:
+          type: string
+          format: date-time
+          readOnly: true
+
+    ParticipationData:
+      type: object
+      properties:
+        observationId:
+          $ref: '#/components/schemas/IdReference'
+        participantId:
+          $ref: '#/components/schemas/IdReference'
+        studyGroupId:
+          $ref: '#/components/schemas/IdReference'
+        dataReceived:
+          type: boolean
+        lastDataReceived:
           type: string
           format: date-time
           readOnly: true
