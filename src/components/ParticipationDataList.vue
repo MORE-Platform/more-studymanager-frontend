@@ -57,7 +57,7 @@
         return data;
       })
       .catch((e: AxiosError) => {
-        handleIndividualError(e, 'cannot list participants');
+        handleIndividualError(e, 'cannot list participationDataList');
       });
   }
 
@@ -89,7 +89,7 @@
             }`
           ),
           lastDataReceived: data.lastDataReceived
-            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
+            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, HH:mm')
             : '-',
         };
         return participantDataMapping;
@@ -107,7 +107,7 @@
             }`
           ),
           lastDataReceived: data.lastDataReceived
-            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, hh:mm')
+            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, HH:mm')
             : '-',
         };
 
@@ -156,16 +156,6 @@
     },
   ];
 
-  /*
-  function goToObservation(observationId: number) {
-    console.log(observationId);
-    router.push({
-      name: t('studyNavigation.tabs.observation'),
-      params: { studyId: props.studyId },
-    });
-  }
-   */
-
   listParticipationData();
 </script>
 
@@ -179,7 +169,7 @@
       :rows="participationDataListMap"
       :row-actions="[]"
       :row-edit-btn="false"
-      :sort-options="{ sortField: 'participant', sortOrder: -1 }"
+      :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
       :editable="() => false"
       :loading="loader.isLoading.value"
       :empty-message="$t('data.dataList.emptyListMsg')"
