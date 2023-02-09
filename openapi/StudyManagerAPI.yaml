@@ -1145,18 +1145,26 @@ components:
     ParticipationData:
       type: object
       properties:
-        observationId:
-          $ref: '#/components/schemas/IdReference'
-        participantId:
-          $ref: '#/components/schemas/IdReference'
-        studyGroupId:
-          $ref: '#/components/schemas/IdReference'
+        observationData:
+          $ref: '#/components/schemas/IdTitle'
+        participantData:
+          $ref: '#/components/schemas/IdTitle'
+        studyGroupData:
+          $ref: '#/components/schemas/IdTitle'
         dataReceived:
           type: boolean
         lastDataReceived:
           type: string
           format: date-time
           readOnly: true
+
+    IdTitle:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
 
     Intervention:
       type: object

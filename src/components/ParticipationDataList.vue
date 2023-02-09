@@ -1,33 +1,18 @@
 <script setup lang="ts">
-  import { useStudyGroupStore } from '../stores/studyGroupStore';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import {
-    useDataApi,
-    useObservationsApi,
-    useParticipantsApi,
-  } from '../composable/useApi';
+  import { useDataApi } from '../composable/useApi';
   import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { ref, Ref } from 'vue';
-  import {
-    Observation,
-    Participant,
-    ParticipationData,
-    StudyGroup,
-  } from '../generated-sources/openapi';
   import { ParticipationDataMapping } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
   import { MoreTableColumn } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
   import dayjs from 'dayjs';
 
-  const studyGroupStore = useStudyGroupStore();
-
   const { dataApi } = useDataApi();
-  const { participantsApi } = useParticipantsApi();
-  const { observationsApi } = useObservationsApi();
 
   const props = defineProps({
     studyId: {
@@ -40,83 +25,34 @@
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const participationDataListMap: Ref<ParticipationDataMapping[]> = ref([]);
-
-  const studyGroups: StudyGroup[] = studyGroupStore.studyGroups;
+  const participationDataListMapping: Ref<ParticipationDataMapping[]> = ref([]);
 
   async function listParticipationData(): Promise<void> {
-    await dataApi
+    participationDataListMapping.value = await dataApi
       .getParticipationData(props.studyId)
       .then(async (response) => {
-        const data: ParticipationDataMapping[] = await Promise.all(
-          response.data.map(async (item) => {
-            return await getParticipationDataMapping(item);
-          })
-        );
-        participationDataListMap.value = data;
-        return data;
+        return response.data.map((item) => {
+          const mapping: ParticipationDataMapping = {
+            participantAlias: item.participantData?.title || '-',
+            observationTitle: item.observationData?.title || '-',
+            studyGroupTitle:
+              item.studyGroupData?.title || t('global.placeholder.entireStudy'),
+            dataReceived: t(
+              `global.labels.${
+                item.dataReceived ? 'dataReceived' : 'noDataReceived'
+              }`
+            ),
+            lastDataReceived: item.lastDataReceived
+              ? dayjs(item.lastDataReceived).format('DD/MM/YYYY, HH:mm')
+              : '-',
+          };
+          return mapping;
+        });
       })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participationDataList');
+        return [];
       });
-  }
-
-  async function getParticipationDataMapping(data: ParticipationData) {
-    return await Promise.all([
-      participantsApi.getParticipant(
-        props.studyId,
-        data.participantId as number
-      ),
-      observationsApi.listObservations(props.studyId),
-    ])
-      .then(([participantRes, observationRes]) => {
-        const participant: Participant = participantRes.data;
-        const observation: Observation =
-          observationRes.data.find((o: Observation) => {
-            if (o.observationId === data.observationId) {
-              return o;
-            }
-          }) || {};
-
-        const participantDataMapping: ParticipationDataMapping = {
-          participantAlias: participant.alias as string,
-          observationTitle: `${observation.title} (${observation.type})`,
-          observationId: data.observationId as number,
-          studyGroupTitle: getStudyGroupLabel(data.studyGroupId as number),
-          dataReceived: t(
-            `global.labels.${
-              data.dataReceived ? 'dataReceived' : 'noDataReceived'
-            }`
-          ),
-          lastDataReceived: data.lastDataReceived
-            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, HH:mm')
-            : '-',
-        };
-        return participantDataMapping;
-      })
-      .catch((e) => {
-        console.error('ID mismatch while converting id to properties ' + e);
-        const participantDataMapping: ParticipationDataMapping = {
-          participantAlias: data.participantId?.toString() || '',
-          observationTitle: data.observationId?.toString() || '',
-          observationId: data.observationId || 0,
-          studyGroupTitle: data.studyGroupId?.toString() || '',
-          dataReceived: t(
-            `global.labels.${
-              data.dataReceived ? 'dataReceived' : 'noDataReceived'
-            }`
-          ),
-          lastDataReceived: data.lastDataReceived
-            ? dayjs(data.lastDataReceived).format('DD/MM/YYYY, HH:mm')
-            : '-',
-        };
-
-        return participantDataMapping;
-      });
-  }
-  function getStudyGroupLabel(studyGroupId: number): string {
-    const t = studyGroups.find((group) => group.studyGroupId === studyGroupId);
-    return t?.title ? (t.title as string) : 'Entire Study';
   }
 
   const studyDataColumns: MoreTableColumn[] = [
@@ -166,7 +102,7 @@
       :title="$t('data.title')"
       :subtitle="$t('data.description')"
       :columns="studyDataColumns"
-      :rows="participationDataListMap"
+      :rows="participationDataListMapping"
       :row-actions="[]"
       :row-edit-btn="false"
       :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
