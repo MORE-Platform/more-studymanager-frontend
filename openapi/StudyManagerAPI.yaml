@@ -1145,11 +1145,13 @@ components:
     ParticipationData:
       type: object
       properties:
-        observationData:
+        observationNamedId:
           $ref: '#/components/schemas/IdTitle'
-        participantData:
+        observationType:
+          type: string
+        participantNamedId:
           $ref: '#/components/schemas/IdTitle'
-        studyGroupData:
+        studyGroupNamedId:
           $ref: '#/components/schemas/IdTitle'
         dataReceived:
           type: boolean

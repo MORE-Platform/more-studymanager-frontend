@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import { useDataApi } from '../composable/useApi';
+  import { useComponentsApi, useDataApi } from '../composable/useApi';
   import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
@@ -11,6 +11,8 @@
   import { MoreTableColumn } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
   import dayjs from 'dayjs';
+  import { ComponentFactory } from '../generated-sources/openapi';
+  const { componentsApi } = useComponentsApi();
 
   const { dataApi } = useDataApi();
 
@@ -33,10 +35,14 @@
       .then(async (response) => {
         return response.data.map((item) => {
           const mapping: ParticipationDataMapping = {
-            participantAlias: item.participantData?.title || '-',
-            observationTitle: item.observationData?.title || '-',
+            participantAlias: item.participantNamedId?.title || '-',
+            observationTitle:
+              `${item.observationNamedId?.title} ${getObservationTypeLabel(
+                item.observationType as string
+              )}` || '-',
             studyGroupTitle:
-              item.studyGroupData?.title || t('global.placeholder.entireStudy'),
+              item.studyGroupNamedId?.title ||
+              t('global.placeholder.entireStudy'),
             dataReceived: t(
               `global.labels.${
                 item.dataReceived ? 'dataReceived' : 'noDataReceived'
@@ -53,6 +59,19 @@
         handleIndividualError(e, 'cannot list participationDataList');
         return [];
       });
+  }
+
+  async function getFactories() {
+    return componentsApi.listComponents('observation').then((response: any) => {
+      return response.data;
+    });
+  }
+  const factories: ComponentFactory[] = await getFactories();
+
+  function getObservationTypeLabel(observationType: string) {
+    return `(${
+      factories.find((item) => item.componentId === observationType)?.title
+    })`;
   }
 
   const studyDataColumns: MoreTableColumn[] = [
