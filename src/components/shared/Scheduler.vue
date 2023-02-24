@@ -15,7 +15,7 @@
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
 
-  const { study } = useStudyStore();
+  const studyStore = useStudyStore();
 
   const scheduler: any = dialogRef.value.data.scheduler;
 
@@ -270,9 +270,9 @@
         if (
           !returnEvent.rrule.count &&
           !returnEvent.rrule.until &&
-          study.plannedEnd
+          studyStore.study.plannedEnd
         ) {
-          const endDate: Date = new Date(study.plannedEnd);
+          const endDate: Date = new Date(studyStore.study.plannedEnd);
           endDate.setHours(23, 59, 59);
           returnEvent.rrule.until = endDate.toISOString();
         }
