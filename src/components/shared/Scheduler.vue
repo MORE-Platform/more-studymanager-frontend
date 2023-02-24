@@ -8,12 +8,14 @@
   import Checkbox from 'primevue/checkbox';
   import { Frequency, Weekday, Event } from '../../generated-sources/openapi';
   import { MoreTableEditableChoicePropertyValues } from '../../models/MoreTableModel';
-  import { dateToDateString } from '../../utils/dateUtils';
   import { Nullable } from 'vitest';
   import { useI18n } from 'vue-i18n';
+  import { useStudyStore } from '../../stores/studyStore';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
+
+  const { study } = useStudyStore();
 
   const scheduler: any = dialogRef.value.data.scheduler;
 
@@ -129,9 +131,12 @@
   ); // hourly/daily/weekly/monthly/yearly
   const repeatCount: Ref<Nullable<string>> = ref(
     scheduler.rrule && scheduler.rrule.count ? scheduler.rrule.count : undefined
-  ); // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
+  );
+  // kein repeatUntil wenn repeatCount // hourly/daily/weekly/monthly/yearly
   const repeatUntil: Ref<Date | undefined> = ref(
-    scheduler.rrule && scheduler.rrule.until ? scheduler.rrule.until : undefined
+    scheduler.rrule && scheduler.rrule.until
+      ? new Date(scheduler.rrule.until)
+      : undefined
   ); // kein repeatCount wenn repeatUntil //hourly/daily/weekly/monthly/yearly
   const repeatByDay: Ref<Weekday[] | undefined> = ref(
     scheduler.rrule && scheduler.rrule.byday ? scheduler.rrule.byday : undefined
@@ -251,7 +256,7 @@
         returnEvent.rrule = {
           freq: repeatFreq.value,
           until: repeatUntil.value
-            ? dateToDateString(repeatUntil.value)
+            ? repeatUntil.value?.toISOString()
             : undefined,
           count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
           interval: repeatInterval.value,
@@ -262,6 +267,15 @@
             : undefined,
           bysetpos: repeatBySetPos.value,
         };
+        if (
+          !returnEvent.rrule.count &&
+          !returnEvent.rrule.until &&
+          study.plannedEnd
+        ) {
+          const endDate: Date = new Date(study.plannedEnd);
+          endDate.setHours(23, 59, 59);
+          returnEvent.rrule.until = endDate.toISOString();
+        }
       }
 
       dialogRef.value.close(returnEvent);
@@ -464,6 +478,7 @@
           </div>
           <div v-else-if="repeatEndOption === 'onDate'" class="col-span-2">
             <Calendar
+              v-show="false"
               v-model="repeatUntil"
               placeholder="dd/mm/yyyy"
               date-format="dd/mm/yy"
