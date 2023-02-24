@@ -402,7 +402,7 @@
                 <span class="font-medium"
                   >{{ $t('scheduler.labels.repetitionEnd') }}: </span
                 >{{ $t('scheduler.labels.on') }}
-                {{ scheduler.rrule.until }}
+                {{ dayjs(scheduler.rrule.until).format('DD/MM/YYYY, HH:mm') }}
               </div>
             </div>
             <div v-else class="text-gray-400">
