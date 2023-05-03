@@ -24,9 +24,11 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
+  import {useConfirm} from 'primevue/useconfirm';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
+  const confirm = useConfirm();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
@@ -239,13 +241,36 @@
     }
   }
 
+  async function deleteParticipantAsync(participant: Participant) {
+    setTimeout(() => {
+      confirm.require({
+        header: t('participants.dialog.header.deleteWithData'),
+        message: t('participants.dialog.msg.deleteWithData'),
+        accept: () => {
+          participantsApi
+            .deleteParticipant(
+              participant.studyId as number,
+              participant.participantId as number,
+              true
+            )
+            .then(listParticipant);
+        },
+        reject: () => {
+          participantsApi
+            .deleteParticipant(
+              participant.studyId as number,
+              participant.participantId as number,
+              false
+            )
+            .then(listParticipant);
+        },
+      });
+    },300);
+  }
+
   function deleteParticipant(participant: Participant) {
-    participantsApi
-      .deleteParticipant(
-        participant.studyId as number,
-        participant.participantId as number
-      )
-      .then(listParticipant);
+    //TODO mabye find more elegant solution for this workaround
+    deleteParticipantAsync(participant);
   }
 
   async function importParticipants(

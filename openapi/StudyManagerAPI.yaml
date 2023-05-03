@@ -521,6 +521,11 @@ paths:
       parameters:
         - $ref: '#/components/parameters/StudyId'
         - $ref: '#/components/parameters/ParticipantId'
+        - name: includeData
+          in: query
+          schema:
+            type: boolean
+            default: false
       responses:
         '200':
           description: >
