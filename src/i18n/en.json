@@ -209,11 +209,13 @@
     "dialog": {
       "header": {
         "delete": "Delete Participant",
+        "deleteWithData": "Delete Data",
         "edit": "Edit Participant",
         "create": "Create Participant"
       },
       "msg": {
-        "delete": "Really delete participant?"
+        "delete": "Really delete participant?",
+        "deleteWithData": "Include all data for the participant?"
       }
     },
     "participantsList": {
