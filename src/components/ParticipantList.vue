@@ -24,7 +24,7 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import {useConfirm} from 'primevue/useconfirm';
+  import { useConfirm } from 'primevue/useconfirm';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -265,7 +265,7 @@
             .then(listParticipant);
         },
       });
-    },300);
+    }, 300);
   }
 
   function deleteParticipant(participant: Participant) {
