@@ -4,7 +4,7 @@ import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
 import { useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
-import {useStudyGroupStore} from "./studyGroupStore";
+import { useStudyGroupStore } from './studyGroupStore';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
@@ -59,7 +59,7 @@ export const useStudyStore = defineStore('study', () => {
       .createStudy(study)
       .then((response) => {
         studies.value.push(response.data);
-        studyGroupStore.studyGroups = []
+        studyGroupStore.studyGroups = [];
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot create study')
