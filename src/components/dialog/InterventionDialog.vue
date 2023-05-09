@@ -185,10 +185,11 @@
     }
   }
 
-  const errors: Ref<Array<any>> = ref([]);
+  const errors: Ref<Array<string>> = ref([]);
   const externalErrors: Ref<Array<any>> = ref([]);
 
   function checkErrors() {
+    errors.value = [];
     if (!title.value) {
       errors.value.push(t('intervention.error.addTitle'));
     }
