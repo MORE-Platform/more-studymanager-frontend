@@ -94,8 +94,9 @@ export enum MoreTableFieldType {
   string,
   choice,
   calendar,
-  multiselect = 3,
-  longtext = 4,
+  multiselect,
+  longtext,
+  datetime,
 }
 
 export enum FileUploadModeType {
