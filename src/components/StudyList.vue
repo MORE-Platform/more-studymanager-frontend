@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import {useRouter} from 'vue-router';
-import {
-  MoreTableAction,
-  MoreTableColumn,
-  MoreTableFieldType,
-  MoreTableRowActionResult,
-} from '../models/MoreTableModel';
-import {Study, StudyRole, StudyStatus} from '../generated-sources/openapi';
-import MoreTable from './shared/MoreTable.vue';
-import ConfirmDialog from 'primevue/confirmdialog';
-import DynamicDialog from 'primevue/dynamicdialog';
-import StudyDialog from './dialog/StudyDialog.vue';
-import {useDialog} from 'primevue/usedialog';
-import InfoDialog from './dialog/InfoDialog.vue';
-import useLoader from '../composable/useLoader';
-import {useStudyStore} from '../stores/studyStore';
-import {useI18n} from 'vue-i18n';
+  import { useRouter } from 'vue-router';
+  import {
+    MoreTableAction,
+    MoreTableColumn,
+    MoreTableFieldType,
+    MoreTableRowActionResult,
+  } from '../models/MoreTableModel';
+  import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
+  import MoreTable from './shared/MoreTable.vue';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import DynamicDialog from 'primevue/dynamicdialog';
+  import StudyDialog from './dialog/StudyDialog.vue';
+  import { useDialog } from 'primevue/usedialog';
+  import InfoDialog from './dialog/InfoDialog.vue';
+  import useLoader from '../composable/useLoader';
+  import { useStudyStore } from '../stores/studyStore';
+  import { useI18n } from 'vue-i18n';
 
-const studyStore = useStudyStore();
+  const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
@@ -42,7 +42,7 @@ const studyStore = useStudyStore();
       field: 'status',
       header: t('study.props.status'),
       filterable: { showFilterMatchModes: false },
-      type: MoreTableFieldType.statusString
+      type: MoreTableFieldType.statusString,
     },
     {
       field: 'userRoles',

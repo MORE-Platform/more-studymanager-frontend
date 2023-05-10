@@ -97,7 +97,7 @@ export enum MoreTableFieldType {
   multiselect,
   longtext,
   datetime,
-  statusString
+  statusString,
 }
 
 export enum FileUploadModeType {
