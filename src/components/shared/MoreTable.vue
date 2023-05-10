@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { onBeforeMount, PropType, Ref, ref } from 'vue';
+  import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
   import {
     MoreTableColumn,
     MoreTableAction,
@@ -122,6 +122,11 @@
 
   const _editable = ref(false);
   onBeforeMount(() => {
+    if (props.editableAccess) {
+      _editable.value = !!props.columns.find((c) => c.editable);
+    }
+  });
+  onUpdated(() => {
     if (props.editableAccess) {
       _editable.value = !!props.columns.find((c) => c.editable);
     }
