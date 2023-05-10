@@ -16,6 +16,7 @@
       "clone": "Clone",
       "description": "Description",
       "edit": "Edit",
+      "setPause": "Pause",
       "lastEdited": "Last Edited",
       "isRequired": "Required",
       "isNotRequired": "Not required",
@@ -56,6 +57,13 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions"
+    },
+    "tabLink": {
+      "overview": "Overview",
+      "data": "Data",
+      "participants": "Participants",
+      "observations": "Observations",
+      "interventions": "Interventions"
     }
   },
 
@@ -87,6 +95,12 @@
       "pause": "Pause",
       "resume": "Resume",
       "complete": "Close"
+    },
+    "statusStrings": {
+      "paused": "paused",
+      "active": "active",
+      "draft": "draft",
+      "closed": "completed"
     },
     "error": {
       "addTitle": "Study Title",

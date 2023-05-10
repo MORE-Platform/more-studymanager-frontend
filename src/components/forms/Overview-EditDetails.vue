@@ -113,7 +113,7 @@
           :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
       props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
           @click="openEditDialog()"
-          ><span>Edit</span></Button
+          ><span>{{ $t('global.labels.edit') }}</span></Button
         >
       </div>
     </div>

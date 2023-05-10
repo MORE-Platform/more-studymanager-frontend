@@ -1,32 +1,32 @@
 <script setup lang="ts">
-  import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
-  import {
-    MoreTableAction,
-    MoreTableActionOption,
-    MoreTableChoice,
-    MoreTableChoiceOptions,
-    MoreTableColumn,
-    MoreTableEditableChoiceProperties,
-    MoreTableFieldType,
-    MoreTableSortOptions,
-  } from '../../models/MoreTableModel';
-  import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
-  import Column from 'primevue/column';
-  import Button from 'primevue/button';
-  import SplitButton from 'primevue/splitbutton';
-  import Menu from 'primevue/menu';
-  import InputText from 'primevue/inputtext';
-  import Calendar from 'primevue/calendar';
-  import Dropdown from 'primevue/dropdown';
-  import MultiSelect from 'primevue/multiselect';
-  import { useConfirm } from 'primevue/useconfirm';
-  import FileUpload from 'primevue/fileupload';
-  import dayjs from 'dayjs';
-  import { FilterMatchMode } from 'primevue/api';
-  import { dateToDateString } from '../../utils/dateUtils';
-  import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
+import {onBeforeMount, onUpdated, PropType, Ref, ref} from 'vue';
+import {
+  MoreTableAction,
+  MoreTableActionOption,
+  MoreTableChoice,
+  MoreTableChoiceOptions,
+  MoreTableColumn,
+  MoreTableEditableChoiceProperties,
+  MoreTableFieldType,
+  MoreTableSortOptions,
+} from '../../models/MoreTableModel';
+import DataTable, {DataTableFilterMeta} from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import SplitButton from 'primevue/splitbutton';
+import Menu from 'primevue/menu';
+import InputText from 'primevue/inputtext';
+import Calendar from 'primevue/calendar';
+import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
+import {useConfirm} from 'primevue/useconfirm';
+import FileUpload from 'primevue/fileupload';
+import dayjs from 'dayjs';
+import {FilterMatchMode} from 'primevue/api';
+import {dateToDateString} from '../../utils/dateUtils';
+import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
 
-  const props = defineProps({
+const props = defineProps({
     title: {
       type: String,
       default: undefined,
@@ -218,6 +218,8 @@
   }
 
   function onRowClick($event: any) {
+    console.log("onRowClick---------");
+    console.log($event);
     if (editMode.value.length === 0) {
       selectHandler($event.data[props.rowId]);
     }
@@ -611,6 +613,9 @@
                 >
               </span>
               <span v-else>{{ data[field] }}</span>
+            </span>
+            <span v-if="column.type === MoreTableFieldType.statusString">
+              {{ $t('study.statusStrings.' + data[field]) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(

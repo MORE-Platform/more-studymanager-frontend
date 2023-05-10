@@ -1,0 +1,497 @@
+{
+  "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
+
+  "global": {
+    "labels": {
+      "close": "Schließen",
+      "save": "Speichern",
+      "cancel": "Abbrechen",
+      "delete": "Löschen",
+      "new": "Neu",
+      "add": "Hinzufügen",
+      "start": "Start",
+      "end": "Ende",
+      "confirm": "Bestätigen",
+      "id": "Id",
+      "clone": "Clonen",
+      "description": "Beschreibung",
+      "edit": "Bearbeiten",
+      "setPause": "Pausieren",
+      "lastEdited": "Zuletzt bearbeitet",
+      "isRequired": "Erforderlich",
+      "isNotRequired": "Nicht erforderlich",
+      "modules": "Module",
+      "no-value": "-",
+      "config": "Konfiguration",
+      "notFound": "Nicht gefunden",
+      "noRecords": "Keine Aufzeichnungen",
+      "lastCollected": "Zuletzt geschickt",
+      "dataReceived": "Daten erhalten",
+      "noDataReceived": "Keine Daten erhalten",
+      "lastDataReceived": "Letzte Daten erhalten"
+    },
+    "placeholder": {
+      "entireStudy": "Gesamte Studie",
+      "chooseDropdownOptionDefault": "Option auswählen",
+      "chooseRole": "Rolle(n) auswählen",
+      "noGroup": "Keine Gruppe"
+    },
+    "header": {
+      "privateBeta": "Private Beta",
+      "logout": "Ausloggen"
+    },
+    "footer": {
+      "aboutMore": "Über More"
+    }
+  },
+
+  "studyNavigation": {
+    "accessDialog": {
+      "header": "Zugriff verweigert",
+      "permissionWarningMsg": ". Bitte kontaktiere deinen Study Administrator, wenn du Zugang zu diesem Abschnitt benötigst.",
+      "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: "
+    },
+    "tabs": {
+      "overview": "Überblick",
+      "data": "Daten",
+      "participants": "Teilnehmer",
+      "observations": "Datenerhebung",
+      "interventions": "Interventionen"
+    },
+    "tabLink": {
+      "overview": "Overview",
+      "data": "Data",
+      "participants": "Participants",
+      "observations": "Observations",
+      "interventions": "Interventions"
+    }
+  },
+
+  "study": {
+    "singular": "Studie",
+    "plural": "Studien",
+    "props": {
+      "studyId": "Studien-ID",
+      "title": "Titel",
+      "purpose": "Zielsetzung",
+      "status": "Status",
+      "roles": "Rolle(n)",
+      "plannedStart": "Geplanter Start",
+      "actualStart": "Aktueller Start",
+      "plannedEnd": "Geplantes Ende",
+      "actualEnd": "Aktuelles Ende",
+      "participantInfo": "Teilnehmerinformationen",
+      "consentInfo": "Berechtigungsinformation",
+      "language": "Sprache",
+      "studyGroup":  "Studiengruppe"
+    },
+    "roles": {
+      "admin": "Studien-Administrator",
+      "operator": "Studien-Operateur",
+      "viewer": "Studien-Beobachter"
+    },
+    "statusChange": {
+      "start": "Start",
+      "pause": "Pause",
+      "resume": "Fortsetzen",
+      "complete": "Abschließen"
+    },
+    "statusStrings": {
+      "paused": "pausiert",
+      "active": "aktiv",
+        "draft": "entwerfen",
+      "closed": "beendet"
+    },
+    "error": {
+      "addTitle": "Studientitel",
+      "addConsentInfo": "Berechtigungsinformation",
+      "addParticipantInfo": "Teilnehmerinformation"
+    },
+    "placeholder": {
+      "titleInput": "Bitte gib einen kurzen Titel ein.",
+      "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
+      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern auf der App angezeigt.",
+      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern als Beschreibungstext für die Berechtigungsinformation in der App angezeigt.",
+      "selectLanguage": "Sprache auswählen",
+      "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
+      "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
+      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berrechtigungsinformation der Studie hinzu."
+    },
+    "dialog": {
+      "header":{
+        "edit": "Studie bearbeiten",
+        "create": "Studie erstellen",
+        "delete": "Studie löschen",
+        "urlCopied": "Studien-ID kopieren"
+      },
+      "msg": {
+        "delete": "Eine gelöschte Studie kann nicht mehr wiederhergestellt werden! Sind Sie sicher, dass sie diese Studie löschen wollen?",
+        "urlCopied": "Die URL der Studie '{title}' (ID: {studyId}) wurde in die Zwischenablage kopiert."
+      },
+      "description": "Fügen Sie die Grundbeschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+      "error": {
+        "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
+      }
+    },
+    "studyList": {
+      "title": "Übersicht meiner Studien",
+      "description": "Die unten angeführte Liste zeigt die Liste all Ihrer Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
+      "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
+      "action": {
+        "addStudy": "Neue Studie hinzufügen",
+        "copyUrl": "URL kopieren"
+      }
+    }
+  },
+
+  "studyGroup": {
+    "singular": "Studiengruppe",
+    "plural": "Studiengruppen",
+    "dialog": {
+      "header": {
+        "delete": "Studiengruppe löschen",
+        "create": "Studiengruppe hinzufügen"
+      },
+      "msg": {
+        "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
+        }
+      },
+    "groupList": {
+      "placeholder": {
+        "title": "Stellen Sie einen Titel bereit",
+        "purpose": "Stellen sie die Zielsetzung für diese Gruppe bereit",
+        "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet."
+      },
+      "action": {
+        "create": "Studiengruppe erstellen"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Studiengruppe auswählen"
+    }
+  },
+
+  "studyCollaborator":{
+    "dialog": {
+      "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
+      "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
+      "chooseRoles": "Wählen Sie die Rolle(n) für Ihren Studien-Mitarbeiter: ",
+      "emptyDropdownValues": "Zur Zeit sind keine Rollen verfügbar.",
+      "header": {
+        "delete": "Studien-Mitarbeiter löschen",
+        "add": "Studien-Mitarbeiter hinzufügen"
+      },
+      "msg": {
+        "delete": "Möchten Sie diesen Studien-Mitarbeiter wirklich löschen?"
+      }
+    },
+    "collaboratorList": {
+      "title": "Studien-Mitarbeiter",
+      "props": {
+        "name": "Name",
+        "institution": "Organisation",
+        "email": "E-Mail"
+      },
+      "action": {
+        "add": "Studien-Mitarbeiter hinzufügen"
+      }
+    },
+    "placeholder": {
+      "addCollaborator": "Studien-Mitarbeiter hinzufügen",
+      "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen.",
+      "noResultsFound": "Keine Ergebnisse gefunden"
+    }
+  },
+
+  "data": {
+    "title": "Daten",
+    "description": "Die während der Studie gesammelten Daten werden in der darunterliegenden Liste angezeigt.",
+    "dataList": {
+      "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können."
+    }
+  },
+
+  "participants": {
+    "singular": "Teilnehmer",
+    "plural": "Teilnehmer",
+    "props":{
+      "participantId": "Teilnehmer ID",
+      "alias": "Alias",
+      "token": "Token",
+      "registrationToken": "Registrierungstoken"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Teilnehmer löschen",
+        "deleteWithData": "Daten löschen",
+        "edit": "Teilnehmer bearbeiten",
+        "create": "Teilnehmer hinzufügen"
+      },
+      "msg": {
+        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
+        "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
+      }
+    },
+    "participantsList": {
+      "title": "Teilnehmer",
+      "description": "Hier wird die Liste Ihrer Studienteilnehmer angezeigt. Um die Liste zu erweitern, können Sie Teilnehmer hinzufügen oder importieren.",
+      "emptyListMsg": "Verwalten oder fügen Sie Studien Teilnehmer hinzu. Ihre Studienteilnehmer werden hier aufgelistet.",
+      "action": {
+        "distribute": "Automatische Gruppenzuweisung",
+        "import": "Teilnehmer importieren",
+        "export": "Teilnehmer exportieren",
+        "add": "Teilnehmer hinzufügen"
+      },
+      "labels": {
+        "add3": "3 hinzufügen",
+        "add10": "10 hinzufügen",
+        "add25": "25 hinzufügen",
+        "add50": "50 hinzufügen"
+      }
+    }
+  },
+
+  "observation": {
+    "singular": "Aufzeichnung",
+    "plural": "Aufzeichnungen",
+    "props": {
+      "type": "Typ",
+      "observationType": {
+        "smartphoneAccelerometer": "Beschleunigungsmesser",
+        "heartRateMeter": "Herzfrequenzmesser"
+      }
+    },
+    "observationList": {
+      "title": "Aufzeichnung",
+      "description": "Ein Aufzeichnungmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln.",
+      "emptyListMsg": "Verwalten oder fügen Sie Aufzeichnungsmodule hinzu. Diese werden hier angezeigt.",
+      "action": {
+        "add": "Aufzeichnungsmodul hinzufügen",
+      }
+    },
+    "dialog": {
+      "header": {
+        "delete": "Aufzeichnungsmodul löschen",
+        "clone": "Aufzeichnungsmodul clonen",
+        "create": "Aufzeichnungsmodul hinzufügen",
+        "edit": "Aufzeichnungsmodul bearbeiten",
+        "view": "Aufzeichnungsmodul Details"
+      },
+      "msg": {
+        "delete": "Ein gelöschtes Aufzeichnungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?"
+      }
+    },
+    "error":  {
+      "noValidJson": "Die eingegeben Settingseigenschaften konnten nicht verarbeitet werden: Kein valides JSON.",
+      "addTitle":  "Title des Aufzeichnungsmodul",
+      "addScheduler": "Planer",
+      "addParticipantInfo": "Teilnehmerinformation",
+      "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein."
+    },
+    "placeholder": {
+      "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
+      "enterMainPurpose": "Fügen Sie die Hauptzielsetzung der Studie hinzu."
+    }
+  },
+
+  "intervention": {
+    "singular": "Intervention",
+    "plural": "Interventionen",
+    "props": {
+      "trigger": "Auslöser",
+      "action": "Handlung",
+      "actions": "Handlungen"
+    },
+    "dialog":  {
+      "title": "Intervention",
+      "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Handlung für Ihre Intervention hinzu.",
+      "header": {
+        "delete": "Intervention löschen",
+        "create": "Intervention erstellen",
+        "clone": "Intervention clonen",
+        "edit": "Intervention bearbeiten",
+        "view": "Interventiondetails"
+      },
+      "msg": {
+        "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
+      }
+    },
+    "interventionList": {
+      "title": "Interventionen",
+      "description": "Eine Intervention stellt sich aus einer Auslösungsbedingung mit mindestens einer darauf folgender Handlung zusammen.",
+      "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
+      "action": {
+        "add": "Intervention hinzufügen"
+      }
+    },
+    "error":  {
+      "addTitle": "Titel der Intervention",
+      "addTriggerTypeConfig": "Auslösertyp und Konfiguration",
+      "addAction": "Mindestens eine Handlung"
+    },
+    "placeholder": {
+      "noDescription": "Keine Beschreibung verfügbar",
+      "trigger": "Wähle einen Auslösertyp",
+
+      "chooseAction": "Wähle eine Handlung",
+      "emptyScheduler": "Stellen Sie einen Zeitplan für Ihre Intervention bereit."
+    },
+    "description": {
+      "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu.",
+      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
+    }
+  },
+
+  "moreTable": {
+    "defaultEmptyMsg": "Keine Berichte vorhanden",
+    "filterBy": "Filtern"
+  },
+
+  "cronSchedule": {
+    "placeholders": {
+      "secondsAndMinutes": "0-59",
+      "hours": "0-23",
+      "months": "1-12",
+      "dayOfMonth": "1-31",
+      "dayOfWeek": "1-7"
+    },
+    "labels": {
+      "seconds": "Sekunden",
+      "minutes": "Minuten",
+      "hours": "Stunden",
+      "months": "Monate",
+      "dayOfMonth": "Tag des Monats",
+      "dayOfWeek": "Tag der Woche"
+    },
+    "info": {
+      "example": "Beispiel: 0 12 ? * * wird jeden Tag um 12:00 ausgelöst.",
+      "generalInfo": "Füge eine Nummer, eine Liste von Nummern (e.g. 1,2,3) order einen Bereich (e.g. 12-14) ein.",
+      "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
+      "asterisk": "Alle Werte (z.B. jede Minute)"
+    },
+    "formTitle": "Cron Scheduler konfigurieren",
+    "formTitleDisabled": "Konfigruation Ihres Cron Schedulers",
+    "additionalConfig":  "Zusätzliche Konfiguration",
+    "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten"
+  },
+
+  "scheduler": {
+    "singular": "Planer",
+    "dialogTitle": "Zeitplan verwalten",
+    "frequency": {
+      "hours": "Stunde(n)",
+      "days": "Tag(e)",
+      "weeks": "Woche(n)",
+      "months": "Monat(e)",
+      "years": "Jahr(e)",
+      "labels": {
+        "daily": "täglich",
+        "weekly": "wöchentlich"
+      }
+    },
+    "byMonthDayLabel": {
+      "first": "",
+      "second": "",
+      "third": "",
+      "fourth": ""
+    },
+    "weekday": {
+      "monday": "Montag",
+      "tuesday": "Dientstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag",
+      "short": {
+        "monday": "MO",
+        "tuesday": "DI",
+        "wednesday": "MI",
+        "thursday": "DO",
+        "friday": "FR",
+        "saturday": "SA",
+        "sunday": "SO"
+      }
+    },
+    "months":{
+      "january": "Jänner",
+      "february": "Februar",
+      "march": "März",
+      "april": "April",
+      "mai": "Mai",
+      "june": "Juni",
+      "july": "Juli",
+      "august":  "August",
+      "september": "September",
+      "october": "Oktober",
+      "november": "November",
+      "december": "Dezember",
+      "short": {
+        "january": "Jan",
+        "february": "Feb",
+        "march": "Mar",
+        "april": "Apr",
+        "mai": "Mai",
+        "june": "Jun",
+        "july": "Jul",
+        "august":  "Aug",
+        "september": "Sep",
+        "october": "Okt",
+        "november": "Nov",
+        "december": "Dez"
+      }
+    },
+    "bySetPosLabel": {
+      "first": "erstes",
+      "second": "zweites",
+      "third": "drittes",
+      "fourth": "viertes",
+      "last":  "letztes"
+    },
+    "labels":  {
+      "after":  "Nach",
+      "on": "Am",
+      "every":  "Jede(s)",
+      "openScheduler":  "Zeitplaner öffnen",
+      "removeScheduler":  "Zeitplaner entfernen",
+      "frequency":  "Frequenz",
+      "repetitionEnd": "Wiederholungsende",
+      "repeat": "Wiederholung",
+      "selection":{
+        "specificDay": "An einem spezifischen Tag",
+        "allDaysInWeek": "Alle Tage der Woche",
+        "allWeekdays": "Nur Arbeitstage",
+        "allWeekendDays": "Nur Wochenende",
+        "daysSelected": "Tage ausgewählt"
+      },
+      "event": {
+        "first": "Erstes Ereignis",
+        "allDay": "Ganztags"
+      }
+    },
+    "placeholder": {
+      "chooseMonth": "Monat auswählen",
+      "enterDayOfMonth": "Tag des Monats einfügen",
+      "chooseGeneralInterval": "Wähle ein Interval",
+      "chooseDayInterval": "Wähle ein Tagesinterval",
+      "chooseRepetitionEnd": "Wähle das Wiederholungsende",
+      "enterRepeatCount": "Füge die Anzahl der Wiederholungen ein"
+    }
+  },
+
+  "tooltips": {
+    "deleteBtn": "Löschen",
+    "editBtn": "Bearbeiten",
+    "downloadBtn": "Herunterladen"
+  },
+
+  "userstatus": {
+    "active": "aktiv",
+    "approved": "genehmigt",
+    "inactive": "inaktiv",
+    "invited": "eingeladen",
+    "accepted": "akzeptiert",
+    "droppedOut": "abgebrochen",
+    "kickedOut": "rausgeschmissen"
+  }
+}

@@ -1,12 +1,15 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
   import { Study } from '../../generated-sources/openapi';
+  import {useI18n} from "vue-i18n";
   defineProps({
     study: {
       type: Object as PropType<Study>,
       required: true,
     },
   });
+
+  const { t } = useI18n();
 </script>
 <template>
   <div class="study-header mb-10 flex flex-row items-center">
@@ -18,7 +21,7 @@
             [study.status === 'active' ? 'active' : ''],
             [study.status === 'paused' ? 'paused' : ''],
           ]"
-          >{{ study.status }}</span
+          >{{ $t('study.statusStrings.' + study.status) }}</span
         >
         {{ study.title }}
       </h1>
