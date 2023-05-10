@@ -7,6 +7,7 @@
   import StudyCollaboratorList from '../components/StudyCollaboratorList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import {useI18n} from "vue-i18n";
 
   const route = useRoute();
   const studyStore = useStudyStore();
@@ -15,6 +16,8 @@
 
   studyStore.getStudy(studyId);
   studyGroupStore.getStudyGroups(studyId);
+
+  const { t } = useI18n();
 </script>
 
 <template>

@@ -24,7 +24,7 @@
       type="button"
       title="Pause"
       @click="emit('onchange', StudyStatus.Paused)"
-      >{{ $t('study.statusChange.pause') }}</Button
+      >{{ $t('global.labels.setPause') }}</Button
     >
     <!--icon="pi pi-pause"-->
     <Button

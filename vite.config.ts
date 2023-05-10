@@ -11,8 +11,7 @@ export default defineConfig({
       runtimeOnly: false,
       compositionOnly: true,
       defaultSFCLang: 'json',
-      include: path.resolve('./src/i18n/en'),
-      //include: resolve(dirname(fileURLToPath(import.meta.url)), './path/to/src/locales/**')
+      include: path.resolve(__dirname, './src/i18n/**'),
     }),
   ],
   build: {

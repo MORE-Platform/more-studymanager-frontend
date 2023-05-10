@@ -36,31 +36,31 @@
   const tabs: Tab[] = [
     {
       title: t('studyNavigation.tabs.overview'),
-      name: t('studyNavigation.tabs.overview'),
+      name: t('studyNavigation.tabLink.overview'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer],
     },
     {
       title: t('studyNavigation.tabs.data'),
-      name: t('studyNavigation.tabs.data'),
+      name: t('studyNavigation.tabLink.data'),
       params: { studyId: props.studyId },
       access: [StudyRole.Viewer, StudyRole.Admin],
     },
     {
       title: t('studyNavigation.tabs.participants'),
-      name: t('studyNavigation.tabs.participants'),
+      name: t('studyNavigation.tabLink.participants'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.observations'),
-      name: t('studyNavigation.tabs.observations'),
+      name: t('studyNavigation.tabLink.observations'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.interventions'),
-      name: t('studyNavigation.tabs.interventions'),
+      name: t('studyNavigation.tabLink.interventions'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
