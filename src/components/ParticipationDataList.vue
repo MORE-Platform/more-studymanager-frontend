@@ -8,9 +8,11 @@
   import { ref, Ref } from 'vue';
   import { ParticipationDataMapping } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
-  import { MoreTableColumn } from '../models/MoreTableModel';
+  import {
+    MoreTableColumn,
+    MoreTableFieldType,
+  } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import dayjs from 'dayjs';
   import { ComponentFactory } from '../generated-sources/openapi';
   const { componentsApi } = useComponentsApi();
 
@@ -49,7 +51,7 @@
               }`
             ),
             lastDataReceived: item.lastDataReceived
-              ? dayjs(item.lastDataReceived).format('DD/MM/YYYY, HH:mm')
+              ? item.lastDataReceived
               : '-',
           };
           return mapping;
@@ -108,6 +110,7 @@
       editable: false,
       sortable: true,
       filterable: true,
+      type: MoreTableFieldType.datetime,
     },
   ];
 

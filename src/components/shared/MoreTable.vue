@@ -1,13 +1,14 @@
 <script setup lang="ts">
   import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
   import {
-    MoreTableColumn,
     MoreTableAction,
-    MoreTableSortOptions,
-    MoreTableChoice,
     MoreTableActionOption,
+    MoreTableChoice,
     MoreTableChoiceOptions,
+    MoreTableColumn,
     MoreTableEditableChoiceProperties,
+    MoreTableFieldType,
+    MoreTableSortOptions,
   } from '../../models/MoreTableModel';
   import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
   import Column from 'primevue/column';
@@ -21,7 +22,6 @@
   import { useConfirm } from 'primevue/useconfirm';
   import FileUpload from 'primevue/fileupload';
   import dayjs from 'dayjs';
-  import { MoreTableFieldType } from '../../models/MoreTableModel';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
@@ -618,9 +618,17 @@
                 isEditableWithValues(column.editable)
               )
             }}</span>
-            <span v-if="column.type === MoreTableFieldType.calendar">{{
-              dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY')
-            }}</span>
+            <span v-if="column.type === MoreTableFieldType.calendar">
+              {{ dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY') }}
+            </span>
+            <span v-if="column.type === MoreTableFieldType.datetime">
+              <span v-if="data[field] !== '-'">
+                {{ dayjs(data[field]).format('DD/MM/YYYY, hh:mm') }}
+              </span>
+              <span v-else>
+                {{ data[field] }}
+              </span>
+            </span>
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenFieldText(data[field]) }}
             </span>
