@@ -161,7 +161,13 @@
           emit('onaction', { id: action.id, row });
         },
       });
-    } else {
+    } else if (action.confirmDeleteDialog) {
+      console.log("confirmDeleteDialog");
+      console.log(row.studyId);
+      console.log(row);
+      action.confirmDeleteDialog.dialog(row, action);
+    }
+    else {
       emit('onaction', { id: action.id, row });
     }
   }
