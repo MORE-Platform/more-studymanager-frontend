@@ -124,8 +124,12 @@
         "delete": "Delete Study",
         "urlCopied": "Copied Study Id"
       },
+      "deleteMsg": {
+        "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date.",
+        "intro": "You are about to delete the following study:",
+        "confirm": "Are you sure you want to delete your study?"
+      },
       "msg": {
-        "delete": "Deletion of a study can’t be revoked! Are you sure you want to delete following study: ...",
         "urlCopied": "Link for '{title}' study (ID: {studyId}) was copied to your clipboard."
       },
       "description": "Enter the base information of your study to provide basic information for collaborators and participants.",

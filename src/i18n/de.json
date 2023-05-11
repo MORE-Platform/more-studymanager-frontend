@@ -124,8 +124,12 @@
         "delete": "Studie löschen",
         "urlCopied": "Studien-ID kopieren"
       },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden.",
+        "intro": "Sie sind kurz davor folgende Studie zu löschen:",
+        "confirm": "Möchten Sie die Studie wirklich löschen?"
+      },
       "msg": {
-        "delete": "Eine gelöschte Studie kann nicht mehr wiederhergestellt werden! Sind Sie sicher, dass sie diese Studie löschen wollen?",
         "urlCopied": "Die URL der Studie '{title}' (ID: {studyId}) wurde in die Zwischenablage kopiert."
       },
       "description": "Fügen Sie die Grundbeschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",

@@ -89,7 +89,7 @@ export interface MoreTableActionOptionCallback {
 export interface MoreTableActionConfirm {
   header: string;
   message: string;
-  dialog: (row: any, action: MoreTableAction) => any
+  dialog: (row: any) => any;
 }
 
 export enum MoreTableFieldType {
