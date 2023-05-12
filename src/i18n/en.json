@@ -161,7 +161,7 @@
         }
       },
     "deleteMsg": {
-      "warning": "A deleted study group can't be restored. All information of the study group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study.",
+      "warning": "A deleted study group can't be restored. All information and settings of the study group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study.",
       "intro": "You are about to delete the following study group:",
       "confirm": "Are you sure you want to delete this study group?"
     },
