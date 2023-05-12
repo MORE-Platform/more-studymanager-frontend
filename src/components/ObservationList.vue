@@ -14,6 +14,7 @@
     MoreTableFieldType,
     MoreTableChoice,
     MoreTableActionOption,
+    MoreTableCollaboratorItem,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -25,6 +26,7 @@
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
+  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -125,12 +127,50 @@
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
-      confirm: {
+      confirmDeleteDialog: {
         header: t('observation.dialog.header.delete'),
         message: t('observation.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteMoreTableRowDialog, {
+            data: {
+              introMsg: t('observation.dialog.deleteMsg.intro'),
+              warningMsg: t('observation.dialog.deleteMsg.warning'),
+              confirmMsg: t('observation.dialog.deleteMsg.confirm'),
+              row: row,
+              elTitle: getObservationTypeString(row.type)
+                ? row.title + ' (' + getObservationTypeString(row.type) + ')'
+                : row.title,
+              elInfoTitle: t('study.props.purpose'),
+              elInfoDesc: row.purpose,
+            },
+            props: {
+              header: t('observation.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+            onClose: (options) => {
+              if (options?.data) {
+                execute({
+                  id: 'delete',
+                  row: options.data as MoreTableCollaboratorItem,
+                });
+              }
+            },
+          }),
       },
     },
   ];
+
+  function getObservationTypeString(observationType: string) {
+    return factories.find((item) => item.componentId === observationType)
+      ?.title;
+  }
 
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
