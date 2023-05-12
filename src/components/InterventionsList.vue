@@ -27,6 +27,7 @@
   import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
+  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
@@ -114,9 +115,40 @@
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
-      confirm: {
+      confirmDeleteDialog: {
         header: t('intervention.dialog.header.delete'),
         message: t('intervention.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteMoreTableRowDialog, {
+            data: {
+              introMsg: t('intervention.dialog.deleteMsg.intro'),
+              warningMsg: t('intervention.dialog.deleteMsg.warning'),
+              confirmMsg: t('intervention.dialog.deleteMsg.confirm'),
+              row: row,
+              elTitle: row.title,
+              elInfoTitle: t('study.props.purpose'),
+              elInfoDesc: row.purpose,
+            },
+            props: {
+              header: t('intervention.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+            onClose: (options) => {
+              if (options?.data) {
+                execute({
+                  id: 'delete',
+                  row: options.data as StudyGroup,
+                });
+              }
+            },
+          }),
       },
     },
   ];
