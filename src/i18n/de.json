@@ -286,14 +286,19 @@
     },
     "dialog": {
       "header": {
-        "delete": "Aufzeichnungsmodul löschen",
-        "clone": "Aufzeichnungsmodul clonen",
-        "create": "Aufzeichnungsmodul hinzufügen",
-        "edit": "Aufzeichnungsmodul bearbeiten",
-        "view": "Aufzeichnungsmodul Details"
+        "delete": "Datenerhebungsmodul löschen",
+        "clone": "Datenerhebungsmodul clonen",
+        "create": "Datenerhebungsmodul hinzufügen",
+        "edit": "Datenerhebungsmodul bearbeiten",
+        "view": "Datenerhebungsmodul Details"
       },
       "msg": {
-        "delete": "Ein gelöschtes Aufzeichnungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?"
+        "delete": "Ein gelöschtes Datenerhebungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?"
+      },
+      "deleteMsg": {
+        "warning": "Eine gelöschtes Datenerhebungsmodul kann nicht wiederhergestellt werden. Wenn Sie das Datenerhebungsmodul löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
+        "intro": "Sie sind kurz davor folgendes Datenerhebungsmodul zu löschen:",
+        "confirm": "Möchten Sie dieses Datenerhebungsmodul wirklich löschen?"
       }
     },
     "error":  {

@@ -294,6 +294,11 @@
       },
       "msg": {
         "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ..."
+      },
+      "deleteMsg": {
+        "warning": "A deleted observation can't be restored. If you delete this observatoin all settings and configurations are lost and you won't be able to use it at a later date.",
+        "intro": "You are about to delete the following observation:",
+        "confirm": "Are you sure you want to delete your observation?"
       }
     },
     "error":  {
