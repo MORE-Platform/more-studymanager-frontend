@@ -45,6 +45,7 @@ export interface MoreTableAction {
   icon?: string;
   options?: MoreTableActionOptions;
   confirm?: MoreTableActionConfirm;
+  confirmDeleteDialog?: MoreTableActionConfirmDialog;
   visible?: (data?: any) => boolean;
 }
 
@@ -88,6 +89,11 @@ export interface MoreTableActionOptionCallback {
 export interface MoreTableActionConfirm {
   header: string;
   message: string;
+}
+export interface MoreTableActionConfirmDialog {
+  header: string;
+  message: string;
+  dialog: (row: any) => any;
 }
 
 export enum MoreTableFieldType {

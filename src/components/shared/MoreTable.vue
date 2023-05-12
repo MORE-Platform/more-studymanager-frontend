@@ -161,6 +161,8 @@
           emit('onaction', { id: action.id, row });
         },
       });
+    } else if (action.confirmDeleteDialog) {
+      action.confirmDeleteDialog.dialog(row);
     } else {
       emit('onaction', { id: action.id, row });
     }

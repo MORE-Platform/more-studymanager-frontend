@@ -16,6 +16,7 @@
   import useLoader from '../composable/useLoader';
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
+  import DeleteStudyDialog from './dialog/DeleteStudyDialog.vue';
 
   const studyStore = useStudyStore();
   const router = useRouter();
@@ -85,9 +86,29 @@
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
-      confirm: {
+      confirmDeleteDialog: {
         header: t('study.dialog.header.delete'),
         message: t('study.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteStudyDialog, {
+            data: {
+              introMsg: t('study.dialog.deleteMsg.intro'),
+              warningMsg: t('study.dialog.deleteMsg.warning'),
+              confirmMsg: t('study.dialog.deleteMsg.confirm'),
+              study: row as Study,
+            },
+            props: {
+              header: t('study.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+          }),
       },
       visible: (data) =>
         data.status === StudyStatus.Draft &&
@@ -113,6 +134,7 @@
   }
 
   function executeAction(action: MoreTableRowActionResult<Study>) {
+    console.log('executeAction--------');
     switch (action.id) {
       case 'delete':
         return studyStore.deleteStudy(action.row.studyId);
