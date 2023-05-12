@@ -244,7 +244,13 @@
       },
       "msg": {
         "delete": "Really delete participant?",
-        "deleteWithData": "Include all data for the participant?"
+      },
+      "deleteMsg": {
+        "warning": "A deleted participant can't be restored. If you delete this participant you won't be able to reuse them later on. You have the option to delete the participant including all the collected data or the participant alone.",
+        "intro": "You are about to delete the following participant:",
+        "confirm": "Are you sure you want to delete this participant?",
+        "deleteWithoutData": "Delete",
+        "deleteWithData": "Delete incl. data"
       }
     },
     "participantsList": {

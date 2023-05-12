@@ -237,14 +237,20 @@
     },
     "dialog": {
       "header": {
-        "delete": "Teilnehmer löschen",
+        "delete": "Teilnehmer/in löschen",
         "deleteWithData": "Daten löschen",
         "edit": "Teilnehmer bearbeiten",
         "create": "Teilnehmer hinzufügen"
       },
       "msg": {
-        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
-        "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
+        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?"
+      },
+      "deleteMsg": {
+        "warning": "Ein/ gelöschte/r Teilnehmer/in kann nicht wiederhergestellt werden. Wenn Sie diese/n Teilnehmer/in löschen, können Sie auf diese/n zu einem späteren Zeitpunkt nicht mehr zugreifen. Sie haben die Option die/den Teilnehmer/in mit oder ohne der gesammelten Daten zu löschen.",
+        "intro": "Sie sind kurz davor folgende/n Teilnehmer/in zu löschen:",
+        "confirm": "Möchten Sie diese/n Teilnehmer/in wirklich löschen?",
+        "deleteWithoutData": "Löschen",
+        "deleteWithData": "Inkl. Daten löschen"
       }
     },
     "participantsList": {
