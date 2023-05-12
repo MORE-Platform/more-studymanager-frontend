@@ -93,15 +93,6 @@
     font-size: 18px;
     font-weight: bold;
   }
-  .status {
-    border: 2px solid var(--text-color);
-    &.active {
-      color: var(--green-400);
-    }
-    &.draft {
-      border-color: var(--gray-400);
-    }
-  }
   .btn-gray {
     margin-right: 0.5rem;
   }
