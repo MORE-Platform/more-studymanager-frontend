@@ -46,7 +46,7 @@
       <div>{{ study.purpose }}</div>
     </div>
     <div class="mb-8 px-14">
-      <div class="align-center grid grid-cols-12 gap-2">
+      <div class="grid grid-cols-12 place-items-center gap-4">
         <div class="col-span-2">
           <svg
             id="exclamation"
