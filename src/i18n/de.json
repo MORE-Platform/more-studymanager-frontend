@@ -186,12 +186,18 @@
       "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
       "chooseRoles": "Wählen Sie die Rolle(n) für Ihren Studien-Mitarbeiter: ",
       "emptyDropdownValues": "Zur Zeit sind keine Rollen verfügbar.",
+      "assignedRoles": "Vergebene Rolle(n)",
       "header": {
         "delete": "Studien-Mitarbeiter löschen",
         "add": "Studien-Mitarbeiter hinzufügen"
       },
       "msg": {
         "delete": "Möchten Sie diesen Studien-Mitarbeiter wirklich löschen?"
+      },
+      "deleteMsg": {
+        "warning": "Ein/e gelöschte/r Studien-Mitarbeiter/in kann zu einem späteren Zeitpunkt der Studie erneut hinzugefügt werden. Diese/r verliert durch das Löschen jedoch seine Rechte, um auf die Studie zuzugreifen oder Daten einzusehen.",
+        "intro": "Sie sind kurz davor folgende/n Studien-Mitarbeiter/in zu löschen:",
+        "confirm": "Möchten Sie diese/n Stuiden-Mitarbeiter/in wirklich löschen?"
       }
     },
     "collaboratorList": {

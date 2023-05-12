@@ -8,7 +8,8 @@
   const confirmMsg: string = dialogRef?.value?.data?.confirmMsg;
   const row: any = dialogRef?.value?.data?.row;
   const elTitle: string = dialogRef?.value?.data?.elTitle;
-  const elPurpose: string = dialogRef?.value?.data?.elPurpose;
+  const elInfoTitle: string = dialogRef?.value?.data?.elInfoTitle;
+  const elInfoDesc: string = dialogRef?.value?.data?.elInfoDesc;
 
   function deleteRowEl() {
     dialogRef.value.close(row);
@@ -25,9 +26,9 @@
     <h3 class="font-medium">
       <span class="color-primary">{{ elTitle }}</span>
     </h3>
-    <div v-if="elPurpose" class="mt-7">
-      <h5>{{ $t('study.props.purpose') }}</h5>
-      <div>{{ elPurpose }}</div>
+    <div v-if="elInfoTitle && elInfoDesc" class="mt-5">
+      <h5>{{ elInfoTitle }}</h5>
+      <div>{{ elInfoDesc }}</div>
     </div>
     <div class="mb-8 mt-10 px-14">
       <div class="grid grid-cols-12 place-items-center gap-4">

@@ -23,6 +23,7 @@
   import StudyCollaboratorDialog from './dialog/StudyCollaboratorDialog.vue';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
+  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -105,12 +106,58 @@
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => editAccess,
-      confirm: {
+      confirmDeleteDialog: {
         header: t('studyCollaborator.dialog.header.delete'),
         message: t('studyCollaborator.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteMoreTableRowDialog, {
+            data: {
+              introMsg: t('studyCollaborator.dialog.deleteMsg.intro'),
+              warningMsg: t('studyCollaborator.dialog.deleteMsg.warning'),
+              confirmMsg: t('studyCollaborator.dialog.deleteMsg.confirm'),
+              row: row,
+              elTitle: row.institution
+                ? row.name + ' (' + row.institution + ')'
+                : row.name,
+              elInfoTitle: t('studyCollaborator.dialog.assignedRoles'),
+              elInfoDesc: getRolesString(row.roles),
+            },
+            props: {
+              header: t('studyCollaborator.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+            onClose: (options) => {
+              if (options?.data) {
+                execute({
+                  id: 'deleteCollab',
+                  row: options.data as MoreTableCollaboratorItem,
+                });
+              }
+            },
+          }),
       },
     },
   ];
+
+  function getRolesString(roles: Array<MoreTableChoice>): string {
+    let rolesString = '';
+    roles.forEach((item, index) => {
+      rolesString = rolesString + item.label;
+
+      if (index < roles.length - 1) {
+        rolesString = rolesString + ', ';
+      }
+    });
+
+    return rolesString;
+  }
 
   const tableActions: MoreTableAction[] = [
     {
