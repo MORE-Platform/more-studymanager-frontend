@@ -14,7 +14,6 @@
   } from '../models/MoreTableModel';
   import {
     Collaborator,
-    StudyGroup,
     StudyRole,
     StudyStatus,
   } from '../generated-sources/openapi';
