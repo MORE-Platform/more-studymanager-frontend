@@ -69,7 +69,8 @@
               confirmMsg: t('studyGroup.dialog.deleteMsg.confirm'),
               row: row,
               elTitle: row.title,
-              elPurpose: row.purpose,
+              elInfoTitle: t('study.props.purpose'),
+              elInfoDesc: row.purpose,
             },
             props: {
               header: t('studyGroup.dialog.header.delete'),

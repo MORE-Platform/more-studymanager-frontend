@@ -190,8 +190,14 @@
         "delete": "Delete Study Collaborator",
         "add": "Add Collaborator"
       },
+      "assignedRoles": "Assigned role(s)",
       "msg": {
         "delete": "Do you really want to delete the collaborator?"
+      },
+      "deleteMsg": {
+        "warning": "A deleted study collaborator can be readded to a later date. He will loose his permission to edit or view any study data.",
+        "intro": "You are about to delete the following study collaborator:",
+        "confirm": "Are you sure you want to delete this study collaborator?"
       }
     },
     "collaboratorList": {
