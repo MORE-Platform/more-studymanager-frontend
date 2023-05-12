@@ -14,8 +14,11 @@
   import ConfirmDialog from 'primevue/confirmdialog';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { useI18n } from 'vue-i18n';
+  import { useDialog } from 'primevue/usedialog';
+  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
   const studyGroupStore = useStudyGroupStore();
+  const dialog = useDialog();
   const { t } = useI18n();
 
   const props = defineProps({
@@ -55,9 +58,39 @@
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => getEditAccess(),
-      confirm: {
+      confirmDeleteDialog: {
         header: t('studyGroup.dialog.header.delete'),
         message: t('studyGroup.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteMoreTableRowDialog, {
+            data: {
+              introMsg: t('studyGroup.dialog.deleteMsg.intro'),
+              warningMsg: t('studyGroup.dialog.deleteMsg.warning'),
+              confirmMsg: t('studyGroup.dialog.deleteMsg.confirm'),
+              row: row,
+              elTitle: row.title,
+              elPurpose: row.purpose,
+            },
+            props: {
+              header: t('studyGroup.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+            onClose: (options) => {
+              if (options?.data) {
+                executeAction({
+                  id: 'delete',
+                  row: options.data as StudyGroup,
+                });
+              }
+            },
+          }),
       },
     },
   ];
