@@ -277,11 +277,11 @@
       }
     },
     "observationList": {
-      "title": "Aufzeichnung",
-      "description": "Ein Aufzeichnungmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln.",
-      "emptyListMsg": "Verwalten oder fügen Sie Aufzeichnungsmodule hinzu. Diese werden hier angezeigt.",
+      "title": "Datenerhebung",
+      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln.",
+      "emptyListMsg": "Verwalten oder fügen Sie Datenerhebungsmodul hinzu. Diese werden hier angezeigt.",
       "action": {
-        "add": "Aufzeichnungsmodul hinzufügen",
+        "add": "Datenerhebungsmodul hinzufügen"
       }
     },
     "dialog": {
@@ -334,6 +334,11 @@
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
+      },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Intervention kann nicht wiederhergestellt werden. Wenn Sie diese Intervention löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
+        "intro": "Sie sind kurz davor folgende Intervention zu löschen:",
+        "confirm": "Möchten Sie diese Intervention wirklich löschen?"
       }
     },
     "interventionList": {

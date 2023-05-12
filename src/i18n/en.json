@@ -296,7 +296,7 @@
         "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ..."
       },
       "deleteMsg": {
-        "warning": "A deleted observation can't be restored. If you delete this observatoin all settings and configurations are lost and you won't be able to use it at a later date.",
+        "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost and you won't be able to use it at a later date.",
         "intro": "You are about to delete the following observation:",
         "confirm": "Are you sure you want to delete your observation?"
       }
@@ -334,6 +334,11 @@
       },
       "msg": {
         "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."
+      },
+      "deleteMsg": {
+        "warning": "A deleted intervention can't be restored. If you delete this intervention all settings and configurations are lost and you won't be able to use it at a later date.",
+        "intro": "You are about to delete the following intervention:",
+        "confirm": "Are you sure you want to delete your intervention?"
       }
     },
     "interventionList": {
