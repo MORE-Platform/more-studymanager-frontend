@@ -158,8 +158,13 @@
       },
       "msg": {
         "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
-        }
-      },
+        },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie.",
+        "intro": "Sie sind kurz davor folgende Studiengruppe zu löschen:",
+        "confirm": "Möchten Sie die Studiengruppe wirklich löschen?"
+      }
+    },
     "groupList": {
       "placeholder": {
         "title": "Stellen Sie einen Titel bereit",
