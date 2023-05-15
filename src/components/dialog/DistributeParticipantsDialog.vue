@@ -1,9 +1,11 @@
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
+  import { StudyGroup } from '../../generated-sources/openapi';
 
   const dialogRef: any = inject('dialogRef');
-  const studyGroups: Array<string> = dialogRef.value.data?.studyGroups || [];
+  const studyGroups: Array<StudyGroup> =
+    dialogRef.value.data?.studyGroups || [];
 
   function closeDialog() {
     dialogRef.value.close();
@@ -11,15 +13,6 @@
   function distribute() {
     dialogRef.value.close(true);
   }
-
-  /*
-    studyname/id
-    created groups
-    nr of total participants
-    warning, that all participants will be distributed even if they already were
-    explenation what distribute participant does
-    confirm/cancle option
-   */
 </script>
 
 <template>
@@ -34,7 +27,7 @@
     </h3>
 
     <div class="mb-8">
-      <div v-for="(group, index) in studyGroups" :key="group.groupId">
+      <div v-for="(group, index) in studyGroups" :key="group.studyGroupId">
         <div v-if="index < 10">
           {{ group.title }}
           <span v-if="group.purpose">({{ group.purpose }})</span>
