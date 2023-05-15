@@ -12,6 +12,7 @@
   import StudyStatusChange from './StudyStatusChange.vue';
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
+  import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -32,7 +33,31 @@
   }
 
   function updateStudyStatus(status: StudyStatus) {
-    emit('onUpdateStudyStatus', status);
+    //emit('onUpdateStudyStatus', status);
+
+    dialog.open(ChangeStudyStatusDialog, {
+      data: {
+        study: props.study,
+        changedStatus: status,
+      },
+      props: {
+        header: t('study.statusChange.dialog.header'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+      },
+      onClose: (options) => {
+        console.log(options?.data);
+        if (options?.data) {
+          emit('onUpdateStudyStatus', status);
+        }
+      },
+    });
   }
 
   function openEditDialog() {

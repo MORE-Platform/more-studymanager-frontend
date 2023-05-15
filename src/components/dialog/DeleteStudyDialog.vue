@@ -26,7 +26,7 @@
     <div class="mb-6">{{ introMsg }}</div>
     <h3 class="mb-7 font-medium">
       <span
-        class="status text-color mr-2 rounded p-1 text-center uppercase"
+        class="status text-color mr-2 rounded p-1 pl-2 text-center uppercase"
         :class="[
           [study.status == 'active' ? 'active text-green-400' : ''],
           [
@@ -112,7 +112,7 @@
   .status {
     border: 2px solid var(--text-color);
     &.active {
-      color: var(--green-400);
+      border-color: var(--green-400);
     }
     &.draft {
       border-color: var(--gray-400);
