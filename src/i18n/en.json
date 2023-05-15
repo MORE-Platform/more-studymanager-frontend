@@ -28,7 +28,8 @@
       "lastCollected": "Last collected",
       "dataReceived": "Data Received",
       "noDataReceived": "No Data Received",
-      "lastDataReceived": "Last Data Received"
+      "lastDataReceived": "Last Data Received",
+      "to": "to"
     },
     "placeholder": {
       "entireStudy": "Entire Study",
@@ -94,7 +95,35 @@
       "start": "Start",
       "pause": "Pause",
       "resume": "Resume",
-      "complete": "Close"
+      "complete": "Close",
+      "changeMsg": {
+        "toActive":{
+          "intro": "You are about to change your study status to 'ACTIVE'.",
+          "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participant in the research.",
+          "confirm": "This study status change cannot be reversed, but there is the possibility to pause the study to make changes to your settings. Are you sure you want to set your Study Status to 'ACTIVE'?"
+        },
+        "toPaused":{
+          "intro": "You are about to change your study status to 'PAUSED'.",
+          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the study is set back to 'ACTIVE'.",
+          "confirm": "Are you sure you want to set your Study Status to 'PAUSED'?"
+        },
+        "pausedToActive": {
+          "warning": "All Observationmodules, interventions, schedules and data captures will be available again. Participants will be able to participant in the research again.",
+          "confirm": "Are you sure you want to set your Study Status to 'ACTIVE'"
+        },
+        "toCompleted":{
+          "intro": "You are about to change your study status to 'COMPLETED'.",
+          "warning": "Changing your study status to 'COMPLETED', will set all data capture, intervention rules and schedules to finished and no data will be captured anymore. The participants won't be able to participate in a completed study anymore.",
+          "confirm": "This study status change cannot be reversed and the study will stay 'COMPLETED'. Are you sure you want to set your Study Status to 'COMPLETED'?"
+        }
+      },
+      "dialog": {
+        "header": "Change study status"
+      },
+      "labels": {
+        "changeStatus": "Change study status",
+        "changeTo": "Change status from "
+      }
     },
     "statusStrings": {
       "paused": "paused",
