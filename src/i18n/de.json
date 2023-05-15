@@ -28,7 +28,8 @@
       "lastCollected": "Zuletzt geschickt",
       "dataReceived": "Daten erhalten",
       "noDataReceived": "Keine Daten erhalten",
-      "lastDataReceived": "Letzte Daten erhalten"
+      "lastDataReceived": "Letzte Daten erhalten",
+      "to": "zu"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -94,12 +95,40 @@
       "start": "Start",
       "pause": "Pause",
       "resume": "Fortsetzen",
-      "complete": "Abschließen"
+      "complete": "Abschließen",
+      "changeMsg": {
+        "toActive":{
+          "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
+          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglich so das aktive aufzeichnen von Daten. Die Teilnehmer/innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen.",
+          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
+        },
+        "toPaused":{
+          "intro": "Sie sind im Begriff den Studienstatus auf 'PAUSIERT' zu setzen.",
+          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer/innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird.",
+          "confirm": "Möchten Sie den Studienstatus wirklich auf 'PAUSIERT' setzen?"
+        },
+        "pausedToActive": {
+          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf aktiv gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer/innen können sich nun wieder aktiv an der Studie beteiligen.",
+          "confirm": "Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
+        },
+        "toCompleted":{
+          "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
+          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer/innen ist es ab diesem Zeitpunkt nicht mehr möglich neue Daten einzubringen oder weiter teilzunehmen.",
+          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
+        }
+      },
+      "dialog": {
+        "header": "Studienstatus ändern"
+      },
+      "labels": {
+        "changeStatus": "Studienstatus ändern",
+        "changeTo": "Statusänderung von "
+      }
     },
     "statusStrings": {
       "paused": "pausiert",
       "active": "aktiv",
-        "draft": "entwerfen",
+      "draft": "entwerfen",
       "closed": "beendet"
     },
     "error": {
