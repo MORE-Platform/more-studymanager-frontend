@@ -103,7 +103,7 @@
         <div class="col-span-10">
           <div class="mb-2">
             <span v-if="changedStatus === StudyStatus.Active">
-              <span v-if="study.stauts === StudyStatus.Draft">
+              <span v-if="study.status === StudyStatus.Draft">
                 {{ $t('study.statusChange.changeMsg.toActive.warning') }}
               </span>
               <span v-else class="active">
@@ -119,7 +119,7 @@
           </div>
           <div class="font-medium text-red-600">
             <span v-if="changedStatus === StudyStatus.Active">
-              <span v-if="study.stauts === StudyStatus.Draft">
+              <span v-if="study.status === StudyStatus.Draft">
                 {{ $t('study.statusChange.changeMsg.toActive.confirm') }}
               </span>
               <span v-else>
