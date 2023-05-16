@@ -3,7 +3,7 @@
   import Button from 'primevue/button';
   import { useStudyStore } from '../../stores/studyStore';
   import { Study } from '../../generated-sources/openapi';
-  import WarningSection from "./shared/WarningSection.vue";
+  import WarningSection from './shared/WarningSection.vue';
 
   const studyStore = useStudyStore();
 
@@ -47,7 +47,7 @@
       <div>{{ study.purpose }}</div>
     </div>
 
-    <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg"  />
+    <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
     <div class="flex justify-end">
       <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">

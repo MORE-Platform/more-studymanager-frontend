@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import WarningSection from "./shared/WarningSection.vue";
+  import WarningSection from './shared/WarningSection.vue';
 
   const dialogRef: any = inject('dialogRef');
   const introMsg: string = dialogRef?.value?.data?.introMsg;
