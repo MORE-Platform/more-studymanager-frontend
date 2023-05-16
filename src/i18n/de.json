@@ -277,7 +277,7 @@
         "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
       },
       "btn": {
-        "distributeBtn": "Zuweisen"
+        "distributeBtn": "Zuweisen",
         "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?"
       },
       "deleteMsg": {
