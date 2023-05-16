@@ -25,11 +25,14 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
+  import { useConfirm } from 'primevue/useconfirm';
   import { useDialog } from 'primevue/usedialog';
+  import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
   import DeleteParticipantDialog from './dialog/DeleteParticipantDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
+  const confirm = useConfirm();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
@@ -197,6 +200,31 @@
       });
   }
 
+  function openDistrubuteDialog(): void {
+    dialog.open(DistributeParticipantsDialog, {
+      data: {
+        studyGroups: props.studyGroups,
+        totalParticipants: participantsList.value.length,
+      },
+      props: {
+        header: t('participants.dialog.header.distribute'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+      },
+      onClose: (options) => {
+        if (options?.data && options?.data === true) {
+          distributeGroups();
+        }
+      },
+    });
+  }
+
   function distributeGroups(): void {
     // copy participants and shuffle list
     const participantCopy = shuffleArray(
@@ -242,7 +270,7 @@
       case 'create':
         return createParticipant(action as MoreTableActionResult);
       case 'distribute':
-        return distributeGroups();
+        return openDistrubuteDialog();
       case 'import':
         return importParticipants(action);
       case 'export':

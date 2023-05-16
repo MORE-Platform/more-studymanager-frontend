@@ -269,9 +269,15 @@
         "delete": "Teilnehmer/in löschen",
         "deleteWithData": "Daten löschen",
         "edit": "Teilnehmer bearbeiten",
-        "create": "Teilnehmer hinzufügen"
+        "create": "Teilnehmer hinzufügen",
+        "distribute": "Teilnehmer/innen automatisch Gruppen zuweisen"
       },
       "msg": {
+        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
+        "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
+      },
+      "btn": {
+        "distributeBtn": "Zuweisen"
         "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?"
       },
       "deleteMsg": {
@@ -297,6 +303,11 @@
         "add10": "10 hinzufügen",
         "add25": "25 hinzufügen",
         "add50": "50 hinzufügen"
+      },
+      "distributeMsg": {
+        "intro": "Sie sind kurz davor alle Studienteilnehmer/innen dieser Studie automatisch auf Gruppen aufzuteilen.",
+        "warning": "Die automatische Zuweisung von Studienteilnehmer/innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Wurden die Teilnehmer/innen schon Gruppen zugewiesen, werden trotzdem alle Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
+        "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer/innen automatisch Studiengruppen zuweisen?"
       }
     }
   },

@@ -92,6 +92,14 @@
       type: Array as PropType<Array<StudyRole>>,
       default: () => [],
     },
+    paginator: {
+      type: Boolean,
+      default: false,
+    },
+    paginatorRows: {
+      type: Number,
+      default: 10,
+    },
   });
 
   const tableFilter = createTableFilter();
@@ -492,6 +500,8 @@
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
+      :paginator="paginator"
+      :rows="paginator ? paginatorRows : 5"
       @row-click="onRowClick($event)"
     >
       <Column

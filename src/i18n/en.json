@@ -269,10 +269,15 @@
         "delete": "Delete Participant",
         "deleteWithData": "Delete Data",
         "edit": "Edit Participant",
-        "create": "Create Participant"
+        "create": "Create Participant",
+        "distribute": "Distribute participants randomly to study groups"
       },
       "msg": {
         "delete": "Really delete participant?",
+        "deleteWithData": "Include all data for the participant?"
+      },
+      "btn": {
+        "distributeBtn": "Distribute"
       },
       "deleteMsg": {
         "warning": "A deleted participant can't be restored. If you delete this participant you won't be able to reuse them later on. You have the option to delete the participant including all the collected data or the participant alone.",
@@ -297,6 +302,11 @@
         "add10": "Add 10",
         "add25": "Add 25",
         "add50": "Add 50"
+      },
+      "distributeMsg": {
+        "intro": "You are about to distribute all participants of this study to your study groups.",
+        "warning": "If you distribute your participants, they will be randomly assigned to the studies study groups. The participants will be evenly seperated, so that each group have the same number of participants. Distributing participants again after they were already distributed, will conclude into all participants being randomly assinged to the study groups.",
+        "confirm": "Distribution of participants can't be revoked. Are you sure you want to distribute this studies participants to your study groups?"
       }
     }
   },
