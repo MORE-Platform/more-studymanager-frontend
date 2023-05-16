@@ -19,12 +19,15 @@
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
+  import DynamicDialog from 'primevue/dynamicdialog';
   import * as names from 'starwars-names';
   import useLoader from '../composable/useLoader';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { useConfirm } from 'primevue/useconfirm';
+  import { useDialog } from 'primevue/usedialog';
+  import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -33,6 +36,7 @@
   const loader = useLoader();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
+  const dialog = useDialog();
 
   const props = defineProps({
     studyId: {
@@ -164,6 +168,31 @@
       });
   }
 
+  function openDistrubuteDialog(): void {
+    dialog.open(DistributeParticipantsDialog, {
+      data: {
+        studyGroups: props.studyGroups,
+        totalParticipants: participantsList.value.length,
+      },
+      props: {
+        header: t('participants.dialog.header.distribute'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+      },
+      onClose: (options) => {
+        if (options?.data && options?.data === true) {
+          distributeGroups();
+        }
+      },
+    });
+  }
+
   function distributeGroups(): void {
     // copy participants and shuffle list
     const participantCopy = shuffleArray(
@@ -207,7 +236,8 @@
       case 'create':
         return createParticipant(action as MoreTableActionResult);
       case 'distribute':
-        return distributeGroups();
+        return openDistrubuteDialog();
+      //return distributeGroups();
       case 'import':
         return importParticipants(action);
       case 'export':
@@ -337,6 +367,7 @@
       @onchange="changeValue($event)"
     />
     <ConfirmDialog></ConfirmDialog>
+    <DynamicDialog />
   </div>
 </template>
 

@@ -16,7 +16,7 @@
 </script>
 
 <template>
-  <div class="dialog delete-confirm-dialog">
+  <div class="dialog">
     <div class="mb-6">
       <span v-if="changedStatus === StudyStatus.Active">
         {{ $t('study.statusChange.changeMsg.toActive.intro') }}
