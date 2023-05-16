@@ -25,14 +25,12 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { useConfirm } from 'primevue/useconfirm';
   import { useDialog } from 'primevue/usedialog';
   import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
   import DeleteParticipantDialog from './dialog/DeleteParticipantDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
-  const confirm = useConfirm();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
