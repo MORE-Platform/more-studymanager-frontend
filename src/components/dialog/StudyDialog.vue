@@ -8,6 +8,7 @@
   import { Study } from '../../generated-sources/openapi';
   import { dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
+  import { MoreTableChoice } from '../../models/MoreTableModel';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -39,19 +40,32 @@
     dialogRef.value.close(returnStudy.value);
   }
 
-  const errors: Ref<Array<any>> = ref([]);
+  const errors: Ref<Array<MoreTableChoice>> = ref([]);
 
   function checkRequiredFields() {
     errors.value = [];
     if (!returnStudy.value.title) {
-      errors.value.push(t('study.error.addTitle'));
+      errors.value.push({ label: 'title', value: t('study.error.addTitle') });
     }
     if (!returnStudy.value.consentInfo) {
-      errors.value.push(t('study.error.addConsentInfo'));
+      errors.value.push({
+        label: 'consentInfo',
+        value: t('study.error.addConsentInfo'),
+      });
     }
     if (!returnStudy.value.participantInfo) {
-      errors.value.push(t('study.error.addParticipantInfo'));
+      errors.value.push({
+        label: 'participantInfo',
+        value: t('study.error.addParticipantInfo'),
+      });
     }
+  }
+
+  function getError(label: string): string | null | undefined {
+    const item = errors.value.find((el) =>
+      el.label === label ? el.value : ''
+    );
+    return item?.value;
   }
 
   function cancel() {
@@ -62,34 +76,21 @@
 <template>
   <div>
     <div class="mb-4">
-      <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="$t('study.dialog.description')"></h6>
+      <h6 v-html="$t('study.dialog.description.study')"></h6>
     </div>
     <form
       id="studyDialogForm"
       class="grid grid-cols-6 items-center gap-4"
       @submit.prevent="save()"
     >
-      <div v-if="errors.length" class="error col-span-6">
-        <span class="font-medium">
-          {{ $t('study.dialog.error.missedFieldsMsg') }}
-        </span>
-        <ul>
-          <li
-            v-for="(error, index) in errors"
-            :key="index"
-            class="inline-block"
-          >
-            {{ error }}
-            <span v-if="index < errors.length - 1" class="mr-0.5">,</span>
-          </li>
-        </ul>
-      </div>
-      <div class="col-start-0 col-span-1">
-        <h5>{{ $t('study.singular') }} {{ $t('study.props.title') }}</h5>
-      </div>
-      <div class="col-span-5 col-start-2">
+      <div class="col-start-0 col-span-6">
+        <h5 :class="getError('title') ? '' : 'mb-2'">
+          {{ $t('study.singular') }} {{ $t('study.props.title') }}*
+        </h5>
+        <div v-if="getError('title')" class="error col-span-8 mb-2">
+          {{ getError('title') }}
+        </div>
         <InputText
           id="name"
           v-model="returnStudy.title"
@@ -100,6 +101,7 @@
           :name="'title'"
         ></InputText>
       </div>
+      <div class="col-span-5 col-start-2"></div>
       <div class="col-start-0 col-span-2">
         <h5 class="mb-2">{{ $t('study.props.language') }}</h5>
         <Dropdown
@@ -114,7 +116,7 @@
       </div>
       <div class="col-start-0 col-span-2">
         <h5 class="mb-2">
-          {{ $t('study.singular') }} {{ $t('global.labels.start') }}
+          {{ $t('study.singular') }} {{ $t('global.labels.start') }}*
         </h5>
         <Calendar
           v-model="start"
@@ -127,7 +129,7 @@
       </div>
       <div class="col-start-0 col-span-2">
         <h5 class="mb-2">
-          {{ $t('study.singular') }} {{ $t('global.labels.end') }}
+          {{ $t('study.singular') }} {{ $t('global.labels.end') }}*
         </h5>
         <Calendar
           v-model="end"
@@ -140,6 +142,7 @@
       </div>
       <div class="col-start-0 col-span-6">
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
+        <div class="mb-2">{{ $t('study.dialog.description.purpose') }}</div>
         <Textarea
           v-model="returnStudy.purpose"
           :name="'purpose'"
@@ -149,7 +152,15 @@
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
-        <h5 class="mb-2">{{ $t('study.props.participantInfo') }}</h5>
+        <h5 :class="getError('participantInfo') ? '' : 'mb-2'">
+          {{ $t('study.props.participantInfo') }}*
+        </h5>
+        <div v-if="getError('participantInfo')" class="error col-span-8 mb-2">
+          {{ getError('participantInfo') }}
+        </div>
+        <div class="mb-2">
+          {{ $t('study.dialog.description.participantInfo') }}
+        </div>
         <Textarea
           v-model="returnStudy.participantInfo"
           :required="true"
@@ -160,7 +171,13 @@
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-6">
-        <h5 class="mb-2">{{ $t('study.props.consentInfo') }}</h5>
+        <h5 :class="getError('consentInfo') ? '' : 'mb-2'">
+          {{ $t('study.props.consentInfo') }}*
+        </h5>
+        <div v-if="getError('consentInfo')" class="error col-span-8 mb-2">
+          {{ getError('consentInfo') }}
+        </div>
+        <div class="mb-2">{{ $t('study.dialog.description.consentInfo') }}</div>
         <Textarea
           v-model="returnStudy.consentInfo"
           :name="'consentInfo'"
@@ -171,7 +188,7 @@
         ></Textarea>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">{{
+        <Button class="btn-gray" @click="cancel()">{{
           $t('global.labels.cancel')
         }}</Button>
         <Button type="submit" @click="checkRequiredFields()">{{

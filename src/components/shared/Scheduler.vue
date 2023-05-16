@@ -307,7 +307,10 @@
 <template>
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
-      <h6 class="col-span-6">{{ $t('scheduler.labels.event.first') }}</h6>
+      <h6 class="col-span-6">{{ $t('scheduler.labels.event.setDates') }}</h6>
+      <div class="col-span-6 mb-2">
+        {{ $t('scheduler.labels.event.setDatesDesc') }}
+      </div>
       <div class="col-span-1">{{ $t('global.labels.start') }}</div>
       <Calendar
         v-model="start"
@@ -339,19 +342,27 @@
           @change="changeDateTime()"
         />
       </div>
-      <div class="col-span-2">
-        {{ $t('scheduler.labels.repeat') }}:
-        <Checkbox
-          v-model="repeatChecked"
-          class="ml-2"
-          :binary="true"
-          @change="repeatCheckedData()"
-        />
-      </div>
+
       <hr class="col-start-0 col-span-6 mb-4 mt-4" />
-      <div v-if="repeatChecked" class="col-span-6 mt-4 grid grid-cols-6 gap-4">
+      <h6 class="col-span-6">{{ $t('scheduler.labels.event.repeat') }}</h6>
+      <div class="col-span-6 mb-2">
+        {{ $t('scheduler.labels.event.repeatDesc') }}
+      </div>
+      <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
+        <div class="col-span-1">
+          {{ $t('scheduler.labels.repeat') }}:
+          <Checkbox
+            v-model="repeatChecked"
+            class="ml-2"
+            :binary="true"
+            @change="repeatCheckedData()"
+          />
+        </div>
         <!-- Frequency: never to yearly -->
-        <div class="col-span-5 col-start-2 grid grid-cols-5 gap-4">
+        <div
+          v-if="repeatChecked"
+          class="col-span-5 col-start-2 grid grid-cols-5 gap-4"
+        >
           <SelectButton
             v-model="repeatFreq"
             :options="repeatFreqArray"
@@ -369,7 +380,7 @@
 
         <!-- weekday select -->
         <div
-          v-if="repeatFreq === Frequency.Weekly"
+          v-if="repeatChecked && repeatFreq === Frequency.Weekly"
           class="col-span-5 col-start-2 grid grid-cols-5 gap-4"
         >
           <SelectButton
@@ -385,7 +396,8 @@
         <!-- monthly/yearly select -->
         <div
           v-if="
-            repeatFreq === Frequency.Yearly || repeatFreq === Frequency.Monthly
+            (repeatChecked && repeatFreq === Frequency.Yearly) ||
+            (repeatChecked && repeatFreq === Frequency.Monthly)
           "
           class="col-span-5 col-start-2 grid grid-cols-5 gap-4"
         >
@@ -450,21 +462,21 @@
           class="col-start-0 col-span-6 mb-4 mt-4"
         />
         <div
-          v-if="repeatFreq"
+          v-if="repeatChecked && repeatFreq"
           class="col-start-0 col-span-1 self-center font-medium"
         >
           {{ $t('scheduler.labels.repetitionEnd') }}
         </div>
         <div
-          v-if="repeatFreq"
-          class="col-span-5 col-start-2 grid grid-cols-3 gap-4"
+          v-if="repeatChecked && repeatFreq"
+          class="col-span-5 col-start-2 grid grid-cols-4 gap-4"
         >
           <Dropdown
             v-model="repeatEndOption"
             :options="repeatEndOptionArray"
             :option-label="'label'"
             :option-value="'value'"
-            class="col-span-2 w-80"
+            class="col-span-1"
             :placeholder="$t('scheduler.placeholder.chooseRepetitionEnd')"
             @change="resetRepeatEndOptions"
           />
@@ -494,7 +506,7 @@
     <div style="height: 100px"></div>
     <div class="pos-bottom grid w-full grid-cols-6">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">{{
+        <Button class="btn-gray" @click="cancel()">{{
           $t('global.labels.cancel')
         }}</Button>
         <Button @click="save()">{{ $t('global.labels.save') }}</Button>
