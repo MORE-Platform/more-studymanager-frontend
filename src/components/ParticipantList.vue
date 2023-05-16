@@ -25,13 +25,12 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { useConfirm } from 'primevue/useconfirm';
   import { useDialog } from 'primevue/usedialog';
   import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
+  import DeleteParticipantDialog from './dialog/DeleteParticipantDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
-  const confirm = useConfirm();
   const participantsList: Ref<Participant[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
@@ -100,9 +99,40 @@
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: () => actionsVisible,
-      confirm: {
+      confirmDeleteDialog: {
         header: t('participants.dialog.header.delete'),
         message: t('participants.dialog.msg.delete'),
+        dialog: (row: any) =>
+          dialog.open(DeleteParticipantDialog, {
+            data: {
+              introMsg: t('participants.dialog.deleteMsg.intro'),
+              warningMsg: t('participants.dialog.deleteMsg.warning'),
+              confirmMsg: t('participants.dialog.deleteMsg.confirm'),
+              participant: row as Participant,
+            },
+            props: {
+              header: t('participants.dialog.header.delete'),
+              style: {
+                width: '50vw',
+              },
+              breakpoints: {
+                '960px': '75vw',
+                '640px': '90vw',
+              },
+              modal: true,
+            },
+            onClose: (options) => {
+              if (options?.data) {
+                execute(
+                  {
+                    id: 'delete',
+                    row: options.data.participant as Participant,
+                  },
+                  options.data.withData
+                );
+              }
+            },
+          }),
       },
     },
   ];
@@ -226,18 +256,19 @@
   }
 
   function execute(
-    action: MoreTableRowActionResult<Participant> | MoreTableActionResult
+    action: MoreTableRowActionResult<Participant> | MoreTableActionResult,
+    withData?: boolean
   ) {
     switch (action.id) {
       case 'delete':
         return deleteParticipant(
-          (action as MoreTableRowActionResult<Participant>).row
+          (action as MoreTableRowActionResult<Participant>).row,
+          !!withData
         );
       case 'create':
         return createParticipant(action as MoreTableActionResult);
       case 'distribute':
         return openDistrubuteDialog();
-      //return distributeGroups();
       case 'import':
         return importParticipants(action);
       case 'export':
@@ -271,36 +302,17 @@
     }
   }
 
-  async function deleteParticipantAsync(participant: Participant) {
-    setTimeout(() => {
-      confirm.require({
-        header: t('participants.dialog.header.deleteWithData'),
-        message: t('participants.dialog.msg.deleteWithData'),
-        accept: () => {
-          participantsApi
-            .deleteParticipant(
-              participant.studyId as number,
-              participant.participantId as number,
-              true
-            )
-            .then(listParticipant);
-        },
-        reject: () => {
-          participantsApi
-            .deleteParticipant(
-              participant.studyId as number,
-              participant.participantId as number,
-              false
-            )
-            .then(listParticipant);
-        },
-      });
-    }, 300);
-  }
-
-  function deleteParticipant(participant: Participant) {
-    //TODO mabye find more elegant solution for this workaround
-    deleteParticipantAsync(participant);
+  async function deleteParticipant(
+    participant: Participant,
+    withData: boolean
+  ) {
+    participantsApi
+      .deleteParticipant(
+        participant.studyId as number,
+        participant.participantId as number,
+        withData
+      )
+      .then(listParticipant);
   }
 
   async function importParticipants(
