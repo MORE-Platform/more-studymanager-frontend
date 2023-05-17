@@ -185,8 +185,7 @@
         });
     }
   }
-
-  //const errors: Ref<Array<string>> = ref([]);
+  
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
   const externalErrors: Ref<Array<any>> = ref([]);
 
