@@ -324,6 +324,7 @@
       :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
+      class="table-title-width"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
       @onchange="updateObservation($event)"
@@ -332,3 +333,11 @@
     <DynamicDialog />
   </div>
 </template>
+
+<style scoped lang="postcss">
+  :deep(.table-title-width) {
+    .title {
+      max-width: 80%;
+    }
+  }
+</style>

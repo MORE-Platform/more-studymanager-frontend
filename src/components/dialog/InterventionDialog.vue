@@ -17,6 +17,7 @@
   import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
+  import { MoreTableChoice } from '../../models/MoreTableModel';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -185,20 +186,36 @@
     }
   }
 
-  const errors: Ref<Array<string>> = ref([]);
+  const errors: Ref<Array<MoreTableChoice>> = ref([]);
   const externalErrors: Ref<Array<any>> = ref([]);
 
   function checkErrors() {
     errors.value = [];
     if (!title.value) {
-      errors.value.push(t('intervention.error.addTitle'));
+      errors.value.push({
+        label: 'title',
+        value: t('intervention.error.addTitle'),
+      });
     }
     if (!triggerProp.value) {
-      errors.value.push(t('intervention.error.addTriggerTypeConfig'));
+      errors.value.push({
+        label: 'trigger',
+        value: t('intervention.error.addTriggerTypeConfig'),
+      });
     }
     if (!actionsArray.value.length) {
-      errors.value.push(t('intervention.error.addAction'));
+      errors.value.push({
+        label: 'action',
+        value: t('intervention.error.addAction'),
+      });
     }
+  }
+
+  function getError(label: string): string | null | undefined {
+    const item = errors.value.find((el) =>
+      el.label === label ? el.value : ''
+    );
+    return item?.value;
   }
 
   function checkExternalErrors(e?: string) {
@@ -296,23 +313,13 @@
       :class="editable ? '' : 'gap-y-2'"
       @submit.prevent="save()"
     >
-      <div v-if="errors.length && editable" class="error col-span-8">
-        <span class="font-medium">
-          {{ $t('study.dialog.error.missedFieldMsg') }}
-        </span>
-        <div>
-          <span v-for="(error, index) in errors" :key="index">
-            {{ error }}
-            <span v-if="index < errors.length - 1" class="mr-0.5 inline"
-              >,
-            </span>
-          </span>
+      <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+        <h5>
+          {{ $t('intervention.singular') }} {{ $t('study.props.title') }}*
+        </h5>
+        <div v-if="getError('title')" class="error col-span-8 mb-2">
+          {{ getError('title') }}
         </div>
-      </div>
-      <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
-        <h5>{{ $t('intervention.singular') }} {{ $t('study.props.title') }}</h5>
-      </div>
-      <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
         <InputText
           v-model="title"
           type="text"
@@ -335,7 +342,7 @@
       </div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
-          {{ $t('intervention.props.trigger') }}
+          {{ $t('intervention.props.trigger') }}*
         </h5>
         <div class="col-span-1" :class="editable ? '' : 'text-end'">
           <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
@@ -343,7 +350,7 @@
             v-model="triggerType"
             :options="triggerTypesOptions"
             class="col-span-1 w-full"
-            :class="editable ? 'mb-4' : 'p-0'"
+            :class="editable && !getError('trigger') ? 'mb-4' : 'p-0'"
             option-label="label"
             option-value="value"
             required
@@ -351,6 +358,9 @@
             :placeholder="$t('intervention.placeholder.trigger')"
             @change="setTriggerConfig(triggerType)"
           />
+        </div>
+        <div v-if="getError('trigger')" class="error col-span-8 mb-4">
+          {{ getError('trigger') }}
         </div>
         <div
           v-if="triggerEmptyError && editable"
@@ -391,7 +401,7 @@
       <div class="col-start-0 col-span-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
-            {{ $t('intervention.props.action') }}
+            {{ $t('intervention.props.action') }}*
           </h5>
           <Button
             v-if="editable"
@@ -406,6 +416,9 @@
             :disabled="!editable"
             @click="actionToggle"
           ></Button>
+          <div v-if="getError('action')" class="error col-span-8 mb-4">
+            {{ getError('action') }}
+          </div>
           <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
           </Menu>
         </div>
@@ -472,7 +485,7 @@
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">
+        <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>

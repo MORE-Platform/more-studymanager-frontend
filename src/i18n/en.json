@@ -132,15 +132,15 @@
       "closed": "completed"
     },
     "error": {
-      "addTitle": "Study Title",
-      "addConsentInfo": "Consent Info",
-      "addParticipantInfo": "Participant Info"
+      "addTitle": "The study title is required. Please enter a study title.",
+      "addConsentInfo": "The consent information is required. Please enter a description.",
+      "addParticipantInfo": "The participant information is required. Please entere a description."
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
-      "participantInfoInput": "Please provide information for study participants. This description will be visible at the participant's app.",
-      "consentInfoInput": "Please provide information on the data that will be collected. This description will be visible at the participant's app.",
+      "participantInfoInput": "Please provide information for study participants. This description will be visible on the participant's app.",
+      "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
       "selectLanguage": "Select a language",
       "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
       "emptyParticipantInfo": "Participant information hasn't been added yet. To add participant information, edit the study details.",
@@ -159,16 +159,21 @@
         "confirm": "Are you sure you want to delete your study?"
       },
       "msg": {
-        "urlCopied": "Link for '{title}' study (ID: {studyId}) was copied to your clipboard."
+        "urlCopied": "URL for '{title} (Id: {studyId})'  was copied to your clipboard."
       },
-      "description": "Enter the base information of your study to provide basic information for collaborators and participants.",
+      "description": {
+        "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "purpose": "The purpose property describes the general purpose of the study. It will be shown study collaborators to give them information about the study and it's goals.",
+        "participantInfo": "The participant information will be displayed on the app as the studies description. It should give them short information about the study and their taken part in it.",
+        "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants. It gives general information to the data that will be collected."
+      },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
       }
     },
     "studyList": {
       "title": "My dashboard of studies",
-      "description": "This is the list of your studies and studies you were invited to as a collaborator.",
+      "description": "This is a list of your studies and the studies that you created or that you were invited to as a collaborator.",
       "emptyListMsg": "No studies yet",
       "action": {
         "addStudy": "Add new study",
@@ -183,7 +188,7 @@
     "dialog": {
       "header": {
         "delete": "Delete Group",
-        "create": "Create Group"
+        "create": "Add study group"
       },
       "msg": {
         "delete": "Really delete study group?"
@@ -292,10 +297,10 @@
       "description": "This is the list of participants of your study. You can add or import participants.",
       "emptyListMsg": "Add and manage your study's participants. Your participants will be listed here.",
       "action": {
-        "distribute": "Distribute Participants",
+        "distribute": "Assign study groups",
         "import": "Import Participants",
         "export": "Export Participants",
-        "add": "Add Participants"
+        "add": "Add Participant"
       },
       "labels": {
         "add3": "Add 3",
@@ -323,7 +328,7 @@
     },
     "observationList": {
       "title": "Observations",
-      "description": "An observation can be sensor data from a mobile phone or a wearable device or information gathered from a questionnaire.",
+      "description": "An observation can be sensor data from a mobile phone, a wearable device or information gathered from a questionnaire. The observations can be assigned to one specific study group. If no study group is assigned, the observation will be applied to all groups.",
       "emptyListMsg": "Add and manage your study's observations. Your observations will be listed here.",
       "action": {
         "add": "Add Observation"
@@ -348,9 +353,9 @@
     },
     "error":  {
       "noValidJson": "Cannot parse properties. No valid JSON.",
-      "addTitle":  "Observation Title",
+      "addTitle":  "The observation title is required. Please add a title for your intervention.",
       "addScheduler": "Scheduler",
-      "addParticipantInfo": "Participant Information",
+      "addParticipantInfo": "The participant information describes the purpose of the observation. Please enter a participant information.",
       "addSchedulerMsg": "Please set the scheduler for your observation."
     },
     "placeholder": {
@@ -395,9 +400,9 @@
       }
     },
     "error":  {
-      "addTitle": "Intervention Title",
-      "addTriggerTypeConfig": "Trigger Type and Config",
-      "addAction": "At least 1 action"
+      "addTitle": "The intervention title is required. Please add a title for your intervention.",
+      "addTriggerTypeConfig": "The trigger is required. Please add a trigger and it's config.",
+      "addAction": "The intervention needs at least one Trigger. Please add one trigger."
     },
     "placeholder": {
       "noDescription": "No description available",
@@ -525,7 +530,7 @@
       "openScheduler":  "Open Scheduler",
       "removeScheduler":  "Remove Scheduler",
       "frequency":  "Frequency",
-      "repetitionEnd": "Repetition end",
+      "repetitionEnd": "Repetition ends",
       "repeat": "Repeat",
       "selection":{
         "specificDay": "On a specific day",
@@ -536,8 +541,13 @@
       },
       "event": {
         "first": "First Event",
-        "allDay": "All Day Event"
+        "allDay": "Entire time",
+        "setDates": "Set dates",
+        "setDatesDesc": "Set the first occurance of your observation modul. This duration can be set from one day to any timeframe. The modul will be active during that time. Consider that the given time (if 'Entire time' isn't checked), will be the start time on the first and the end time on the last day chosen.",
+        "repeat": "Repeat set duration above",
+        "repeatDesc": "If you repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated. If you e.g. want to repeat a set timeframe each day, you would need to set both dates above on the starting date, and set repeat to daily. The data capture will be repeated each day at the set time from above for x-amount of days."
       }
+
     },
     "placeholder": {
       "chooseMonth": "Choose Month",

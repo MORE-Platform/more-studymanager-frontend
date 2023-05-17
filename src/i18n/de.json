@@ -132,15 +132,15 @@
       "closed": "beendet"
     },
     "error": {
-      "addTitle": "Studientitel",
-      "addConsentInfo": "Berechtigungsinformation",
-      "addParticipantInfo": "Teilnehmerinformation"
+      "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Besdchreibung hinzu.",
+      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu."
     },
     "placeholder": {
       "titleInput": "Bitte gib einen kurzen Titel ein.",
       "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
-      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern auf der App angezeigt.",
-      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern als Beschreibungstext für die Berechtigungsinformation in der App angezeigt.",
+      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern/innen auf der App angezeigt.",
+      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern/innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
       "selectLanguage": "Sprache auswählen",
       "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
       "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
@@ -159,9 +159,15 @@
         "confirm": "Möchten Sie die Studie wirklich löschen?"
       },
       "msg": {
-        "urlCopied": "Die URL der Studie '{title}' (ID: {studyId}) wurde in die Zwischenablage kopiert."
+        "urlCopied": "Die URL der Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert."
       },
-      "description": "Fügen Sie die Grundbeschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+      "description": {
+        "study": "Fügen Sie die Grundbeschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+        "purpose": "Die Zielsetzung gibt Informationen über die Studie und das generelle Ziel dieser. Diese Information ist den Studien-Mitarbeitern zugänglich.",
+        "participantInfo": "Die TeilnehmerInformation wird in der App den Teilnehmer/innen angezeigt. Diese sollte den Teilnehmer/innen eine kurze Beschreibung über die Studie und evtl. ihrer Rolle preisgeben.",
+        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer/innen angezeigt und muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen. Es soll generelle Informationen über die aufzuzeichnenden Daten geben."
+
+      },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
       }
@@ -324,7 +330,7 @@
     },
     "observationList": {
       "title": "Datenerhebung",
-      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln.",
+      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln. Das Datenerhebungsmodul kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt das Modul für alle Gruppen.",
       "emptyListMsg": "Verwalten oder fügen Sie Datenerhebungsmodul hinzu. Diese werden hier angezeigt.",
       "action": {
         "add": "Datenerhebungsmodul hinzufügen"
@@ -349,9 +355,9 @@
     },
     "error":  {
       "noValidJson": "Die eingegeben Settingseigenschaften konnten nicht verarbeitet werden: Kein valides JSON.",
-      "addTitle":  "Title des Aufzeichnungsmodul",
+      "addTitle":  "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addScheduler": "Planer",
-      "addParticipantInfo": "Teilnehmerinformation",
+      "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein."
     },
     "placeholder": {
@@ -396,9 +402,9 @@
       }
     },
     "error":  {
-      "addTitle": "Titel der Intervention",
-      "addTriggerTypeConfig": "Auslösertyp und Konfiguration",
-      "addAction": "Mindestens eine Handlung"
+      "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
+      "addAction": "Die Intervention benötigt mind. eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mind. eine Aktion hinzu."
     },
     "placeholder": {
       "noDescription": "Keine Beschreibung verfügbar",
@@ -537,7 +543,12 @@
       },
       "event": {
         "first": "Erstes Ereignis",
-        "allDay": "Ganztags"
+        "allDay": "Ganztags",
+        "setDates": "Setze den Zeitrahmen",
+        "setDatesDesc": "Setze das erste auftreten des Datenerhebungsmoduls. Dieser Zeitrahmen kann von einem einzelnen Tag bis zu einer beliebigen Zeitspanne gesetzt werden. Das Datenerhebungsmodul ist in dieser Zeitspanne aktiv und sammelt Daten. Beachte, dass die gegebene Zeitspanne (falls ganztags nicht angehackt ist) die Startzeit am ersten und die Endzeit am letzten Tag der Aufzeichnung beschreibt.",
+        "repeat": "Wiederhole die oben definierte Zeitspanne",
+        "repeatDesc": "Wenn Sie die oben gesetzte Zeitspanne wiederholen, können Sie diese bis zu einer bestimmten Anzahl an Tage oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird. Wenn Sie z.B. eine Datenerhebung täglich wiederholen wollen, müssten Sie beide Datumsangaben auf denselben Tag setzen, und eine tägliche Wiederholung auswählen. Die Daten werden dann täglich, bis zur angegebenen Wiederholungsanzahl der Tage, zur selben ausgewählten Zeit erfasst. "
+
       }
     },
     "placeholder": {
