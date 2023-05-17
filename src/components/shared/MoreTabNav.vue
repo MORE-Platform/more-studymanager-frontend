@@ -64,6 +64,12 @@
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
+    {
+      title: t('studyNavigation.tabs.integration'),
+      name: t('studyNavigation.tabLink.integration'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Admin, StudyRole.Operator],
+    },
   ] as Tab[];
 
   const studyRoleValues: MoreTableChoice[] = [

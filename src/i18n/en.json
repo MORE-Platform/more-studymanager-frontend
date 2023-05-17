@@ -57,14 +57,16 @@
       "data": "Data",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions"
+      "interventions": "Interventions",
+      "integration": "Integrations"
     },
     "tabLink": {
       "overview": "Overview",
       "data": "Data",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions"
+      "interventions": "Interventions",
+      "integration": "Integrations"
     }
   },
 
@@ -361,6 +363,41 @@
     "placeholder": {
       "emptySchedulerMsg": "Please provide a schedule for your observation.",
       "enterMainPurpose": "Enter the main purpose and intention of the study."
+    }
+  },
+
+  "integration": {
+    "singular": "Integration",
+    "plural": "Integrations",
+    "props": {
+      "observationId": "Observation Id",
+      "observationTitle": "Observation",
+      "tokenId": "Token Id",
+      "tokenLabel": "Token label",
+      "token": "Token",
+      "created": "Created"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Delete Integration",
+        "create": "Create Integration"
+      },
+      "msg": {
+        "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?"
+      },
+      "deleteMsg": {
+        "warning": "A deleted integration can't be restored. If you delete this integration it's link to the observation will be deleted and it's data will be lost.",
+        "intro": "You are about to delete the following integration:",
+        "confirm": "Are you sure you want to delete your integration?"
+      }
+    },
+    "integrationList":{
+      "title": "External integrations",
+      "description": "An external integration can be linked to already existing observations to add and collect data from.",
+      "emptyListMsg": "Add an manage your external integrations, which will be listed here.",
+      "action": {
+        "add": "Create Integration"
+      }
     }
   },
 

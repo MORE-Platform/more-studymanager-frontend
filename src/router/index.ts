@@ -10,6 +10,7 @@ import Data from '../views/Data.vue';
 import StudyOverview from '../views/StudyOverview.vue';
 import { useStudyStore } from '../stores/studyStore';
 import { useStudyGroupStore } from '../stores/studyGroupStore';
+import Integrations from '../views/Integrations.vue';
 
 const studyResolver = async (to: any, from: any, next: any) => {
   const studyStore = useStudyStore();
@@ -62,6 +63,12 @@ const routes = [
         meta: { title: 'Data' },
         name: 'Data',
         component: Data,
+      },
+      {
+        path: 'integrations',
+        meta: { title: 'Integrations' },
+        name: 'Integrations',
+        component: Integrations,
       },
     ],
   },

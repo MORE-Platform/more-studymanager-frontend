@@ -57,14 +57,16 @@
       "data": "Daten",
       "participants": "Teilnehmer",
       "observations": "Datenerhebung",
-      "interventions": "Interventionen"
+      "interventions": "Interventionen",
+      "integration": "Integrationen"
     },
     "tabLink": {
       "overview": "Overview",
       "data": "Data",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions"
+      "interventions": "Interventions",
+      "integration": "Integrations"
     }
   },
 
@@ -363,6 +365,41 @@
     "placeholder": {
       "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
       "enterMainPurpose": "Fügen Sie die Hauptzielsetzung der Studie hinzu."
+    }
+  },
+
+  "integration": {
+    "singular": "Integration",
+    "plural": "Integrationen",
+    "props": {
+      "observationId": "Modul Id",
+      "observationTitle": "Datenerhebungsmodul",
+      "tokenId": "Token Id",
+      "tokenLabel": "Tokenname",
+      "token": "Token",
+      "created": "Erstellt"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Integration löschen",
+        "create": "Integration erstellen"
+      },
+      "msg": {
+        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?"
+      },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
+        "intro": "Sie sind im Begriff folgende Integration zu löschen:",
+        "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?"
+      }
+    },
+    "integrationList":{
+      "title": "Externe Datenintegration",
+      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmoduls verlinkt werden. Dieses sammelt und integriert durch diese definierte Daten.",
+      "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
+      "action": {
+        "add": "Integration hinzufügen"
+      }
     }
   },
 
