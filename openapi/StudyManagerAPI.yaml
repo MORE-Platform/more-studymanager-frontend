@@ -72,6 +72,50 @@ paths:
         '404':
           description: Not found
 
+  /components/{componentType}/{componentId}/api/{slug}:
+    post:
+      tags:
+        - components
+      operationId: accessModuleSpecificEndpoint
+      description: access module specific endpoint
+      parameters:
+        - name: componentType
+          in: path
+          schema:
+            type: string
+            enum:
+              - action
+              - trigger
+              - observation
+          required: true
+        - name: componentId
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: slug
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Endpoint not found
+        '500':
+          description: Error
+
   /components/{componentType}/{componentId}/web-component.js:
     get:
       tags:
@@ -625,6 +669,85 @@ paths:
         '500':
           description: Error
 
+  /studies/{studyId}/observations/{observationId}/tokens:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+
+    post:
+      tags:
+        - observations
+      description: Create and add observation endpoint token
+      operationId: createToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenLabel'
+      responses:
+        '201':
+          description: Token successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointToken'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+
+    get:
+      tags:
+        - observations
+      description: Get all observation endpoint tokens
+      operationId: getTokens
+      responses:
+        '200':
+          description: Tokens successfully returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EndpointToken'
+        '404':
+          description: not found
+
+  /studies/{studyId}/observations/{observationId}/tokens/{tokenId}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+      - $ref: '#/components/parameters/TokenId'
+
+    get:
+      tags:
+        - observations
+      description: Get observation endpoint token
+      operationId: getToken
+      responses:
+        '201':
+          description: Token successfully returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointToken'
+        '404':
+          description: not found
+
+
+    delete:
+      tags:
+        - observations
+      description: Delete observation endpoint token
+      operationId: deleteToken
+      responses:
+        '204':
+          description: Token successfully deleted
+        '404':
+          description: not found
+
+
   /studies/{studyId}/interventions:
     post:
       tags:
@@ -1147,6 +1270,28 @@ components:
           format: date-time
           readOnly: true
 
+    EndpointToken:
+      type: object
+      properties:
+        tokenId:
+          $ref: '#/components/schemas/Id'
+        tokenLabel:
+          $ref: '#/components/schemas/TokenLabel'
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        token:
+          type: string
+      required:
+        - tokenId
+        - tokenLabel
+        - created
+        - token
+
+    TokenLabel:
+      type: string
+
     ParticipationData:
       type: object
       properties:
@@ -1453,6 +1598,13 @@ components:
       required: true
     ActionId:
       name: actionId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+    TokenId:
+      name: tokenId
       in: path
       schema:
         type: integer
