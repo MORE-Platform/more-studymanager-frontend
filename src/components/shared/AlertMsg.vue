@@ -50,8 +50,13 @@
 <template>
   <Message
     :severity="
-      type === 'msg' ? (severityType === 'success' ? 'success' : 'info') :
-       (severityType === 'error' ? 'error' : 'warn')
+      type === 'msg'
+        ? severityType === 'success'
+          ? 'success'
+          : 'info'
+        : severityType === 'error'
+        ? 'error'
+        : 'warn'
     "
     class="message"
     :class="styleModifier"
