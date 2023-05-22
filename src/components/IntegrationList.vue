@@ -2,6 +2,7 @@
   import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
+    EndpointToken,
     Observation,
     StudyRole,
   } from '../generated-sources/openapi';
@@ -21,6 +22,7 @@
   import MoreTable from './shared/MoreTable.vue';
   import useLoader from '../composable/useLoader';
   import IntegrationDialog from './dialog/IntegrationDialog.vue';
+  import CopyTokenDialog from './dialog/CopyTokenDialog.vue';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -55,14 +57,10 @@
       sortable: true,
     },
     {
-      field: 'token',
-      header: t('integration.props.token'),
-      sortable: true,
-    },
-    {
       field: 'observationId',
       header: t('integration.props.observationId'),
       sortable: true,
+      filterable: { showFilterMatchModes: false },
     },
     {
       field: 'observationTitle',
@@ -105,7 +103,6 @@
                       observationTitle: observation.title as string,
                       tokenId: token.tokenId,
                       tokenLabel: token.tokenLabel,
-                      token: token.token,
                       created: token.created,
                     });
                   });
@@ -194,11 +191,11 @@
       case 'delete':
         return deleteIntegration(action.row);
       case 'create':
-        return openInterventionDialog(t('integration.dialog.header.create'));
+        return openIntegrationDialog(t('integration.dialog.header.create'));
     }
   }
 
-  async function openInterventionDialog(headerText: string) {
+  async function openIntegrationDialog(headerText: string) {
     dialog.open(IntegrationDialog, {
       data: {
         observationList: observationList,
@@ -250,6 +247,7 @@
       return request;
     });
   }
+  getObservationTokens(props.studyId, 1);
 
   async function createIntegration(integrationCreate: MoreIntegrationLink) {
     await observationsApi
@@ -258,7 +256,10 @@
         integrationCreate.observationId,
         integrationCreate.tokenLabel
       )
-      .then(listIntegrations)
+      .then((response) => {
+        openInfoDialog(response.data);
+        listIntegrations();
+      })
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
@@ -269,6 +270,27 @@
             ')'
         );
       });
+  }
+
+  function openInfoDialog(token: EndpointToken) {
+    dialog.open(CopyTokenDialog, {
+      data: {
+        title: token.tokenLabel + ' (Id: ' + token.tokenId + ')',
+        message: t('integration.dialog.msg.createdToken'),
+        highlightMsg: token.token,
+      },
+      props: {
+        header: t('integration.dialog.header.tokenCopy'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+      },
+    });
   }
 
   getObservationList();

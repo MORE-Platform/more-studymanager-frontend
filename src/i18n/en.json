@@ -380,20 +380,24 @@
     "dialog": {
       "header": {
         "delete": "Delete Integration",
-        "create": "Create Integration"
+        "create": "Create Integration",
+        "tokenCopy": "Copy Token"
       },
       "label": {
         "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
         "integrationTitle": "Integration Title",
         "chooseObservation": "Choose observation",
-        "chooseObservationDesc": "Choose an existing observation to link to."
+        "chooseObservationDesc": "Choose an existing observation to link to.",
+        "copyToken": "Copy Token",
+        "copySuccess": "Token successfully copied to clipboard."
       },
       "placeholder": {
         "tokenLabelInput": "Please enter a label for your token.",
         "selectObservation": "Please select an existing observation."
       },
       "msg": {
-        "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?"
+        "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?",
+        "createdToken": "Please copy your token to be able to link. Careful! The token won't be reviewable afterwards, so be mindful with your usage. If you loose a token you can recreate it anytime."
       },
       "deleteMsg": {
         "warning": "A deleted integration can't be restored. If you delete this integration it's link to the observation will be deleted and it's data will be lost.",

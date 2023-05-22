@@ -143,7 +143,6 @@ export interface MoreIntegrationTableMap {
   observationTitle: string;
   tokenId: number;
   tokenLabel: string;
-  token: string;
   created: string;
 }
 

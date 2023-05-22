@@ -382,13 +382,16 @@
     "dialog": {
       "header": {
         "delete": "Integration löschen",
-        "create": "Integration erstellen"
+        "create": "Integration erstellen",
+        "tokenCopy": "Token kopieren"
       },
       "label": {
         "description": "Ein Integrationsmodule ermöglicht es eine externe API an eine schon existierende Observation zu verlinken. Wähle jenes Datenerhebungsmodul, für welches Sie einen Token erstellen wollen. Über den Token können externe Datenmodule gekoppelt werden.",
         "integrationTitle": "Integrationstitel",
         "chooseObservation": "Wähle ein Datenerhebungsmodul",
-        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen."
+        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen.",
+        "copyToken": "Token kopieren",
+        "copySuccess": "Token wurde erfolgreich in die Zwischenablage kopiert."
       },
       "placeholder": {
         "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
@@ -396,7 +399,8 @@
       },
       "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
       "msg": {
-        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?"
+        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",
+        "createdToken": "Bitte kopieren Sie Ihren Token und speichern sich diesen wo ab. Dieser wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren."
       },
       "deleteMsg": {
         "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
