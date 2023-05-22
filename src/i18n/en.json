@@ -382,6 +382,16 @@
         "delete": "Delete Integration",
         "create": "Create Integration"
       },
+      "label": {
+        "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
+        "integrationTitle": "Integration Title",
+        "chooseObservation": "Choose observation",
+        "chooseObservationDesc": "Choose an existing observation to link to."
+      },
+      "placeholder": {
+        "tokenLabelInput": "Please enter a label for your token.",
+        "selectObservation": "Please select an existing observation."
+      },
       "msg": {
         "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?"
       },
@@ -398,6 +408,10 @@
       "action": {
         "add": "Create Integration"
       }
+    },
+    "error": {
+      "addTokenLabel": "Please add a label for your token",
+      "selectObservation": "Please select an observation you want to link to."
     }
   },
 

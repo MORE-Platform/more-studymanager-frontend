@@ -146,3 +146,8 @@ export interface MoreIntegrationTableMap {
   token: string;
   created: string;
 }
+
+export interface MoreIntegrationCreate {
+  observationId: number;
+  tokenLabel: string;
+}

@@ -3,7 +3,6 @@
   import {
     ComponentFactory,
     Observation,
-    Participant,
     StudyRole,
   } from '../generated-sources/openapi';
   import { ref, Ref } from 'vue';
@@ -11,6 +10,7 @@
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { useDialog } from 'primevue/usedialog';
   import {
+    MoreIntegrationCreate,
     MoreIntegrationTableMap,
     MoreTableAction,
     MoreTableFieldType,
@@ -20,6 +20,7 @@
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import MoreTable from './shared/MoreTable.vue';
   import useLoader from '../composable/useLoader';
+  import IntegrationDialog from './dialog/IntegrationDialog.vue';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -76,25 +77,6 @@
       type: MoreTableFieldType.datetime,
     },
   ];
-  const dummyIntegrationList = [
-    {
-      observationId: '1',
-      observationTitle: 'dummy title 1',
-      tokenId: '1',
-      tokenLabel: 'dummy token title',
-      token: '490349',
-      created: 'Sat Sep 13 2023 00:00:00 GMT+0000 (Coordinated Universal Time)',
-    },
-    {
-      observationId: '2',
-      observationTitle: 'here',
-      tokenId: '1',
-      tokenLabel: 'dummy token title',
-      token: '490349',
-      created:
-        'Sat July 01 2022 00:00:00 GMT+0000 (Coordinated Universal Time)',
-    },
-  ];
 
   async function getObservationList(): Promise<void> {
     await observationsApi
@@ -107,26 +89,44 @@
       );
   }
   async function listIntegrations(): Promise<void> {
-    integrationList.value = (await observationsApi
+    integrationList.value = [];
+    await observationsApi
       .listObservations(props.studyId)
       .then(async (observationRes) => {
-        observationRes.data.map(async (observation: Observation) => {
-          await observationsApi
-            .getTokens(props.studyId, observation.observationId as number)
-            .then((tokenRes) => {
-              tokenRes.data.forEach((token) => {
-                return {
-                  observationId: observation.observationId,
-                  observationTitle: observation.title,
-                  tokenId: token.tokenId,
-                  tokenLabel: token.tokenLabel,
-                  token: token.token,
-                  created: token.created,
-                };
+        return await Promise.all(
+          observationRes.data.map(async (observation: Observation) => {
+            return await observationsApi
+              .getTokens(props.studyId, observation.observationId as number)
+              .then((tokenRes) => {
+                if (tokenRes.data.length) {
+                  tokenRes.data.forEach((token) => {
+                    integrationList.value.push({
+                      observationId: observation.observationId as number,
+                      observationTitle: observation.title as string,
+                      tokenId: token.tokenId,
+                      tokenLabel: token.tokenLabel,
+                      token: token.token,
+                      created: token.created,
+                    });
+                  });
+                }
+              })
+              .catch((e: AxiosError) => {
+                handleIndividualError(
+                  e,
+                  'Could not get the integration tokens for: ' +
+                    observation.observationId
+                );
               });
-            });
-        });
-      })) as MoreIntegrationTableMap[];
+          })
+        );
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(
+          e,
+          'Could not get observation list: ' + props.studyId
+        );
+      });
   }
 
   async function getFactories() {
@@ -135,20 +135,6 @@
       .then((response: any) => response.data);
   }
   const factories: ComponentFactory[] = await getFactories();
-  console.log(factories);
-
-  /*
-  async function getObservationToken(
-    observationId: number
-  ): Promise<EndpointToken[]> {
-    await observationsApi
-      .getTokens(props.studyId, observationId)
-      .then((response) => {
-        return response.data;
-      });
-    return [];
-  }
-   */
 
   const rowActions: MoreTableAction[] = [
     {
@@ -165,7 +151,10 @@
               introMsg: t('integration.dialog.deleteMsg.intro'),
               warningMsg: t('integration.dialog.deleteMsg.warning'),
               confirmMsg: t('integration.dialog.deleteMsg.confirm'),
-              participant: row as Participant,
+              row: row,
+              elTitle:
+                row.tokenLabel + ' (Observation: ' + row.observationTitle + ')',
+              elInfoDesc: row.token,
             },
             props: {
               header: t('integration.dialog.header.delete'),
@@ -204,9 +193,35 @@
     switch (action.id) {
       case 'delete':
         return deleteIntegration(action.row);
-      case 'crate':
-        return createIntegration(action.row);
+      case 'create':
+        return openInterventionDialog(t('integration.dialog.header.create'));
     }
+  }
+
+  async function openInterventionDialog(headerText: string) {
+    dialog.open(IntegrationDialog, {
+      data: {
+        observationList: observationList,
+        factories: factories,
+      },
+      props: {
+        header: headerText,
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+        closeOnEscape: false,
+      },
+      onClose: (options) => {
+        if (options?.data) {
+          createIntegration(options.data);
+        }
+      },
+    });
   }
 
   async function deleteIntegration(integration: MoreIntegrationTableMap) {
@@ -229,19 +244,29 @@
       });
   }
 
-  async function createIntegration(integration: MoreIntegrationTableMap) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async function getObservationTokens(studyId: number, observationId: number) {
+    await observationsApi.getTokens(studyId, observationId).then((request) => {
+      return request;
+    });
+  }
+
+  async function createIntegration(integrationCreate: MoreIntegrationCreate) {
     await observationsApi
       .createToken(
         props.studyId,
-        integration.observationId,
-        integration.tokenLabel
+        integrationCreate.observationId,
+        integrationCreate.tokenLabel
       )
       .then(listIntegrations)
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
           'Cannot create integration for ObservationId ' +
-            integration.observationId
+            integrationCreate.observationId +
+            '(' +
+            integrationCreate.tokenLabel +
+            ')'
         );
       });
   }
@@ -258,7 +283,7 @@
       :title="$t('integration.integrationList.title')"
       :subtitle="$t('integration.integrationList.description')"
       :columns="integrationListColumns"
-      :rows="dummyIntegrationList"
+      :rows="integrationList"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.isLoading.value"
