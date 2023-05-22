@@ -18,6 +18,9 @@
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
+  import {IntegerProperty, Property, StringProperty} from '../../models/InputModels';
+  import StringPropertyInput from './shared/StringPropertyInput.vue';
+  import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -36,13 +39,13 @@
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
-  const properties = ref(
-    JSON.stringify(
-      observation.properties
-        ? observation.properties
-        : factory.defaultProperties
-    )
-  );
+  const properties: Property<any>[] = factory.properties
+    .map((json: any) => Property.fromJson(json))
+    .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]))
+    //.map((p: Property<any>) => ref(p));
+
+  console.log(properties);
+
   const scheduler: Ref<Event> = ref(
     observation.schedule ? observation.schedule : {}
   );
@@ -85,7 +88,7 @@
   function validate() {
     let parsedProps: any;
     try {
-      parsedProps = JSON.parse(properties.value.toString());
+      parsedProps = Property.toJson(properties);
       componentsApi
         .validateProperties(
           'observation',
@@ -104,7 +107,8 @@
           }
         });
     } catch (e) {
-      jsonError.value = t('observation.error.noValidJson');
+      console.log(e)
+      jsonError.value = t('observation.error.noValidJson') + ": " + e;
     }
   }
 
@@ -458,15 +462,10 @@
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
-          <Textarea
-            v-model="properties"
-            required
-            :placeholder="t('observation.placeholder.enterMainPurpose')"
-            :auto-resize="true"
-            style="width: 100%"
-            class="border-disabled"
-            :disabled="!editable"
-          ></Textarea>
+          <div v-for="(property, index) in properties" :key="index">
+            <StringPropertyInput v-if="property instanceof StringProperty" :property="property"></StringPropertyInput>
+            <IntegerPropertyInput v-if="property instanceof IntegerProperty" :property="property"></IntegerPropertyInput>
+          </div>
         </div>
       </div>
 
