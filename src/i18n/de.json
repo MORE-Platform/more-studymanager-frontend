@@ -57,14 +57,16 @@
       "data": "Daten",
       "participants": "Teilnehmer",
       "observations": "Datenerhebung",
-      "interventions": "Interventionen"
+      "interventions": "Interventionen",
+      "integration": "Integrationen"
     },
     "tabLink": {
       "overview": "Overview",
       "data": "Data",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions"
+      "interventions": "Interventions",
+      "integration": "Integrations"
     }
   },
 
@@ -363,6 +365,60 @@
     "placeholder": {
       "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
       "enterMainPurpose": "Fügen Sie die Hauptzielsetzung der Studie hinzu."
+    }
+  },
+
+  "integration": {
+    "singular": "Integration",
+    "plural": "Integrationen",
+    "props": {
+      "observationId": "Modul Id",
+      "observationTitle": "Datenerhebungsmodul",
+      "tokenId": "Token Id",
+      "tokenLabel": "Tokenname",
+      "token": "Token",
+      "created": "Erstellt"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Integration löschen",
+        "create": "Integration erstellen",
+        "tokenCopy": "Token kopieren"
+      },
+      "label": {
+        "description": "Ein Integrationsmodule ermöglicht es eine externe API an eine schon existierende Observation zu verlinken. Wähle jenes Datenerhebungsmodul, für welches Sie einen Token erstellen wollen. Über den Token können externe Datenmodule gekoppelt werden.",
+        "integrationTitle": "Integrationstitel",
+        "chooseObservation": "Wähle ein Datenerhebungsmodul",
+        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen.",
+        "copyToken": "Token kopieren",
+        "copySuccess": "Token wurde erfolgreich in die Zwischenablage kopiert."
+      },
+      "placeholder": {
+        "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
+        "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
+      },
+      "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
+      "msg": {
+        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",
+        "createdToken": "Bitte kopieren Sie Ihren Token und speichern sich diesen wo ab. Dieser wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren."
+      },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
+        "intro": "Sie sind im Begriff folgende Integration zu löschen:",
+        "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?"
+      }
+    },
+    "integrationList":{
+      "title": "Externe Datenintegration",
+      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmoduls verlinkt werden. Dieses sammelt und integriert durch diese definierte Daten.",
+      "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
+      "action": {
+        "add": "Integration hinzufügen"
+      }
+    },
+    "error": {
+      "addTokenLabel": "Geben Sie bitte einen Namen für Ihr Integrationsmodul ein.",
+      "selectObservation": "Wählen Sie bitte ein Datenerhebungsmodul aus, an das sie Ihr Integrationsmodul verlinken wollen."
     }
   },
 

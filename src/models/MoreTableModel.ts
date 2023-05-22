@@ -137,3 +137,16 @@ export interface MoreTableCollaboratorItem {
   email?: string;
   roles: Array<MoreTableChoice>;
 }
+
+export interface MoreIntegrationTableMap {
+  observationId: number;
+  observationTitle: string;
+  tokenId: number;
+  tokenLabel: string;
+  created: string;
+}
+
+export interface MoreIntegrationLink {
+  observationId: number;
+  tokenLabel: string;
+}
