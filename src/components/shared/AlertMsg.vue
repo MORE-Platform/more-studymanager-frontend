@@ -7,9 +7,15 @@
       type: String,
       default: '',
     },
+    // msg or alert
+    type: {
+      type: String,
+      default: 'msg',
+    },
+    // success or error
     severityType: {
-      type: undefined,
-      default: 'success',
+      type: String,
+      default: '',
     },
     message: {
       type: String,
@@ -43,7 +49,10 @@
 
 <template>
   <Message
-    :severity="severityType"
+    :severity="
+      type === 'msg' ? (severityType === 'success' ? 'success' : 'info') :
+       (severityType === 'error' ? 'error' : 'warn')
+    "
     class="message"
     :class="styleModifier"
     :style="showMsg ? 'opacity: 100%' : 'opacity: 0%'"

@@ -41,6 +41,8 @@
   <AlertMsg
     :show-msg="showMessage"
     :message="t('integration.dialog.label.copySuccess')"
+    type="msg"
+    severity-type="success"
     style-modifier="msgPosition"
     @on-msg-change="showMessage = false"
   />
