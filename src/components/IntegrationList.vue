@@ -10,7 +10,7 @@
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { useDialog } from 'primevue/usedialog';
   import {
-    MoreIntegrationCreate,
+    MoreIntegrationLink,
     MoreIntegrationTableMap,
     MoreTableAction,
     MoreTableFieldType,
@@ -251,7 +251,7 @@
     });
   }
 
-  async function createIntegration(integrationCreate: MoreIntegrationCreate) {
+  async function createIntegration(integrationCreate: MoreIntegrationLink) {
     await observationsApi
       .createToken(
         props.studyId,

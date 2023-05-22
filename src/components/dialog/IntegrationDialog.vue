@@ -79,7 +79,7 @@
 
 <template>
   <div class="dialog integration-dialog">
-    <div class="mb-4">
+    <div class="mb-2">
       <h6 class="mb-4">{{ $t('integration.dialog.label.description') }}</h6>
 
       <form
@@ -130,7 +130,9 @@
           />
         </div>
 
-        <div class="buttons col-start-0 col-span-8 mt-8 justify-end text-right">
+        <div
+          class="buttons col-start-0 col-span-8 mt-8 justify-end text-right align-bottom"
+        >
           <Button class="btn-gray" @click="cancel()">{{
             $t('global.labels.cancel')
           }}</Button>
