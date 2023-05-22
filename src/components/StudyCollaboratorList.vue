@@ -336,7 +336,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :editable-access="editAccess"
-      :editable="(data: collaboratorsList) => {return data.uid !== userStore.user?.uid && editAccess}"
+      :editable="(data: MoreTableCollaboratorItem) => {return data.uid !== userStore.user?.uid && editAccess}"
       :edit-access-roles="editAccessRoles"
       :user-study-roles="props.userRoles"
       empty-message="No collaborators added yet"
