@@ -41,6 +41,7 @@
   <AlertMsg
     :show-msg="showMessage"
     :message="t('integration.dialog.label.copySuccess')"
+    style-modifier="msgPosition"
     @on-msg-change="showMessage = false"
   />
 </template>
@@ -55,5 +56,8 @@
   }
   .ml-2 {
     margin-left: 0.5rem;
+  }
+  .msgPosition {
+    top: 200%;
   }
 </style>

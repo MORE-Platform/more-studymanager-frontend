@@ -45,6 +45,7 @@
   <Message
     :severity="severityType"
     class="message"
+    :class="styleModifier"
     :style="showMsg ? 'opacity: 100%' : 'opacity: 0%'"
     >{{ message }}</Message
   >
@@ -53,7 +54,7 @@
 <style scoped lang="postcss">
   .message {
     position: fixed;
-    top: 200%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     transition: opacity ease-in-out 0.5s;
