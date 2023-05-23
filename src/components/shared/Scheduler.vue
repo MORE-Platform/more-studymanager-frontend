@@ -271,7 +271,7 @@
         dtend: e.toISOString(),
         rrule: undefined,
       };
-      
+
       if (repeatFreq.value) {
         returnEvent.rrule = {
           freq: repeatFreq.value,
