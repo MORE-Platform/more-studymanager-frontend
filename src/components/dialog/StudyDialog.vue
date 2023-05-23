@@ -26,9 +26,19 @@
   }) as Ref<Study>;
 
   const start = ref(
-    study.plannedStart ? new Date(study.plannedStart) : new Date()
+    study
+      ? study.plannedStart
+        ? new Date(study.plannedStart)
+        : new Date()
+      : new Date()
   );
-  const end = ref(study.plannedEnd ? new Date(study.plannedEnd) : new Date());
+  const end = ref(
+    study
+      ? study.plannedEnd
+        ? new Date(study.plannedEnd)
+        : new Date()
+      : new Date()
+  );
 
   const languages = [
     { name: 'German', value: 'de' },
@@ -127,6 +137,7 @@
         <Calendar
           v-model="start"
           :name="'start'"
+          :min-date="study.plannedStart ? new Date(study.plannedStart as string) : new Date()"
           placeholder="dd/mm/yyyy"
           date-format="dd/mm/yy"
           autocomplete="off"

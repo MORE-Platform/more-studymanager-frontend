@@ -256,20 +256,21 @@
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-      <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+      <div class="col-start-0 col-span-8" :class="editable ? '' : 'pb-4'">
         <h5 class="mb-1">
           {{ $t('observation.dialog.label.observationTitle') }}*
         </h5>
         <div v-if="getError('title')" class="error mb-4">
           {{ getError('title') }}
         </div>
-        <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+        <div class="col-start-0 col-span-8" :class="editable ? '' : 'pb-4'">
           <InputText
             v-model="title"
             type="text"
             required
             :placeholder="$t('study.placeholder.titleInput')"
             style="width: 100%"
+            class="w-full"
             :disabled="!editable"
           ></InputText>
         </div>

@@ -106,11 +106,24 @@
     ]);
 
   const start: Ref<Date> = ref(
-    scheduler.dtstart ? new Date(scheduler.dtstart) : new Date()
+    scheduler.dtstart
+      ? new Date(scheduler.dtstart)
+      : new Date(studyStore.study.plannedStart as string) > new Date()
+      ? new Date(studyStore.study.plannedStart as string)
+      : new Date()
   );
   const end: Ref<Date> = ref(
-    scheduler.dtend ? new Date(scheduler.dtend) : new Date()
+    scheduler.dtend
+      ? new Date(scheduler.dtend)
+      : new Date(studyStore.study.plannedStart as string) > new Date()
+      ? new Date(studyStore.study.plannedStart as string)
+      : new Date()
   );
+
+  start.value.setHours(0);
+  end.value.setHours(23);
+  end.value.setMinutes(59);
+
   const allDayChecked: Ref<boolean> = ref(false);
   const repeatChecked: Ref<boolean> = ref(false);
 
