@@ -18,6 +18,7 @@
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
+  import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -393,6 +394,10 @@
             :auto-resize="true"
             style="width: 100%"
           ></Textarea>
+        </div>
+
+        <div class="col-start-0 col-span-6">
+          <InterventionTriggerConditions />
         </div>
       </div>
 
