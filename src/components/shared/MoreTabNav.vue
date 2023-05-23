@@ -41,12 +41,6 @@
       access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer],
     },
     {
-      title: t('studyNavigation.tabs.data'),
-      name: t('studyNavigation.tabLink.data'),
-      params: { studyId: props.studyId },
-      access: [StudyRole.Viewer, StudyRole.Admin],
-    },
-    {
       title: t('studyNavigation.tabs.participants'),
       name: t('studyNavigation.tabLink.participants'),
       params: { studyId: props.studyId },
@@ -59,10 +53,22 @@
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
+      title: t('studyNavigation.tabs.integration'),
+      name: t('studyNavigation.tabLink.integration'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Admin, StudyRole.Operator],
+    },
+    {
       title: t('studyNavigation.tabs.interventions'),
       name: t('studyNavigation.tabLink.interventions'),
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
+    },
+    {
+      title: t('studyNavigation.tabs.data'),
+      name: t('studyNavigation.tabLink.data'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Viewer, StudyRole.Admin],
     },
   ] as Tab[];
 

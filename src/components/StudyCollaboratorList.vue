@@ -24,10 +24,13 @@
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import { useUserStore } from '../stores/userStore';
 
   const dialog = useDialog();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
+  const userStore = useUserStore();
+  userStore.getUser();
 
   const props = defineProps({
     studyId: {
@@ -105,7 +108,9 @@
       id: 'deleteCollab',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
-      visible: () => editAccess,
+      visible: (data: MoreTableCollaboratorItem) => {
+        return data.uid !== userStore.user?.uid && editAccess;
+      },
       confirmDeleteDialog: {
         header: t('studyCollaborator.dialog.header.delete'),
         message: t('studyCollaborator.dialog.msg.delete'),
@@ -331,6 +336,7 @@
       :row-actions="rowActions"
       :table-actions="tableActions"
       :editable-access="editAccess"
+      :editable="(data: MoreTableCollaboratorItem) => {return data.uid !== userStore.user?.uid && editAccess}"
       :edit-access-roles="editAccessRoles"
       :user-study-roles="props.userRoles"
       empty-message="No collaborators added yet"

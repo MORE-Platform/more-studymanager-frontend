@@ -129,22 +129,38 @@
     }
   }
 
-  const errors: Ref<Array<any>> = ref([]);
+  const errors: Ref<Array<MoreTableChoice>> = ref([]);
   const schedulerError: Ref<boolean> = ref(false);
 
   function checkRequiredFields() {
     errors.value = [];
     schedulerError.value = false;
     if (!title.value) {
-      errors.value.push(t('observation.error.addTitle'));
+      errors.value.push({
+        label: 'title',
+        value: t('observation.error.addTitle'),
+      });
     }
     if (JSON.stringify(scheduler.value) === '{}') {
-      errors.value.push(t('observation.error.addScheduler'));
+      errors.value.push({
+        label: 'scheduler',
+        value: t('observation.error.addSchedulerMsg'),
+      });
       schedulerError.value = true;
     }
     if (!participantInfo.value) {
-      errors.value.push(t('observation.error.addParticipantInfo'));
+      errors.value.push({
+        label: 'participantInfo',
+        value: t('observation.error.addParticipantInfo'),
+      });
     }
+  }
+
+  function getError(label: string): string | null | undefined {
+    const item = errors.value.find((el) =>
+      el.label === label ? el.value : ''
+    );
+    return item?.value;
   }
 
   function cancel() {
@@ -244,37 +260,30 @@
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-      <div v-if="errors.length && editable" class="error col-span-8">
-        <span class="font-medium">
-          {{ $t('study.dialog.error.missedFieldsMsg') }}
-        </span>
-        <div>
-          <span v-for="(error, index) in errors" :key="index">
-            {{ error }}
-            <span v-if="index < errors.length - 1" class="mr-0.5 inline"
-              >,</span
-            >
-          </span>
+      <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+        <h5 class="mb-1">
+          {{ $t('observation.singular') }} {{ $t('study.props.title') }}*
+        </h5>
+        <div v-if="getError('title')" class="error mb-4">
+          {{ getError('title') }}
+        </div>
+        <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+          <InputText
+            v-model="title"
+            type="text"
+            required
+            :placeholder="$t('study.placeholder.titleInput')"
+            style="width: 100%"
+            :disabled="!editable"
+          ></InputText>
         </div>
       </div>
-      <div class="col-start-0 col-span-2" :class="editable ? '' : 'pb-4'">
-        <h5>{{ $t('observation.singular') }} {{ $t('study.props.title') }}</h5>
-      </div>
-      <div class="col-span-6 col-start-3" :class="editable ? '' : 'pb-4'">
-        <InputText
-          v-model="title"
-          type="text"
-          required
-          :placeholder="$t('study.placeholder.titleInput')"
-          style="width: 100%"
-          :disabled="!editable"
-        ></InputText>
-      </div>
+
       <div
         class="col-start-0 col-span-8 grid grid-cols-8"
         :class="editable ? '' : 'scheduler-not-editable pb-4'"
       >
-        <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}</h5>
+        <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
         <div
           class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
         >
@@ -410,9 +419,10 @@
               </div>
             </div>
             <div v-else class="text-gray-400">
-              <span v-if="schedulerError" class="error"
-                >{{ $t('observation.error.addSchedulerMsg') }}
-              </span>
+              <div v-if="getError('scheduler')" class="error mb-4">
+                {{ getError('scheduler') }}
+              </div>
+
               <span v-else>{{
                 $t('observation.placeholder.emptySchedulerMsg')
               }}</span>
@@ -448,7 +458,12 @@
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8">
-        <h5 class="mb-2">{{ $t('study.props.participantInfo') }}</h5>
+        <h5 :class="getError('participantInfo') ? 'mb-1' : 'mb-2'">
+          {{ $t('study.props.participantInfo') }}*
+        </h5>
+        <div v-if="getError('participantInfo')" class="error mb-4">
+          {{ getError('participantInfo') }}
+        </div>
         <Textarea
           v-model="participantInfo"
           required
@@ -491,7 +506,7 @@
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
-        <Button class="p-button-secondary" @click="cancel()">
+        <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>
         </Button>

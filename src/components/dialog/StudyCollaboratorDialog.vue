@@ -60,11 +60,12 @@
       option-label="label"
       :placeholder="placeholder"
       :show-toggle-all="false"
+      :class="'w-1/4'"
     >
     </MultiSelect>
 
     <div class="buttons mt-8 justify-end text-right">
-      <Button class="p-button-secondary" @click="cancel()">{{
+      <Button class="btn-gray" @click="cancel()">{{
         $t('global.labels.cancel')
       }}</Button>
       <Button @click="save()">{{ $t('global.labels.save') }}</Button>

@@ -13,7 +13,7 @@
       "end": "Ende",
       "confirm": "Bestätigen",
       "id": "Id",
-      "clone": "Clonen",
+      "clone": "Klonen",
       "description": "Beschreibung",
       "edit": "Bearbeiten",
       "setPause": "Pausieren",
@@ -49,7 +49,7 @@
   "studyNavigation": {
     "accessDialog": {
       "header": "Zugriff verweigert",
-      "permissionWarningMsg": ". Bitte kontaktiere deinen Study Administrator, wenn du Zugang zu diesem Abschnitt benötigst.",
+      "permissionWarningMsg": ". Bitte kontaktiere deinen Studien-Administrator, wenn du Zugang zu diesem Abschnitt benötigst.",
       "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: "
     },
     "tabs": {
@@ -57,14 +57,16 @@
       "data": "Daten",
       "participants": "Teilnehmer",
       "observations": "Datenerhebung",
-      "interventions": "Interventionen"
+      "interventions": "Interventionen",
+      "integration": "Integrationen"
     },
     "tabLink": {
       "overview": "Overview",
       "data": "Data",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions"
+      "interventions": "Interventions",
+      "integration": "Integrations"
     }
   },
 
@@ -88,7 +90,7 @@
     },
     "roles": {
       "admin": "Studien-Administrator",
-      "operator": "Studien-Operateur",
+      "operator": "Studien-Operator",
       "viewer": "Studien-Beobachter"
     },
     "statusChange": {
@@ -99,21 +101,21 @@
       "changeMsg": {
         "toActive":{
           "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
-          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglich so das aktive aufzeichnen von Daten. Die Teilnehmer/innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen.",
+          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
         },
         "toPaused":{
           "intro": "Sie sind im Begriff den Studienstatus auf 'PAUSIERT' zu setzen.",
-          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer/innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird.",
+          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird.",
           "confirm": "Möchten Sie den Studienstatus wirklich auf 'PAUSIERT' setzen?"
         },
         "pausedToActive": {
-          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf aktiv gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer/innen können sich nun wieder aktiv an der Studie beteiligen.",
+          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen.",
           "confirm": "Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
         },
         "toCompleted":{
           "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
-          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer/innen ist es ab diesem Zeitpunkt nicht mehr möglich neue Daten einzubringen oder weiter teilzunehmen.",
+          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich neue Daten einzubringen oder weiter teilzunehmen.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
         }
       },
@@ -126,25 +128,25 @@
       }
     },
     "statusStrings": {
-      "paused": "pausiert",
-      "active": "aktiv",
-      "draft": "entwerfen",
-      "closed": "beendet"
+      "paused": "Pausiert",
+      "active": "Aktiv",
+      "draft": "Entwurf",
+      "closed": "Beendet"
     },
     "error": {
-      "addTitle": "Studientitel",
-      "addConsentInfo": "Berechtigungsinformation",
-      "addParticipantInfo": "Teilnehmerinformation"
+      "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
+      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu."
     },
     "placeholder": {
-      "titleInput": "Bitte gib einen kurzen Titel ein.",
+      "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
       "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
-      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern auf der App angezeigt.",
-      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern als Beschreibungstext für die Berechtigungsinformation in der App angezeigt.",
+      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
+      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
       "selectLanguage": "Sprache auswählen",
       "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
       "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
-      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berrechtigungsinformation der Studie hinzu."
+      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu."
     },
     "dialog": {
       "header":{
@@ -159,16 +161,22 @@
         "confirm": "Möchten Sie die Studie wirklich löschen?"
       },
       "msg": {
-        "urlCopied": "Die URL der Studie '{title}' (ID: {studyId}) wurde in die Zwischenablage kopiert."
+        "urlCopied": "Die URL der Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert."
       },
-      "description": "Fügen Sie die Grundbeschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+      "description": {
+        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+        "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist den Studien-Mitarbeitern zugänglich.",
+        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Diese sollte den Teilnehmer:innen eine kurze Beschreibung über die Studie und evtl. ihren Aufgaben preisgeben.",
+        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt und muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen. Es soll generelle Informationen über die aufzuzeichnenden Daten geben."
+
+      },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
       }
     },
     "studyList": {
       "title": "Übersicht meiner Studien",
-      "description": "Die unten angeführte Liste zeigt die Liste all Ihrer Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
+      "description": "Die unten angeführte Liste zeigt alle Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
       "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
       "action": {
         "addStudy": "Neue Studie hinzufügen",
@@ -189,7 +197,7 @@
         "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
         },
       "deleteMsg": {
-        "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie.",
+        "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie.",
         "intro": "Sie sind kurz davor folgende Studiengruppe zu löschen:",
         "confirm": "Möchten Sie die Studiengruppe wirklich löschen?"
       }
@@ -266,11 +274,11 @@
     },
     "dialog": {
       "header": {
-        "delete": "Teilnehmer/in löschen",
+        "delete": "Teilnehmer:in löschen",
         "deleteWithData": "Daten löschen",
         "edit": "Teilnehmer bearbeiten",
         "create": "Teilnehmer hinzufügen",
-        "distribute": "Teilnehmer/innen automatisch Gruppen zuweisen"
+        "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen"
       },
       "msg": {
         "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
@@ -285,7 +293,7 @@
         "intro": "Sie sind kurz davor folgende/n Teilnehmer/in zu löschen:",
         "confirm": "Möchten Sie diese/n Teilnehmer/in wirklich löschen?",
         "deleteWithoutData": "Löschen",
-        "deleteWithData": "Inkl. Daten löschen"
+        "deleteWithData": "Inklusive Daten löschen"
       }
     },
     "participantsList": {
@@ -324,8 +332,8 @@
     },
     "observationList": {
       "title": "Datenerhebung",
-      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln.",
-      "emptyListMsg": "Verwalten oder fügen Sie Datenerhebungsmodul hinzu. Diese werden hier angezeigt.",
+      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln. Das Datenerhebungsmodul kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt das Modul für alle Gruppen.",
+      "emptyListMsg": "Verwalten oder fügen Sie ein Datenerhebungsmodul hinzu. Diese werden hier angezeigt.",
       "action": {
         "add": "Datenerhebungsmodul hinzufügen"
       }
@@ -333,7 +341,7 @@
     "dialog": {
       "header": {
         "delete": "Datenerhebungsmodul löschen",
-        "clone": "Datenerhebungsmodul clonen",
+        "clone": "Datenerhebungsmodul klonen",
         "create": "Datenerhebungsmodul hinzufügen",
         "edit": "Datenerhebungsmodul bearbeiten",
         "view": "Datenerhebungsmodul Details"
@@ -348,10 +356,10 @@
       }
     },
     "error":  {
-      "noValidJson": "Die eingegeben Settingseigenschaften konnten nicht verarbeitet werden: Kein valides JSON.",
-      "addTitle":  "Title des Aufzeichnungsmodul",
+      "noValidJson": "Die eingegeben Eigenschaften konnten nicht verarbeitet werden: Kein valides JSON.",
+      "addTitle":  "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addScheduler": "Planer",
-      "addParticipantInfo": "Teilnehmerinformation",
+      "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein."
     },
     "placeholder": {
@@ -360,21 +368,75 @@
     }
   },
 
+  "integration": {
+    "singular": "Integration",
+    "plural": "Integrationen",
+    "props": {
+      "observationId": "Modul Id",
+      "observationTitle": "Datenerhebungsmodul",
+      "tokenId": "Token Id",
+      "tokenLabel": "Tokenname",
+      "token": "Token",
+      "created": "Erstellt"
+    },
+    "dialog": {
+      "header": {
+        "delete": "Integration löschen",
+        "create": "Integration erstellen",
+        "tokenCopy": "Token kopieren"
+      },
+      "label": {
+        "description": "Ein Integrationsmodule ermöglicht es eine externe API an eine schon existierende Observation zu verlinken. Wähle jenes Datenerhebungsmodul, für welches Sie einen Token erstellen wollen. Über den Token können externe Datenmodule gekoppelt werden.",
+        "integrationTitle": "Integrationstitel",
+        "chooseObservation": "Wähle ein Datenerhebungsmodul",
+        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen.",
+        "copyToken": "Token kopieren",
+        "copySuccess": "Token wurde erfolgreich in die Zwischenablage kopiert."
+      },
+      "placeholder": {
+        "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
+        "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
+      },
+      "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
+      "msg": {
+        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",
+        "createdToken": "Bitte kopieren Sie Ihren Token und speichern sich diesen wo ab. Dieser wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren."
+      },
+      "deleteMsg": {
+        "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
+        "intro": "Sie sind im Begriff folgende Integration zu löschen:",
+        "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?"
+      }
+    },
+    "integrationList":{
+      "title": "Externe Datenintegration",
+      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmoduls verlinkt werden. Dieses sammelt und integriert durch diese definierte Daten.",
+      "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
+      "action": {
+        "add": "Integration hinzufügen"
+      }
+    },
+    "error": {
+      "addTokenLabel": "Geben Sie bitte einen Namen für Ihr Integrationsmodul ein.",
+      "selectObservation": "Wählen Sie bitte ein Datenerhebungsmodul aus, an das sie Ihr Integrationsmodul verlinken wollen."
+    }
+  },
+
   "intervention": {
     "singular": "Intervention",
     "plural": "Interventionen",
     "props": {
       "trigger": "Auslöser",
-      "action": "Handlung",
-      "actions": "Handlungen"
+      "action": "Aktion",
+      "actions": "Aktionen"
     },
     "dialog":  {
       "title": "Intervention",
-      "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Handlung für Ihre Intervention hinzu.",
+      "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Aktion für Ihre Intervention hinzu.",
       "header": {
         "delete": "Intervention löschen",
         "create": "Intervention erstellen",
-        "clone": "Intervention clonen",
+        "clone": "Intervention klonen",
         "edit": "Intervention bearbeiten",
         "view": "Interventiondetails"
       },
@@ -389,22 +451,22 @@
     },
     "interventionList": {
       "title": "Interventionen",
-      "description": "Eine Intervention stellt sich aus einer Auslösungsbedingung mit mindestens einer darauf folgender Handlung zusammen.",
+      "description": "Eine Intervention stellt sich aus einer Auslösungsbedingung mit mindestens einer darauf folgender Aktion zusammen.",
       "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
       "action": {
         "add": "Intervention hinzufügen"
       }
     },
     "error":  {
-      "addTitle": "Titel der Intervention",
-      "addTriggerTypeConfig": "Auslösertyp und Konfiguration",
-      "addAction": "Mindestens eine Handlung"
+      "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
+      "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu."
     },
     "placeholder": {
       "noDescription": "Keine Beschreibung verfügbar",
       "trigger": "Wähle einen Auslösertyp",
 
-      "chooseAction": "Wähle eine Handlung",
+      "chooseAction": "Wähle eine Aktion",
       "emptyScheduler": "Stellen Sie einen Zeitplan für Ihre Intervention bereit."
     },
     "description": {
@@ -436,7 +498,7 @@
     },
     "info": {
       "example": "Beispiel: 0 12 ? * * wird jeden Tag um 12:00 ausgelöst.",
-      "generalInfo": "Füge eine Nummer, eine Liste von Nummern (e.g. 1,2,3) order einen Bereich (e.g. 12-14) ein.",
+      "generalInfo": "Füge eine Nummer, eine Liste von Nummern (z.B. 1,2,3) oder einen Bereich (z.B. 12-14) ein.",
       "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
@@ -537,14 +599,19 @@
       },
       "event": {
         "first": "Erstes Ereignis",
-        "allDay": "Ganztags"
+        "allDay": "Ganztags",
+        "setDates": "Setze den Zeitrahmen",
+        "setDatesDesc": "Setze das erste Auftreten des Datenerhebungsmoduls. Dieser Zeitrahmen kann von einem einzelnen Tag bis zu einer beliebigen Zeitspanne gesetzt werden. Das Datenerhebungsmodul ist in dieser Zeitspanne aktiv und sammelt Daten. Beachte, dass die gegebene Zeitspanne (falls ganztags nicht angehakt ist) die Startzeit am ersten und die Endzeit am letzten Tag der Aufzeichnung beschreibt.",
+        "repeat": "Wiederhole die oben definierte Zeitspanne",
+        "repeatDesc": "Wenn Sie die oben gesetzte Zeitspanne wiederholen, können Sie diese bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird. Wenn Sie z.B. eine Datenerhebung täglich wiederholen wollen, müssen Sie beide Datumsangaben auf denselben Tag setzen, und eine tägliche Wiederholung auswählen. Die Daten werden dann täglich, bis zur angegebenen Wiederholungsanzahl der Tage, zur selben ausgewählten Zeit erfasst. "
+
       }
     },
     "placeholder": {
       "chooseMonth": "Monat auswählen",
       "enterDayOfMonth": "Tag des Monats einfügen",
-      "chooseGeneralInterval": "Wähle ein Interval",
-      "chooseDayInterval": "Wähle ein Tagesinterval",
+      "chooseGeneralInterval": "Wähle ein Intervall",
+      "chooseDayInterval": "Wähle ein Tagesintervall",
       "chooseRepetitionEnd": "Wähle das Wiederholungsende",
       "enterRepeatCount": "Füge die Anzahl der Wiederholungen ein"
     }
