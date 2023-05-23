@@ -155,13 +155,19 @@
         "delete": "Delete Study",
         "urlCopied": "Copied Study Id"
       },
+      "label": {
+        "studyTitle": "Study title",
+        "studyStart": "Study start",
+        "studyEnd": "Study end"
+      },
       "deleteMsg": {
         "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date.",
         "intro": "You are about to delete the following study:",
         "confirm": "Are you sure you want to delete your study?"
       },
       "msg": {
-        "urlCopied": "URL for '{title} (Id: {studyId})'  was copied to your clipboard."
+        "urlCopied": "URL for '{title} (Id: {studyId})'  was copied to your clipboard." ,
+        "delete": "A deleted study can't be restored. Are you sure you want to delete your study?"
       },
       "description": {
         "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
@@ -344,6 +350,9 @@
         "edit": "Edit observation",
         "view": "Observation Details"
       },
+      "label": {
+        "observationTitle": "Observation title"
+      },
       "msg": {
         "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ..."
       },
@@ -436,6 +445,9 @@
         "clone": "Clone Intervention",
         "edit": "Edit Intervention",
         "view": "Intervention Details"
+      },
+      "label": {
+        "interventionTitle": "Intervention title"
       },
       "msg": {
         "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."

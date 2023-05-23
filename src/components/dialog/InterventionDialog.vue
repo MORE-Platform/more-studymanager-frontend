@@ -314,9 +314,7 @@
       @submit.prevent="save()"
     >
       <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
-        <h5>
-          {{ $t('intervention.singular') }} {{ $t('study.props.title') }}*
-        </h5>
+        <h5>{{ $t('intervention.dialog.label.interventionTitle') }}*</h5>
         <div v-if="getError('title')" class="error col-span-8 mb-2">
           {{ getError('title') }}
         </div>

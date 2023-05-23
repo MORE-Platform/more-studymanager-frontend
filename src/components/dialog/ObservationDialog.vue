@@ -258,7 +258,7 @@
     >
       <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
         <h5 class="mb-1">
-          {{ $t('observation.singular') }} {{ $t('study.props.title') }}*
+          {{ $t('observation.dialog.label.observationTitle') }}*
         </h5>
         <div v-if="getError('title')" class="error mb-4">
           {{ getError('title') }}
@@ -396,10 +396,12 @@
                   >{{ $t('scheduler.labels.repetitionEnd') }}:</span
                 >
                 {{ $t('scheduler.labels.after') }}
-                <span v-if="scheduler.rrule?.byday?.length">{{
-                  scheduler.rrule.count / scheduler.rrule.byday.length
-                }}</span>
-                <span v-else>{{ scheduler.rrule.count }}</span>
+                <span v-if="scheduler.rrule?.byday?.length">
+                  {{
+                    scheduler.rrule.count / scheduler.rrule.byday.length
+                  }}</span
+                >
+                <span v-else> {{ scheduler.rrule.count }}</span>
                 <span v-if="scheduler.rrule.freq">
                   {{ getFrequencyLabel(scheduler.rrule.freq) }}
                 </span>
