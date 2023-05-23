@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { inject, onUpdated, ref, Ref } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
@@ -106,11 +106,24 @@
     ]);
 
   const start: Ref<Date> = ref(
-    scheduler.dtstart ? new Date(scheduler.dtstart) : new Date()
+    scheduler.dtstart
+      ? new Date(scheduler.dtstart)
+      : new Date(studyStore.study.plannedStart as string) > new Date()
+      ? new Date(studyStore.study.plannedStart as string)
+      : new Date()
   );
   const end: Ref<Date> = ref(
-    scheduler.dtend ? new Date(scheduler.dtend) : new Date()
+    scheduler.dtend
+      ? new Date(scheduler.dtend)
+      : new Date(studyStore.study.plannedStart as string) > new Date()
+      ? new Date(studyStore.study.plannedStart as string)
+      : new Date()
   );
+
+  start.value.setHours(0);
+  end.value.setHours(23);
+  end.value.setMinutes(59);
+
   const allDayChecked: Ref<boolean> = ref(false);
   const repeatChecked: Ref<boolean> = ref(false);
 
@@ -284,6 +297,12 @@
     }
   }
 
+  onUpdated(() => {
+    if (end.value < start.value) {
+      end.value = start.value;
+    }
+  });
+
   function cancel() {
     dialogRef.value.close();
   }
@@ -318,6 +337,8 @@
         hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
+        :min-date="new Date(studyStore.study.plannedStart as string)"
+        :max-date="new Date(studyStore.study.plannedEnd as string)"
         autocomplete="off"
         style="width: 100%"
         :class="'col-span-5'"
@@ -329,6 +350,8 @@
         hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
+        :min-date="start"
+        :max-date="new Date(studyStore.study.plannedEnd as string)"
         autocomplete="off"
         style="width: 100%"
         :class="'col-span-5'"

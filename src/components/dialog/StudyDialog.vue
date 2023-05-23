@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { inject, onUpdated, ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
@@ -25,8 +25,20 @@
     participantInfo: study.participantInfo,
   }) as Ref<Study>;
 
-  const start = ref(study.start ? new Date(study.start) : new Date());
-  const end = ref(study.end ? new Date(study.end) : new Date());
+  const start = ref(
+    study
+      ? study.plannedStart
+        ? new Date(study.plannedStart)
+        : new Date()
+      : new Date()
+  );
+  const end = ref(
+    study
+      ? study.plannedEnd
+        ? new Date(study.plannedEnd)
+        : new Date()
+      : new Date()
+  );
 
   const languages = [
     { name: 'German', value: 'de' },
@@ -68,6 +80,12 @@
     return item?.value;
   }
 
+  onUpdated(() => {
+    if (end.value < start.value) {
+      end.value = start.value;
+    }
+  });
+
   function cancel() {
     dialogRef.value.close();
   }
@@ -86,7 +104,7 @@
     >
       <div class="col-start-0 col-span-6">
         <h5 :class="getError('title') ? '' : 'mb-2'">
-          {{ $t('study.singular') }} {{ $t('study.props.title') }}*
+          {{ $t('study.dialog.label.studyTitle') }}*
         </h5>
         <div v-if="getError('title')" class="error col-span-8 mb-2">
           {{ getError('title') }}
@@ -115,12 +133,11 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">
-          {{ $t('study.singular') }} {{ $t('global.labels.start') }}*
-        </h5>
+        <h5 class="mb-2">{{ $t('study.dialog.label.studyStart') }}*</h5>
         <Calendar
           v-model="start"
           :name="'start'"
+          :min-date="study.plannedStart ? new Date(study.plannedStart as string) : new Date()"
           placeholder="dd/mm/yyyy"
           date-format="dd/mm/yy"
           autocomplete="off"
@@ -128,15 +145,14 @@
         />
       </div>
       <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">
-          {{ $t('study.singular') }} {{ $t('global.labels.end') }}*
-        </h5>
+        <h5 class="mb-2">{{ $t('study.dialog.label.studyEnd') }}*</h5>
         <Calendar
           v-model="end"
           :name="'end'"
           placeholder="dd/mm/yyyy"
           date-format="dd/mm/yy"
           autocomplete="off"
+          :min-date="start"
           style="width: 100%"
         />
       </div>
