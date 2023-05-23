@@ -15,11 +15,16 @@ import { createPinia } from 'pinia';
 import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
+import { useUiConfigApi } from './composable/useApi';
 
+const { uiConfigApi } = useUiConfigApi();
+
+const uiConfig = await uiConfigApi.getFrontendConfig().then((r) => r.data);
+console.log('Retrieved UI-Config from remote server:', uiConfig);
 const authService = new AuthService({
-  url: 'https://auth.more.redlink.io',
-  realm: 'Auth-Client-Test',
-  clientId: 'oauth2-pkce-client',
+  url: uiConfig.auth.server || 'https://auth.more.redlink.io',
+  realm: uiConfig.auth.realm || 'Auth-Client-Test',
+  clientId: uiConfig.auth.clientId || 'oauth2-pkce-client',
 });
 const loggedIn = await authService.init();
 if (!loggedIn) {
@@ -43,6 +48,7 @@ useLoader().activateLoadingInterceptor();
 const pinia = createPinia();
 
 const app = createApp(App);
+app.provide('uiConfig', uiConfig);
 app.provide('authService', authService);
 
 app.use(i18n);
