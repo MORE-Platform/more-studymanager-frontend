@@ -10,21 +10,41 @@ import DialogService from 'primevue/dialogservice';
 // Router
 import { Router } from './router';
 import AuthService from './service/AuthService';
-import axios from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { createPinia } from 'pinia';
 import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
 import { useUiConfigApi } from './composable/useApi';
+import { FrontendConfiguration } from './generated-sources/openapi';
 
 const { uiConfigApi } = useUiConfigApi();
 
-const uiConfig = await uiConfigApi.getFrontendConfig().then((r) => r.data);
-console.log('Retrieved UI-Config from remote server:', uiConfig);
+const uiConfig = await uiConfigApi
+  .getFrontendConfig()
+  .then((r: AxiosResponse<FrontendConfiguration>) => {
+    console.log('Retrieved UI-Config from remote server:', r.data);
+    return r.data;
+  })
+  .catch((err: AxiosError) => {
+    console.warn(
+      'Could not retrieve UI-Config from remote server, using default fallback:',
+      err.message
+    );
+    return {
+      title: 'Unknown Legacy Backend',
+      auth: {
+        server: 'https://auth.more.redlink.io',
+        realm: 'Auth-Client-Test',
+        clientId: 'oauth2-pkce-client',
+      },
+    } as FrontendConfiguration;
+  });
+
 const authService = new AuthService({
-  url: uiConfig.auth.server || 'https://auth.more.redlink.io',
-  realm: uiConfig.auth.realm || 'Auth-Client-Test',
-  clientId: uiConfig.auth.clientId || 'oauth2-pkce-client',
+  url: uiConfig.auth.server,
+  realm: uiConfig.auth.realm,
+  clientId: uiConfig.auth.clientId,
 });
 const loggedIn = await authService.init();
 if (!loggedIn) {
