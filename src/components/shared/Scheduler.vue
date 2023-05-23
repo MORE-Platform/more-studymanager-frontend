@@ -121,7 +121,7 @@
   );
 
   if (scheduler.dtstart === undefined && scheduler.dtend === undefined) {
-    start.value.setHours(0);
+    start.value.setHours(0, 0, 0);
     end.value.setHours(23, 59, 59);
   }
 
