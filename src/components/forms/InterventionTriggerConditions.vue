@@ -13,6 +13,8 @@
   import useLoader from '../../composable/useLoader';
   import InterventionTriggerConditionTable from './InterventionTriggerConditionTable.vue';
   import { ref, Ref } from 'vue';
+  import Dropdown from 'primevue/dropdown';
+  import Button from 'primevue/button';
 
   const { componentsApi } = useComponentsApi();
   const { t } = useI18n();
@@ -42,18 +44,21 @@
           observationProperty: 'x',
           operator: '>',
           propertyValue: '75',
+          editMode: false,
         },
         {
           observationType: 'acc-mobile-observation',
           observationProperty: 'y',
           operator: '=',
           propertyValue: '23',
+          editMode: false,
         },
         {
           observationType: 'acc-mobile-observation',
           observationProperty: 'x',
           operator: '=',
           propertyValue: '23',
+          editMode: false,
         },
       ],
     },
@@ -65,18 +70,21 @@
           observationProperty: 'bpm',
           operator: '>',
           propertyValue: '150',
+          editMode: false,
         },
         {
           observationType: 'gps-mobile-observation',
           observationProperty: 'lat',
           operator: '=',
           propertyValue: '47.807020',
+          editMode: false,
         },
         {
           observationType: 'gps-mobile-observation',
           observationProperty: 'long',
           operator: '=',
           propertyValue: '13.046940',
+          editMode: false,
         },
       ],
     },
@@ -84,15 +92,7 @@
 
   const triggerConditions: Ref<any> = ref(triggerConditionTest);
 
-  async function getFactories() {
-    return componentsApi
-      .listComponents('observation')
-      .then((response: any) => response.data);
-  }
-  const factories: ComponentFactory[] = await getFactories();
-  console.log(factories);
-
-  const triggerConditionColumns: MoreTableColumn[] = [
+  const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
       field: 'observationType',
       header: 'Observation Property',
@@ -113,33 +113,51 @@
       header: 'Property Value',
       editable: true,
     },
-  ];
+  ]);
 
-  const rowActions: MoreTableAction[] = [
-    {
-      id: 'delete',
-      label: t('global.labels.delete'),
-      icon: 'pi pi-trash',
-      visible: () => true,
-    },
-    {
-      id: 'addCondition',
-      label: 'Condition',
-      icon: 'pi pi-plus',
-      visible: () => true,
-    },
-  ];
-
-  function execute(action: any) {
-    switch (action.id) {
-      case 'delete':
-        return console.log('delete');
-      case 'addConditions':
-        return console.log('addConditions');
-    }
+  function addTriggerGroup(groupIndex: number) {
+    setEditModeFalse();
+    triggerConditions.value.push({
+      nextGroupCondition: undefined,
+      parameter: [
+        {
+          observationType: '',
+          observationProperty: '',
+          operator: '',
+          propertyValue: '',
+          editMode: true,
+        },
+      ],
+    });
+    triggerConditions.value[groupIndex].nextGroupCondition = 'and';
   }
 
-  function addTriggerGroup() {}
+  function setEditModeFalse() {
+    triggerConditions.value.forEach((item: any) =>
+      item.parameter.forEach((param) => (param.editMode = false))
+    );
+  }
+
+  function toggleRowEdit(item: any) {
+    setEditModeFalse();
+    triggerConditions.value[item.groupIndex].parameter[item.rowIndex].editMode =
+      item.edit;
+  }
+  function updateRowData(item: any) {
+    triggerConditions.value[item.groupIndex].parameter[item.rowIndex] =
+      item.data;
+    triggerConditions.value[item.groupIndex].parameter[item.rowIndex].editMode =
+      false;
+  }
+
+  function deleteRow(item: any) {
+    triggerConditions.value[item.groupIndex].parameter.splice(item.rowIndex, 1);
+    triggerConditions.value.forEach((item, index) => {
+      if (!item.parameter.length) {
+        triggerConditions.value.splice(index, 1);
+      }
+    });
+  }
 </script>
 
 <template>
@@ -147,27 +165,19 @@
     <h5>{{ $t('intervention.dialog.label.triggerConditions') }}</h5>
     <div>{{ $t('intervention.dialog.label.triggerConditionsDesc') }}</div>
 
-    <MoreTable
-      row-id="observationType"
-      :columns="triggerConditionColumns"
-      :rows="triggerConditionTest[0].parameter"
-      :row-actions="rowActions"
-      :loading="loader.isLoading.value"
-      :editable-access="true"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
-      :empty-message="'Add trigger conditions'"
-      @onaction="execute($event)"
-    />
-
     <InterventionTriggerConditionTable
       v-for="(condition, index) in triggerConditions"
       :key="index"
       :rows="condition.parameter"
+      :group-index="index as number"
       :next-group-condition="
         condition.nextGroupCondition ? condition.nextGroupCondition : ''
       "
       :columns="triggerConditionColumns"
-      @on-add-trigger-group="addTriggerGroup"
+      @on-add-trigger-group="addTriggerGroup($event)"
+      @on-toggle-row-edit="toggleRowEdit($event)"
+      @on-update-row-data="updateRowData($event)"
+      @on-delete-row="deleteRow($event)"
     />
   </div>
 </template>
