@@ -21,7 +21,7 @@ export abstract class Property<T> {
     }
   }
 
-  abstract getType(): 'Integer'|'Object'|'Array'|'String'|'Booelan'|'Double'
+  abstract getType(): 'Integer'|'Object'|'Array'|'String'|'Boolean'|'Double'
 
   static toJson(props: Property<any>[]): any {
     const result: any = {};
@@ -46,7 +46,7 @@ export abstract class Property<T> {
   }
 
   public setValue(v: T): Property<T> {
-    this.value = v || (this.required ? this.defaultValue : undefined);
+    this.value = v || this.defaultValue;
     return this;
   }
 
@@ -67,7 +67,7 @@ export class StringProperty extends Property<string> {
     this.regex = regex;
   }
 
-  getType(): 'Integer'|'Object'|'String'|'Booelan'|'Double' {
+  getType(): 'Integer'|'Object'|'String'|'Boolean'|'Double' {
     return 'String';
   }
 
@@ -91,8 +91,6 @@ export class StringListProperty extends Property<string[]> {
   minSize: number;
   maxSize: number;
 
-  valueList: string[];
-
   constructor(defaultValue: string[], description: string, id: string, immutable: boolean, name: string, required: boolean, minSize: number, maxSize: number) {
     super(defaultValue, description, id, immutable, name, required);
     this.minSize = minSize;
@@ -101,29 +99,39 @@ export class StringListProperty extends Property<string[]> {
 
   static fromJson(json:any): StringListProperty {
     return new StringListProperty(
-      json.defaultValue, json.description, json.id, json.immutable, json.name, json.required, json.maxSize, json.minSize
+      json.defaultValue, json.description, json.id, json.immutable, json.name, json.required, json.minSize, json.maxSize
     );
   }
 
-  getType(): "Integer" | "Object" | "Array" | "String" | "Booelan" | "Double" {
-    return 'Array';
-  }
-
-  validate(): string | undefined {
-    return undefined;
-  }
-
-  public setValue(v: string[]): StringListProperty {
-    this.value = v || (this.required ? this.defaultValue : undefined);
-    return this;
-  }
-
-  public getValue(): string[]|undefined {
+  public getValue(): string[] | undefined {
     const error = this.validate();
     if (error) {
       throw new Error(error);
     }
-    return this.value;
+    return this.value?.filter(v => v !== undefined && v.trim() !== '');
+  }
+
+  getType(): 'Integer' | 'Object' | 'Array' | 'String' | 'Boolean' | 'Double' {
+    return 'Array';
+  }
+
+  validate(): string | undefined {
+    if (this.value === undefined && this.required) {
+      return 'Value has to be defined';
+    }
+
+    let count = 0;
+    this.value?.forEach((v) => {
+      if (v === undefined || v.trim() === '') {
+        count += 1;
+      }
+    });
+
+    if (this.required && count < this.minSize) {
+      return `At lease ${this.minSize} values must be set`;
+    } else {
+      return undefined;
+    }
   }
 }
 
@@ -137,7 +145,7 @@ export class IntegerProperty extends Property<number> {
     this.max = max;
   }
 
-  getType(): 'Integer'|'Object'|'String'|'Booelan'|'Double' {
+  getType(): 'Integer'|'Object'|'String'|'Boolean'|'Double' {
     return 'Integer';
   }
 

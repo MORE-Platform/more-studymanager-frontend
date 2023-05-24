@@ -12,7 +12,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="flex flex-column gap-2">
+  <div class="flex flex-col gap-2">
     <label :for="property.id">{{ property.name }}</label>
     <InputText type="number" :max="property.max" :min="property.min" :id="property.id" v-model="property.value" :aria-describedby="property.id + '-help'" />
     <small :id="property.id + '-help'">{{ props.property.description }}</small>
