@@ -450,7 +450,9 @@
         "view": "Interventiondetails"
       },
       "label": {
-        "interventionTitle": "Interventionstitel"
+        "interventionTitle": "Interventionstitel",
+        "triggerConditions": "Auslöserkonditionen",
+        "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: < > <= >= = oder > (nicht)."
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"

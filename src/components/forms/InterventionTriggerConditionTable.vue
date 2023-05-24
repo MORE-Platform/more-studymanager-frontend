@@ -5,20 +5,28 @@
   import Dropdown from 'primevue/dropdown';
   import InputText from 'primevue/inputtext';
   import { onUpdated, Ref, ref } from 'vue';
+  import { MoreTableChoice } from '../../models/MoreTableModel';
   import {
-    MoreTableAction,
-    MoreTableActionOption,
-    MoreTableChoice,
-    MoreTableChoiceOptions,
-    MoreTableColumn,
-    MoreTableEditableChoiceProperties,
-    MoreTableFieldType,
-    MoreTableSortOptions,
-  } from '../../models/MoreTableModel';
-  import { ComponentFactory } from '../../generated-sources/openapi';
-  import { useComponentsApi } from '../../composable/useApi';
+    ComponentFactory,
+    ComponentFactoryMeasurementsInner,
+    Observation,
+  } from '../../generated-sources/openapi';
+  import {
+    useComponentsApi,
+    useObservationsApi,
+  } from '../../composable/useApi';
+  import {
+    GroupConditionChange,
+    InterventionTriggerConfig,
+    InterventionTriggerUpdateData,
+    InterventionTriggerUpdateItem,
+  } from '../../models/InterventionTriggerModel';
+  import { AxiosError, AxiosResponse } from 'axios/index';
+  import { useErrorHandling } from '../../composable/useErrorHandling';
 
+  const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
+  const { handleIndividualError } = useErrorHandling();
 
   const props = defineProps({
     columns: {
@@ -37,30 +45,59 @@
       type: Number,
       required: true,
     },
+    studyId: {
+      type: Number,
+      required: true,
+    },
   });
 
   const conditionValue: Ref<string> = ref(props.nextGroupCondition);
   const editingRows: Ref<Array<any>> = ref([]);
+  const observationList: Ref<Observation[]> = ref([]);
+
+  async function getObservationList(): Promise<void> {
+    await observationsApi
+      .listObservations(props.studyId)
+      .then((response: AxiosResponse) => {
+        observationList.value = response.data;
+      })
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, 'cannot list observations')
+      );
+  }
+  await getObservationList();
+
+  const observationValues: MoreTableChoice[] =
+    observationList.value.map((o) => ({
+      label: o.title as string,
+      value: (o.observationId as number).toString(),
+    })) || [];
 
   onUpdated(() => {
     if (props.nextGroupCondition !== conditionValue.value) {
       conditionValue.value = props.nextGroupCondition;
+
+      editingRows.value = [];
+      props.rows.forEach((item: InterventionTriggerConfig) => {
+        if (item.editMode) {
+          editingRows.value.push(item);
+        }
+      });
     }
   });
 
-  const observationTypes: any = [
-    {
-      type: 'acc-mobile-observation',
-      properties: ['x', 'y', 'z'],
-    },
-    {
-      type: 'gps-mobile-observation',
-      properties: ['long', 'lat', 'alt'],
-    },
-    {
-      type: 'polar-verity-observation',
-      properties: ['hr'],
-    },
+  const numericOperator: MoreTableChoice[] = [
+    { label: '<', value: '<' },
+    { label: '>', value: '>' },
+    { label: '<=', value: '<=' },
+    { label: '>=', value: '>=' },
+    { label: '=', value: '=' },
+    { label: '!', value: '!' },
+  ];
+
+  const stringOperator: MoreTableChoice[] = [
+    { label: '==', value: '==' },
+    { label: '!=', value: '!=' },
   ];
 
   async function getFactories() {
@@ -72,51 +109,87 @@
 
   const emit = defineEmits<{
     (e: 'onAddTriggerGroup', groupIndex: number): void;
-    (e: 'onToggleRowEdit', event: any): void;
-    (e: 'onUpdateRowData', event: any): void;
-    (e: 'onDeleteRow', event: any): void;
+    (e: 'onToggleRowEdit', event: InterventionTriggerUpdateItem): void;
+    (e: 'onUpdateRowData', event: InterventionTriggerUpdateData): void;
+    (e: 'onDeleteRow', event: InterventionTriggerUpdateItem): void;
+    (e: 'onAddRow', event: InterventionTriggerUpdateItem): void;
+    (e: 'onChangeGroupCondition', event: GroupConditionChange): void;
   }>();
 
-  function getPropertyOptions(row: any): MoreTableChoice[] {
-    console.log(row);
+  function getPropertyOptions(
+    trigger: InterventionTriggerConfig
+  ): ComponentFactoryMeasurementsInner[] {
     return (
-      observationTypes
-        .find((item) => item.type === row.observationType)
-        .properties.map((p: string) => ({ label: p, value: p })) || []
+      factories.find(
+        (o: ComponentFactory) => o.componentId === trigger.observationType
+      )?.measurements || []
     );
   }
 
-  function getObservationTypes(): MoreTableChoice[] {
-    console.log('getObservationTypes------------');
-
+  function getOperatorOptions(trigger: InterventionTriggerConfig) {
+    return getPropertyOptions(trigger)[0].type === 'DOUBLE'
+      ? numericOperator
+      : stringOperator;
+  }
+  function getAnswerOptions(trigger: InterventionTriggerConfig) {
+    trigger.propertyValue = '';
     return (
-      observationTypes.map((item) => ({
-        label: factories.find((o) => o.componentId === item.type)?.title,
-        value: item.type,
-      })) || []
+      observationList.value
+        .find(
+          (o: Observation) =>
+            o.observationId?.toString() === trigger.observationId?.toString()
+        )
+        //@ts-ignore
+        ?.properties?.answers.map((a: string) => ({ label: a, value: a })) || []
     );
   }
 
-  function addTriggerGroup() {
-    emit('onAddTriggerGroup', props.groupIndex);
+  function updateEditRows() {
+    props.rows.forEach((item: InterventionTriggerConfig) => {
+      if (item.editMode) {
+        editingRows.value.push(item);
+      }
+    });
   }
 
-  function changeObservationType(row: any, index: number) {
-    console.log(row);
-    row.parameter.observationProperty = getPropertyOptions(row);
+  function changeObservationType(trigger: InterventionTriggerConfig) {
+    const observation = findObservationById(
+      (trigger.observationId as number).toString()
+    ) as Observation;
+
+    trigger.observationType = observation.type as string;
+    trigger.observationTitle = observation.title as string;
+
+    trigger.observationProperty =
+      getPropertyOptions(trigger)[0].id || 'no measurement';
   }
 
-  function edit(row: any, index: number) {
+  function findObservationById(observationId: string): Observation {
+    return (
+      observationList.value.find(
+        (o) => o.observationId?.toString() === observationId
+      ) || {}
+    );
+  }
+
+  function changeNextGroupCondition() {
+    emit('onChangeGroupCondition', {
+      groupIndex: props.groupIndex,
+      value: conditionValue.value,
+    });
+  }
+
+  function edit(trigger: InterventionTriggerConfig, index: number) {
     emit('onToggleRowEdit', {
       edit: true,
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
     editingRows.value = [];
-    editingRows.value.push(row);
+    editingRows.value.push(trigger);
   }
 
-  function cancel(row: any, index: number) {
+  function cancel(index: number) {
     emit('onToggleRowEdit', {
       edit: false,
       groupIndex: props.groupIndex,
@@ -125,9 +198,17 @@
     editingRows.value = [];
   }
 
-  function save(row: any, index: number) {
+  function save(trigger: InterventionTriggerConfig, index: number) {
     emit('onUpdateRowData', {
-      data: row,
+      data: trigger,
+      groupIndex: props.groupIndex,
+      rowIndex: index,
+    });
+  }
+
+  function addRow(index: number) {
+    console.log('addRow');
+    emit('onAddRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
@@ -138,6 +219,11 @@
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
+  }
+
+  function addTriggerGroup() {
+    emit('onAddTriggerGroup', props.groupIndex);
+    updateEditRows();
   }
 </script>
 
@@ -150,7 +236,6 @@
       :value="rows"
       edit-mode="row"
       table-class="editable-cells-table"
-      @cell-edit-complete="console.log('completed')"
     >
       <Column
         v-for="column in columns"
@@ -159,15 +244,20 @@
         :header="column.header"
         :row-hover="true"
       >
-        <template #body="{ data, field }">{{ data[field] }}</template>
+        <template #body="{ data, field }">{{ data[field] }} </template>
         <template #editor="slotProps">
-          <div v-if="column.field === 'observationType'">
+          <div v-if="column.field === 'observationTitle'">
             <Dropdown
-              v-model="slotProps.data[slotProps.field]"
-              :options="getObservationTypes()"
+              v-model="slotProps.data['observationId']"
+              :options="observationValues"
               option-label="label"
               option-value="value"
-              @change="changeObservationType(slotProps.data, slotProps.index)"
+              :placeholder="
+                slotProps.data[slotProps.field]
+                  ? slotProps.data[slotProps.field]
+                  : 'Select observation'
+              "
+              @change="changeObservationType(slotProps.data)"
             />
           </div>
           <div v-else-if="column.field === 'observationProperty'">
@@ -175,22 +265,28 @@
               v-if="slotProps.data.observationType"
               v-model="slotProps.data[slotProps.field]"
               :options="getPropertyOptions(slotProps.data)"
-              option-label="label"
-              option-value="value"
+              option-label="id"
+              option-value="id"
             />
             <div v-else>Choose Observation Type</div>
           </div>
           <div v-else-if="column.field === 'operator'">
             <Dropdown
               v-model="slotProps.data[slotProps.field]"
-              :options="[
-                { label: '<', value: '<' },
-                { label: '>', value: '>' },
-                { label: '<=', value: '<=' },
-                { label: '>=', value: '>=' },
-                { label: '==', value: '==' },
-                { label: '!=', value: '>=' },
-              ]"
+              :options="getOperatorOptions(slotProps.data)"
+              option-label="label"
+              option-value="value"
+            />
+          </div>
+          <div
+            v-else-if="
+              column.field === 'propertyValue' &&
+              slotProps.data.observationType === 'question-observation'
+            "
+          >
+            <Dropdown
+              v-model="slotProps.data[slotProps.field]"
+              :options="getAnswerOptions(slotProps.data)"
               option-label="label"
               option-value="value"
             />
@@ -200,9 +296,20 @@
           }}</InputText>
         </template>
       </Column>
-      <Column key="action" row-hover="true" class="row-action">
+      <Column key="action" row-hover="true" class="row-action text-end">
         <template #body="slotProps">
-          <div v-if="!slotProps.data.editMode">
+          <div v-if="!slotProps.data.editMode" class="text-end">
+            <div v-if="slotProps.index + 1 < rows.length" class="inline p-5">
+              &
+            </div>
+            <Button
+              v-else
+              type="button"
+              icon="pi pi-plus"
+              class="p-button p-3"
+              @click="addRow(slotProps.index)"
+            ></Button>
+            <span class="mr-1.5"></span>
             <Button
               type="button"
               icon="pi pi-trash"
@@ -228,7 +335,7 @@
               type="button"
               icon="pi pi-times"
               class="btn-gray"
-              @click="cancel(slotProps.data, slotProps.index)"
+              @click="cancel(slotProps.index)"
             ></Button>
           </div>
         </template>
@@ -254,6 +361,7 @@
         option-value="value"
         icon="pi pi-plus"
         placeholder="enter"
+        @change="changeNextGroupCondition()"
       />
     </div>
   </div>

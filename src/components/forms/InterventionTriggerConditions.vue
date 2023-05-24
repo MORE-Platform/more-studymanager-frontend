@@ -1,45 +1,23 @@
 <script setup lang="ts">
-  import { useI18n } from 'vue-i18n';
-  import { ComponentFactory, StudyRole } from '../../generated-sources/openapi';
-  import { useComponentsApi } from '../../composable/useApi';
-  import {
-    MoreIntegrationTableMap,
-    MoreTableAction,
-    MoreTableColumn,
-    MoreTableFieldType,
-  } from '../../models/MoreTableModel';
-  import DeleteMoreTableRowDialog from '../dialog/DeleteMoreTableRowDialog.vue';
-  import MoreTable from '../shared/MoreTable.vue';
-  import useLoader from '../../composable/useLoader';
+  import { MoreTableColumn } from '../../models/MoreTableModel';
   import InterventionTriggerConditionTable from './InterventionTriggerConditionTable.vue';
   import { ref, Ref } from 'vue';
-  import Dropdown from 'primevue/dropdown';
-  import Button from 'primevue/button';
+  import {
+    GroupConditionChange,
+    InterventionTriggerUpdateData,
+    InterventionTriggerUpdateItem,
+    TriggerConditionGroup,
+  } from '../../models/InterventionTriggerModel';
+  import { useStudyStore } from '../../stores/studyStore';
+  const studyStore = useStudyStore();
 
-  const { componentsApi } = useComponentsApi();
-  const { t } = useI18n();
-  const loader = useLoader();
-
-  const observationTypes: any = [
-    {
-      type: 'acc-mobile-observation',
-      properties: ['x', 'y', 'z'],
-    },
-    {
-      type: 'gps-mobile-observation',
-      properties: ['long', 'lat', 'alt'],
-    },
-    {
-      type: 'polar-verity-observation',
-      properties: ['hr'],
-    },
-  ];
-
-  const triggerConditionTest: any = [
+  const triggerConditionTest: TriggerConditionGroup[] = [
     {
       nextGroupCondition: 'or',
       parameter: [
         {
+          observationId: 17,
+          observationTitle: 'ACC TEST',
           observationType: 'acc-mobile-observation',
           observationProperty: 'x',
           operator: '>',
@@ -47,6 +25,8 @@
           editMode: false,
         },
         {
+          observationId: 17,
+          observationTitle: 'ACC TEST',
           observationType: 'acc-mobile-observation',
           observationProperty: 'y',
           operator: '=',
@@ -54,6 +34,8 @@
           editMode: false,
         },
         {
+          observationId: 17,
+          observationTitle: 'ACC TEST',
           observationType: 'acc-mobile-observation',
           observationProperty: 'x',
           operator: '=',
@@ -66,13 +48,8 @@
       nextGroupCondition: null,
       parameter: [
         {
-          observationType: 'polar-verity-observation',
-          observationProperty: 'bpm',
-          operator: '>',
-          propertyValue: '150',
-          editMode: false,
-        },
-        {
+          observationId: 15,
+          observationTitle: 'GPS TEST',
           observationType: 'gps-mobile-observation',
           observationProperty: 'lat',
           operator: '=',
@@ -80,6 +57,8 @@
           editMode: false,
         },
         {
+          observationId: 15,
+          observationTitle: 'GPS TEST',
           observationType: 'gps-mobile-observation',
           observationProperty: 'long',
           operator: '=',
@@ -90,12 +69,13 @@
     },
   ];
 
-  const triggerConditions: Ref<any> = ref(triggerConditionTest);
+  const triggerConditions: Ref<TriggerConditionGroup[]> =
+    ref(triggerConditionTest);
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
-      field: 'observationType',
-      header: 'Observation Property',
+      field: 'observationTitle',
+      header: 'Observation',
       editable: true,
     },
     {
@@ -115,12 +95,16 @@
     },
   ]);
 
+  console.log(triggerConditions.value);
+
   function addTriggerGroup(groupIndex: number) {
     setEditModeFalse();
     triggerConditions.value.push({
-      nextGroupCondition: undefined,
+      nextGroupCondition: null,
       parameter: [
         {
+          observationId: undefined,
+          observationTitle: '',
           observationType: '',
           observationProperty: '',
           operator: '',
@@ -133,30 +117,49 @@
   }
 
   function setEditModeFalse() {
-    triggerConditions.value.forEach((item: any) =>
+    triggerConditions.value.forEach((item: TriggerConditionGroup) =>
       item.parameter.forEach((param) => (param.editMode = false))
     );
   }
 
-  function toggleRowEdit(item: any) {
+  function toggleRowEdit(item: InterventionTriggerUpdateItem) {
     setEditModeFalse();
     triggerConditions.value[item.groupIndex].parameter[item.rowIndex].editMode =
-      item.edit;
+      item.edit || false;
   }
-  function updateRowData(item: any) {
+  function updateRowData(item: InterventionTriggerUpdateData) {
     triggerConditions.value[item.groupIndex].parameter[item.rowIndex] =
       item.data;
     triggerConditions.value[item.groupIndex].parameter[item.rowIndex].editMode =
       false;
+
+    console.log(triggerConditions.value);
   }
 
-  function deleteRow(item: any) {
+  function addRow(item: InterventionTriggerUpdateItem) {
+    console.log('addRow----');
+    console.log(triggerConditions.value);
+    triggerConditions.value[item.groupIndex].parameter.push({
+      observationId: undefined,
+      observationTitle: '',
+      observationType: '',
+      observationProperty: '',
+      operator: '',
+      propertyValue: '',
+      editMode: true,
+    });
+  }
+  function deleteRow(item: InterventionTriggerUpdateItem) {
     triggerConditions.value[item.groupIndex].parameter.splice(item.rowIndex, 1);
     triggerConditions.value.forEach((item, index) => {
       if (!item.parameter.length) {
         triggerConditions.value.splice(index, 1);
       }
     });
+  }
+
+  function changeGroupCondition(item: GroupConditionChange) {
+    triggerConditions.value[item.groupIndex].nextGroupCondition = item.value;
   }
 </script>
 
@@ -165,20 +168,25 @@
     <h5>{{ $t('intervention.dialog.label.triggerConditions') }}</h5>
     <div>{{ $t('intervention.dialog.label.triggerConditionsDesc') }}</div>
 
-    <InterventionTriggerConditionTable
-      v-for="(condition, index) in triggerConditions"
-      :key="index"
-      :rows="condition.parameter"
-      :group-index="index as number"
-      :next-group-condition="
-        condition.nextGroupCondition ? condition.nextGroupCondition : ''
-      "
-      :columns="triggerConditionColumns"
-      @on-add-trigger-group="addTriggerGroup($event)"
-      @on-toggle-row-edit="toggleRowEdit($event)"
-      @on-update-row-data="updateRowData($event)"
-      @on-delete-row="deleteRow($event)"
-    />
+    <Suspense>
+      <InterventionTriggerConditionTable
+        v-for="(condition, index) in triggerConditions"
+        :key="index"
+        :rows="condition.parameter"
+        :group-index="index as number"
+        :next-group-condition="
+          condition.nextGroupCondition ? condition.nextGroupCondition : ''
+        "
+        :study-id="studyStore.study.studyId as number"
+        :columns="triggerConditionColumns"
+        @on-add-trigger-group="addTriggerGroup($event)"
+        @on-toggle-row-edit="toggleRowEdit($event)"
+        @on-update-row-data="updateRowData($event)"
+        @on-delete-row="deleteRow($event)"
+        @on-add-row="addRow($event)"
+        @on-change-group-condition="changeGroupCondition($event)"
+      />
+    </Suspense>
   </div>
 </template>
 
