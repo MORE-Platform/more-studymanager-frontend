@@ -571,13 +571,6 @@ paths:
             type: boolean
             default: false
       responses:
-        '200':
-          description: >
-            participant could not be deleted because it was already activated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Participant'
         '204':
           description: participant deleted
         '500':
@@ -1081,6 +1074,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserSearchResultList'
 
+  /config/ui:
+    get:
+      tags:
+        - configuration
+      description: various frontend config settings
+      operationId: getFrontendConfig
+      responses:
+        200:
+          description: the frontend-config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrontendConfiguration'
+
+
 components:
   schemas:
     ComponentFactory:
@@ -1106,11 +1114,11 @@ components:
         errors:
           type: array
           items:
-            $ref: ValidationReportItem
+            $ref: '#/components/schemas/ValidationReportItem'
         warnings:
           type: array
           items:
-            $ref: ValidationReportItem
+            $ref: '#/components/schemas/ValidationReportItem'
 
     ValidationReportItem:
       type: object
@@ -1560,6 +1568,39 @@ components:
         - STUDY_VIEWER
       externalDocs:
         url: https://more-platform.atlassian.net/browse/MORE-213
+
+    FrontendConfiguration:
+      description: |
+        Various configuration-settings for the Study-Manager frontend
+      type: object
+      properties:
+        title:
+          description: |
+            alternative title for better identification (informational only)
+          type: string
+        auth:
+          type: object
+          title: KeycloakSettings
+          description: |
+            configuration-settings for the keycloak adapter
+          properties:
+            server:
+              type: string
+              format: uri
+            realm:
+              type: string
+            clientId:
+              type: string
+          required:
+            - server
+            - realm
+            - clientId
+          externalDocs:
+            url: https://www.keycloak.org/docs/latest/securing_apps/index.html#javascript-adapter-reference
+          readOnly: true
+      required:
+        - auth
+      readOnly: true
 
   parameters:
     StudyId:

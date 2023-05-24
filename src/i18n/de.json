@@ -155,13 +155,19 @@
         "delete": "Studie löschen",
         "urlCopied": "Studien-ID kopieren"
       },
+      "label": {
+        "studyTitle": "Studientitel",
+        "studyStart": "Studienstart",
+        "studyEnd": "Studienende"
+      },
       "deleteMsg": {
         "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden.",
         "intro": "Sie sind kurz davor folgende Studie zu löschen:",
         "confirm": "Möchten Sie die Studie wirklich löschen?"
       },
       "msg": {
-        "urlCopied": "Die URL der Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert."
+        "urlCopied": "Die URL der Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert.",
+        "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?"
       },
       "description": {
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
@@ -346,6 +352,9 @@
         "edit": "Datenerhebungsmodul bearbeiten",
         "view": "Datenerhebungsmodul Details"
       },
+      "label": {
+        "observationTitle": "Datenerhebungsmodulstitel"
+      },
       "msg": {
         "delete": "Ein gelöschtes Datenerhebungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?"
       },
@@ -439,6 +448,9 @@
         "clone": "Intervention klonen",
         "edit": "Intervention bearbeiten",
         "view": "Interventiondetails"
+      },
+      "label": {
+        "interventionTitle": "Interventionstitel"
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"

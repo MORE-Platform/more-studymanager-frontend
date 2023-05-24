@@ -134,7 +134,6 @@
   }
 
   function executeAction(action: MoreTableRowActionResult<Study>) {
-    console.log('executeAction--------');
     switch (action.id) {
       case 'delete':
         return studyStore.deleteStudy(action.row.studyId);
@@ -153,6 +152,9 @@
 
   function openCreateDialog() {
     dialog.open(StudyDialog, {
+      data: {
+        study: undefined,
+      },
       props: {
         header: t('study.dialog.header.create'),
         style: {
