@@ -18,7 +18,12 @@
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
-  import {IntegerProperty, Property, StringListProperty, StringProperty} from '../../models/InputModels';
+  import {
+    IntegerProperty,
+    Property,
+    StringListProperty,
+    StringProperty,
+  } from '../../models/InputModels';
   import StringPropertyInput from './shared/StringPropertyInput.vue';
   import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
   import StringListPropertyInput from './shared/StringListPropertyInput.vue';
@@ -107,8 +112,8 @@
           }
         });
     } catch (e) {
-      console.log(e)
-      jsonError.value = t('observation.error.noValidJson') + ": " + e;
+      console.log(e);
+      jsonError.value = t('observation.error.noValidJson') + ': ' + e;
     }
   }
 
@@ -480,10 +485,23 @@
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
-          <div v-for="(property, index) in properties" :key="index" class="mb-2">
-            <StringPropertyInput v-if="property instanceof StringProperty" :property="property"></StringPropertyInput>
-            <IntegerPropertyInput v-if="property instanceof IntegerProperty" :property="property"></IntegerPropertyInput>
-            <StringListPropertyInput v-if="property instanceof StringListProperty" :property="property"></StringListPropertyInput>
+          <div
+            v-for="(property, index) in properties"
+            :key="index"
+            class="mb-2"
+          >
+            <StringPropertyInput
+              v-if="property instanceof StringProperty"
+              :property="property"
+            ></StringPropertyInput>
+            <IntegerPropertyInput
+              v-if="property instanceof IntegerProperty"
+              :property="property"
+            ></IntegerPropertyInput>
+            <StringListPropertyInput
+              v-if="property instanceof StringListProperty"
+              :property="property"
+            ></StringListPropertyInput>
           </div>
         </div>
       </div>

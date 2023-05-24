@@ -21,13 +21,19 @@ export abstract class Property<T> {
     }
   }
 
-  abstract getType(): 'Integer'|'Object'|'Array'|'String'|'Boolean'|'Double'
+  abstract getType():
+    | 'Integer'
+    | 'Object'
+    | 'Array'
+    | 'String'
+    | 'Boolean'
+    | 'Double';
 
   static toJson(props: Property<any>[]): any {
     const result: any = {};
     props.forEach((item) => {
       //TODO kind of workaround
-      if(item.getType() === 'Integer') {
+      if (item.getType() === 'Integer') {
         result[item.id] = parseInt(item.getValue());
       } else {
         result[item.id] = item.getValue();
@@ -36,7 +42,14 @@ export abstract class Property<T> {
     return result;
   }
 
-  protected constructor(defaultValue: T, description: string, id: string, immutable: boolean, name: string, required: boolean) {
+  protected constructor(
+    defaultValue: T,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean
+  ) {
     this.defaultValue = defaultValue;
     this.description = description;
     this.id = id;
@@ -50,7 +63,7 @@ export abstract class Property<T> {
     return this;
   }
 
-  public getValue(): T|undefined {
+  public getValue(): T | undefined {
     const error = this.validate();
     if (error) {
       throw new Error(error);
@@ -62,27 +75,45 @@ export abstract class Property<T> {
 export class StringProperty extends Property<string> {
   regex?: string;
 
-  constructor(defaultValue: string, description: string, id: string, immutable: boolean, name: string, required: boolean, regex: string) {
+  constructor(
+    defaultValue: string,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean,
+    regex: string
+  ) {
     super(defaultValue, description, id, immutable, name, required);
     this.regex = regex;
   }
 
-  getType(): 'Integer'|'Object'|'String'|'Boolean'|'Double' {
+  getType(): 'Integer' | 'Object' | 'String' | 'Boolean' | 'Double' {
     return 'String';
   }
 
   validate(): string | undefined {
     if (this.required && this.value === undefined) {
       return 'Value is required';
-    } else if (this.regex && this.value && !new RegExp(this.regex).test(this.value)) {
+    } else if (
+      this.regex &&
+      this.value &&
+      !new RegExp(this.regex).test(this.value)
+    ) {
       return 'Value has wrong value';
     } else {
       return undefined;
     }
   }
-  static fromJson(json:any): StringProperty {
+  static fromJson(json: any): StringProperty {
     return new StringProperty(
-      json.defaultValue, json.description, json.id, json.immutable, json.name, json.required, json.regex
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required,
+      json.regex
     );
   }
 }
@@ -91,15 +122,31 @@ export class StringListProperty extends Property<string[]> {
   minSize: number;
   maxSize: number;
 
-  constructor(defaultValue: string[], description: string, id: string, immutable: boolean, name: string, required: boolean, minSize: number, maxSize: number) {
+  constructor(
+    defaultValue: string[],
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean,
+    minSize: number,
+    maxSize: number
+  ) {
     super(defaultValue, description, id, immutable, name, required);
     this.minSize = minSize;
     this.maxSize = maxSize;
   }
 
-  static fromJson(json:any): StringListProperty {
+  static fromJson(json: any): StringListProperty {
     return new StringListProperty(
-      json.defaultValue, json.description, json.id, json.immutable, json.name, json.required, json.minSize, json.maxSize
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required,
+      json.minSize,
+      json.maxSize
     );
   }
 
@@ -108,7 +155,7 @@ export class StringListProperty extends Property<string[]> {
     if (error) {
       throw new Error(error);
     }
-    return this.value?.filter(v => v !== undefined && v.trim() !== '');
+    return this.value?.filter((v) => v !== undefined && v.trim() !== '');
   }
 
   getType(): 'Integer' | 'Object' | 'Array' | 'String' | 'Boolean' | 'Double' {
@@ -139,28 +186,46 @@ export class IntegerProperty extends Property<number> {
   min: number;
   max: number;
 
-  constructor(defaultValue: number, description: string, id: string, immutable: boolean, name: string, required: boolean, min: number, max: number) {
+  constructor(
+    defaultValue: number,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean,
+    min: number,
+    max: number
+  ) {
     super(defaultValue, description, id, immutable, name, required);
     this.min = min;
     this.max = max;
   }
 
-  getType(): 'Integer'|'Object'|'String'|'Boolean'|'Double' {
+  getType(): 'Integer' | 'Object' | 'String' | 'Boolean' | 'Double' {
     return 'Integer';
   }
 
   validate(): string | undefined {
     if (this.required && this.value === undefined) {
       return 'Value is required';
-    } else if (this.value !== undefined && (this.min > this.value || this.max < this.value)) {
+    } else if (
+      this.value !== undefined &&
+      (this.min > this.value || this.max < this.value)
+    ) {
       return 'Value has wrong value';
     } else return undefined;
   }
 
-  static fromJson(json:any): IntegerProperty {
+  static fromJson(json: any): IntegerProperty {
     return new IntegerProperty(
-      json.defaultValue, json.description, json.id, json.immutable, json.name, json.required, json.min, json.max
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required,
+      json.min,
+      json.max
     );
   }
-
 }
