@@ -1,8 +1,5 @@
 <script setup lang="ts">
-  import {
-    StringListProperty,
-    StringProperty,
-  } from '../../../models/InputModels';
+  import { StringListProperty } from '../../../models/InputModels';
   import { PropType } from 'vue';
   import InputText from 'primevue/inputtext';
 
@@ -18,11 +15,11 @@
   <div class="flex flex-col gap-2">
     <label>{{ property.name }}</label>
     <InputText
-      style="display: block"
-      type="text"
       v-for="index in property.maxSize"
       :key="index"
       v-model="property.value[index - 1]"
+      type="text"
+      style="display: block"
     />
     <small>{{ props.property.description }}</small>
   </div>
