@@ -1,8 +1,16 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { inject } from 'vue';
+  import { FrontendConfiguration } from '../../generated-sources/openapi';
+
+  const uiConfig = inject('uiConfig') as FrontendConfiguration;
+</script>
 
 <template>
   <footer class="footer w-full">
-    <div class="content-block my-6 mx-24 flex justify-end">
+    <div class="content-block my-6 mx-24 flex justify-between">
+      <div>
+        {{ uiConfig.title }}
+      </div>
       <a
         href="https://dhp.lbg.ac.at/more/"
         target="_blank"

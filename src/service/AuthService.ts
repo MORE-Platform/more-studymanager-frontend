@@ -15,7 +15,7 @@ export default class AuthService {
           .updateToken(70)
           .then((refreshed) => {
             if (refreshed) {
-              console.log('Token refreshed' + refreshed);
+              console.log('Token refreshed: ' + refreshed);
             }
           })
           .catch(() => {
@@ -26,6 +26,10 @@ export default class AuthService {
     } else {
       return false;
     }
+  }
+
+  public manageAccount(): void {
+    this.keycloak.accountManagement();
   }
 
   public logout(): void {
