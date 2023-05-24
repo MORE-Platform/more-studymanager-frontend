@@ -1,3 +1,10 @@
+export class ValidationError extends Error {
+  constructor(public key: string, msg: string) {
+    super(msg);
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
 export abstract class Property<T> {
   id: string;
   name: string;
@@ -66,7 +73,7 @@ export abstract class Property<T> {
   public getValue(): T | undefined {
     const error = this.validate();
     if (error) {
-      throw new Error(error);
+      throw new ValidationError(this.name, error);
     }
     return this.value;
   }
@@ -153,7 +160,7 @@ export class StringListProperty extends Property<string[]> {
   public getValue(): string[] | undefined {
     const error = this.validate();
     if (error) {
-      throw new Error(error);
+      throw new ValidationError(this.name, error);
     }
     return this.value?.filter((v) => v !== undefined && v.trim() !== '');
   }
@@ -169,12 +176,11 @@ export class StringListProperty extends Property<string[]> {
 
     let count = 0;
     this.value?.forEach((v) => {
-      if (v === undefined || v.trim() === '') {
+      if (v !== undefined && v.trim() !== '') {
         count += 1;
       }
     });
-
-    if (this.required && count < this.minSize) {
+    if (count < this.minSize) {
       return `At lease ${this.minSize} values must be set`;
     } else {
       return undefined;

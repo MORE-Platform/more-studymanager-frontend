@@ -111,9 +111,9 @@
               .join(', ');
           }
         });
-    } catch (e) {
-      console.log(e);
-      jsonError.value = t('observation.error.noValidJson') + ': ' + e;
+    } catch (e: any) {
+      jsonError.value =
+        t('observation.error.noValidField') + " '" + e.key + "': " + e.message;
     }
   }
 

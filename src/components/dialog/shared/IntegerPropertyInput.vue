@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { IntegerProperty } from '../../../models/InputModels';
   import { PropType } from 'vue';
-  import InputText from 'primevue/inputtext';
+  import InputNumber from 'primevue/inputnumber';
 
   const props = defineProps({
     property: {
@@ -14,7 +14,7 @@
 <template>
   <div class="flex flex-col gap-2">
     <label :for="property.id">{{ property.name }}</label>
-    <InputText
+    <InputNumber
       :id="property.id"
       v-model="property.value"
       type="number"
