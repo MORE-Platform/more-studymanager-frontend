@@ -10,6 +10,10 @@
   function logout() {
     auth.logout();
   }
+
+  function manageAccount() {
+    auth.manageAccount();
+  }
 </script>
 
 <template>
@@ -100,7 +104,7 @@
         >
           {{ $t('global.header.logout') }}
         </button>
-        <div>
+        <button class="border-0 bg-transparent" @click="manageAccount()">
           <svg
             width="20pt"
             height="20pt"
@@ -116,7 +120,7 @@
               />
             </g>
           </svg>
-        </div>
+        </button>
       </div>
     </div>
     <div v-if="loading" class="loader">
