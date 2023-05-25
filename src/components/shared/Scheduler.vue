@@ -97,7 +97,6 @@
       value: [Weekday.Sa, Weekday.Su],
     },
   ];
-
   const repeatEndOptionArray: Ref<MoreTableEditableChoicePropertyValues[]> =
     ref([
       /*{label: 'Never', value: 'never'},*/
@@ -108,22 +107,19 @@
   const start: Ref<Date> = ref(
     scheduler.dtstart
       ? new Date(scheduler.dtstart)
-      : new Date(studyStore.study.plannedStart as string) > new Date()
-      ? new Date(studyStore.study.plannedStart as string)
+      : studyStore.study.plannedStart &&
+        new Date(studyStore.study.plannedStart) > new Date()
+      ? new Date(studyStore.study.plannedStart)
       : new Date()
   );
   const end: Ref<Date> = ref(
     scheduler.dtend
       ? new Date(scheduler.dtend)
-      : new Date(studyStore.study.plannedStart as string) > new Date()
-      ? new Date(studyStore.study.plannedStart as string)
+      : studyStore.study.plannedStart &&
+        new Date(studyStore.study.plannedStart) > new Date()
+      ? new Date(studyStore.study.plannedStart)
       : new Date()
   );
-
-  if (scheduler.dtstart === undefined && scheduler.dtend === undefined) {
-    start.value.setHours(0, 0, 0);
-    end.value.setHours(23, 59, 59);
-  }
 
   const allDayChecked: Ref<boolean> = ref(false);
   const repeatChecked: Ref<boolean> = ref(false);
@@ -265,42 +261,44 @@
         parseInt(repeatCount.value) * repeatByDay.value?.length
       ).toString();
     }
-    try {
-      const returnEvent: Event = {
-        dtstart: s.toISOString(),
-        dtend: e.toISOString(),
-        rrule: undefined,
-      };
-
-      if (repeatFreq.value) {
-        returnEvent.rrule = {
-          freq: repeatFreq.value,
-          until: repeatUntil.value
-            ? repeatUntil.value?.toISOString()
-            : undefined,
-          count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
-          interval: repeatInterval.value,
-          byday: repeatByDay.value,
-          bymonth: repeatByMonth.value,
-          bymonthday: repeatByMonthDay.value
-            ? parseInt(repeatByMonthDay.value)
-            : undefined,
-          bysetpos: repeatBySetPos.value,
+    if (!calendarInputErrors.value.start && !calendarInputErrors.value.end) {
+      try {
+        const returnEvent: Event = {
+          dtstart: s.toISOString(),
+          dtend: e.toISOString(),
+          rrule: undefined,
         };
-        if (
-          !returnEvent.rrule.count &&
-          !returnEvent.rrule.until &&
-          studyStore.study.plannedEnd
-        ) {
-          const endDate: Date = new Date(studyStore.study.plannedEnd);
-          endDate.setHours(23, 59, 59);
-          returnEvent.rrule.until = endDate.toISOString();
-        }
-      }
 
-      dialogRef.value.close(returnEvent);
-    } catch (e) {
-      console.error('Cannot send schedule event ', e);
+        if (repeatFreq.value) {
+          returnEvent.rrule = {
+            freq: repeatFreq.value,
+            until: repeatUntil.value
+              ? repeatUntil.value?.toISOString()
+              : undefined,
+            count: repeatCount.value ? parseInt(repeatCount.value) : undefined,
+            interval: repeatInterval.value,
+            byday: repeatByDay.value,
+            bymonth: repeatByMonth.value,
+            bymonthday: repeatByMonthDay.value
+              ? parseInt(repeatByMonthDay.value)
+              : undefined,
+            bysetpos: repeatBySetPos.value,
+          };
+          if (
+            !returnEvent.rrule.count &&
+            !returnEvent.rrule.until &&
+            studyStore.study.plannedEnd
+          ) {
+            const endDate: Date = new Date(studyStore.study.plannedEnd);
+            endDate.setHours(23, 59, 59);
+            returnEvent.rrule.until = endDate.toISOString();
+          }
+        }
+
+        dialogRef.value.close(returnEvent);
+      } catch (e) {
+        console.error('Cannot send schedule event ', e);
+      }
     }
   }
 
@@ -328,6 +326,60 @@
       repeatFreq.value = undefined;
     }
   }
+
+  const calendarInputErrors: Ref<any> = ref({
+    start: '',
+    end: '',
+  });
+
+  function handleCalendarInputUpdate(event: any, date: string) {
+    const eventDate: Ref<Date> = ref(
+      new Date(
+        event.value.substring(3, 5) +
+          '/' +
+          event.value.substring(0, 2) +
+          '/' +
+          event.value.substring(6, 10)
+      )
+    );
+    eventDate.value.setHours(
+      event.value.substring(11, 13),
+      event.value.substring(14, 16),
+      0
+    );
+    if (date === 'start') {
+      if (
+        eventDate.value < new Date(studyStore.study.plannedStart as string) ||
+        eventDate.value > new Date(studyStore.study.plannedEnd as string)
+      ) {
+        calendarInputErrors.value.start =
+          'Please enter a start date-time that lies inside the study range.';
+      } else {
+        calendarInputErrors.value.start = '';
+        start.value = eventDate.value;
+      }
+      checkEndDateError(end.value, eventDate.value);
+    } else if (date === 'end') {
+      if (!checkEndDateError(eventDate.value, start.value)) {
+        end.value = eventDate.value;
+      }
+    }
+  }
+
+  function checkEndDateError(endDate: Date, startDate: Date): boolean {
+    if (
+      endDate < startDate ||
+      endDate < new Date(studyStore.study.plannedStart as string) ||
+      endDate > new Date(studyStore.study.plannedEnd as string)
+    ) {
+      calendarInputErrors.value.end =
+        'Please enter a end date-time that lies inside the study range and is not in the past.';
+      return true;
+    } else {
+      calendarInputErrors.value.end = '';
+      return false;
+    }
+  }
 </script>
 
 <template>
@@ -348,8 +400,16 @@
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         autocomplete="off"
         style="width: 100%"
-        :class="'col-span-5'"
+        class="col-span-5"
+        :class="calendarInputErrors.start ? 'input-error' : ''"
+        @blur="handleCalendarInputUpdate($event, 'start')"
       />
+      <div
+        v-if="calendarInputErrors.start"
+        class="error col-span-5 col-start-2"
+      >
+        {{ calendarInputErrors.start }}
+      </div>
       <div class="col-span-1">{{ $t('global.labels.end') }}</div>
       <Calendar
         v-model="end"
@@ -361,8 +421,13 @@
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         autocomplete="off"
         style="width: 100%"
-        :class="'col-span-5'"
+        class="col-span-5"
+        :class="calendarInputErrors.end ? 'input-error' : ''"
+        @blur="handleCalendarInputUpdate($event, 'end')"
       />
+      <div v-if="calendarInputErrors.end" class="error col-span-5 col-start-2">
+        {{ calendarInputErrors.end }}
+      </div>
       <div class="col-span-2 col-start-2">
         {{ $t('scheduler.labels.event.allDay') }}:
         <Checkbox
@@ -569,5 +634,9 @@
     button {
       margin-left: 10px;
     }
+  }
+
+  :deep(.input-error input) {
+    background: var(--red-200);
   }
 </style>

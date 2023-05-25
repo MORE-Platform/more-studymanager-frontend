@@ -137,7 +137,11 @@
         <Calendar
           v-model="start"
           :name="'start'"
-          :min-date="study.plannedStart ? new Date(study.plannedStart as string) : new Date()"
+          :min-date="
+            study.plannedStart && new Date(study.plannedStart) < new Date()
+              ? new Date(study.plannedStart)
+              : new Date()
+          "
           placeholder="dd/mm/yyyy"
           date-format="dd/mm/yy"
           autocomplete="off"
