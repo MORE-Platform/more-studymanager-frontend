@@ -19,6 +19,7 @@
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
+  import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -297,6 +298,12 @@
       triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
     }
   }
+
+  function updateTriggerConditions(triggerConditions: TriggerConditionGroup[]) {
+    console.log('interventionDialog-------------');
+    console.log(triggerConditions);
+    console.log('-------------------------------');
+  }
 </script>
 
 <template>
@@ -340,10 +347,10 @@
         ></Textarea>
       </div>
       <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
-        <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
+        <h5 class="col-span-2" :class="editable ? 'mb-2' : ''">
           {{ $t('intervention.props.trigger') }}*
         </h5>
-        <div class="col-span-1" :class="editable ? '' : 'text-end'">
+        <div class="col-span-4" :class="editable ? '' : 'text-end'">
           <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
           <Dropdown
             v-model="triggerType"
@@ -382,6 +389,7 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
+
           <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
             {{ $t('cronSchedule.additionalConfig') }}
           </div>
@@ -397,7 +405,10 @@
         </div>
 
         <div class="col-start-0 col-span-6">
-          <InterventionTriggerConditions />
+          <InterventionTriggerConditions
+            class="mb-5"
+            @on-emit-trigger-conditions="updateTriggerConditions($event)"
+          />
         </div>
       </div>
 

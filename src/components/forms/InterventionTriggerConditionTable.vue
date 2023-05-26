@@ -4,7 +4,8 @@
   import Button from 'primevue/button';
   import Dropdown from 'primevue/dropdown';
   import InputText from 'primevue/inputtext';
-  import { onUpdated, Ref, ref } from 'vue';
+  import InputNumber from 'primevue/inputnumber';
+  import { onMounted, onUpdated, Ref, ref, watch } from 'vue';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import {
     ComponentFactory,
@@ -17,6 +18,7 @@
   } from '../../composable/useApi';
   import {
     GroupConditionChange,
+    InterventionChoice,
     InterventionTriggerConfig,
     InterventionTriggerUpdateData,
     InterventionTriggerUpdateItem,
@@ -51,6 +53,16 @@
     },
   });
 
+  watch(props.rows, () => {
+    editingRows.value = [];
+
+    props.rows.forEach((item) => {
+      if (item.editMode) {
+        editingRows.value.push(item);
+      }
+    });
+  });
+
   const conditionValue: Ref<string> = ref(props.nextGroupCondition);
   const editingRows: Ref<Array<any>> = ref([]);
   const observationList: Ref<Observation[]> = ref([]);
@@ -67,23 +79,26 @@
   }
   await getObservationList();
 
-  const observationValues: MoreTableChoice[] =
+  const observationValues: InterventionChoice[] =
     observationList.value.map((o) => ({
       label: o.title as string,
-      value: (o.observationId as number).toString(),
+      value: o.observationId as number,
     })) || [];
 
   onUpdated(() => {
     if (props.nextGroupCondition !== conditionValue.value) {
       conditionValue.value = props.nextGroupCondition;
-
-      editingRows.value = [];
-      props.rows.forEach((item: InterventionTriggerConfig) => {
-        if (item.editMode) {
-          editingRows.value.push(item);
-        }
-      });
     }
+  });
+
+  onMounted(() => {
+    editingRows.value = [];
+
+    props.rows.forEach((item) => {
+      if (item.editMode) {
+        editingRows.value.push(item);
+      }
+    });
   });
 
   const numericOperator: MoreTableChoice[] = [
@@ -96,8 +111,8 @@
   ];
 
   const stringOperator: MoreTableChoice[] = [
-    { label: '==', value: '==' },
-    { label: '!=', value: '!=' },
+    { label: '=', value: '=' },
+    { label: '!', value: '!' },
   ];
 
   async function getFactories() {
@@ -119,29 +134,27 @@
   function getPropertyOptions(
     trigger: InterventionTriggerConfig
   ): ComponentFactoryMeasurementsInner[] {
-    return (
-      factories.find(
-        (o: ComponentFactory) => o.componentId === trigger.observationType
-      )?.measurements || []
-    );
+    if (trigger.observationType) {
+      return (
+        factories.find(
+          (o: ComponentFactory) => o.componentId === trigger.observationType
+        )?.measurements || []
+      );
+    }
+    return [];
   }
 
   function getOperatorOptions(trigger: InterventionTriggerConfig) {
-    return getPropertyOptions(trigger)[0].type === 'DOUBLE'
-      ? numericOperator
-      : stringOperator;
+    const operator: ComponentFactoryMeasurementsInner = getOperator(trigger);
+    return operator.type === 'DOUBLE' ? numericOperator : stringOperator || [];
   }
-  function getAnswerOptions(trigger: InterventionTriggerConfig) {
-    trigger.propertyValue = '';
-    return (
-      observationList.value
-        .find(
-          (o: Observation) =>
-            o.observationId?.toString() === trigger.observationId?.toString()
-        )
-        //@ts-ignore
-        ?.properties?.answers.map((a: string) => ({ label: a, value: a })) || []
-    );
+
+  function getOperator(
+    trigger: InterventionTriggerConfig
+  ): ComponentFactoryMeasurementsInner {
+    return getPropertyOptions(trigger).find(
+      (item) => item.id === trigger.observationProperty
+    ) as ComponentFactoryMeasurementsInner;
   }
 
   function updateEditRows() {
@@ -153,21 +166,39 @@
   }
 
   function changeObservationType(trigger: InterventionTriggerConfig) {
-    const observation = findObservationById(
-      (trigger.observationId as number).toString()
-    ) as Observation;
+    if (trigger.observationId) {
+      const observation = findObservationById(
+        trigger.observationId
+      ) as Observation;
 
-    trigger.observationType = observation.type as string;
-    trigger.observationTitle = observation.title as string;
+      trigger.observationType = observation.type as string;
 
-    trigger.observationProperty =
-      getPropertyOptions(trigger)[0].id || 'no measurement';
+      const propertyOptions: ComponentFactoryMeasurementsInner[] =
+        getPropertyOptions(trigger);
+
+      trigger.observationProperty = propertyOptions[0].id || '';
+      trigger.operator = propertyOptions[0].id
+        ? propertyOptions[0].type === 'DOUBLE'
+          ? (numericOperator[0].value as string)
+          : (stringOperator[0].value as string)
+        : '';
+
+      trigger.propertyValue = '';
+    }
   }
 
-  function findObservationById(observationId: string): Observation {
+  function getObservationTitle(observationId: number): string {
     return (
       observationList.value.find(
-        (o) => o.observationId?.toString() === observationId
+        (item) => (item.observationId as number) === observationId
+      )?.title || ''
+    );
+  }
+
+  function findObservationById(observationId: number): Observation {
+    return (
+      observationList.value.find(
+        (o) => (o.observationId as number) === observationId
       ) || {}
     );
   }
@@ -189,8 +220,9 @@
     editingRows.value.push(trigger);
   }
 
-  function cancel(index: number) {
+  function cancel(trigger: InterventionTriggerConfig, index: number) {
     emit('onToggleRowEdit', {
+      data: trigger,
       edit: false,
       groupIndex: props.groupIndex,
       rowIndex: index,
@@ -207,7 +239,6 @@
   }
 
   function addRow(index: number) {
-    console.log('addRow');
     emit('onAddRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
@@ -244,56 +275,57 @@
         :header="column.header"
         :row-hover="true"
       >
-        <template #body="{ data, field }">{{ data[field] }} </template>
-        <template #editor="slotProps">
-          <div v-if="column.field === 'observationTitle'">
-            <Dropdown
-              v-model="slotProps.data['observationId']"
-              :options="observationValues"
-              option-label="label"
-              option-value="value"
-              :placeholder="
-                slotProps.data[slotProps.field]
-                  ? slotProps.data[slotProps.field]
-                  : 'Select observation'
-              "
-              @change="changeObservationType(slotProps.data)"
-            />
-          </div>
-          <div v-else-if="column.field === 'observationProperty'">
-            <Dropdown
-              v-if="slotProps.data.observationType"
-              v-model="slotProps.data[slotProps.field]"
-              :options="getPropertyOptions(slotProps.data)"
-              option-label="id"
-              option-value="id"
-            />
-            <div v-else>Choose Observation Type</div>
-          </div>
-          <div v-else-if="column.field === 'operator'">
-            <Dropdown
-              v-model="slotProps.data[slotProps.field]"
-              :options="getOperatorOptions(slotProps.data)"
-              option-label="label"
-              option-value="value"
-            />
-          </div>
-          <div
+        <template #body="{ data, field }">
+          <span v-if="field === 'observationId'">
+            <span v-if="data[field] === undefined"> Choose Observation </span>
+            <span v-else>
+              {{ getObservationTitle(data[field]) }}
+            </span>
+          </span>
+          <span v-else>
+            {{ data[field] }}
+          </span>
+        </template>
+        <template #editor="{ data, field }">
+          <Dropdown
+            v-if="field === 'observationId'"
+            v-model="data[field]"
+            :options="observationValues"
+            option-label="label"
+            option-value="value"
+            placeholder="Select observation"
+            :filter="true"
+            @change="changeObservationType(data)"
+          />
+          <div v-else-if="data['observationId'] === undefined">-</div>
+          <Dropdown
             v-else-if="
-              column.field === 'propertyValue' &&
-              slotProps.data.observationType === 'question-observation'
+              column.field === 'observationProperty' &&
+              data['observationType'] !== 'external-observation'
             "
-          >
-            <Dropdown
-              v-model="slotProps.data[slotProps.field]"
-              :options="getAnswerOptions(slotProps.data)"
-              option-label="label"
-              option-value="value"
-            />
-          </div>
-          <InputText v-else v-model="slotProps.data[slotProps.field]">{{
-            slotProps.data[slotProps.field]
-          }}</InputText>
+            v-model="data[field]"
+            :options="getPropertyOptions(data)"
+            option-label="id"
+            option-value="id"
+          />
+          <Dropdown
+            v-else-if="column.field === 'operator' && data['observationType']"
+            v-model="data[field]"
+            :options="getOperatorOptions(data)"
+            option-label="label"
+            option-value="value"
+          />
+          <InputNumber
+            v-else-if="
+              getOperator(data).type === 'DOUBLE' &&
+              data['observationType'] !== 'gps-mobile-observation'
+            "
+            v-model="data[field]"
+            placeholder="Enter number"
+          />
+          <InputText v-else v-model="data[field]" placeholder="Enter value">
+            {{ data[field] }}
+          </InputText>
         </template>
       </Column>
       <Column key="action" row-hover="true" class="row-action text-end">
@@ -324,7 +356,13 @@
             >
             </Button>
           </div>
-          <div v-else-if="slotProps.data.editMode">
+          <div v-else-if="slotProps.data.editMode" class="text-end">
+            <div v-if="slotProps.data.error" class="error inline p-5">
+              <span
+                class="pi pi-exclamation-circle"
+                style="font-size: 2rem"
+              ></span>
+            </div>
             <Button
               type="button"
               icon="pi pi-check"
@@ -335,14 +373,13 @@
               type="button"
               icon="pi pi-times"
               class="btn-gray"
-              @click="cancel(slotProps.index)"
+              @click="cancel(slotProps.data, slotProps.index)"
             ></Button>
           </div>
         </template>
       </Column>
     </DataTable>
-
-    <div class="mt-5">
+    <div class="mt-5 text-center">
       <Button
         v-if="!nextGroupCondition"
         type="button"

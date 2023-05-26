@@ -1,17 +1,18 @@
 export interface InterventionTriggerConfig {
   observationId: number | undefined;
-  observationTitle: string;
   observationType: string;
   observationProperty: string;
   operator: string;
-  propertyValue: string;
-  editMode: boolean;
+  propertyValue: string | number;
+  editMode?: boolean;
+  error?: boolean;
 }
 
 export interface InterventionTriggerUpdateItem {
   edit?: boolean;
   groupIndex: number;
   rowIndex: number;
+  data?: InterventionTriggerConfig;
 }
 export interface InterventionTriggerUpdateData {
   data: InterventionTriggerConfig;
@@ -32,4 +33,9 @@ export interface TriggerConditionGroup {
 export interface GroupConditionChange {
   groupIndex: number;
   value: string;
+}
+
+export interface InterventionChoice {
+  label: string;
+  value: string | number;
 }
