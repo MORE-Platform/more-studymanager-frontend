@@ -55,20 +55,21 @@
     triggerProp?.value ? triggerProp.value : ''
   );
   const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
-  setTriggerConfig(triggerData?.type ? triggerData.type : '');
-  setNonScheduleTriggerConfig(triggerData?.properties);
+
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
   const triggerJsonError: Ref<string | undefined> = ref();
   const actionJsonError: Ref<string[]> = ref([]);
   const actionsEmptyError: Ref<string> = ref('');
   const removeActions: Ref<number[]> = ref([]);
-  const triggerConfigQueryObj: Ref<TriggerConditionGroup[]> = ref([]);
+  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
   const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
-
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
     studyStore.study.status === StudyStatus.Paused;
+
+  setTriggerConfig(triggerData?.type ? triggerData.type : '');
+  setNonScheduleTriggerConfig(triggerData?.properties);
 
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
@@ -97,11 +98,7 @@
     props: any,
     i?: number
   ) {
-    console.log(component);
-    console.log(componentType);
-    console.log(props);
-    console.log(i);
-    /*
+    console.log('validate--------');
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
@@ -122,12 +119,11 @@
             }
           });
       } catch (e) {
+        console.log('error');
+        console.error(e);
         reject({ msg: 'Cannot parse properties, no valid json', component, i });
       }
-
-
-    });   */
-    return;
+    });
   }
 
   function save() {
@@ -173,19 +169,26 @@
             scheduler: intervention.schedule,
           } as Intervention;
 
+          console.log('returnIntervention');
+          console.log(returnIntervention);
+
           const returnObject = {
             intervention: returnIntervention,
             trigger: triggerProps,
             actions: actionsProps,
             removeActions: removeActions.value,
           };
+          console.log('returnObject');
+          console.log(returnObject);
+
           actionJsonError.value = [];
           triggerJsonError.value = '';
 
-          if (actionsArray.value.length && !errors.value.length) {
+          if (actionsArray.value.length) {
             console.log('save-----------');
             console.log(returnObject);
-            //dialogRef.value.close(returnObject);
+            console.log('-----------------');
+            dialogRef.value.close(returnObject);
           }
         })
         .catch((reason) => {
@@ -272,7 +275,6 @@
         props = triggerData?.properties;
       }
       setNonScheduleTriggerConfig(props);
-
       prevTriggerType.value = tType;
     }
   }
@@ -287,6 +289,7 @@
         return undefined;
       } else if (key === 'window') {
         triggerConfigWindow.value = value ? value : undefined;
+        return undefined;
       } else {
         return value;
       }
@@ -315,12 +318,23 @@
 
   function updateProps() {
     if (triggerProp.value) {
+      console.log('updateProps');
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
-      nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
-      nonScheduleTriggerPropJson.query = triggerConfigQueryObj.value;
+      // eslint-disable-next-line no-prototype-builtins
+      if (JSON.parse(triggerProp.value).hasOwnProperty('window')) {
+        console.log('has window prop');
+        nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
+      }
+      // eslint-disable-next-line no-prototype-builtins
+      if (JSON.parse(triggerProp.value).hasOwnProperty('query')) {
+        console.log('has query prop');
+        nonScheduleTriggerPropJson.query = triggerConfigQueryObj.value;
+      }
+      console.log(nonScheduleTriggerPropJson);
       triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
+      console.log(triggerProp.value);
     }
   }
 
@@ -384,7 +398,8 @@
         </h5>
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
           <div v-if="!editable" class="inline font-bold">
-            {{ $t('intervention.dialog.label.triggerType') }}
+            <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
+            Trigger-Type:
           </div>
           <Dropdown
             v-model="triggerType"
@@ -417,7 +432,6 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
-
           <div
             v-if="
               (triggerProp &&
@@ -460,7 +474,6 @@
           <InterventionTriggerConditions
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
-            :error="getError('triggerConfig')"
             @on-emit-trigger-conditions="updateTriggerConditions($event)"
           />
         </div>

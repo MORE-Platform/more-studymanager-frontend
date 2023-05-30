@@ -295,10 +295,11 @@
             :options="observationValues"
             option-label="label"
             option-value="value"
-            :placeholder="$t('intervention.dialog.label.chooseObservation')"
             :filter="true"
+            :placeholder="$t('intervention.dialog.label.chooseObservation')"
             @change="changeObservationType(data)"
           />
+
           <div v-else-if="data['observationId'] === undefined">-</div>
           <Dropdown
             v-else-if="
@@ -325,13 +326,12 @@
             v-model="data[field]"
             :placeholder="$t('intervention.dialog.placeholder.enterNumber')"
           />
+
           <InputText
             v-else
             v-model="data[field]"
             :placeholder="$t('intervention.dialog.placeholder.enterValue')"
-          >
-            {{ data[field] }}
-          </InputText>
+          />
         </template>
       </Column>
       <Column key="action" row-hover="true" class="row-action text-end">
@@ -392,7 +392,8 @@
         class="p-button"
         @click="addTriggerGroup"
         ><span class="pi pi-plus mr-2"></span>
-        {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
+        {{ $t('intervention.dialog.label.addTriggerGroup') }} add
+        trigger</Button
       >
       <Dropdown
         v-else
