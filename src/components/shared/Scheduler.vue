@@ -104,21 +104,19 @@
       //{label: 'On Date', value: 'onDate'}
     ]);
 
+  const plannedStartDate: Date = new Date(
+    studyStore.study.plannedStart as string
+  );
+  const setStartDate: Date =
+    studyStore.study.plannedStart && plannedStartDate > new Date()
+      ? plannedStartDate
+      : new Date();
+
   const start: Ref<Date> = ref(
-    scheduler.dtstart
-      ? new Date(scheduler.dtstart)
-      : studyStore.study.plannedStart &&
-        new Date(studyStore.study.plannedStart) > new Date()
-      ? new Date(studyStore.study.plannedStart)
-      : new Date()
+    scheduler.dtstart ? new Date(scheduler.dtstart) : setStartDate
   );
   const end: Ref<Date> = ref(
-    scheduler.dtend
-      ? new Date(scheduler.dtend)
-      : studyStore.study.plannedStart &&
-        new Date(studyStore.study.plannedStart) > new Date()
-      ? new Date(studyStore.study.plannedStart)
-      : new Date()
+    scheduler.dtend ? new Date(scheduler.dtend) : setStartDate
   );
 
   const allDayChecked: Ref<boolean> = ref(false);
