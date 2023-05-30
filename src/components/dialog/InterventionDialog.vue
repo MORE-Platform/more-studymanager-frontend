@@ -21,6 +21,7 @@
   import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
   import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
   import InputNumber from 'primevue/inputnumber';
+  import PushNotificationInput from './shared/PushNotificationInput.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -500,13 +501,23 @@
               </div>
             </div>
             <!-- eslint-disable vue/no-v-html -->
-            <div class="mb-4" v-html="getActionDescription(action.type)"></div>
             <div class="col-span-4 justify-end"></div>
             <div v-if="actionJsonError[index] && editable" class="error mb-4">
               {{ actionJsonError[index] }}
             </div>
 
+            <PushNotificationInput
+              v-if="actionsArray[index].type === 'push-notification-action'"
+              :notification-string="actionsArray[index].properties"
+              :description="getActionDescription(actionsArray[index].type)"
+              :action-type-name="
+                nameForActionType(actionsArray[index].type) || ''
+              "
+              @on-props-change="actionsArray[index].properties = $event"
+            />
+
             <Textarea
+              v-else
               v-model="actionsArray[index].properties"
               class="border-disabled col-span-9"
               :placeholder="'intervention.description.provideActionConfig'"

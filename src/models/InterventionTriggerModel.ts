@@ -39,3 +39,8 @@ export interface InterventionChoice {
   label: string;
   value: string | number;
 }
+
+export interface PushNotificationObject {
+  title: string;
+  message: string;
+}

@@ -29,7 +29,8 @@
       "dataReceived": "Data Received",
       "noDataReceived": "No Data Received",
       "lastDataReceived": "Last Data Received",
-      "to": "to"
+      "to": "to",
+      "message": "Message"
     },
     "placeholder": {
       "entireStudy": "Entire Study",
@@ -449,7 +450,8 @@
       "label": {
         "interventionTitle": "Intervention title",
         "triggerConditions": "Trigger Conditions",
-        "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use < > ≥ ≤ = or ! (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set."
+        "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use < > ≥ ≤ = or ! (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set.",
+        "pushNotification": "Push Notification"
       },
       "msg": {
         "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."
@@ -458,7 +460,11 @@
         "warning": "A deleted intervention can't be restored. If you delete this intervention all settings and configurations are lost and you won't be able to use it at a later date.",
         "intro": "You are about to delete the following intervention:",
         "confirm": "Are you sure you want to delete your intervention?"
-      }
+      },
+      "placeholder": {
+      "title": "Enter title",
+      "message": "Enter message"
+    }
     },
     "interventionList": {
       "title": "Interventions",
@@ -476,7 +482,6 @@
     "placeholder": {
       "noDescription": "No description available",
       "trigger": "Choose a trigger type",
-
       "chooseAction": "Choose an action",
       "emptyScheduler": "Please provide a schedule for your intervention"
     },
