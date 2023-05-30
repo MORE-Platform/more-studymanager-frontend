@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { MoreTableColumn } from '../../models/MoreTableModel';
   import InterventionTriggerConditionTable from './InterventionTriggerConditionTable.vue';
-  import { ref, Ref } from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import {
     GroupConditionChange,
     InterventionTriggerConfig,
@@ -13,6 +13,17 @@
   import Button from 'primevue/button';
   const studyStore = useStudyStore();
 
+  const props = defineProps({
+    triggerConditions: {
+      type: Array as PropType<TriggerConditionGroup[]>,
+      required: true,
+    },
+    error: {
+      type: String,
+      default: '',
+    },
+  });
+  /*
   const triggerConditionTest: TriggerConditionGroup[] = [
     {
       nextGroupCondition: 'or',
@@ -65,9 +76,10 @@
       ],
     },
   ];
-
-  const triggerConditions: Ref<TriggerConditionGroup[]> =
-    ref(triggerConditionTest);
+   */
+  const triggerConditions: Ref<TriggerConditionGroup[]> = ref(
+    props.triggerConditions
+  );
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
@@ -104,9 +116,9 @@
   }
 
   function addTriggerGroup(groupIndex?: number) {
-    if (groupIndex) {
+    if ((groupIndex as number) >= 0) {
       setEditModeFalse();
-      triggerConditions.value[groupIndex].nextGroupCondition = 'and';
+      triggerConditions.value[groupIndex as number].nextGroupCondition = 'and';
     }
 
     triggerConditions.value.push({
@@ -227,9 +239,11 @@
 <template>
   <div class="intervention-trigger-conditions">
     <h5 class="mb-1">
-      {{ $t('intervention.dialog.label.triggerConditions') }}
+      {{ $t('intervention.dialog.label.triggerConditions') }}*
     </h5>
     <div>{{ $t('intervention.dialog.label.triggerConditionsDesc') }}</div>
+
+    <div v-if="error" class="error mt-2 mb-2">{{ error }}</div>
 
     <Suspense>
       <div
