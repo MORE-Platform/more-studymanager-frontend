@@ -1283,6 +1283,8 @@ components:
           type: string
         properties:
           type: object
+          additionalProperties:
+            type: string
         schedule:
           $ref: './Event.yaml/#/components/schemas/Event'
         created:
