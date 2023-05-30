@@ -254,7 +254,8 @@
           type="button"
           class="p-button mt-6 mb-6"
           @click="addTriggerGroup()"
-          >+ Add Trigger Group</Button
+          ><span class="pi pi-plus mr-2"></span>
+          {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
         >
       </div>
 

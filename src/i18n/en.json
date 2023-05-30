@@ -451,7 +451,11 @@
         "interventionTitle": "Intervention title",
         "triggerConditions": "Trigger Conditions",
         "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use < > ≥ ≤ = or ! (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set.",
-        "pushNotification": "Push Notification"
+        "pushNotification": "Push Notification",
+        "addTriggerGroup": "Add Trigger Group",
+        "chooseObservation": "Choose observation",
+        "triggerType": "Trigger-Type",
+        "window": "Window"
       },
       "msg": {
         "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."
@@ -463,7 +467,9 @@
       },
       "placeholder": {
       "title": "Enter title",
-      "message": "Enter message"
+      "message": "Enter message",
+        "enterValue": "Enter value",
+        "enterNumber": "Enter number"
     }
     },
     "interventionList": {

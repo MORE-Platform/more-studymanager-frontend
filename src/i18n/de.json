@@ -454,7 +454,11 @@
         "interventionTitle": "Interventionstitel",
         "triggerConditions": "Auslöserkonditionen",
         "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: < > <= >= = oder > (nicht).",
-        "pushNotification": "Push Notification"
+        "pushNotification": "Push Notification",
+        "addTriggerGroup": "Konditionsgruppe hinzufügen",
+        "chooseObservation": "Datenerhebung auswählen",
+        "triggerType": "Triggertyp",
+        "window": "Window"
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
@@ -466,7 +470,9 @@
       },
       "placeholder": {
         "title": "Titel einfügen",
-        "message": "Nachricht einfügen"
+        "message": "Nachricht einfügen",
+        "enterValue": "Wert einfügen",
+        "enterNumber": "Numerischen Wert einfügen"
       }
     },
     "interventionList": {

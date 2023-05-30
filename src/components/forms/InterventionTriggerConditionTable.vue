@@ -277,7 +277,9 @@
       >
         <template #body="{ data, field }">
           <span v-if="field === 'observationId'">
-            <span v-if="data[field] === undefined"> Choose Observation </span>
+            <span v-if="data[field] === undefined">{{
+              $t('intervention.dialog.label.chooseObservation')
+            }}</span>
             <span v-else>
               {{ getObservationTitle(data[field]) }}
             </span>
@@ -293,7 +295,7 @@
             :options="observationValues"
             option-label="label"
             option-value="value"
-            placeholder="Select observation"
+            :placeholder="$t('intervention.dialog.label.chooseObservation')"
             :filter="true"
             @change="changeObservationType(data)"
           />
@@ -321,9 +323,13 @@
               data['observationType'] !== 'gps-mobile-observation'
             "
             v-model="data[field]"
-            placeholder="Enter number"
+            :placeholder="$t('intervention.dialog.placeholder.enterNumber')"
           />
-          <InputText v-else v-model="data[field]" placeholder="Enter value">
+          <InputText
+            v-else
+            v-model="data[field]"
+            :placeholder="$t('intervention.dialog.placeholder.enterValue')"
+          >
             {{ data[field] }}
           </InputText>
         </template>
@@ -385,7 +391,8 @@
         type="button"
         class="p-button"
         @click="addTriggerGroup"
-        >+ Add Trigger Group</Button
+        ><span class="pi pi-plus mr-2"></span>
+        {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
       >
       <Dropdown
         v-else

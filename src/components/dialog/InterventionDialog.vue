@@ -383,7 +383,9 @@
           {{ $t('intervention.props.trigger') }}*
         </h5>
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
-          <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
+          <div v-if="!editable" class="inline font-bold">
+            {{ $t('intervention.dialog.label.triggerType') }}
+          </div>
           <Dropdown
             v-model="triggerType"
             :options="triggerTypesOptions"
@@ -424,7 +426,9 @@
             "
             class="grid grid-cols-5 items-center gap-4"
           >
-            <h6 class="col-span-2 lg:col-span-1">Window*</h6>
+            <h6 class="col-span-2 lg:col-span-1">
+              {{ $t('intervention.dialog.label.window') }}*
+            </h6>
             <InputNumber
               v-model="triggerConfigWindow"
               :placeholder="'Enter number in ms'"
