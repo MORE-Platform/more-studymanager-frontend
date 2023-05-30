@@ -363,7 +363,7 @@
       }
     },
     "error":  {
-      "noValidJson": "Cannot parse properties. No valid JSON.",
+      "noValidField": "Wrong value",
       "addTitle":  "The observation title is required. Please add a title for your intervention.",
       "addScheduler": "Scheduler",
       "addParticipantInfo": "The participant information describes the purpose of the observation. Please enter a participant information.",

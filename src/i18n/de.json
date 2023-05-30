@@ -365,7 +365,7 @@
       }
     },
     "error":  {
-      "noValidJson": "Die eingegeben Eigenschaften konnten nicht verarbeitet werden: Kein valides JSON.",
+      "noValidField": "Fehler im Wert",
       "addTitle":  "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addScheduler": "Planer",
       "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
