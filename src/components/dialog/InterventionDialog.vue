@@ -98,7 +98,6 @@
     props: any,
     i?: number
   ) {
-    console.log('validate--------');
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
@@ -121,7 +120,7 @@
             }
           });
       } catch (e) {
-        console.log('validation request error');
+        console.error('validation request error');
         console.error(e);
         reject({ msg: 'Cannot parse properties, no valid json', component, i });
       }
@@ -171,25 +170,17 @@
             scheduler: intervention.schedule,
           } as Intervention;
 
-          console.log('returnIntervention');
-          console.log(returnIntervention);
-
           const returnObject = {
             intervention: returnIntervention,
             trigger: triggerProps,
             actions: actionsProps,
             removeActions: removeActions.value,
           };
-          console.log('returnObject');
-          console.log(returnObject);
 
           actionJsonError.value = [];
           triggerJsonError.value = '';
 
           if (actionsArray.value.length) {
-            console.log('save-----------');
-            console.log(returnObject);
-            console.log('-----------------');
             dialogRef.value.close(returnObject);
           }
         })
@@ -300,8 +291,6 @@
 
     hasAdditionalTriggerConfig.value =
       triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
-    console.log('hasAdditionalTriggerconfig-------');
-    console.log(hasAdditionalTriggerConfig.value);
   }
 
   function getActionDescription(actionType?: string) {

@@ -6,7 +6,10 @@
   import InputText from 'primevue/inputtext';
   import InputNumber from 'primevue/inputnumber';
   import { onMounted, onUpdated, Ref, ref, watch } from 'vue';
-  import { MoreTableChoice } from '../../models/MoreTableModel';
+  import {
+    MoreTableChoice,
+    MoreTableColumn,
+  } from '../../models/MoreTableModel';
   import {
     ComponentFactory,
     ComponentFactoryMeasurementsInner,
@@ -32,7 +35,7 @@
 
   const props = defineProps({
     columns: {
-      type: Array<any>,
+      type: Array<MoreTableColumn>,
       required: true,
     },
     rows: {
@@ -146,7 +149,9 @@
 
   function getOperatorOptions(trigger: InterventionTriggerConfig) {
     const operator: ComponentFactoryMeasurementsInner = getOperator(trigger);
-    return operator.type === 'DOUBLE' ? numericOperator : stringOperator || [];
+    return operator && operator.type === 'DOUBLE'
+      ? numericOperator
+      : stringOperator || [];
   }
 
   function getOperator(
@@ -181,12 +186,11 @@
         ? propertyOptions[0].type === 'DOUBLE'
           ? (numericOperator[0].value as string)
           : (stringOperator[0].value as string)
-        : '';
+        : (stringOperator[0].value as string);
 
       trigger.propertyValue = '';
     }
   }
-
   function getObservationTitle(observationId: number): string {
     return (
       observationList.value.find(
@@ -301,16 +305,19 @@
           />
 
           <div v-else-if="data['observationId'] === undefined">-</div>
+
           <Dropdown
             v-else-if="
               column.field === 'observationProperty' &&
-              data['observationType'] !== 'external-observation'
+              data['observationType'] !== 'external-observation' &&
+              data['observationType'] !== 'lime-survey-observation'
             "
             v-model="data[field]"
             :options="getPropertyOptions(data)"
             option-label="id"
             option-value="id"
           />
+
           <Dropdown
             v-else-if="column.field === 'operator' && data['observationType']"
             v-model="data[field]"
@@ -318,15 +325,16 @@
             option-label="label"
             option-value="value"
           />
+
           <InputNumber
             v-else-if="
+              getOperator(data) &&
               getOperator(data).type === 'DOUBLE' &&
               data['observationType'] !== 'gps-mobile-observation'
             "
             v-model="data[field]"
             :placeholder="$t('intervention.dialog.placeholder.enterNumber')"
           />
-
           <InputText
             v-else
             v-model="data[field]"

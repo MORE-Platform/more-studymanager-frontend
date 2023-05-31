@@ -23,60 +23,6 @@
       default: '',
     },
   });
-  /*
-  const triggerConditionTest: TriggerConditionGroup[] = [
-    {
-      nextGroupCondition: 'or',
-      parameter: [
-        {
-          observationId: 17,
-          observationType: 'acc-mobile-observation',
-          observationProperty: 'x',
-          operator: '>',
-          propertyValue: 75,
-          editMode: false,
-        },
-        {
-          observationId: 17,
-          observationType: 'acc-mobile-observation',
-          observationProperty: 'y',
-          operator: '=',
-          propertyValue: 23,
-          editMode: false,
-        },
-        {
-          observationId: 17,
-          observationType: 'acc-mobile-observation',
-          observationProperty: 'x',
-          operator: '=',
-          propertyValue: 23,
-          editMode: false,
-        },
-      ],
-    },
-    {
-      nextGroupCondition: null,
-      parameter: [
-        {
-          observationId: 17,
-          observationType: 'acc-mobile-observation',
-          observationProperty: 'y',
-          operator: '=',
-          propertyValue: 23,
-          editMode: false,
-        },
-        {
-          observationId: 17,
-          observationType: 'acc-mobile-observation',
-          observationProperty: 'x',
-          operator: '=',
-          propertyValue: 23,
-          editMode: false,
-        },
-      ],
-    },
-  ];
-   */
   const triggerConditions: Ref<TriggerConditionGroup[]> = ref(
     props.triggerConditions
   );
