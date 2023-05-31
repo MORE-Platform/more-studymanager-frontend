@@ -291,7 +291,7 @@
         return undefined;
       } else if (key === 'window') {
         triggerConfigWindow.value = value ? value : undefined;
-        return undefined;
+        return value;
       } else {
         return value;
       }
@@ -300,6 +300,8 @@
 
     hasAdditionalTriggerConfig.value =
       triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
+    console.log('hasAdditionalTriggerconfig-------');
+    console.log(hasAdditionalTriggerConfig.value);
   }
 
   function getActionDescription(actionType?: string) {
@@ -434,7 +436,9 @@
 
           <div
             v-if="
-              triggerProp && JSON.parse(triggerProp).hasOwnProperty('window')
+              triggerProp &&
+              JSON.parse(triggerProp).hasOwnProperty('window') &&
+              JSON.parse(triggerProp).queryObject !== undefined
             "
             class="grid grid-cols-5 items-center gap-4"
           >
@@ -456,7 +460,7 @@
             v-if="
               hasAdditionalTriggerConfig &&
               triggerProp &&
-              JSON.parse(triggerProp).query !== null
+              JSON.parse(triggerProp).queryObject === undefined
             "
             v-show="hasAdditionalTriggerConfig"
             v-model="nonScheduleInput"
