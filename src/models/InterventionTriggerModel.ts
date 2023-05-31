@@ -20,11 +20,6 @@ export interface InterventionTriggerUpdateData {
   rowIndex: number;
 }
 
-export interface TriggerObservationType {
-  type: string;
-  properties: Array<string>;
-}
-
 export interface TriggerConditionGroup {
   nextGroupCondition: string | null;
   parameter: Array<InterventionTriggerConfig>;

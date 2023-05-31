@@ -111,6 +111,8 @@
             if (report.valid) {
               resolve(parsedProps);
             } else {
+              console.error('validation rejected');
+              console.error(report.errors);
               const error = report.errors
                 ?.concat(report.warnings || [])
                 .map((e) => e.message)
@@ -119,7 +121,7 @@
             }
           });
       } catch (e) {
-        console.log('error');
+        console.log('validation request error');
         console.error(e);
         reject({ msg: 'Cannot parse properties, no valid json', component, i });
       }
@@ -284,7 +286,7 @@
       if (key === 'cronSchedule') {
         showScheduleInput.value = true;
         return undefined;
-      } else if (key === 'query') {
+      } else if (key === 'queryObject') {
         triggerConfigQueryObj.value = value ? value : [];
         return undefined;
       } else if (key === 'window') {
@@ -294,6 +296,8 @@
         return value;
       }
     });
+    triggerProp.value = JSON.stringify(triggerProperties);
+
     hasAdditionalTriggerConfig.value =
       triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
   }
@@ -318,23 +322,18 @@
 
   function updateProps() {
     if (triggerProp.value) {
-      console.log('updateProps');
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
       // eslint-disable-next-line no-prototype-builtins
       if (JSON.parse(triggerProp.value).hasOwnProperty('window')) {
-        console.log('has window prop');
         nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
       }
       // eslint-disable-next-line no-prototype-builtins
-      if (JSON.parse(triggerProp.value).hasOwnProperty('query')) {
-        console.log('has query prop');
-        nonScheduleTriggerPropJson.query = triggerConfigQueryObj.value;
+      if (JSON.parse(triggerProp.value).hasOwnProperty('queryObject')) {
+        nonScheduleTriggerPropJson.queryObject = triggerConfigQueryObj.value;
       }
-      console.log(nonScheduleTriggerPropJson);
       triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
-      console.log(triggerProp.value);
     }
   }
 
@@ -342,8 +341,8 @@
     if (triggerProp.value) {
       const props: Ref<any> = ref(JSON.parse(triggerProp.value as string));
       // eslint-disable-next-line no-prototype-builtins
-      if (props.value.hasOwnProperty('query')) {
-        props.value.query = triggerConditions;
+      if (props.value.hasOwnProperty('queryObject')) {
+        props.value.queryObject = triggerConditions;
         setNonScheduleTriggerConfig(props.value);
         triggerProp.value = JSON.stringify(props.value);
       }
@@ -353,7 +352,7 @@
 
 <template>
   <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
-    <div class="mb-4" :class="editable ? '' : 'pb-4'">
+    <div class="mb-5" :class="editable ? '' : 'pb-4'">
       <h5 class="mb-1">
         {{ $t('intervention.dialog.title') }}
       </h5>
@@ -366,7 +365,7 @@
       :class="editable ? '' : 'gap-y-2'"
       @submit.prevent="save()"
     >
-      <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+      <div class="col-start-0 col-span-8 mt-2" :class="editable ? '' : 'pb-4'">
         <h5>{{ $t('intervention.dialog.label.interventionTitle') }}*</h5>
         <div v-if="getError('title')" class="error col-span-8 mb-2">
           {{ getError('title') }}
@@ -392,14 +391,14 @@
         ></Textarea>
       </div>
 
-      <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
+      <div class="col-start-0 col-span-8 mt-4 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="col-span-2" :class="editable ? 'mb-2' : ''">
           {{ $t('intervention.props.trigger') }}*
         </h5>
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
           <div v-if="!editable" class="inline font-bold">
             <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
-            Trigger-Type:
+            {{ $t('intervention.dialog.label.triggerType') }}
           </div>
           <Dropdown
             v-model="triggerType"
@@ -432,11 +431,10 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
+
           <div
             v-if="
-              (triggerProp &&
-                JSON.parse(triggerProp).hasOwnProperty('window')) ||
-              triggerConfigWindow
+              triggerProp && JSON.parse(triggerProp).hasOwnProperty('window')
             "
             class="grid grid-cols-5 items-center gap-4"
           >
@@ -455,6 +453,11 @@
             {{ $t('cronSchedule.additionalConfig') }}
           </div>
           <Textarea
+            v-if="
+              hasAdditionalTriggerConfig &&
+              triggerProp &&
+              JSON.parse(triggerProp).query !== null
+            "
             v-show="hasAdditionalTriggerConfig"
             v-model="nonScheduleInput"
             required
@@ -466,8 +469,7 @@
         </div>
         <div
           v-if="
-            (triggerProp && JSON.parse(triggerProp).hasOwnProperty('query')) ||
-            triggerConfigQueryObj.length
+            triggerProp && JSON.parse(triggerProp).hasOwnProperty('queryObject')
           "
           class="col-start-0 col-span-6 mt-5"
         >
@@ -479,7 +481,7 @@
         </div>
       </div>
 
-      <div class="col-start-0 col-span-8 grid grid-cols-9">
+      <div class="col-start-0 col-span-8 mt-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
             {{ $t('intervention.props.action') }}*
