@@ -303,6 +303,7 @@
   onUpdated(() => {
     if (end.value < start.value) {
       end.value = start.value;
+      calendarInputErrors.value.end = '';
     }
   });
 
@@ -340,11 +341,13 @@
           event.value.substring(6, 10)
       )
     );
+
     eventDate.value.setHours(
       event.value.substring(11, 13),
       event.value.substring(14, 16),
       0
     );
+
     if (date === 'start') {
       if (
         eventDate.value < new Date(studyStore.study.plannedStart as string) ||
@@ -360,6 +363,18 @@
     } else if (date === 'end') {
       if (!checkEndDateError(eventDate.value, start.value)) {
         end.value = eventDate.value;
+      }
+    }
+
+    if (eventDate.value.toString() === 'Invalid Date') {
+      if (date === 'start') {
+        start.value = new Date();
+        calendarInputErrors.value.start =
+          'Please enter a valid Date. Date was resetted to today.';
+      } else {
+        end.value = new Date();
+        calendarInputErrors.value.end =
+          'Please enter a valid date! Date was resetted to today.';
       }
     }
   }
@@ -378,6 +393,27 @@
       return false;
     }
   }
+
+  function checkStartDateError(startDate: Date): boolean {
+    const plannedStartDate = new Date(studyStore.study.plannedStart as string);
+    const plannedEndDate = new Date(studyStore.study.plannedEnd as string);
+
+    if (startDate < plannedStartDate || startDate > plannedEndDate) {
+      calendarInputErrors.value.start =
+        'Please enter a start date-time that lies inside the study range.';
+      return true;
+    } else {
+      calendarInputErrors.value.start = '';
+      return false;
+    }
+  }
+
+  function checkDateRange() {
+    checkStartDateError(start.value);
+    checkEndDateError(end.value, start.value);
+  }
+
+  checkDateRange();
 </script>
 
 <template>
@@ -400,6 +436,8 @@
         style="width: 100%"
         class="col-span-5"
         :class="calendarInputErrors.start ? 'input-error' : ''"
+        :update:model-value="checkDateRange"
+        @date-select="checkDateRange()"
         @blur="handleCalendarInputUpdate($event, 'start')"
       />
       <div
@@ -421,6 +459,8 @@
         style="width: 100%"
         class="col-span-5"
         :class="calendarInputErrors.end ? 'input-error' : ''"
+        :update:model-value="checkDateRange"
+        @date-select="checkDateRange()"
         @blur="handleCalendarInputUpdate($event, 'end')"
       />
       <div v-if="calendarInputErrors.end" class="error col-span-5 col-start-2">
