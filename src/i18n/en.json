@@ -450,7 +450,7 @@
       "label": {
         "interventionTitle": "Intervention title",
         "triggerConditions": "Trigger Conditions",
-        "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use < > ≥ ≤ = or ! (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set.",
+        "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use <, >, >=, <=, = or != (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set.",
         "pushNotification": "Push Notification",
         "addTriggerGroup": "Add Trigger Group",
         "chooseObservation": "Choose observation",

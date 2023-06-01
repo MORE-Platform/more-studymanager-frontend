@@ -110,7 +110,7 @@
     { label: '<=', value: '<=' },
     { label: '>=', value: '>=' },
     { label: '=', value: '=' },
-    { label: '!', value: '!' },
+    { label: '!=', value: '!' },
   ];
 
   const stringOperator: MoreTableChoice[] = [
@@ -149,7 +149,8 @@
 
   function getOperatorOptions(trigger: InterventionTriggerConfig) {
     const operator: ComponentFactoryMeasurementsInner = getOperator(trigger);
-    return operator && operator.type === 'DOUBLE'
+    return (operator && operator.type === 'DOUBLE') ||
+      (operator && operator.type === 'INTEGER')
       ? numericOperator
       : stringOperator || [];
   }
