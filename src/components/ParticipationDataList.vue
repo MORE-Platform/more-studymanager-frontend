@@ -6,7 +6,9 @@
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { ref, Ref } from 'vue';
-  import { ParticipationDataMapping } from '../models/ParticipationData';
+  import {
+    ParticipationDataMapping,
+  } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
   import {
     MoreTableColumn,
@@ -36,8 +38,10 @@
       .getParticipationData(props.studyId)
       .then(async (response) => {
         return response.data.map((item) => {
+          console.log(item);
           const mapping: ParticipationDataMapping = {
             participantAlias: item.participantNamedId?.title || '-',
+            observationId: item.observationNamedId?.id || -1,
             observationTitle:
               `${item.observationNamedId?.title} ${getObservationTypeLabel(
                 item.observationType as string
@@ -114,24 +118,45 @@
     },
   ];
 
-  listParticipationData();
+  await listParticipationData();
+
+  function setObservationGroups() {
+    console.log('setObservationGroups');
+
+    const tempObj = participationDataListMapping.value.reduce(function (r, a) {
+      r[a.observationId] = r[a.observationId] || [];
+      r[a.observationId].push(a);
+      return r;
+    }, Object.create(null));
+
+    console.log(tempObj);
+
+    return tempObj || {};
+  }
+
+  const test = setObservationGroups();
 </script>
 
 <template>
   <div>
-    <MoreTable
-      row-id="observationId"
-      :title="$t('data.title')"
-      :subtitle="$t('data.description')"
-      :columns="studyDataColumns"
-      :rows="participationDataListMapping"
-      :row-actions="[]"
-      :row-edit-btn="false"
-      :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
-      :editable="() => false"
-      :loading="loader.isLoading.value"
-      :empty-message="$t('data.dataList.emptyListMsg')"
-    />
+    <div class="title mb-12">
+      <h3 class="font-bold">{{ $t('data.title') }}</h3>
+      <h4>{{ $t('data.description') }}</h4>
+    </div>
+    <div v-for="t in test" :key="t.observationId" class="mt-10">
+      <MoreTable
+        row-id="observationId"
+        :title="t[0].observationTitle"
+        :columns="studyDataColumns"
+        :rows="t"
+        :row-actions="[]"
+        :row-edit-btn="false"
+        :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
+        :editable="() => false"
+        :loading="loader.isLoading.value"
+        :empty-message="$t('data.dataList.emptyListMsg')"
+      />
+    </div>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>
