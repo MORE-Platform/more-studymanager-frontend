@@ -18,6 +18,10 @@
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
+  import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
+  import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
+  import InputNumber from 'primevue/inputnumber';
+  import PushNotificationInput from './shared/PushNotificationInput.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -51,19 +55,21 @@
     triggerProp?.value ? triggerProp.value : ''
   );
   const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
-  setTriggerConfig(triggerData?.type ? triggerData.type : '');
-  setNonScheduleTriggerConfig(triggerData?.properties);
+
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
   const triggerJsonError: Ref<string | undefined> = ref();
   const actionJsonError: Ref<string[]> = ref([]);
   const actionsEmptyError: Ref<string> = ref('');
-  const triggerEmptyError: Ref<string> = ref('');
   const removeActions: Ref<number[]> = ref([]);
-
+  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
+  const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
     studyStore.study.status === StudyStatus.Paused;
+
+  setTriggerConfig(triggerData?.type ? triggerData.type : '');
+  setNonScheduleTriggerConfig(triggerData?.properties);
 
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
@@ -104,6 +110,8 @@
             if (report.valid) {
               resolve(parsedProps);
             } else {
+              console.error('validation rejected');
+              console.error(report.errors);
               const error = report.errors
                 ?.concat(report.warnings || [])
                 .map((e) => e.message)
@@ -112,6 +120,8 @@
             }
           });
       } catch (e) {
+        console.error('validation request error');
+        console.error(e);
         reject({ msg: 'Cannot parse properties, no valid json', component, i });
       }
     });
@@ -166,8 +176,8 @@
             actions: actionsProps,
             removeActions: removeActions.value,
           };
+
           actionJsonError.value = [];
-          triggerEmptyError.value = '';
           triggerJsonError.value = '';
 
           if (actionsArray.value.length) {
@@ -207,6 +217,12 @@
       errors.value.push({
         label: 'action',
         value: t('intervention.error.addAction'),
+      });
+    }
+    if (!triggerConfigQueryObj.value.length) {
+      errors.value.push({
+        label: 'triggerConfig',
+        value: 'Please enter your triggerconfig',
       });
     }
   }
@@ -252,7 +268,6 @@
         props = triggerData?.properties;
       }
       setNonScheduleTriggerConfig(props);
-
       prevTriggerType.value = tType;
     }
   }
@@ -262,10 +277,18 @@
       if (key === 'cronSchedule') {
         showScheduleInput.value = true;
         return undefined;
+      } else if (key === 'queryObject') {
+        triggerConfigQueryObj.value = value ? value : [];
+        return undefined;
+      } else if (key === 'window') {
+        triggerConfigWindow.value = value ? value : undefined;
+        return value;
       } else {
         return value;
       }
     });
+    triggerProp.value = JSON.stringify(triggerProperties);
+
     hasAdditionalTriggerConfig.value =
       triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
   }
@@ -293,14 +316,34 @@
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
+      // eslint-disable-next-line no-prototype-builtins
+      if (JSON.parse(triggerProp.value).hasOwnProperty('window')) {
+        nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
+      }
+      // eslint-disable-next-line no-prototype-builtins
+      if (JSON.parse(triggerProp.value).hasOwnProperty('queryObject')) {
+        nonScheduleTriggerPropJson.queryObject = triggerConfigQueryObj.value;
+      }
       triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
+    }
+  }
+
+  function updateTriggerConditions(triggerConditions: TriggerConditionGroup[]) {
+    if (triggerProp.value) {
+      const props: Ref<any> = ref(JSON.parse(triggerProp.value as string));
+      // eslint-disable-next-line no-prototype-builtins
+      if (props.value.hasOwnProperty('queryObject')) {
+        props.value.queryObject = triggerConditions;
+        setNonScheduleTriggerConfig(props.value);
+        triggerProp.value = JSON.stringify(props.value);
+      }
     }
   }
 </script>
 
 <template>
   <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
-    <div class="mb-4" :class="editable ? '' : 'pb-4'">
+    <div class="mb-5" :class="editable ? '' : 'pb-4'">
       <h5 class="mb-1">
         {{ $t('intervention.dialog.title') }}
       </h5>
@@ -313,7 +356,7 @@
       :class="editable ? '' : 'gap-y-2'"
       @submit.prevent="save()"
     >
-      <div class="col-start-0 col-span-6" :class="editable ? '' : 'pb-4'">
+      <div class="col-start-0 col-span-8 mt-2" :class="editable ? '' : 'pb-4'">
         <h5>{{ $t('intervention.dialog.label.interventionTitle') }}*</h5>
         <div v-if="getError('title')" class="error col-span-8 mb-2">
           {{ getError('title') }}
@@ -338,12 +381,16 @@
           :disabled="!editable"
         ></Textarea>
       </div>
-      <div class="col-start-0 col-span-8 grid grid-cols-2 lg:grid-cols-3">
-        <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
+
+      <div class="col-start-0 col-span-8 mt-4 grid grid-cols-2 lg:grid-cols-3">
+        <h5 class="col-span-2" :class="editable ? 'mb-2' : ''">
           {{ $t('intervention.props.trigger') }}*
         </h5>
-        <div class="col-span-1" :class="editable ? '' : 'text-end'">
-          <div v-if="!editable" class="inline font-bold">Trigger-Type:</div>
+        <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
+          <div v-if="!editable" class="inline font-bold">
+            <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
+            {{ $t('intervention.dialog.label.triggerType') }}
+          </div>
           <Dropdown
             v-model="triggerType"
             :options="triggerTypesOptions"
@@ -360,12 +407,6 @@
         <div v-if="getError('trigger')" class="error col-span-8 mb-4">
           {{ getError('trigger') }}
         </div>
-        <div
-          v-if="triggerEmptyError && editable"
-          class="error col-start-0 col-span-8 lg:col-span-3"
-        >
-          {{ triggerEmptyError }}
-        </div>
         <div class="col-start-0 col-span-3">
           <!-- eslint-disable vue/no-v-html -->
           <div v-if="triggerJsonError && editable" class="error mb-4">
@@ -381,10 +422,35 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
+
+          <div
+            v-if="
+              triggerProp &&
+              JSON.parse(triggerProp).hasOwnProperty('window') &&
+              JSON.parse(triggerProp).queryObject !== undefined
+            "
+            class="grid grid-cols-5 items-center gap-4"
+          >
+            <h6 class="col-span-2 lg:col-span-1">
+              {{ $t('intervention.dialog.label.window') }}*
+            </h6>
+            <InputNumber
+              v-model="triggerConfigWindow"
+              :placeholder="'Enter number in ms'"
+              class="col-span-3 lg:col-span-4"
+              :disabled="!editable"
+            ></InputNumber>
+          </div>
+
           <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
             {{ $t('cronSchedule.additionalConfig') }}
           </div>
           <Textarea
+            v-if="
+              hasAdditionalTriggerConfig &&
+              triggerProp &&
+              JSON.parse(triggerProp).queryObject === undefined
+            "
             v-show="hasAdditionalTriggerConfig"
             v-model="nonScheduleInput"
             required
@@ -394,9 +460,21 @@
             style="width: 100%"
           ></Textarea>
         </div>
+        <div
+          v-if="
+            triggerProp && JSON.parse(triggerProp).hasOwnProperty('queryObject')
+          "
+          class="col-start-0 col-span-6 mt-5"
+        >
+          <InterventionTriggerConditions
+            class="mb-5"
+            :trigger-conditions="triggerConfigQueryObj"
+            @on-emit-trigger-conditions="updateTriggerConditions($event)"
+          />
+        </div>
       </div>
 
-      <div class="col-start-0 col-span-8 grid grid-cols-9">
+      <div class="col-start-0 col-span-8 mt-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
           <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
             {{ $t('intervention.props.action') }}*
@@ -435,13 +513,23 @@
               </div>
             </div>
             <!-- eslint-disable vue/no-v-html -->
-            <div class="mb-4" v-html="getActionDescription(action.type)"></div>
             <div class="col-span-4 justify-end"></div>
             <div v-if="actionJsonError[index] && editable" class="error mb-4">
               {{ actionJsonError[index] }}
             </div>
 
+            <PushNotificationInput
+              v-if="actionsArray[index].type === 'push-notification-action'"
+              :notification-string="actionsArray[index].properties"
+              :description="getActionDescription(actionsArray[index].type)"
+              :action-type-name="
+                nameForActionType(actionsArray[index].type) || ''
+              "
+              @on-props-change="actionsArray[index].properties = $event"
+            />
+
             <Textarea
+              v-else
               v-model="actionsArray[index].properties"
               class="border-disabled col-span-9"
               :placeholder="'intervention.description.provideActionConfig'"
