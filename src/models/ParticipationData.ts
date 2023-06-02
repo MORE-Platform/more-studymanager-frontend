@@ -7,7 +7,6 @@ export interface ParticipationDataMapping {
   lastDataReceived: string;
 }
 
-export interface ParticipationDataGroup {
-  observationTitle: string;
-  mapping: ParticipationDataMapping[];
+export interface ParticipationDataGrouping {
+  [key: number]: ParticipationDataMapping;
 }

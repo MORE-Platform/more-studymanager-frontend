@@ -6,7 +6,10 @@
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { ref, Ref } from 'vue';
-  import { ParticipationDataMapping } from '../models/ParticipationData';
+  import {
+    ParticipationDataGrouping,
+    ParticipationDataMapping,
+  } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
   import {
     MoreTableColumn,
@@ -32,7 +35,7 @@
   const { handleIndividualError } = useErrorHandling();
 
   const participationDataListMapping: Ref<ParticipationDataMapping[]> = ref([]);
-  const groupedParticipantData: Ref<any> = ref({});
+  const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
 
   async function listParticipationData(): Promise<void> {
     participationDataListMapping.value = await dataApi
@@ -179,7 +182,7 @@
     }
   }
   :deep(.p-accordion-header) {
-    margin-top: 1rem !important;
+    margin-top: 1.2rem !important;
 
     a {
       padding: 0.5rem 0 1rem 0 !important;
