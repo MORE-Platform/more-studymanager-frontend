@@ -6,7 +6,10 @@
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { ref, Ref } from 'vue';
-  import { ParticipationDataMapping } from '../models/ParticipationData';
+  import {
+    ParticipationDataGrouping,
+    ParticipationDataMapping,
+  } from '../models/ParticipationData';
   import { AxiosError } from 'axios';
   import {
     MoreTableColumn,
@@ -14,8 +17,10 @@
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
   import { ComponentFactory } from '../generated-sources/openapi';
-  const { componentsApi } = useComponentsApi();
+  import Accordion from 'primevue/accordion';
+  import AccordionTab from 'primevue/accordiontab';
 
+  const { componentsApi } = useComponentsApi();
   const { dataApi } = useDataApi();
 
   const props = defineProps({
@@ -30,6 +35,7 @@
   const { handleIndividualError } = useErrorHandling();
 
   const participationDataListMapping: Ref<ParticipationDataMapping[]> = ref([]);
+  const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
 
   async function listParticipationData(): Promise<void> {
     participationDataListMapping.value = await dataApi
@@ -38,6 +44,7 @@
         return response.data.map((item) => {
           const mapping: ParticipationDataMapping = {
             participantAlias: item.participantNamedId?.title || '-',
+            observationId: item.observationNamedId?.id || -1,
             observationTitle:
               `${item.observationNamedId?.title} ${getObservationTypeLabel(
                 item.observationType as string
@@ -114,25 +121,90 @@
     },
   ];
 
-  listParticipationData();
+  function getObservationGroups() {
+    groupedParticipantData.value = participationDataListMapping.value.reduce(
+      function (r, a) {
+        r[a.observationId] = r[a.observationId] || [];
+        r[a.observationId].push(a);
+        return r;
+      },
+      Object.create(null)
+    );
+  }
+
+  await listParticipationData();
+  getObservationGroups();
 </script>
 
 <template>
   <div>
-    <MoreTable
-      row-id="observationId"
-      :title="$t('data.title')"
-      :subtitle="$t('data.description')"
-      :columns="studyDataColumns"
-      :rows="participationDataListMapping"
-      :row-actions="[]"
-      :row-edit-btn="false"
-      :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
-      :editable="() => false"
-      :loading="loader.isLoading.value"
-      :empty-message="$t('data.dataList.emptyListMsg')"
-    />
+    <div class="title mb-12">
+      <h3 class="font-bold">{{ $t('data.title') }}</h3>
+      <h4>{{ $t('data.description') }}</h4>
+    </div>
+    <div>
+      <Accordion
+        :active-index="0"
+        lazy
+        expand-icon="pi pi-chevron-up"
+        class="mt-5"
+      >
+        <AccordionTab
+          v-for="(observationData, index) in groupedParticipantData"
+          :key="observationData[0].observationId"
+          :header="observationData[index].observationTitle as string"
+          class="mt-10 mb-10"
+        >
+          <MoreTable
+            v-if="observationData.length"
+            row-id="observationId"
+            :columns="studyDataColumns"
+            :rows="observationData"
+            :row-actions="[]"
+            :row-edit-btn="false"
+            :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
+            :editable="() => false"
+            :loading="loader.isLoading.value"
+            :empty-message="$t('data.dataList.emptyListMsg')"
+          />
+        </AccordionTab>
+      </Accordion>
+    </div>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>
 </template>
+
+<style scoped lang="postcss">
+  :deep(.more-table) {
+    .flex {
+      margin: 0;
+    }
+  }
+  :deep(.p-accordion-header) {
+    margin-top: 1.2rem !important;
+
+    a {
+      padding: 0.5rem 0 1rem 0 !important;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary-color) !important;
+      border: transparent !important;
+      border-bottom: 1px solid var(--surface-c) !important;
+      background: transparent !important;
+
+      &:focus,
+      &:active {
+        border: transparent !important;
+      }
+    }
+    .p-accordion-toggle-icon {
+      position: absolute;
+      right: 0;
+    }
+  }
+  :deep(.p-accordion-content) {
+    border: transparent !important;
+    padding: 0 !important;
+  }
+</style>
