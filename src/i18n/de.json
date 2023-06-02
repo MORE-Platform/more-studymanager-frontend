@@ -29,7 +29,8 @@
       "dataReceived": "Daten erhalten",
       "noDataReceived": "Keine Daten erhalten",
       "lastDataReceived": "Letzte Daten erhalten",
-      "to": "zu"
+      "to": "zu",
+      "message": "Nachricht"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -450,7 +451,14 @@
         "view": "Interventiondetails"
       },
       "label": {
-        "interventionTitle": "Interventionstitel"
+        "interventionTitle": "Interventionstitel",
+        "triggerConditions": "Auslöserkonditionen",
+        "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: <, >, <=, >=, = oder != (nicht gleich).",
+        "pushNotification": "Push Notification",
+        "addTriggerGroup": "Konditionsgruppe hinzufügen",
+        "chooseObservation": "Datenerhebung auswählen",
+        "triggerType": "Triggertyp",
+        "window": "Window"
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
@@ -459,6 +467,12 @@
         "warning": "Eine gelöschte Intervention kann nicht wiederhergestellt werden. Wenn Sie diese Intervention löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
         "intro": "Sie sind kurz davor folgende Intervention zu löschen:",
         "confirm": "Möchten Sie diese Intervention wirklich löschen?"
+      },
+      "placeholder": {
+        "title": "Titel einfügen",
+        "message": "Nachricht einfügen",
+        "enterValue": "Wert einfügen",
+        "enterNumber": "Numerischen Wert einfügen"
       }
     },
     "interventionList": {
@@ -477,7 +491,6 @@
     "placeholder": {
       "noDescription": "Keine Beschreibung verfügbar",
       "trigger": "Wähle einen Auslösertyp",
-
       "chooseAction": "Wähle eine Aktion",
       "emptyScheduler": "Stellen Sie einen Zeitplan für Ihre Intervention bereit."
     },

@@ -391,10 +391,11 @@
             props: {
               header: headerText,
               style: {
-                width: '50vw',
+                width: '60vw',
               },
               breakpoints: {
-                '960px': '75vw',
+                '1280px': '70vw',
+                '960px': '80vw',
                 '640px': '90vw',
               },
               modal: true,
