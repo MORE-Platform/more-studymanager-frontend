@@ -8,5 +8,5 @@ export interface ParticipationDataMapping {
 }
 
 export interface ParticipationDataGrouping {
-  [key: number]: ParticipationDataMapping;
+  [key: number]: ParticipationDataMapping[];
 }
