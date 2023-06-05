@@ -109,7 +109,7 @@
   const tableActions: MoreTableAction[] = [
     {
       id: 'create',
-      icon: 'pi pi-plus',
+      icon: 'pi pi-angle-down',
       label: t('observation.observationList.action.add'),
       visible: () => actionsVisible,
       options: { type: 'menu', values: observationTypes },
@@ -153,6 +153,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {
@@ -253,6 +254,7 @@
         groupStates: groupStatuses,
         observation: observation,
         factory: factoryForType(observation?.type),
+        closeWithEscape: false,
       },
       props: {
         header: headerText,
@@ -264,6 +266,8 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
+        closeOnEscape: false,
       },
       onClose: (options) => {
         if (options?.data) {

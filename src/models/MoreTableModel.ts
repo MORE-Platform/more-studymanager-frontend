@@ -47,6 +47,7 @@ export interface MoreTableAction {
   confirm?: MoreTableActionConfirm;
   confirmDeleteDialog?: MoreTableActionConfirmDialog;
   visible?: (data?: any) => boolean;
+  tooltip?: string;
 }
 
 export interface MoreTableRowActionResult<D> {

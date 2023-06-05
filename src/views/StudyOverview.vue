@@ -13,8 +13,12 @@
   const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
+  async function getStudyGroups() {
+    await studyGroupStore.getStudyGroups(studyId);
+  }
+
   studyStore.getStudy(studyId);
-  studyGroupStore.getStudyGroups(studyId);
+  getStudyGroups();
 </script>
 
 <template>
@@ -32,11 +36,13 @@
         @on-update-study="studyStore.updateStudy($event)"
         @on-update-study-status="studyStore.updateStudyStatus($event)"
       />
+
       <StudyGroupList
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
       ></StudyGroupList>
+
       <StudyCollaboratorList
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"

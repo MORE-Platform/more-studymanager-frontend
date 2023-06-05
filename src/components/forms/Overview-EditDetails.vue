@@ -50,6 +50,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         console.log(options?.data);
@@ -75,6 +76,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         if (options) {

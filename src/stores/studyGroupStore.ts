@@ -15,15 +15,13 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
 
   // Actions
   async function getStudyGroups(studyId: number) {
-    if (!studyGroups.value.length) {
-      studyGroups.value = await studyGroupsApi
-        .listStudyGroups(studyId)
-        .then((response) => response.data)
-        .catch((e: AxiosError) => {
-          handleIndividualError(e, 'cannot list study group');
-          return studyGroups.value;
-        });
-    }
+    studyGroups.value = await studyGroupsApi
+      .listStudyGroups(studyId)
+      .then((response) => response.data)
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list study group');
+        return studyGroups.value;
+      });
   }
   async function createStudyGroup(studyId: number) {
     let title;

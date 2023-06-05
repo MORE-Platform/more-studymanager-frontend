@@ -40,7 +40,8 @@
     },
     "header": {
       "privateBeta": "Private Beta",
-      "logout": "Ausloggen"
+      "logout": "Ausloggen",
+      "backToDashboard": "Dashboard"
     },
     "footer": {
       "aboutMore": "Über More"
@@ -309,11 +310,12 @@
       "emptyListMsg": "Verwalten oder fügen Sie Studien Teilnehmer hinzu. Ihre Studienteilnehmer werden hier aufgelistet.",
       "action": {
         "distribute": "Automatische Gruppenzuweisung",
-        "import": "Teilnehmer importieren",
-        "export": "Teilnehmer exportieren",
+        "import": "CSV importieren",
+        "export": "CSV exportieren",
         "add": "Teilnehmer hinzufügen"
       },
       "labels": {
+        "add1": "1 hinzufügen",
         "add3": "3 hinzufügen",
         "add10": "10 hinzufügen",
         "add25": "25 hinzufügen",
@@ -645,7 +647,16 @@
   "tooltips": {
     "deleteBtn": "Löschen",
     "editBtn": "Bearbeiten",
-    "downloadBtn": "Herunterladen"
+    "downloadBtn": "Herunterladen",
+    "moreTable": {
+      "editBtn": "Bearbeite die gezeigten Eckdaten.",
+      "saveChanges": "Änderungen speichern",
+      "cancelAction": "Abbrechen",
+      "deleteStudyBtn": "Studie löschen",
+      "deleteStudyGroupBtn": "Studeingruppe löschen",
+      "copyStudyUrl": "URL zur Studie kopieren",
+      "showStudy": "Klicke auf die Zeile, um auf die Studiendetails seite zu kommen."
+    }
   },
 
   "userstatus": {

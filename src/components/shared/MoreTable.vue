@@ -100,6 +100,14 @@
       type: Number,
       default: 10,
     },
+    rowTooltipMsg: {
+      type: String,
+      default: undefined,
+    },
+    rowEndIcon: {
+      type: String,
+      default: undefined,
+    },
   });
 
   const tableFilter = createTableFilter();
@@ -186,6 +194,9 @@
   }
 
   function edit(row: any) {
+    editMode.value = [];
+    editingRows.value = [];
+
     // @ts-expect-error: cannot really fix
     editMode.value.push(row[props.rowId]);
 
@@ -434,13 +445,14 @@
             "
           >
             <template #value>
-              <span :class="action.icon" class="mr-2 text-white"></span>
+              <span class="pi pi-search ml-1 mr-2 text-white"></span>
               <span
                 v-if="action.options.valuesCallback.placeholder"
                 class="text-white"
               >
                 {{ action.options.valuesCallback.placeholder }}
               </span>
+              <span :class="action.icon" class="ml-2 text-white"></span>
             </template>
             <template #option="slotProps">
               <div
@@ -463,10 +475,9 @@
           <div v-if="!!action.options && action.options.type === 'menu'">
             <Button
               type="button"
-              :label="action.label"
-              :icon="action.icon"
               :disabled="isVisible(action) === false"
               @click="toggle(action, $event)"
+              >{{ action.label }} <span class="ml-3" :class="action.icon"></span
             ></Button>
             <Menu
               :ref="menus[action.id]"
@@ -500,7 +511,11 @@
       filter-display="menu"
       selection-mode="single"
       responsive-layout="scroll"
-      :paginator="paginator"
+      :paginator="
+        paginatorRows
+          ? paginator && rows.length >= paginatorRows
+          : paginator && rows.length >= 5
+      "
       :rows="paginator ? paginatorRows : 5"
       @row-click="onRowClick($event)"
     >
@@ -514,10 +529,12 @@
           <div
             v-for="action in frontRowActions"
             :key="action.id"
+            a
             class="inline"
           >
             <Button
               v-if="isVisible(action, slotProps.data)"
+              v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
               type="button"
               :title="action.label"
               :icon="action.icon"
@@ -598,10 +615,17 @@
           />
         </template>
         <template #body="{ data, field }">
-          <div v-if="data[field] === null" class="placeholder">
+          <div
+            v-if="data[field] === null"
+            v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
+            class="placeholder"
+          >
             {{ column.placeholder || $t('global.labels.no-value') }}
           </div>
-          <div v-else>
+          <div
+            v-else
+            v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
+          >
             <span
               v-if="column.type === MoreTableFieldType.string || !column.type"
               :class="
@@ -666,10 +690,12 @@
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
               <Button
+                v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
                 type="button"
                 :title="action.label"
                 :icon="action.icon"
                 :disabled="isVisible(action, slotProps.data) === false"
+                :class="action.id === 'delete' ? 'btn-important' : ''"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
@@ -677,22 +703,29 @@
             </div>
             <Button
               v-if="rowEditBtn"
+              v-tooltip.bottom="$t('tooltips.moreTable.editBtn')"
               type="button"
               icon="pi pi-pencil"
               :disabled="isEditable(slotProps.data) === false"
               @click="edit(slotProps.data)"
             >
             </Button>
+            <div v-if="rowEndIcon" class="ml-2 self-center">
+              <span :class="rowEndIcon" style="font-size: 1.3rem" />
+            </div>
           </div>
           <div v-else-if="isEditMode(slotProps.data)">
             <Button
+              v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
               type="button"
               icon="pi pi-check"
               @click="save(slotProps.data)"
             ></Button>
             <Button
+              v-tooltip.bottom="$t('tooltips.moreTable.cancelAction')"
               type="button"
               icon="pi pi-times"
+              class="btn-gray"
               @click="cancel(slotProps.data)"
             ></Button>
           </div>
@@ -818,6 +851,10 @@
     ul li {
       display: flex;
       line-break: normal;
+    }
+
+    :deep(.p-tooltip-text) {
+      text-align: center;
     }
   }
 </style>

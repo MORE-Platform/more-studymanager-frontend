@@ -42,7 +42,7 @@
       <span class="text-color"> Id {{ study.studyId }}: </span>
       <span class="color-primary">{{ study.title }}</span>
     </h3>
-    <div class="mb-10">
+    <div v-if="study.purpose" class="mb-10">
       <h5>{{ $t('study.props.purpose') }}</h5>
       <div>{{ study.purpose }}</div>
     </div>

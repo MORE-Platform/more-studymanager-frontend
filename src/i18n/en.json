@@ -40,7 +40,8 @@
     },
     "header": {
       "privateBeta": "Private Beta",
-      "logout": "Log Out"
+      "logout": "Log Out",
+      "backToDashboard": "Dashboard"
     },
     "footer": {
       "aboutMore": "About More"
@@ -307,11 +308,12 @@
       "emptyListMsg": "Add and manage your study's participants. Your participants will be listed here.",
       "action": {
         "distribute": "Assign study groups",
-        "import": "Import Participants",
-        "export": "Export Participants",
+        "import": "Import CSV",
+        "export": "Export CSV",
         "add": "Add Participant"
       },
       "labels": {
+        "add1": "Add 1",
         "add3": "Add 3",
         "add10": "Add 10",
         "add25": "Add 25",
@@ -642,7 +644,16 @@
   "tooltips": {
     "deleteBtn": "Delete",
     "editBtn": "Edit",
-    "downloadBtn": "Download"
+    "downloadBtn": "Download",
+    "moreTable": {
+      "editBtn": "Edit shown properties.",
+      "saveChanges": "Save changes",
+      "cancelAction": "Cancel",
+      "deleteStudyBtn": "Delete study",
+      "deleteStudyGroupBtn": "Delete study group",
+      "copyStudyUrl": "Copy study URL",
+      "showStudy": "Click on row to show study details page."
+    }
   },
 
   "userstatus": {

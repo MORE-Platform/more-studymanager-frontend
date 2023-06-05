@@ -32,6 +32,7 @@
             '640px': '90vw',
           },
           modal: true,
+          draggable: false,
         },
         onClose: () => {
           localStorage.setItem('welcomeMsg', 'hide');

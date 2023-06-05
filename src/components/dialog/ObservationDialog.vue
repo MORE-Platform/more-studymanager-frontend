@@ -49,8 +49,6 @@
     .map((json: any) => Property.fromJson(json))
     .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]));
 
-  console.log(properties);
-
   const scheduler: Ref<Event> = ref(
     observation.schedule ? observation.schedule : {}
   );
@@ -81,6 +79,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         if (options?.data) {
@@ -527,7 +526,7 @@
         </Dropdown>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
+      <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>
