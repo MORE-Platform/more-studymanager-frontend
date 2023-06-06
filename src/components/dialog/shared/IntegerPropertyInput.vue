@@ -13,7 +13,7 @@
 
 <template>
   <div class="flex flex-col gap-2">
-    <label :for="property.id">{{ property.name }}</label>
+    <label :for="property.id">{{ $t(property.name) }}</label>
     <InputNumber
       :id="property.id"
       v-model="property.value"
@@ -22,6 +22,8 @@
       :min="property.min"
       :aria-describedby="property.id + '-help'"
     />
-    <small :id="property.id + '-help'">{{ props.property.description }}</small>
+    <small :id="property.id + '-help'">{{
+      $t(props.property.description)
+    }}</small>
   </div>
 </template>

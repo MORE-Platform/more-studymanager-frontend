@@ -254,9 +254,9 @@
 <template>
   <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
     <div class="mb-4" :class="editable ? '' : 'pb-4'">
-      <h5 class="mb-1">{{ factory.title }}</h5>
+      <h5 class="mb-1">{{ $t(factory.title) }}</h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="factory.description"></h6>
+      <h6 v-if="factory.description" v-html="$t(factory.description)"></h6>
     </div>
 
     <form
@@ -480,7 +480,7 @@
           :disabled="!editable"
         ></Textarea>
       </div>
-      <div class="col-start-0 col-span-8">
+      <div v-if="properties.length" class="col-start-0 col-span-8">
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
@@ -489,6 +489,7 @@
             :key="index"
             class="mb-2"
           >
+            {{ property }}
             <StringPropertyInput
               v-if="property instanceof StringProperty"
               :property="property"

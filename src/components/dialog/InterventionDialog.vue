@@ -521,7 +521,7 @@
             <PushNotificationInput
               v-if="actionsArray[index].type === 'push-notification-action'"
               :notification-string="actionsArray[index].properties"
-              :description="getActionDescription(actionsArray[index].type)"
+              :description="t(getActionDescription(actionsArray[index].type))"
               :action-type-name="
                 nameForActionType(actionsArray[index].type) || ''
               "

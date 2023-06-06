@@ -365,6 +365,46 @@
         "confirm": "Are you sure you want to delete your observation?"
       }
     },
+    "factory": {
+      "limeSurvey": {
+        "title": "Lime Survey Observation",
+        "description": "This observation enables you to create a Lime Survey questionnaire",
+        "configProps": {
+          "idName": "Survey",
+          "idDesc": "The id of the survey"
+        }
+      },
+      "polarVerity": {
+        "title": "Polar Verity Sensor",
+        "description": "This observation enables you to collect heart rate data via the polar verity sensor. No properties are supported."
+      },
+      "external": {
+        "title": "External Observation",
+        "description": "A stub observation for data that is collected via the external data api."
+      },
+      "gpsMobile": {
+        "title": "GPS Mobile Sensor",
+        "description": "This observation enables you to collect GPS data via the smartphone sensor.",
+        "configProps": {
+          "measurementName": "Measurement Interval",
+          "measurmentDesc": "Measurment Interval in Milliseconds, 30k to 600k"
+        }
+      },
+      "simpleQuestion": {
+        "title": "Question Observation",
+        "description": "This observation enables you to create a simple MultipleChoice question.",
+        "configProps": {
+          "questionName": "Question",
+          "questionDesc": "The question you want to ask.",
+          "answerName": "Answers",
+          "answerDesc": "Possible answers (min. 2, max.5)"
+        }
+      },
+      "accelerometerMobile": {
+        "title": "Accelerometer Mobile Sensor",
+        "description": "This observation enables you to collect accelerometer data via the smartphone sensor."
+      }
+    },
     "error":  {
       "noValidField": "Wrong value",
       "addTitle":  "The observation title is required. Please add a title for your intervention.",
@@ -480,6 +520,13 @@
       "emptyListMsg": "Add and manage your study's interventions. Your interventions will be listed here.",
       "action": {
         "add": "Add Intervention"
+      }
+    },
+    "factory": {
+      "actions": {
+        "pushNotification": {
+          "description": "Sends a push notification to all matching participants based on the trigger."
+        }
       }
     },
     "error":  {
