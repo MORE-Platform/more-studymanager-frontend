@@ -2,6 +2,9 @@
   import { StringListProperty } from '../../../models/InputModels';
   import { PropType } from 'vue';
   import InputText from 'primevue/inputtext';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const props = defineProps({
     property: {
@@ -18,8 +21,14 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <label>{{ $t(property.name) }}</label>
+  <div class="flex flex-col gap-1">
+    <h6 class="font-bold">
+      <label
+        >{{ $t(property.name) }}<span v-if="property.required">*</span
+        ><span v-if="property.required">*</span></label
+      >
+    </h6>
+    <small>{{ $t(props.property.description) }}</small>
     <!-- eslint-disable -->
     <InputText
       v-for="index in property.maxSize"
@@ -27,9 +36,9 @@
       :value="property.value?.[index - 1]"
       @keyup="update($event, index-1)"
       type="text"
+      :placeholder="t('global.labels.option') + ' ' + index"
       style="display: block"
     />
     <!-- eslint-enable -->
-    <small>{{ $t(props.property.description) }}</small>
   </div>
 </template>

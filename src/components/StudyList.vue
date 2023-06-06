@@ -212,6 +212,7 @@
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
       row-end-icon="pi pi-angle-right"
+      class="table-title-width"
       @onselect="goToStudy($event)"
       @onaction="executeAction($event)"
       @onchange="updateStudyInPlace($event)"

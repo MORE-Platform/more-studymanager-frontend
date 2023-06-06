@@ -142,6 +142,7 @@
       :table-actions="tableActions"
       :edit-access-roles="editableRoles"
       :empty-message="$t('studyGroup.groupList.placeholder.emptyGroupList')"
+      class="table-title-width"
       @onaction="executeAction($event)"
       @onchange="changeValueInPlace($event)"
     />

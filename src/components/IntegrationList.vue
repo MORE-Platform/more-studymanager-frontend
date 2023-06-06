@@ -315,6 +315,7 @@
       :editable-access="false"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('integration.integrationList.emptyListMsg')"
+      class="table-title-width table-btn-min-height"
       @onaction="execute($event)"
     />
     <DynamicDialog />

@@ -206,6 +206,7 @@
 
     .bg-blue-500 {
       background-color: var(--primary-color) !important;
+      border-bottom: 2px solid var(--bluegray-200) !important;
     }
 
     .tab-inactive {
