@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { PropType } from 'vue';
+import {PropType, ref, Ref} from 'vue';
   import {
     Study,
     StudyRole,
@@ -21,6 +21,13 @@
     study: { type: Object as PropType<Study>, required: true },
     styleModifier: { type: String, default: '' },
     userRoles: { type: Array as PropType<Array<StudyRole>>, required: true },
+  });
+
+  const contactInfo: Ref<any> = ref({
+    institute: 'Ludwig Bolzmann Institut',
+    contactPerson: 'Dr. Max Mustermann',
+    contactEmail: 'max.mustermann@bolzmann.at',
+    contactTel: undefined,
   });
 
   const emit = defineEmits<{
@@ -168,6 +175,27 @@
       <div>
         <span v-if="study.consentInfo">{{ study.consentInfo }}</span>
         <span v-else>{{ $t('study.placeholder.emptyConsentInfo') }}</span>
+      </div>
+    </div>
+    <div class="mb-6">
+      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo')}}</h5>
+      <div class="grid grid-cols-4 lg:grid-cols-6 gap-4">
+        <div v-if="contactInfo.institute" class="col-span-1">
+          <h6 class="font-bold">{{ $t('study.dialog.label.institute')}}</h6>
+          <div>{{contactInfo.institute}}</div>
+        </div>
+        <div class="col-span-1">
+          <h6 class="font-bold">{{$t('study.dialog.label.contactPerson')}}</h6>
+          <div>{{contactInfo.contactPerson}}</div>
+        </div>
+        <div>
+          <h6 class="font-bold">{{$t('study.dialog.label.contactEmail')}}</h6>
+          <div>{{contactInfo.contactEmail}}</div>
+        </div>
+        <div v-if="contactInfo.contactTel">
+          <h6 class="font-bold">{{$t('study.dialog.label.contactTel')}}</h6>
+          <div>{{contactInfo.contactTel}}</div>
+        </div>
       </div>
     </div>
   </div>
