@@ -126,7 +126,8 @@
       },
       "labels": {
         "changeStatus": "Studienstatus ändern",
-        "changeTo": "Statusänderung von "
+        "changeTo": "Statusänderung von ",
+        "contactInfo": "Kontaktinformationen"
       }
     },
     "statusStrings": {
@@ -148,7 +149,11 @@
       "selectLanguage": "Sprache auswählen",
       "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
       "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
-      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu."
+      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu.",
+      "institute": "Gib das Institut der Studie ein.",
+      "contactPerson": "Gib den Namen der Kontaktperson ein.",
+      "contactEmail": "Gib eine Kontakt Emailadresse ein.",
+      "contactTel": "Gib eine Kontakt Telephonnummer ein."
     },
     "dialog": {
       "header":{
@@ -160,7 +165,12 @@
       "label": {
         "studyTitle": "Studientitel",
         "studyStart": "Studienstart",
-        "studyEnd": "Studienende"
+        "studyEnd": "Studienende",
+        "contactInfo": "Kontaktinformationen",
+        "contactPerson": "Kontaktperson",
+        "institute": "Institut",
+        "contactEmail": "Kontakt Emailadresse",
+        "contactTel": "Kontakt Telefonnummer"
       },
       "deleteMsg": {
         "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden.",
@@ -175,8 +185,8 @@
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist den Studien-Mitarbeitern zugänglich.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Diese sollte den Teilnehmer:innen eine kurze Beschreibung über die Studie und evtl. ihren Aufgaben preisgeben.",
-        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt und muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen. Es soll generelle Informationen über die aufzuzeichnenden Daten geben."
-
+        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt und muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen. Es soll generelle Informationen über die aufzuzeichnenden Daten geben.",
+        "contactData": "Diese Kontaktdaten werden auf der App den TeilnehmerInnen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Absolvierung der Studie oder einzelner Tasks gibt."
       },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
