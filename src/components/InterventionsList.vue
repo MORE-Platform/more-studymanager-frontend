@@ -439,6 +439,7 @@
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
+      class="table-title-width table-btn-min-height"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"

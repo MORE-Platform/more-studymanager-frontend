@@ -168,7 +168,7 @@
         "confirm": "Möchten Sie die Studie wirklich löschen?"
       },
       "msg": {
-        "urlCopied": "Die URL der Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert.",
+        "urlCopied": "Der Link zur Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert.",
         "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?"
       },
       "description": {
@@ -188,7 +188,7 @@
       "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
       "action": {
         "addStudy": "Neue Studie hinzufügen",
-        "copyUrl": "URL kopieren"
+        "copyUrl": "Studie teilen"
       }
     }
   },
@@ -702,7 +702,7 @@
       "cancelAction": "Abbrechen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studeingruppe löschen",
-      "copyStudyUrl": "URL zur Studie kopieren",
+      "copyStudyUrl": "Studie teilen",
       "showStudy": "Klicke auf die Zeile, um auf die Studiendetails seite zu kommen."
     }
   },

@@ -384,11 +384,11 @@
 <template>
   <div class="more-table">
     <div class="mb-8 flex">
-      <div class="title">
+      <div class="title w-full">
         <h3 v-if="title">{{ title }}</h3>
         <h4 v-if="subtitle">{{ subtitle }}</h4>
       </div>
-      <div class="actions flex flex-1 justify-end">
+      <div class="actions table-actions flex flex-1 justify-end">
         <div
           v-for="(action, actionIndex) in tableActions"
           :key="action.id"
@@ -856,5 +856,12 @@
     :deep(.p-tooltip-text) {
       text-align: center;
     }
+  }
+  .table-btn-min-height .table-actions button {
+    min-height: 60px;
+  }
+
+  .table-title-width .title {
+    max-width: 80%;
   }
 </style>

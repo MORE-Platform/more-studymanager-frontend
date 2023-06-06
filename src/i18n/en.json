@@ -155,7 +155,7 @@
         "edit": "Edit Study",
         "create": "Create Study",
         "delete": "Delete Study",
-        "urlCopied": "Copied Study Id"
+        "urlCopied": "Share study"
       },
       "label": {
         "studyTitle": "Study title",
@@ -168,7 +168,7 @@
         "confirm": "Are you sure you want to delete your study?"
       },
       "msg": {
-        "urlCopied": "URL for '{title} (Id: {studyId})'  was copied to your clipboard." ,
+        "urlCopied": "Link to study '{title} (Id: {studyId})'  was copied to your clipboard." ,
         "delete": "A deleted study can't be restored. Are you sure you want to delete your study?"
       },
       "description": {
@@ -698,7 +698,7 @@
       "cancelAction": "Cancel",
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
-      "copyStudyUrl": "Copy study URL",
+      "copyStudyUrl": "Share study",
       "showStudy": "Click on row to show study details page."
     }
   },

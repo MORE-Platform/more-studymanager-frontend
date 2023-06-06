@@ -140,7 +140,7 @@
   <div>
     <div class="title mb-12">
       <h3 class="font-bold">{{ $t('data.title') }}</h3>
-      <h4>{{ $t('data.description') }}</h4>
+      <div>{{ $t('data.description') }}</div>
     </div>
     <div>
       <Accordion
