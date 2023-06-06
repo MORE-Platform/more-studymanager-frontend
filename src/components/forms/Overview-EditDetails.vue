@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref, Ref} from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import {
     Study,
     StudyRole,
@@ -178,23 +178,25 @@ import {PropType, ref, Ref} from 'vue';
       </div>
     </div>
     <div class="mb-6">
-      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo')}}</h5>
-      <div class="grid grid-cols-4 lg:grid-cols-6 gap-4">
+      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
+      <div class="grid grid-cols-4 gap-4 lg:grid-cols-6">
         <div v-if="contactInfo.institute" class="col-span-1">
-          <h6 class="font-bold">{{ $t('study.dialog.label.institute')}}</h6>
-          <div>{{contactInfo.institute}}</div>
+          <h6 class="font-bold">{{ $t('study.dialog.label.institute') }}</h6>
+          <div>{{ contactInfo.institute }}</div>
         </div>
         <div class="col-span-1">
-          <h6 class="font-bold">{{$t('study.dialog.label.contactPerson')}}</h6>
-          <div>{{contactInfo.contactPerson}}</div>
+          <h6 class="font-bold">
+            {{ $t('study.dialog.label.contactPerson') }}
+          </h6>
+          <div>{{ contactInfo.contactPerson }}</div>
         </div>
         <div>
-          <h6 class="font-bold">{{$t('study.dialog.label.contactEmail')}}</h6>
-          <div>{{contactInfo.contactEmail}}</div>
+          <h6 class="font-bold">{{ $t('study.dialog.label.contactEmail') }}</h6>
+          <div>{{ contactInfo.contactEmail }}</div>
         </div>
         <div v-if="contactInfo.contactTel">
-          <h6 class="font-bold">{{$t('study.dialog.label.contactTel')}}</h6>
-          <div>{{contactInfo.contactTel}}</div>
+          <h6 class="font-bold">{{ $t('study.dialog.label.contactTel') }}</h6>
+          <div>{{ contactInfo.contactTel }}</div>
         </div>
       </div>
     </div>
