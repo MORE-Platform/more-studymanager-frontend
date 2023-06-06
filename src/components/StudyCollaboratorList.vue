@@ -105,7 +105,7 @@
 
   const rowActions: MoreTableAction[] = [
     {
-      id: 'deleteCollab',
+      id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       visible: (data: MoreTableCollaboratorItem) => {
@@ -137,6 +137,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {
@@ -168,7 +169,7 @@
     {
       id: 'create',
       label: t('studyCollaborator.collaboratorList.action.add'),
-      icon: 'pi pi-plus',
+      icon: 'pi pi-angle-down',
       visible: () => editAccess,
       options: {
         type: 'search',
@@ -201,7 +202,7 @@
     action: MoreTableRowActionResult<MoreTableCollaboratorItem>
   ) {
     switch (action.id) {
-      case 'deleteCollab':
+      case 'delete':
         return deleteStudyCollaborator(action.row);
       case 'create':
         return openAddCollaboratorDialog(action);
@@ -315,6 +316,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         if (options?.data) {

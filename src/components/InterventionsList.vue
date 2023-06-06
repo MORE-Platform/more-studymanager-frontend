@@ -139,6 +139,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {
@@ -399,7 +400,7 @@
                 '640px': '90vw',
               },
               modal: true,
-              closeOnEscape: false,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {

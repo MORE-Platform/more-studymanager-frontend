@@ -12,17 +12,21 @@
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyDialog from './dialog/StudyDialog.vue';
   import { useDialog } from 'primevue/usedialog';
-  import InfoDialog from './dialog/InfoDialog.vue';
   import useLoader from '../composable/useLoader';
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import DeleteStudyDialog from './dialog/DeleteStudyDialog.vue';
+  import { ref, Ref } from 'vue';
+  import AlertMsg from './shared/AlertMsg.vue';
 
   const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
   const { t } = useI18n();
+
+  const showMessage: Ref<boolean> = ref(false);
+  const alertMessage: Ref<string> = ref('');
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: t('study.props.studyId'), sortable: true },
@@ -86,6 +90,7 @@
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteStudyBtn'),
       confirmDeleteDialog: {
         header: t('study.dialog.header.delete'),
         message: t('study.dialog.msg.delete'),
@@ -107,6 +112,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
           }),
       },
@@ -122,6 +128,7 @@
       id: 'copyId',
       label: t('study.studyList.action.copyUrl'),
       icon: 'pi pi-copy',
+      tooltip: t('tooltips.moreTable.copyStudyUrl'),
     },
   ];
   const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
@@ -165,6 +172,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         if (options?.data) {
@@ -178,22 +186,8 @@
     if (studyId) {
       const studyUrl = location.host + '/studies/' + studyId;
       navigator.clipboard.writeText(studyUrl);
-      dialog.open(InfoDialog, {
-        data: {
-          message: t('study.dialog.msg.urlCopied', { studyId, title }),
-        },
-        props: {
-          header: t('study.dialog.header.urlCopied'),
-          style: {
-            width: '50vw',
-          },
-          breakpoints: {
-            '960px': '75vw',
-            '640px': '90vw',
-          },
-          modal: true,
-        },
-      });
+      showMessage.value = true;
+      alertMessage.value = t('study.dialog.msg.urlCopied', { studyId, title });
     }
   }
 
@@ -217,11 +211,21 @@
       :edit-access-roles="editAccessRoles"
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
+      row-end-icon="pi pi-angle-right"
       @onselect="goToStudy($event)"
       @onaction="executeAction($event)"
       @onchange="updateStudyInPlace($event)"
     />
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
+
+    <AlertMsg
+      :show-msg="showMessage"
+      :message="alertMessage"
+      type="msg"
+      severity-type="success"
+      style-modifier="msgPosition"
+      @on-msg-change="showMessage = false"
+    />
   </div>
 </template>

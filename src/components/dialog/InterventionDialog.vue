@@ -521,7 +521,7 @@
             <PushNotificationInput
               v-if="actionsArray[index].type === 'push-notification-action'"
               :notification-string="actionsArray[index].properties"
-              :description="getActionDescription(actionsArray[index].type)"
+              :description="t(getActionDescription(actionsArray[index].type))"
               :action-type-name="
                 nameForActionType(actionsArray[index].type) || ''
               "
@@ -570,7 +570,7 @@
         </Dropdown>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-8 justify-end text-right">
+      <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>

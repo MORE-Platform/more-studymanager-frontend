@@ -19,7 +19,7 @@
 
 <template>
   <div class="flex flex-col gap-2">
-    <label>{{ property.name }}</label>
+    <label>{{ $t(property.name) }}</label>
     <!-- eslint-disable -->
     <InputText
       v-for="index in property.maxSize"
@@ -30,6 +30,6 @@
       style="display: block"
     />
     <!-- eslint-enable -->
-    <small>{{ props.property.description }}</small>
+    <small>{{ $t(props.property.description) }}</small>
   </div>
 </template>

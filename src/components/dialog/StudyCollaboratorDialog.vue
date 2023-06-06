@@ -64,7 +64,7 @@
     >
     </MultiSelect>
 
-    <div class="buttons mt-8 justify-end text-right">
+    <div class="buttons mt-1 justify-end text-right">
       <Button class="btn-gray" @click="cancel()">{{
         $t('global.labels.cancel')
       }}</Button>

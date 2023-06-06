@@ -102,6 +102,8 @@
               '960px': '75vw',
               '640px': '90vw',
             },
+            modal: true,
+            draggable: false,
           },
           onClose: () => {
             console.log('closed access dialog');

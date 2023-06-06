@@ -120,6 +120,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {
@@ -142,7 +143,7 @@
       id: 'distribute',
       label: t('participants.participantsList.action.distribute'),
       visible: () => {
-        return actionsVisible;
+        return actionsVisible && participantsList.value.length > 0;
       },
     },
     {
@@ -162,6 +163,7 @@
     {
       id: 'export',
       label: t('participants.participantsList.action.export'),
+      icon: 'pi pi-download',
       visible: () => {
         return participantsList.value.length > 0;
       },
@@ -169,16 +171,18 @@
     {
       id: 'create',
       label: t('participants.participantsList.action.add'),
-      icon: 'pi pi-plus',
+      icon: 'pi pi-angle-down',
       visible: () => {
         return (
           props.statusStatus === StudyStatus.Draft ||
           props.statusStatus === StudyStatus.Paused
         );
       },
+
       options: {
-        type: 'split',
+        type: 'menu',
         values: [
+          { label: t('participants.participantsList.labels.add1'), value: 1 },
           { label: t('participants.participantsList.labels.add3'), value: 3 },
           { label: t('participants.participantsList.labels.add10'), value: 10 },
           { label: t('participants.participantsList.labels.add25'), value: 25 },
@@ -214,6 +218,7 @@
           '640px': '90vw',
         },
         modal: true,
+        draggable: false,
       },
       onClose: (options) => {
         if (options?.data && options?.data === true) {
@@ -384,25 +389,9 @@
 </template>
 
 <style scoped lang="postcss">
-  /* participant status styling template*/
   .table-value-status-new {
     display: block;
     margin: 0.063rem 0.188rem 0 0;
-    /*padding-left: 1.2rem;
-    color: var(--primary-color);*/
     position: relative;
-
-    /*&:before {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: 0;
-    content: "";
-    display: inline-block;
-    width: 0.938rem;
-    height: 0.938rem;
-    margin-right: 0.313rem;
-    background: var(--primary-color);
-  } */
   }
 </style>

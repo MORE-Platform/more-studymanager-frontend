@@ -57,6 +57,7 @@
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteStudyGroupBtn'),
       visible: () => getEditAccess(),
       confirmDeleteDialog: {
         header: t('studyGroup.dialog.header.delete'),
@@ -82,6 +83,7 @@
                 '640px': '90vw',
               },
               modal: true,
+              draggable: false,
             },
             onClose: (options) => {
               if (options?.data) {

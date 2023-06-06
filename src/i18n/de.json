@@ -40,7 +40,8 @@
     },
     "header": {
       "privateBeta": "Private Beta",
-      "logout": "Ausloggen"
+      "logout": "Ausloggen",
+      "backToDashboard": "Dashboard"
     },
     "footer": {
       "aboutMore": "Über More"
@@ -309,11 +310,12 @@
       "emptyListMsg": "Verwalten oder fügen Sie Studien Teilnehmer hinzu. Ihre Studienteilnehmer werden hier aufgelistet.",
       "action": {
         "distribute": "Automatische Gruppenzuweisung",
-        "import": "Teilnehmer importieren",
-        "export": "Teilnehmer exportieren",
+        "import": "CSV importieren",
+        "export": "CSV exportieren",
         "add": "Teilnehmer hinzufügen"
       },
       "labels": {
+        "add1": "1 hinzufügen",
         "add3": "3 hinzufügen",
         "add10": "10 hinzufügen",
         "add25": "25 hinzufügen",
@@ -363,6 +365,47 @@
         "warning": "Eine gelöschtes Datenerhebungsmodul kann nicht wiederhergestellt werden. Wenn Sie das Datenerhebungsmodul löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
         "intro": "Sie sind kurz davor folgendes Datenerhebungsmodul zu löschen:",
         "confirm": "Möchten Sie dieses Datenerhebungsmodul wirklich löschen?"
+      }
+    },
+    "factory": {
+      "limeSurvey": {
+        "title": "Lime Survey Datenerhebung",
+        "description": "Diese Datenerhebung ermöglicht dir ein über die More Platform erstelltes Lime Survey mit More zu verknüpfen.",
+        "configProps": {
+          "idName": "Fragebogen",
+          "idDesc": "Die ID des Lime Surveys"
+        }
+      },
+      "polarVerity": {
+        "title": "Polar Verity Sensor",
+        "description": "Diese Datenerhebung ermöglicht es dir Herzfrequenzdaten über den Polar Verity Sensor zu sammeln. Es werden keine zusätzlichen Eigenschaften unterstützt."
+
+      },
+      "external": {
+        "title": "Externe Datenerhebung",
+        "description": "Ein Kontrolldatenerhebugnsmodul für Daten, die über die externe API Schnittstelle gesammelt werden sollen."
+      },
+      "gpsMobile": {
+        "title": "GPS Mobile Sensor",
+        "description": "Diese Datenerhebung ermöglicht es GPS Daten über den Smartphone Sensor zu sammeln.",
+        "configProps": {
+          "measurementName": "Messungsinterval",
+          "measurmentDesc": "Messungsinterval in Millisekunden, 30k bis 600k"
+        }
+      },
+      "simpleQuestion": {
+        "title": "Frage Datenerhebung",
+        "description": "Diese Datenerhebung ermöglicht es dir eine einfache Multiple Choice Frage zu erstellen.",
+        "configProps": {
+          "questionName": "Frage",
+          "questionDesc": "Die Frage, die du stellen möchtest.",
+          "answerName": "Antworten",
+          "answerDesc": "Mögliche Antworten (min. 2, max.5)"
+        }
+      },
+      "accelerometerMobile": {
+        "title": "Accelerometer Mobile Sensor",
+        "description": "Diese Datenerhebung ermöglicht es dir Bewegungsdaten über das Smartphone zu sammeln."
       }
     },
     "error":  {
@@ -481,6 +524,13 @@
       "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
       "action": {
         "add": "Intervention hinzufügen"
+      }
+    },
+    "factory": {
+      "actions": {
+        "pushNotification": {
+          "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition."
+        }
       }
     },
     "error":  {
@@ -645,7 +695,16 @@
   "tooltips": {
     "deleteBtn": "Löschen",
     "editBtn": "Bearbeiten",
-    "downloadBtn": "Herunterladen"
+    "downloadBtn": "Herunterladen",
+    "moreTable": {
+      "editBtn": "Bearbeite die gezeigten Eckdaten.",
+      "saveChanges": "Änderungen speichern",
+      "cancelAction": "Abbrechen",
+      "deleteStudyBtn": "Studie löschen",
+      "deleteStudyGroupBtn": "Studeingruppe löschen",
+      "copyStudyUrl": "URL zur Studie kopieren",
+      "showStudy": "Klicke auf die Zeile, um auf die Studiendetails seite zu kommen."
+    }
   },
 
   "userstatus": {

@@ -59,7 +59,10 @@
   .ml-2 {
     margin-left: 0.5rem;
   }
+  .p-message {
+    height: fit-content;
+  }
   .msgPosition {
-    top: 200%;
+    bottom: 0;
   }
 </style>

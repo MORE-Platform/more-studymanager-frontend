@@ -3,7 +3,9 @@
   import AuthService from '../../service/AuthService';
   import ProgressBar from 'primevue/progressbar';
   import useLoader from '../../composable/useLoader';
+  import { useRoute } from 'vue-router';
 
+  const route = useRoute();
   const auth = inject('authService') as AuthService;
 
   const loading = useLoader().isLoading;
@@ -11,14 +13,21 @@
     auth.logout();
   }
 
+  /* eslint-disable */
   function manageAccount() {
     auth.manageAccount();
   }
+  /* eslint-enable */
+
+  function checkRoute(routeName: string) {
+    return routeName === route.meta.title;
+  }
 </script>
+A
 
 <template>
-  <header class="py-5 shadow-md">
-    <div class="container m-auto flex justify-between">
+  <header class="more-header py-5 shadow-md">
+    <div class="container m-auto flex justify-between px-10">
       <router-link to="/">
         <div class="logo">
           <svg
@@ -96,31 +105,22 @@
       >
         {{ $t('global.header.privateBeta') }}
       </div>
-
-      <div class="user flex">
-        <button
-          class="logout mr-2 border-0 bg-transparent font-bold"
-          @click="logout()"
+      <div class="flex items-center justify-between">
+        <div
+          class="back-to-dashboard"
+          :class="checkRoute('Dashboard') ? 'active' : ''"
         >
-          {{ $t('global.header.logout') }}
-        </button>
-        <button class="border-0 bg-transparent" @click="manageAccount()">
-          <svg
-            width="20pt"
-            height="20pt"
-            viewBox="0 0 1200 1200"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g>
-              <path
-                d="m787.2 433.2c0 103.39-83.812 187.2-187.2 187.2s-187.2-83.812-187.2-187.2 83.812-187.2 187.2-187.2 187.2 83.812 187.2 187.2"
-              />
-              <path
-                d="m600 30c-314.4 0-570 255.6-570 570s255.6 570 570 570 570-255.6 570-570-255.6-570-570-570zm286.8 951.6-40.801-178.8c-16.801-74.398-84-127.2-159.6-127.2h-171.6c-76.801 0-142.8 52.801-159.6 127.2l-40.801 178.8c-116.4-87.602-192-225.6-192-381.6 0-262.8 213.6-477.6 477.6-477.6 262.8 0 477.6 213.6 477.6 477.6 0 156-75.602 294-190.8 381.6z"
-              />
-            </g>
-          </svg>
-        </button>
+          <router-link to="/">
+            <div class="border-0 bg-transparent font-bold">
+              {{ $t('global.header.backToDashboard') }}
+            </div>
+          </router-link>
+        </div>
+        <div class="user logout flex">
+          <button class="border-0 bg-transparent font-bold" @click="logout()">
+            {{ $t('global.header.logout') }}
+          </button>
+        </div>
       </div>
     </div>
     <div v-if="loading" class="loader">
@@ -151,20 +151,61 @@
 
     .logo {
       cursor: pointer;
+      svg {
+        transition: ease-in-out 0.2s;
+        fill: var(--primary-color);
+      }
+
+      &:hover svg {
+        fill: var(--primary-700);
+      }
     }
     .logo svg,
     .user svg {
       height: 2.813rem;
       width: auto;
     }
-    .logout {
+    .logout,
+    .back-to-dashboard {
       color: var(--text-color);
+      padding: 0 7px;
 
-      &:hover,
-      &:active,
-      &:focus {
-        color: var(--primary-color);
-        text-decoration: underline;
+      a,
+      button {
+        color: var(--text-color);
+        position: relative;
+
+        &:hover,
+        &:active,
+        &:focus {
+          color: var(--primary-color);
+
+          &:after {
+            opacity: 1;
+          }
+        }
+
+        &:after {
+          position: absolute;
+          content: '';
+          height: 2px;
+          width: 100%;
+          background-color: var(--primary-color);
+          bottom: 0;
+          left: 0;
+          opacity: 0;
+        }
+      }
+
+      &.active {
+        a,
+        button {
+          color: var(--primary-color);
+
+          &:after {
+            opacity: 1;
+          }
+        }
       }
     }
   }

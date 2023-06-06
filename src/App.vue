@@ -1,6 +1,12 @@
 <script setup lang="ts">
   import Footer from './components/shared/Footer.vue';
   import Header from './components/shared/Header.vue';
+  import { useRouter } from 'vue-router';
+  const router = useRouter();
+
+  router.beforeEach((to) => {
+    document.title = (to.meta?.title as string) + ' (More)' ?? 'More';
+  });
 </script>
 
 <template>
