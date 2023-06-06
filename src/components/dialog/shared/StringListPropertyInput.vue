@@ -2,6 +2,9 @@
   import { StringListProperty } from '../../../models/InputModels';
   import { PropType } from 'vue';
   import InputText from 'primevue/inputtext';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const props = defineProps({
     property: {
@@ -33,6 +36,7 @@
       :value="property.value?.[index - 1]"
       @keyup="update($event, index-1)"
       type="text"
+      :placeholder="t('global.labels.option') + ' ' + index"
       style="display: block"
     />
     <!-- eslint-enable -->

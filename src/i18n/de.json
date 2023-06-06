@@ -30,7 +30,8 @@
       "noDataReceived": "Keine Daten erhalten",
       "lastDataReceived": "Letzte Daten erhalten",
       "to": "zu",
-      "message": "Nachricht"
+      "message": "Nachricht",
+      "option": "Option"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
