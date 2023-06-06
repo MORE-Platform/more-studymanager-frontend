@@ -529,7 +529,6 @@
           <div
             v-for="action in frontRowActions"
             :key="action.id"
-            a
             class="inline"
           >
             <Button
@@ -728,6 +727,9 @@
               class="btn-gray"
               @click="cancel(slotProps.data)"
             ></Button>
+            <div v-if="rowEndIcon" class="ml-2 self-center">
+              <span :class="rowEndIcon" style="font-size: 1.3rem" />
+            </div>
           </div>
         </template>
       </Column>

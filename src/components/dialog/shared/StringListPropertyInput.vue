@@ -18,8 +18,14 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <label>{{ $t(property.name) }}</label>
+  <div class="flex flex-col gap-1">
+    <h6 class="font-bold">
+      <label
+        >{{ $t(property.name) }}<span v-if="property.required">*</span
+        ><span v-if="property.required">*</span></label
+      >
+    </h6>
+    <small>{{ $t(props.property.description) }}</small>
     <!-- eslint-disable -->
     <InputText
       v-for="index in property.maxSize"
@@ -30,6 +36,5 @@
       style="display: block"
     />
     <!-- eslint-enable -->
-    <small>{{ $t(props.property.description) }}</small>
   </div>
 </template>

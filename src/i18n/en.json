@@ -371,7 +371,8 @@
         "description": "This observation enables you to create a Lime Survey questionnaire",
         "configProps": {
           "idName": "Survey",
-          "idDesc": "The id of the survey"
+          "idDesc": "The id of the survey",
+          "idPlaceholder": "Enter the id of your Lime Survey."
         }
       },
       "polarVerity": {
