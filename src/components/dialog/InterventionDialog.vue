@@ -394,8 +394,11 @@
           <Dropdown
             v-model="triggerType"
             :options="triggerTypesOptions"
-            class="col-span-1 w-full"
-            :class="editable && !getError('trigger') ? 'mb-4' : 'p-0'"
+            class="dropdown-btn col-span-1 w-full"
+            :class="[
+              [editable && !getError('trigger') ? 'mb-4' : 'p-0'],
+              [triggerType ? '' : 'is-empty'],
+            ]"
             option-label="label"
             option-value="value"
             required
@@ -482,16 +485,18 @@
           </h5>
           <Button
             v-if="editable"
-            class="splitButton disable-left lg:cols-pan-1 w-full"
+            class="disable-left lg:cols-pan-1 flex w-full justify-between"
             type="button"
-            :label="
-              t('global.labels.new') + ' ' + t('intervention.props.action')
-            "
-            :icon="'pi pi-plus'"
             aria-haspopup="true"
             aria-controls="overlay_menu"
             :disabled="!editable"
             @click="actionToggle"
+          >
+            <div>
+              <span class="pi pi-plus pr-2"></span>{{ $t('global.labels.new') }}
+              {{ $t('intervention.props.action') }}
+            </div>
+            <div class="pi pi-chevron-down"></div
           ></Button>
           <div v-if="getError('action')" class="error col-span-8 mb-4">
             {{ getError('action') }}
@@ -591,4 +596,15 @@
 
 <style scoped lang="postcss">
   @import '../../styles/components/moreTable-dialogs.pcss';
+
+  .dropdown-btn {
+    &.is-empty {
+      background-color: var(--primary-color);
+      color: white;
+      :deep(.p-dropdown-label),
+      :deep(.p-dropdown-trigger-icon) {
+        color: white;
+      }
+    }
+  }
 </style>
