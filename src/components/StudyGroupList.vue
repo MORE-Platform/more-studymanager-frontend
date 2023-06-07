@@ -44,12 +44,14 @@
       placeholder: t('studyGroup.groupList.placeholder.title'),
       header: t('study.props.title'),
       editable: true,
+      columnWidth: '18vw',
     },
     {
       field: 'purpose',
       header: t('study.props.purpose'),
       editable: true,
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
+      columnWidth: '32vw',
     },
   ];
   const rowActions: MoreTableAction[] = [

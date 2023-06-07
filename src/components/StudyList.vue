@@ -36,12 +36,14 @@
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '30vw',
     },
     {
       field: 'purpose',
       header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
+      columnWidth: '30vw',
     },
     {
       field: 'status',
@@ -54,6 +56,7 @@
       header: t('study.props.roles'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '40vw',
       arrayLabels: [
         { label: t('study.roles.admin'), value: StudyRole.Admin },
         { label: t('study.roles.operator'), value: StudyRole.Operator },
