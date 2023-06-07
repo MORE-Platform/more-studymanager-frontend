@@ -150,9 +150,9 @@
         class="mt-5"
       >
         <AccordionTab
-          v-for="(observationData, index) in groupedParticipantData"
+          v-for="observationData in groupedParticipantData"
           :key="observationData[0].observationId"
-          :header="observationData[index].observationTitle as string"
+          :header="observationData[0].observationTitle as string"
           class="mt-10 mb-10"
         >
           <MoreTable

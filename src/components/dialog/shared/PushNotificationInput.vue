@@ -20,6 +20,10 @@
       type: String,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 
   const emit = defineEmits<{
@@ -57,6 +61,7 @@
       type="text"
       :placeholder="t('intervention.dialog.placeholder.title')"
       class="col-span-4"
+      :disabled="!editable"
       @change="updateProperties"
     />
 
@@ -69,6 +74,7 @@
       class="col-span-4"
       type="text"
       :placeholder="t('intervention.dialog.placeholder.message')"
+      :disabled="!editable"
       @change="updateProperties"
     />
   </div>

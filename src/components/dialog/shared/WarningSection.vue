@@ -8,6 +8,10 @@
       type: String,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 </script>
 

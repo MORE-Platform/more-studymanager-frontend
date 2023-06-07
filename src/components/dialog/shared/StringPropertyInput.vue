@@ -8,6 +8,10 @@
       type: Object as PropType<StringProperty>,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 </script>
 
@@ -28,6 +32,7 @@
       type="text"
       class="w-full"
       :aria-describedby="property.id + '-help'"
+      :disabled="!editable"
       :placeholder="props.property.description"
     />
   </div>

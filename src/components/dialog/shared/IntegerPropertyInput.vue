@@ -8,6 +8,10 @@
       type: Object as PropType<IntegerProperty>,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 </script>
 
@@ -27,6 +31,7 @@
       type="number"
       :max="property.max"
       :min="property.min"
+      :disabled="!editable"
       class="mt-1 w-full"
       :aria-describedby="property.id + '-help'"
     />

@@ -54,6 +54,10 @@
       type: Number,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 
   watch(props.rows, () => {
@@ -346,30 +350,34 @@
       <Column key="action" row-hover="true" class="row-action text-end">
         <template #body="slotProps">
           <div v-if="!slotProps.data.editMode" class="text-end">
-            <div v-if="slotProps.index + 1 < rows.length" class="inline p-5">
-              &
-            </div>
-            <Button
-              v-else
-              type="button"
-              icon="pi pi-plus"
-              class="p-button p-3"
-              @click="addRow(slotProps.index)"
-            ></Button>
             <span class="mr-1.5"></span>
             <Button
               type="button"
               icon="pi pi-trash"
               class="btn-important"
+              :disabled="!editable"
               @click="deleteRow(slotProps.index)"
             />
             <span class="mr-1.5"></span>
             <Button
               type="button"
               icon="pi pi-pencil"
+              :disabled="!editable"
               @click="edit(slotProps.data, slotProps.index)"
             >
             </Button>
+            <div v-if="slotProps.index + 1 < rows.length" class="inline p-3">
+              &
+            </div>
+            <div v-else class="ml-1.5 inline">
+              <Button
+                type="button"
+                icon="pi pi-plus"
+                class="p-button p-3"
+                :disabled="!editable"
+                @click="addRow(slotProps.index)"
+              ></Button>
+            </div>
           </div>
           <div v-else-if="slotProps.data.editMode" class="text-end">
             <div v-if="slotProps.data.error" class="error inline p-5">
@@ -399,6 +407,7 @@
         v-if="!nextGroupCondition"
         type="button"
         class="p-button"
+        :disabled="!editable"
         @click="addTriggerGroup"
         ><span class="pi pi-plus mr-2"></span>
         {{ $t('intervention.dialog.label.addTriggerGroup') }} add
@@ -415,6 +424,7 @@
         option-value="value"
         icon="pi pi-plus"
         placeholder="enter"
+        :disabled="!editable"
         @change="changeNextGroupCondition()"
       />
     </div>
