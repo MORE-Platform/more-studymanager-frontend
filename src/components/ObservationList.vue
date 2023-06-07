@@ -88,12 +88,14 @@
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '15vw',
     },
     {
       field: 'purpose',
       header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
+      columnWidth: '15vw',
     },
     {
       field: 'studyGroupId',
@@ -103,6 +105,7 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
+      columnWidth: '10vw',
     },
   ];
 

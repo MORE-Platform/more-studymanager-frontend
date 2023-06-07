@@ -11,6 +11,7 @@ export interface MoreTableColumn {
   filterable?: boolean | MoreTableFilterOption;
   placeholder?: string;
   arrayLabels?: MoreTableChoice[];
+  columnWidth?: string;
 }
 
 // filter

@@ -553,6 +553,9 @@
         :sortable="column.sortable"
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
+        :header-style="
+          column.columnWidth ? 'width: ' + column.columnWidth : undefined
+        "
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText

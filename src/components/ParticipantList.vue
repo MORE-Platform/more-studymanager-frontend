@@ -75,6 +75,7 @@
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '15vw',
     },
     { field: 'registrationToken', header: t('participants.props.token') },
     {
@@ -90,6 +91,7 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '15vw',
     },
   ];
 
