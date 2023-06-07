@@ -64,8 +64,9 @@
 
   const editAccessRoles: StudyRole[] = [StudyRole.Admin];
 
-  const editAccess = props.userRoles.some((r: StudyRole) =>
-    editAccessRoles.includes(r)
+  const editAccess = props.userRoles.some(
+    (r: StudyRole) =>
+      editAccessRoles.includes(r) && props.studyStatus !== StudyStatus.Closed
   );
 
   const collaboratorColumns: MoreTableColumn[] = [
