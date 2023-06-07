@@ -22,6 +22,10 @@
       type: String,
       default: '',
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
   const triggerConditions: Ref<TriggerConditionGroup[]> = ref(
     props.triggerConditions
@@ -217,6 +221,7 @@
         :study-id="studyStore.study.studyId as number"
         :columns="triggerConditionColumns"
         class="mt-6"
+        :editable="editable"
         @on-add-trigger-group="addTriggerGroup($event)"
         @on-toggle-row-edit="toggleRowEdit($event)"
         @on-update-row-data="updateRowData($event)"

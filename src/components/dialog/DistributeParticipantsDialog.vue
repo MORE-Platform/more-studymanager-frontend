@@ -31,13 +31,13 @@
     <div class="mb-6">
       {{ $t('participants.participantsList.distributeMsg.intro') }}
     </div>
-    <h3 class="font-medium">
+    <h3 v-if="studyGroups.length" class="font-medium">
       <span class="text-color">
         {{ $t('studyGroup.plural') }} ({{ studyGroups.length }})</span
       >
     </h3>
 
-    <div class="mb-10">
+    <div v-if="studyGroups.length" class="mb-10">
       <MoreTable
         :rows="studyGroups"
         :columns="studyGroupColumns"

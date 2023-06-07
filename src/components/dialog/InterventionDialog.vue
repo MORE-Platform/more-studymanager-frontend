@@ -469,6 +469,7 @@
           <InterventionTriggerConditions
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
+            :editable="editable"
             @on-emit-trigger-conditions="updateTriggerConditions($event)"
           />
         </div>
@@ -525,6 +526,7 @@
               :action-type-name="
                 nameForActionType(actionsArray[index].type) || ''
               "
+              :editable="editable"
               @on-props-change="actionsArray[index].properties = $event"
             />
 

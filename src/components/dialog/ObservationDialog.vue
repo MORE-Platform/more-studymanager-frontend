@@ -493,14 +493,17 @@
             <StringPropertyInput
               v-if="property instanceof StringProperty"
               :property="property"
+              :editable="editable"
             ></StringPropertyInput>
             <IntegerPropertyInput
               v-if="property instanceof IntegerProperty"
               :property="property"
+              :editable="editable"
             ></IntegerPropertyInput>
             <StringListPropertyInput
               v-if="property instanceof StringListProperty"
               :property="property"
+              :editable="editable"
             ></StringListPropertyInput>
           </div>
         </div>
