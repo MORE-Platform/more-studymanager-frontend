@@ -25,9 +25,9 @@
     participantInfo: study.participantInfo,
     contact: {
       institute: study.contact?.institute,
-      contactPerson: study.contact?.contactPerson,
-      contactEmail: study.contact?.contactEmail,
-      contactPhoneNumber: study.contact?.contactPhoneNumber,
+      person: study.contact?.person,
+      email: study.contact?.email,
+      phoneNumber: study.contact?.phoneNumber,
     }
   }) as Ref<Study>;
 
@@ -77,23 +77,22 @@
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (!returnStudy.value.contact?.contactPerson && !returnStudy.value.contact?.contactEmail) {
+    if (!returnStudy.value.contact?.person && !returnStudy.value.contact?.email) {
       errors.value.push({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
       });
-    } else if (!returnStudy.value.contact?.contactPerson) {
+    } else if (!returnStudy.value.contact?.person) {
       errors.value.push({
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
-    } else if (!returnStudy.value.contact?.contactEmail) {
+    } else if (!returnStudy.value.contact?.email) {
       errors.value.push({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
       });
     }
-    console.log(errors.value);
   }
 
   function getError(label: string): string | null | undefined {
@@ -273,7 +272,7 @@
               {{ $t('study.dialog.label.contactPerson') }}*
             </h6>
             <InputText
-              v-model="returnStudy.contact.contactPerson"
+              v-model="returnStudy.contact.person"
               required
               type="text"
               class="w-full"
@@ -285,7 +284,7 @@
               {{ $t('study.dialog.label.contactEmail') }}*
             </h6>
             <InputText
-              v-model="returnStudy.contact.contactEmail"
+              v-model="returnStudy.contact.email"
               class="w-full"
               required
               type="email"
@@ -297,7 +296,7 @@
               {{ $t('study.dialog.label.contactTel') }}
             </h6>
             <InputText
-              v-model="returnStudy.contact.contactPhoneNumber"
+              v-model="returnStudy.contact.phoneNumber"
               class="w-full"
               type="tel"
               :placeholder="t('study.placeholder.contactTel')"

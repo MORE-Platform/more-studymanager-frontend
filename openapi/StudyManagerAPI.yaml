@@ -1191,6 +1191,24 @@ components:
           minItems: 1
         contact:
           $ref: '#/components/schemas/Contact'
+      required:
+        - contact
+
+    Contact:
+      type: object
+      properties:
+        institute:
+          type: string
+        person:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+      required:
+        - contactPerson
+        - contactEmail
+
 
     StatusChange:
       type: object
@@ -1425,21 +1443,6 @@ components:
     IdReference:
       type: integer
       format: int32
-
-    Contact:
-      type: object
-      properties:
-        institute:
-          type: string
-        contactPerson:
-          type: string
-        contactEmail:
-          type: string
-        contactPhoneNumber:
-          type: string
-      required:
-        - contactPerson
-        - contactEmail
 
     UserSearchResultList:
       type: object

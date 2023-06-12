@@ -180,15 +180,15 @@
           <h6 class="font-bold">
             {{ $t('study.dialog.label.contactPerson') }}
           </h6>
-          <div>{{ study.contact.contactPerson }}</div>
+          <div>{{ study.contact.person }}</div>
         </div>
         <div>
           <h6 class="font-bold">{{ $t('study.dialog.label.contactEmail') }}</h6>
-          <div>{{ study.contact.contactEmail }}</div>
+          <div>{{ study.contact.email }}</div>
         </div>
-        <div v-if="study.contact.contactPhoneNumber">
+        <div v-if="study.contact.phoneNumber">
           <h6 class="font-bold">{{ $t('study.dialog.label.contactTel') }}</h6>
-          <div>{{ study.contact.contactPhoneNumber }}</div>
+          <div>{{ study.contact.phoneNumber }}</div>
         </div>
       </div>
     </div>
