@@ -157,7 +157,8 @@
       "institute": "Gib das Institut der Studie ein.",
       "contactPerson": "Gib den Namen der Kontaktperson ein.",
       "contactEmail": "Gib eine Kontakt Emailadresse ein.",
-      "contactTel": "Gib eine Kontakt Telephonnummer ein."
+      "contactTel": "Gib eine Kontakt Telephonnummer ein.",
+      "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt."
     },
     "dialog": {
       "header":{

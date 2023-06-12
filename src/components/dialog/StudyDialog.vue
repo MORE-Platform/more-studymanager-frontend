@@ -25,10 +25,12 @@
     participantInfo: study.participantInfo,
     contact: {
       institute: study.contact?.institute,
-      person: study.contact?.person,
-      email: study.contact?.email,
+      person:
+        study.contact?.person === 'pending' ? undefined : study.contact?.person,
+      email:
+        study.contact?.email === 'pending' ? undefined : study.contact?.email,
       phoneNumber: study.contact?.phoneNumber,
-    }
+    },
   }) as Ref<Study>;
 
   const start = ref(
@@ -77,7 +79,10 @@
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (!returnStudy.value.contact?.person && !returnStudy.value.contact?.email) {
+    if (
+      !returnStudy.value.contact?.person &&
+      !returnStudy.value.contact?.email
+    ) {
       errors.value.push({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
