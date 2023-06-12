@@ -384,11 +384,11 @@
 <template>
   <div class="more-table">
     <div class="mb-8 flex">
-      <div class="title">
+      <div class="title w-full">
         <h3 v-if="title">{{ title }}</h3>
         <h4 v-if="subtitle">{{ subtitle }}</h4>
       </div>
-      <div class="actions flex flex-1 justify-end">
+      <div class="actions table-actions flex flex-1 justify-end">
         <div
           v-for="(action, actionIndex) in tableActions"
           :key="action.id"
@@ -529,7 +529,6 @@
           <div
             v-for="action in frontRowActions"
             :key="action.id"
-            a
             class="inline"
           >
             <Button
@@ -554,6 +553,9 @@
         :sortable="column.sortable"
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
+        :header-style="
+          column.columnWidth ? 'width: ' + column.columnWidth : undefined
+        "
       >
         <template v-if="column.editable" #editor="{ data, field }">
           <InputText
@@ -728,6 +730,9 @@
               class="btn-gray"
               @click="cancel(slotProps.data)"
             ></Button>
+            <div v-if="rowEndIcon" class="ml-2 self-center">
+              <span :class="rowEndIcon" style="font-size: 1.3rem" />
+            </div>
           </div>
         </template>
       </Column>
@@ -856,5 +861,12 @@
     :deep(.p-tooltip-text) {
       text-align: center;
     }
+  }
+  .table-btn-min-height .table-actions button {
+    min-height: 60px;
+  }
+
+  .table-title-width .title {
+    max-width: 80%;
   }
 </style>

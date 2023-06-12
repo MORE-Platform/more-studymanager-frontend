@@ -8,22 +8,39 @@
       type: Object as PropType<IntegerProperty>,
       required: true,
     },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
   });
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <label :for="property.id">{{ $t(property.name) }}</label>
+  <div class="gap-1">
+    <h5 class="font-bold">
+      <label :for="property.id"
+        >{{ $t(property.name) }}<span v-if="property.required">*</span></label
+      >
+    </h5>
+    <small :id="property.id + '-help'">{{
+      $t(props.property.description)
+    }}</small>
     <InputNumber
       :id="property.id"
       v-model="property.value"
       type="number"
       :max="property.max"
       :min="property.min"
+      :disabled="!editable"
+      class="mt-1 w-full"
       :aria-describedby="property.id + '-help'"
     />
-    <small :id="property.id + '-help'">{{
-      $t(props.property.description)
-    }}</small>
   </div>
 </template>
+
+<style scoped lang="postcss">
+  :deep(.p-inputnumber) {
+    border: transparent;
+    padding: 0;
+  }
+</style>

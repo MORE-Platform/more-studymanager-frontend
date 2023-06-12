@@ -77,12 +77,14 @@
       editable: true,
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '16vw',
     },
     {
       field: 'purpose',
       header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
+      columnWidth: '30vw',
     },
     {
       field: 'studyGroupId',
@@ -92,6 +94,7 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
+      columnWidth: '10vw',
     },
   ];
 
@@ -439,6 +442,7 @@
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
+      class="table-title-width table-btn-min-height"
       @onselect="openEditIntervetion($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
