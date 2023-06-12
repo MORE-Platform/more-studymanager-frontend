@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { PropType, ref, Ref } from 'vue';
+  import { PropType } from 'vue';
   import {
     Study,
     StudyRole,
@@ -21,13 +21,6 @@
     study: { type: Object as PropType<Study>, required: true },
     styleModifier: { type: String, default: '' },
     userRoles: { type: Array as PropType<Array<StudyRole>>, required: true },
-  });
-
-  const contactInfo: Ref<any> = ref({
-    institute: 'Ludwig Bolzmann Institut',
-    contactPerson: 'Dr. Max Mustermann',
-    contactEmail: 'max.mustermann@bolzmann.at',
-    contactTel: undefined,
   });
 
   const emit = defineEmits<{
@@ -60,7 +53,6 @@
         draggable: false,
       },
       onClose: (options) => {
-        console.log(options?.data);
         if (options?.data) {
           emit('onUpdateStudyStatus', status);
         }
@@ -179,24 +171,24 @@
     </div>
     <div class="mb-6">
       <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
-      <div class="grid grid-cols-4 gap-4 lg:grid-cols-6">
-        <div v-if="contactInfo.institute" class="col-span-1">
+      <div class="grid grid-cols-4 gap-4 lg:grid-cols-4">
+        <div v-if="study.institute" class="col-span-1">
           <h6 class="font-bold">{{ $t('study.dialog.label.institute') }}</h6>
-          <div>{{ contactInfo.institute }}</div>
+          <div>{{ study.institute }}</div>
         </div>
         <div class="col-span-1">
           <h6 class="font-bold">
             {{ $t('study.dialog.label.contactPerson') }}
           </h6>
-          <div>{{ contactInfo.contactPerson }}</div>
+          <div>{{ study.contactPerson }}</div>
         </div>
         <div>
           <h6 class="font-bold">{{ $t('study.dialog.label.contactEmail') }}</h6>
-          <div>{{ contactInfo.contactEmail }}</div>
+          <div>{{ study.contactEmail }}</div>
         </div>
-        <div v-if="contactInfo.contactTel">
+        <div v-if="study.contactPhoneNumber">
           <h6 class="font-bold">{{ $t('study.dialog.label.contactTel') }}</h6>
-          <div>{{ contactInfo.contactTel }}</div>
+          <div>{{ study.contactPhoneNumber }}</div>
         </div>
       </div>
     </div>

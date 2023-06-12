@@ -139,7 +139,10 @@
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu."
+      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
+      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse der Studie hinzu, über diese die Teilehmer bei Problemen erreichen können.",
+      "addContactPerson": "Bitte fügen Sie eine Kontaktperson der Studie hinzu, welche die Teilnehmer bei Problemen kontaktieren können.",
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail der Studie hinzu, welche die Teilnehmer bei Problemen anschreiben können."
     },
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",

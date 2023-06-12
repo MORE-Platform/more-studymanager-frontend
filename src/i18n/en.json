@@ -138,7 +138,10 @@
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
-      "addParticipantInfo": "The participant information is required. Please entere a description."
+      "addParticipantInfo": "The participant information is required. Please entere a description.",
+      "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
+      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",

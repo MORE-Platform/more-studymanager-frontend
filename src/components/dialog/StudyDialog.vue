@@ -23,14 +23,14 @@
     plannedEnd: undefined,
     consentInfo: study.consentInfo,
     participantInfo: study.participantInfo,
+    institute: study.institute,
+    contactPerson: study.contactPerson,
+    contactEmail: study.contactEmail,
+    contactPhoneNumber: study.contactPhoneNumber,
   }) as Ref<Study>;
 
-  const contactInfo: Ref<any> = ref({
-    institute: 'Ludwig Bolzmann Institut',
-    contactPerson: 'Dr. Max Mustermann',
-    contactEmail: 'max.mustermann@bolzmann.at',
-    contactTel: undefined,
-  });
+  console.log('studydialog');
+  console.log(returnStudy.value);
 
   const start = ref(
     study
@@ -78,6 +78,23 @@
         value: t('study.error.addParticipantInfo'),
       });
     }
+    if (!returnStudy.value.contactPerson && !returnStudy.value.contactEmail) {
+      errors.value.push({
+        label: 'contactInfo',
+        value: t('study.error.addContactInfo'),
+      });
+    } else if (!returnStudy.value.contactPerson) {
+      errors.value.push({
+        label: 'contactPerson',
+        value: t('study.error.addContactPerson'),
+      });
+    } else if (!returnStudy.value.contactEmail) {
+      errors.value.push({
+        label: 'contactEmail',
+        value: t('study.error.addContactEmail'),
+      });
+    }
+    console.log(errors.value);
   }
 
   function getError(label: string): string | null | undefined {
@@ -215,9 +232,30 @@
         ></Textarea>
       </div>
       <div class="col-span-6 mb-4 mt-2">
-        <h5 class="mb-2 font-bold">
-          {{ $t('study.dialog.label.contactInfo') }}
+        <h5
+          class="mb-2 font-bold"
+          :class="
+            getError('contactInfo') ||
+            getError('contactPerson') ||
+            getError('contactEmail')
+              ? ''
+              : 'mb-2'
+          "
+        >
+          {{ $t('study.dialog.label.contactInfo') }}*
         </h5>
+        <div v-if="getError('contactInfo')" class="error col-span-8 mb-2">
+          {{ getError('contactInfo') }}
+        </div>
+        <div
+          v-else-if="getError('contactPerson')"
+          class="error col-span-8 mb-2"
+        >
+          {{ getError('contactPerson') }}
+        </div>
+        <div v-else-if="getError('contactEmail')" class="error col-span-8 mb-2">
+          {{ getError('contactEmail') }}
+        </div>
         <div class="mb-3">{{ $t('study.dialog.description.contactData') }}</div>
         <div class="grid grid-cols-6 gap-4">
           <div class="col-span-3">
@@ -225,8 +263,9 @@
               {{ $t('study.dialog.label.institute') }}
             </h6>
             <InputText
-              v-model="contactInfo.institute"
+              v-model="returnStudy.institute"
               class="w-full"
+              type="text"
               :placeholder="t('study.placeholder.institute')"
             />
           </div>
@@ -235,9 +274,11 @@
               {{ $t('study.dialog.label.contactPerson') }}*
             </h6>
             <InputText
-              v-model="contactInfo.contactPerson"
+              v-model="returnStudy.contactPerson"
+              required
+              type="text"
               class="w-full"
-              :placeholder="t('study.placeholder.contactInfo')"
+              :placeholder="t('study.placeholder.contactPerson')"
             />
           </div>
           <div class="col-span-3">
@@ -245,8 +286,10 @@
               {{ $t('study.dialog.label.contactEmail') }}*
             </h6>
             <InputText
-              v-model="contactInfo.contactEmail"
+              v-model="returnStudy.contactEmail"
               class="w-full"
+              required
+              type="email"
               :placeholder="t('study.placeholder.contactEmail')"
             />
           </div>
@@ -255,8 +298,9 @@
               {{ $t('study.dialog.label.contactTel') }}
             </h6>
             <InputText
-              v-model="contactInfo.contactTel"
+              v-model="returnStudy.contactPhoneNumber"
               class="w-full"
+              type="tel"
               :placeholder="t('study.placeholder.contactTel')"
             />
           </div>
