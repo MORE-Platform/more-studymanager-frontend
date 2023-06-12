@@ -1189,18 +1189,8 @@ components:
           uniqueItems: true
           readOnly: true
           minItems: 1
-        institute:
-          type: string
-          readOnly: true
-        contactPerson:
-          type: string
-          readOnly: true
-        contactEmail:
-          type: string
-          readOnly: true
-        contactPhoneNumber:
-          type: string
-          readOnly: true
+        contact:
+          $ref: '#/components/schemas/Contact'
 
     StatusChange:
       type: object
@@ -1435,6 +1425,21 @@ components:
     IdReference:
       type: integer
       format: int32
+
+    Contact:
+      type: object
+      properties:
+        institute:
+          type: string
+        contactPerson:
+          type: string
+        contactEmail:
+          type: string
+        contactPhoneNumber:
+          type: string
+      required:
+        - contactPerson
+        - contactEmail
 
     UserSearchResultList:
       type: object

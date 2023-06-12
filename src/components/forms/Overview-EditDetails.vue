@@ -172,23 +172,23 @@
     <div class="mb-6">
       <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
       <div class="grid grid-cols-4 gap-4 lg:grid-cols-4">
-        <div v-if="study.institute" class="col-span-1">
+        <div v-if="study.contact.institute" class="col-span-1">
           <h6 class="font-bold">{{ $t('study.dialog.label.institute') }}</h6>
-          <div>{{ study.institute }}</div>
+          <div>{{ study.contact.institute }}</div>
         </div>
         <div class="col-span-1">
           <h6 class="font-bold">
             {{ $t('study.dialog.label.contactPerson') }}
           </h6>
-          <div>{{ study.contactPerson }}</div>
+          <div>{{ study.contact.contactPerson }}</div>
         </div>
         <div>
           <h6 class="font-bold">{{ $t('study.dialog.label.contactEmail') }}</h6>
-          <div>{{ study.contactEmail }}</div>
+          <div>{{ study.contact.contactEmail }}</div>
         </div>
-        <div v-if="study.contactPhoneNumber">
+        <div v-if="study.contact.contactPhoneNumber">
           <h6 class="font-bold">{{ $t('study.dialog.label.contactTel') }}</h6>
-          <div>{{ study.contactPhoneNumber }}</div>
+          <div>{{ study.contact.contactPhoneNumber }}</div>
         </div>
       </div>
     </div>
