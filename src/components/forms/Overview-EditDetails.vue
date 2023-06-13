@@ -53,7 +53,6 @@
         draggable: false,
       },
       onClose: (options) => {
-        console.log(options?.data);
         if (options?.data) {
           emit('onUpdateStudyStatus', status);
         }
@@ -168,6 +167,50 @@
       <div>
         <span v-if="study.consentInfo">{{ study.consentInfo }}</span>
         <span v-else>{{ $t('study.placeholder.emptyConsentInfo') }}</span>
+      </div>
+    </div>
+    <div class="mb-6">
+      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
+      <div
+        v-if="
+          (!study?.contact?.institute &&
+            study?.contact?.person === 'pending' &&
+            study?.contact?.email === 'pending' &&
+            !study?.contact?.phoneNumber) ||
+          (!study?.contact?.institute &&
+            !study?.contact?.person &&
+            !study?.contact?.email &&
+            !study?.contact?.phoneNumber)
+        "
+        class="placeholder"
+      >
+        {{ $t('study.placeholder.missingContactData') }}
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 lg:grid-cols-4">
+        <div v-if="study?.contact?.institute" class="col-span-1">
+          <h6 class="font-bold">{{ $t('study.dialog.label.institute') }}</h6>
+          <div>{{ study.contact.institute }}</div>
+        </div>
+        <div
+          v-if="study?.contact?.person && study?.contact?.person !== 'pending'"
+          class="col-span-1"
+        >
+          <h6 class="font-bold">
+            {{ $t('study.dialog.label.contactPerson') }}
+          </h6>
+          <div>{{ study.contact.person }}</div>
+        </div>
+        <div
+          v-if="study?.contact?.email && study?.contact?.email !== 'pending'"
+        >
+          <h6 class="font-bold">{{ $t('study.dialog.label.contactEmail') }}</h6>
+          <div>{{ study.contact.email }}</div>
+        </div>
+        <div v-if="study?.contact?.phoneNumber">
+          <h6 class="font-bold">{{ $t('study.dialog.label.contactTel') }}</h6>
+          <div>{{ study.contact.phoneNumber }}</div>
+        </div>
       </div>
     </div>
   </div>

@@ -1191,8 +1191,6 @@ components:
           minItems: 1
         contact:
           $ref: '#/components/schemas/Contact'
-      required:
-        - contact
 
     Contact:
       type: object
@@ -1205,9 +1203,6 @@ components:
           type: string
         phoneNumber:
           type: string
-      required:
-        - person
-        - email
 
 
     StatusChange:
@@ -1314,8 +1309,6 @@ components:
           type: string
           format: date-time
           readOnly: true
-        hidden:
-          type: boolean
 
     EndpointToken:
       type: object

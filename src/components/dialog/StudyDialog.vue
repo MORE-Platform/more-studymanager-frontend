@@ -23,6 +23,7 @@
     plannedEnd: undefined,
     consentInfo: study.consentInfo,
     participantInfo: study.participantInfo,
+    contact: undefined,
   }) as Ref<Study>;
 
   const start = ref(
@@ -40,6 +41,23 @@
       : new Date()
   );
 
+  const contactInstitute: Ref<string> = ref(
+    study.contact?.institute ? study.contact.institute : ''
+  );
+  const contactPerson: Ref<string> = ref(
+    study.contact?.person && study.contact?.person !== 'pending'
+      ? study.contact.person
+      : ''
+  );
+  const contactEmail: Ref<string> = ref(
+    study.contact?.email && study.contact?.email !== 'pending'
+      ? study.contact.email
+      : ''
+  );
+  const contactPhoneNumber: Ref<string> = ref(
+    study.contact?.phoneNumber ? study.contact.phoneNumber : ''
+  );
+
   const languages = [
     { name: 'German', value: 'de' },
     { name: 'English', value: 'en' },
@@ -48,6 +66,13 @@
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
     returnStudy.value.plannedEnd = dateToDateString(end.value);
+
+    returnStudy.value.contact = {
+      institute: contactInstitute.value,
+      person: contactPerson.value,
+      email: contactEmail.value,
+      phoneNumber: contactPhoneNumber.value,
+    };
 
     dialogRef.value.close(returnStudy.value);
   }
@@ -69,6 +94,22 @@
       errors.value.push({
         label: 'participantInfo',
         value: t('study.error.addParticipantInfo'),
+      });
+    }
+    if (!contactPerson.value && !contactEmail.value) {
+      errors.value.push({
+        label: 'contactInfo',
+        value: t('study.error.addContactInfo'),
+      });
+    } else if (!contactPerson.value) {
+      errors.value.push({
+        label: 'contactPerson',
+        value: t('study.error.addContactPerson'),
+      });
+    } else if (!contactEmail.value) {
+      errors.value.push({
+        label: 'contactEmail',
+        value: t('study.error.addContactEmail'),
       });
     }
   }
@@ -206,6 +247,81 @@
           :auto-resize="true"
           style="width: 100%"
         ></Textarea>
+      </div>
+      <div class="col-span-6 mb-4 mt-2">
+        <h5
+          class="mb-2 font-bold"
+          :class="
+            getError('contactInfo') ||
+            getError('contactPerson') ||
+            getError('contactEmail')
+              ? ''
+              : 'mb-2'
+          "
+        >
+          {{ $t('study.dialog.label.contactInfo') }}*
+        </h5>
+        <div v-if="getError('contactInfo')" class="error col-span-8 mb-2">
+          {{ getError('contactInfo') }}
+        </div>
+        <div
+          v-else-if="getError('contactPerson')"
+          class="error col-span-8 mb-2"
+        >
+          {{ getError('contactPerson') }}
+        </div>
+        <div v-else-if="getError('contactEmail')" class="error col-span-8 mb-2">
+          {{ getError('contactEmail') }}
+        </div>
+        <div class="mb-3">{{ $t('study.dialog.description.contactData') }}</div>
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-3">
+            <h6 class="mb-1 font-medium">
+              {{ $t('study.dialog.label.institute') }}
+            </h6>
+            <InputText
+              v-model="contactInstitute"
+              class="w-full"
+              type="text"
+              :placeholder="t('study.placeholder.institute')"
+            />
+          </div>
+          <div class="col-span-3">
+            <h6 class="mb-1 font-medium">
+              {{ $t('study.dialog.label.contactPerson') }}*
+            </h6>
+            <InputText
+              v-model="contactPerson"
+              required
+              type="text"
+              class="w-full"
+              :placeholder="t('study.placeholder.contactPerson')"
+            />
+          </div>
+          <div class="col-span-3">
+            <h6 class="mb-1 font-medium">
+              {{ $t('study.dialog.label.contactEmail') }}*
+            </h6>
+            <InputText
+              v-model="contactEmail"
+              class="w-full"
+              required
+              type="email"
+              :placeholder="t('study.placeholder.contactEmail')"
+            />
+          </div>
+          <div class="col-span-3">
+            <h6 class="mb-1 font-medium">
+              {{ $t('study.dialog.label.contactTel') }}
+            </h6>
+            <InputText
+              v-model="contactPhoneNumber"
+              class="w-full"
+              type="tel"
+              :placeholder="t('study.placeholder.contactTel')"
+            />
+          </div>
+        </div>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
         <Button class="btn-gray" @click="cancel()">{{

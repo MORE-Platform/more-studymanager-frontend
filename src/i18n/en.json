@@ -139,7 +139,10 @@
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
-      "addParticipantInfo": "The participant information is required. Please entere a description."
+      "addParticipantInfo": "The participant information is required. Please entere a description.",
+      "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
+      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
@@ -149,7 +152,12 @@
       "selectLanguage": "Select a language",
       "emptyPurpose": "Purpose information hasn't been added yet. To add purpose information, edit the study details.",
       "emptyParticipantInfo": "Participant information hasn't been added yet. To add participant information, edit the study details.",
-      "emptyConsentInfo": "Enter your description for the consent information."
+      "emptyConsentInfo": "Enter your description for the consent information.",
+      "institute": "Enter the institute of your study.",
+      "contactPerson": "Enter the information of the contact person.",
+      "contactEmail": "Enter the contact email.",
+      "contactTel": "Enter the contact telephone number.",
+      "missingContactData": "Currently there is no contact information set. Please set at least a contact person and contact email address, that participants can contact you when problems occur. This information will be shown on the app."
     },
     "dialog": {
       "header":{
@@ -161,7 +169,12 @@
       "label": {
         "studyTitle": "Study title",
         "studyStart": "Study start",
-        "studyEnd": "Study end"
+        "studyEnd": "Study end",
+        "contactInfo": "Contact information",
+        "contactPerson": "Contact Person",
+        "institute": "Institute",
+        "contactEmail": "Contact Email",
+        "contactTel": "Telephone number"
       },
       "deleteMsg": {
         "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date.",
@@ -176,7 +189,8 @@
         "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
         "purpose": "The purpose property describes the general purpose of the study. It will be shown study collaborators to give them information about the study and it's goals.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give them short information about the study and their taken part in it.",
-        "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants. It gives general information to the data that will be collected."
+        "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants. It gives general information to the data that will be collected.",
+        "contactData": "This contact information will be displayed on the app for the participants. It's the information to contact if there are problems during the study participation."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
