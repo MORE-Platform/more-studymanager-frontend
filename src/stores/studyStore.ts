@@ -12,7 +12,9 @@ export const useStudyStore = defineStore('study', () => {
   const studyGroupStore = useStudyGroupStore();
 
   // State
-  const study: Ref<Study> = ref({});
+  const study: Ref<Study> = ref({
+    contact: {},
+  });
   const studies: Ref<Study[]> = ref([]);
 
   // Actions
