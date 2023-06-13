@@ -352,6 +352,10 @@
       "observationType": {
         "smartphoneAccelerometer": "Beschleunigungsmesser",
         "heartRateMeter": "Herzfrequenzmesser"
+      },
+      "hidden": {
+        "true": "Versteckt",
+        "false": "Nicht versteckt"
       }
     },
     "observationList": {
@@ -374,7 +378,8 @@
         "observationTitle": "Datenerhebungsmodulstitel"
       },
       "msg": {
-        "delete": "Ein gelöschtes Datenerhebungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?"
+        "delete": "Ein gelöschtes Datenerhebungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?",
+        "hiddenInfo": "Wenn ein Datenerhebungsmodul versteckt ist, wird es, sofern der Teilnehmer eingelogged ist, automatisch im Hintergrund gestartet. Das Datenerhebungsmodul wird nicht bei den To-Dos auf dem Zeitplan Screen angezeigt."
       },
       "deleteMsg": {
         "warning": "Eine gelöschtes Datenerhebungsmodul kann nicht wiederhergestellt werden. Wenn Sie das Datenerhebungsmodul löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",

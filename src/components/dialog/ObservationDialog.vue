@@ -27,6 +27,7 @@
   import StringPropertyInput from './shared/StringPropertyInput.vue';
   import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
   import StringListPropertyInput from './shared/StringListPropertyInput.vue';
+  import Checkbox from 'primevue/checkbox';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -48,6 +49,19 @@
   const properties: Property<any>[] = factory.properties
     .map((json: any) => Property.fromJson(json))
     .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]));
+
+  const hidden: Ref<boolean> = ref(
+    typeof observation.hidden === 'undefined'
+      ? getHiddenProperty(observation.type as string)
+      : observation.hidden
+  );
+
+  function getHiddenProperty(observationType: string): boolean {
+    return !(
+      observationType === 'question-observation' ||
+      observationType === 'lime-survey-observation'
+    );
+  }
 
   const scheduler: Ref<Event> = ref(
     observation.schedule ? observation.schedule : {}
@@ -126,6 +140,7 @@
       properties: props,
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
+      hidden: hidden.value,
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
@@ -510,24 +525,63 @@
       </div>
 
       <div
-        class="col-start-0 col-span-8"
+        class="col-start-0 col-span-8 flex items-center justify-between"
         :class="[studyGroupId ? 'groupIdValue' : '']"
       >
-        <h5 v-if="!editable" class="pb-2 font-bold">
-          {{ $t('study.props.studyGroup') }}
-        </h5>
-        <Dropdown
-          v-model="studyGroupId"
-          :options="groupStates"
-          option-label="label"
-          option-value="value"
-          :disabled="!editable"
-          :placeholder="
-            getLabelForChoiceValue(studyGroupId, groupStates) ||
-            $t('global.placeholder.entireStudy')
-          "
-        >
-        </Dropdown>
+        <div>
+          <h5 v-if="!editable" class="pb-2 font-bold">
+            {{ $t('study.props.studyGroup') }}
+          </h5>
+          <Dropdown
+            v-model="studyGroupId"
+            :options="groupStates"
+            option-label="label"
+            option-value="value"
+            :disabled="!editable"
+            :placeholder="
+              getLabelForChoiceValue(studyGroupId, groupStates) ||
+              $t('global.placeholder.entireStudy')
+            "
+          >
+          </Dropdown>
+        </div>
+        <div class="info-box relative">
+          <div
+            v-if="
+              observation.type !== 'question-observation' &&
+              observation.type !== 'lime-survey-observation' &&
+              observation.type !== 'external-observation' &&
+              editable
+            "
+            class="inline"
+          >
+            <Checkbox v-model="hidden" :binary="true" />
+            <div class="ml-2 inline">
+              {{ $t('observation.props.hidden.true') }}
+            </div>
+          </div>
+          <div
+            v-else-if="typeof observation.hidden !== 'undefined'"
+            class="inline"
+          >
+            test 1
+            {{ $t(`observation.props.hidden.${observation.hidden}`) }}
+          </div>
+          <div v-else class="inline">
+            <span v-if="observation.type === 'external-observation'">{{
+              $t('observation.props.hidden.true')
+            }}</span>
+            <span v-else>{{ $t('observation.props.hidden.false') }}</span>
+          </div>
+          <div class="inline">
+            <span class="pi pi-info-circle color-primary ml-2"></span>
+          </div>
+          <div class="inline">
+            <div class="info-box-hidden">
+              {{ $t('observation.dialog.msg.hiddenInfo') }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
@@ -560,6 +614,33 @@
     }
     .groupIdValue {
       color: var(--text-color);
+    }
+
+    .info-box {
+      z-index: 100;
+      padding: 10px 0;
+      cursor: pointer;
+
+      &-hidden {
+        position: absolute;
+        bottom: 100%;
+        right: 0;
+        width: 20vw;
+        text-align: center;
+        background-color: white;
+        border: 1px solid var(--bluegray-200);
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: ease-in-out opacity 0.25s;
+        box-shadow: 1px 1px 5px var(--bluegray-200);
+      }
+
+      &:hover {
+        .info-box-hidden {
+          opacity: 1;
+        }
+      }
     }
   }
 </style>

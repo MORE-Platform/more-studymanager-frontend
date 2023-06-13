@@ -1309,6 +1309,8 @@ components:
           type: string
           format: date-time
           readOnly: true
+        hidden:
+          type: boolean
 
     EndpointToken:
       type: object

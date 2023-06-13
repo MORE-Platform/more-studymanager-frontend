@@ -350,6 +350,10 @@
       "observationType": {
         "smartphoneAccelerometer": "Smartphone Accelerometer",
         "heartRateMeter": "Heart Rate Meter"
+      },
+      "hidden": {
+        "true": "Hidden",
+        "false": "Not hidden"
       }
     },
     "observationList": {
@@ -372,7 +376,8 @@
         "observationTitle": "Observation title"
       },
       "msg": {
-        "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ..."
+        "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation: ...",
+        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view of the app."
       },
       "deleteMsg": {
         "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost and you won't be able to use it at a later date.",
