@@ -23,14 +23,7 @@
     plannedEnd: undefined,
     consentInfo: study.consentInfo,
     participantInfo: study.participantInfo,
-    contact: {
-      institute: study.contact?.institute,
-      person:
-        study.contact?.person === 'pending' ? undefined : study.contact?.person,
-      email:
-        study.contact?.email === 'pending' ? undefined : study.contact?.email,
-      phoneNumber: study.contact?.phoneNumber,
-    },
+    contact: undefined,
   }) as Ref<Study>;
 
   const start = ref(
@@ -48,6 +41,23 @@
       : new Date()
   );
 
+  const contactInstitute: Ref<string> = ref(
+    study.contact?.institute ? study.contact.institute : ''
+  );
+  const contactPerson: Ref<string> = ref(
+    study.contact?.person && study.contact?.person !== 'pending'
+      ? study.contact.person
+      : ''
+  );
+  const contactEmail: Ref<string> = ref(
+    study.contact?.email && study.contact?.email !== 'pending'
+      ? study.contact.email
+      : ''
+  );
+  const contactPhoneNumber: Ref<string> = ref(
+    study.contact?.phoneNumber ? study.contact.phoneNumber : ''
+  );
+
   const languages = [
     { name: 'German', value: 'de' },
     { name: 'English', value: 'en' },
@@ -56,6 +66,13 @@
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
     returnStudy.value.plannedEnd = dateToDateString(end.value);
+
+    returnStudy.value.contact = {
+      institute: contactInstitute.value,
+      person: contactPerson.value,
+      email: contactEmail.value,
+      phoneNumber: contactPhoneNumber.value,
+    };
 
     dialogRef.value.close(returnStudy.value);
   }
@@ -79,20 +96,17 @@
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (
-      !returnStudy.value.contact?.person &&
-      !returnStudy.value.contact?.email
-    ) {
+    if (!contactPerson.value && !contactEmail.value) {
       errors.value.push({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
       });
-    } else if (!returnStudy.value.contact?.person) {
+    } else if (!contactPerson.value) {
       errors.value.push({
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
-    } else if (!returnStudy.value.contact?.email) {
+    } else if (!contactEmail.value) {
       errors.value.push({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
@@ -266,7 +280,7 @@
               {{ $t('study.dialog.label.institute') }}
             </h6>
             <InputText
-              v-model="returnStudy.contact.institute"
+              v-model="contactInstitute"
               class="w-full"
               type="text"
               :placeholder="t('study.placeholder.institute')"
@@ -277,7 +291,7 @@
               {{ $t('study.dialog.label.contactPerson') }}*
             </h6>
             <InputText
-              v-model="returnStudy.contact.person"
+              v-model="contactPerson"
               required
               type="text"
               class="w-full"
@@ -289,7 +303,7 @@
               {{ $t('study.dialog.label.contactEmail') }}*
             </h6>
             <InputText
-              v-model="returnStudy.contact.email"
+              v-model="contactEmail"
               class="w-full"
               required
               type="email"
@@ -301,7 +315,7 @@
               {{ $t('study.dialog.label.contactTel') }}
             </h6>
             <InputText
-              v-model="returnStudy.contact.phoneNumber"
+              v-model="contactPhoneNumber"
               class="w-full"
               type="tel"
               :placeholder="t('study.placeholder.contactTel')"
