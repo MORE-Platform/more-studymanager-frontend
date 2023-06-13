@@ -1189,6 +1189,21 @@ components:
           uniqueItems: true
           readOnly: true
           minItems: 1
+        contact:
+          $ref: '#/components/schemas/Contact'
+
+    Contact:
+      type: object
+      properties:
+        institute:
+          type: string
+        person:
+          type: string
+        email:
+          type: string
+        phoneNumber:
+          type: string
+
 
     StatusChange:
       type: object
@@ -1283,8 +1298,7 @@ components:
           type: string
         properties:
           type: object
-          additionalProperties:
-            type: string
+          additionalProperties: true
         schedule:
           $ref: './Event.yaml/#/components/schemas/Event'
         created:
@@ -1382,6 +1396,7 @@ components:
           type: string
         properties:
           type: object
+          additionalProperties: true
         created:
           type: string
           format: date-time
@@ -1400,6 +1415,7 @@ components:
           type: string
         properties:
           type: object
+          additionalProperties: true
         created:
           type: string
           format: date-time
