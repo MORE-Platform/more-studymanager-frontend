@@ -564,7 +564,6 @@
             v-else-if="typeof observation.hidden !== 'undefined'"
             class="inline"
           >
-            test 1
             {{ $t(`observation.props.hidden.${observation.hidden}`) }}
           </div>
           <div v-else class="inline">

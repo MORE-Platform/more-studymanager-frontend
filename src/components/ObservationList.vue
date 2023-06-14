@@ -81,6 +81,7 @@
       header: t('observation.props.type'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '10vw',
     },
     {
       field: 'title',
