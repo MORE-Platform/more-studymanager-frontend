@@ -36,7 +36,6 @@
 
   onMounted(() => {
     timer.value = setInterval(function () {
-      console.log('timer');
       if (route.name === 'Data') {
         listParticipationData();
       }
