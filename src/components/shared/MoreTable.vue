@@ -681,7 +681,7 @@
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
               <span v-if="data[field] !== '-'">
-                {{ dayjs(data[field]).format('DD/MM/YYYY, hh:mm') }}
+                {{ dayjs(data[field]).format('DD/MM/YYYY, HH:mm') }}
               </span>
               <span v-else>
                 {{ data[field] }}
