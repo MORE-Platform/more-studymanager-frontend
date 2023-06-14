@@ -4,7 +4,6 @@
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
-  import Dropdown from 'primevue/dropdown';
   import { Study } from '../../generated-sources/openapi';
   import { dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
@@ -13,7 +12,6 @@
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
   const { t } = useI18n();
-  const language = ref('en');
 
   const returnStudy: Ref<Study> = ref({
     studyId: study.studyId,
@@ -57,11 +55,6 @@
   const contactPhoneNumber: Ref<string> = ref(
     study.contact?.phoneNumber ? study.contact.phoneNumber : ''
   );
-
-  const languages = [
-    { name: 'German', value: 'de' },
-    { name: 'English', value: 'en' },
-  ];
 
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
@@ -161,19 +154,7 @@
         ></InputText>
       </div>
       <div class="col-span-5 col-start-2"></div>
-      <div class="col-start-0 col-span-2">
-        <h5 class="mb-2">{{ $t('study.props.language') }}</h5>
-        <Dropdown
-          v-model="language"
-          style="width: 100%"
-          :options="languages"
-          :name="'language'"
-          option-label="name"
-          option-value="value"
-          :placeholder="t('study.placeholder.selectLanguage')"
-        />
-      </div>
-      <div class="col-start-0 col-span-2">
+      <div class="col-start-0 col-span-3">
         <h5 class="mb-2">{{ $t('study.dialog.label.studyStart') }}*</h5>
         <Calendar
           v-model="start"
@@ -189,7 +170,7 @@
           style="width: 100%"
         />
       </div>
-      <div class="col-start-0 col-span-2">
+      <div class="col-start-0 col-span-3">
         <h5 class="mb-2">{{ $t('study.dialog.label.studyEnd') }}*</h5>
         <Calendar
           v-model="end"

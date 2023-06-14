@@ -5,7 +5,7 @@
   import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { ref, Ref } from 'vue';
+  import { onMounted, ref, Ref } from 'vue';
   import {
     ParticipationDataGrouping,
     ParticipationDataMapping,
@@ -19,15 +19,31 @@
   import { ComponentFactory } from '../generated-sources/openapi';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
+  import { onBeforeRouteLeave, useRoute } from 'vue-router';
 
   const { componentsApi } = useComponentsApi();
   const { dataApi } = useDataApi();
+  const route = useRoute();
 
   const props = defineProps({
     studyId: {
       type: Number,
       required: true,
     },
+  });
+
+  const timer = ref();
+
+  onMounted(() => {
+    timer.value = setInterval(function () {
+      if (route.name === 'Data') {
+        listParticipationData();
+      }
+    }, 10000);
+  });
+
+  onBeforeRouteLeave(() => {
+    clearInterval(timer.value);
   });
 
   const loader = useLoader();
