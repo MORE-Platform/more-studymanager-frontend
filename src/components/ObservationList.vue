@@ -81,6 +81,7 @@
       header: t('observation.props.type'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
+      columnWidth: '10vw',
     },
     {
       field: 'title',
@@ -105,7 +106,15 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
-      columnWidth: '10vw',
+      columnWidth: '15vw',
+    },
+    {
+      field: 'hidden',
+      header: t('observation.props.hidden.true'),
+      type: MoreTableFieldType.booleanIcon,
+      sortable: true,
+      columnWidth: '5vw',
+      editable: true,
     },
   ];
 

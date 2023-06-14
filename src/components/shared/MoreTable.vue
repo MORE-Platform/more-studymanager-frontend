@@ -25,6 +25,7 @@
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
+  import Checkbox from 'primevue/checkbox';
 
   const props = defineProps({
     title: {
@@ -601,6 +602,22 @@
             "
             :show-toggle-all="false"
           />
+          <div v-if="column.type === MoreTableFieldType.booleanIcon">
+            <Checkbox
+              v-if="
+                data['type'] !== 'question-observation' &&
+                data['type'] !== 'lime-survey-observation' &&
+                data['type'] !== 'external-observation'
+              "
+              v-model="data[field]"
+              :binary="true"
+              class="icon-checkbox"
+            />
+            <div v-else class="icon-box">
+              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-else class="pi pi-times color-important" />
+            </div>
+          </div>
         </template>
         <template
           v-if="column.filterable"
@@ -682,6 +699,13 @@
                 class="multiselect-item"
                 >{{ value }}</span
               >
+            </span>
+            <span
+              v-if="column.type === MoreTableFieldType.booleanIcon"
+              class="icon-box"
+            >
+              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-else class="pi pi-times color-important" />
             </span>
           </div>
         </template>
@@ -868,5 +892,42 @@
 
   .table-title-width .title {
     max-width: 80%;
+  }
+
+  .icon-box {
+    color: white;
+
+    .color-approved,
+    .color-important {
+      padding: 6px;
+      font-size: 16px;
+      border-radius: var(--border-radius);
+    }
+    .color-approved,
+    .color-important {
+      background-color: var(--green-400);
+    }
+    .color-important {
+      background-color: var(--red-600);
+    }
+  }
+
+  :deep(.icon-checkbox.p-checkbox) {
+    height: 100%;
+  }
+
+  .icon-checkbox {
+    :deep(.p-checkbox-box) {
+      padding: 12px;
+      .p-checkbox-icon {
+        font-size: 16px;
+      }
+      &.p-highlight {
+        background-color: var(--blue-50);
+        .p-checkbox-icon {
+          color: var(--primary-color);
+        }
+      }
+    }
   }
 </style>
