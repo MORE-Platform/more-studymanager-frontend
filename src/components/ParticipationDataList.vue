@@ -74,7 +74,9 @@
                 item.dataReceived ? 'dataReceived' : 'noDataReceived'
               }`
             ),
-            lastDataReceived: item.lastDataReceived as string,
+            lastDataReceived: item.lastDataReceived
+              ? item.lastDataReceived
+              : '-',
           };
           return mapping;
         });
