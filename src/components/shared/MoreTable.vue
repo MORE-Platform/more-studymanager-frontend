@@ -380,6 +380,12 @@
 
     return [] as MoreTableChoice[];
   }
+
+  function getNestedField(data: any, field: string) {
+    const f = field.split('.')[0];
+    const p = field.split('.')[1];
+    return data[f][p];
+  }
 </script>
 
 <template>
@@ -634,6 +640,12 @@
           />
         </template>
         <template #body="{ data, field }">
+          <div v-if="column.type === MoreTableFieldType.nested">
+            {{ getNestedField(data, field) }}
+          </div>
+          <div v-if="column.type === MoreTableFieldType.nestedDatetime">
+            {{ dayjs(getNestedField(data, field)).format('DD/MM/YYYY, HH:mm') }}
+          </div>
           <div
             v-if="data[field] === null"
             v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"

@@ -17,6 +17,7 @@
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
+    MoreInterventionTableMap,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -38,6 +39,8 @@
   const interventionList: Ref<Intervention[]> = ref([]);
   const dialog = useDialog();
   //const interventionTypes: Ref<MoreTableActionOptions[]> = ref([])
+
+  const mappedInterventionList: Ref<MoreInterventionTableMap[]> = ref([]);
 
   const props = defineProps({
     studyId: { type: Number, required: true },
@@ -84,7 +87,7 @@
       header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
-      columnWidth: '30vw',
+      columnWidth: '25vw',
     },
     {
       field: 'studyGroupId',
@@ -95,6 +98,16 @@
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '10vw',
+    },
+    {
+      field: 'cronTime',
+      header: t('global.labels.time'),
+      columnWidth: '5vw',
+    },
+    {
+      field: 'cronRepetition',
+      header: t('global.labels.repetition'),
+      columnWidth: '15vw',
     },
   ];
 
@@ -165,6 +178,43 @@
       });
   }
 
+  async function listInterventionsMap(): Promise<void> {
+    listInterventions();
+    mappedInterventionList.value = await interventionsApi
+      .listInterventions(props.studyId)
+      .then(async (response) => {
+        return await Promise.all(
+          response.data.map(async (item) => {
+            return await getCronInformation(item.interventionId as number).then(
+              (cronRes) => {
+                console.log(cronRes);
+                const mapping: MoreInterventionTableMap = {
+                  studyId: item.studyId as number,
+                  interventionId: item.interventionId as number,
+                  studyGroupId: item.studyGroupId,
+                  title: item.title as string,
+                  purpose: item.purpose as string,
+                  schdeule: item.schedule as string,
+                  trigger: item.trigger,
+                  actions: item.actions as Action,
+                  created: item.created as string,
+                  modified: item.modified as string,
+                  cronTime: cronRes[0] as string,
+                  cronRepetition: cronRes[1] as string,
+                };
+                console.log(mapping);
+                return mapping;
+              }
+            );
+          })
+        );
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list participationDataList');
+        return [];
+      });
+  }
+
   async function listActions(interventionId?: number) {
     if (interventionId) {
       return interventionsApi
@@ -175,6 +225,7 @@
     }
   }
   async function getTrigger(interventionId?: number) {
+    console.log('getTrigger');
     if (interventionId) {
       return interventionsApi
         .getTrigger(props.studyId, interventionId)
@@ -182,6 +233,54 @@
     } else {
       return undefined;
     }
+  }
+
+  async function getCronInformation(interventionId: number) {
+    const cronScheduler = await getTrigger(interventionId).then((res) =>
+      res.properties.cronSchedule.split(' ')
+    );
+    const time = `${getTimeValue(cronScheduler[2])}:${getTimeValue(
+      cronScheduler[1]
+    )}:${getTimeValue(cronScheduler[0])}`;
+    const repetition = `${getRepetitionInterval(
+      cronScheduler[3],
+      cronScheduler[4],
+      cronScheduler[5]
+    )}`;
+    return [time, repetition];
+  }
+  function getTimeValue(number: string): string {
+    if (number.length === 1) {
+      return `0${number}`;
+    } else {
+      return number;
+    }
+  }
+
+  function getRepetitionInterval(
+    dayOfMonth: string,
+    month: string,
+    year: string
+  ): string {
+    let returnString = '';
+    if (dayOfMonth === '*') {
+      returnString = `${t('intervention.interventionList.snippets.every')} ${t(
+        'intervention.interventionList.snippets.day'
+      )}`;
+    } else {
+      returnString = `${dayOfMonth}.`;
+    }
+    if (month === '*') {
+      returnString = `${returnString} ${t(
+        'intervention.interventionList.snippets.ofEvery'
+      )} ${t('intervention.interventionList.snippets.month')}`;
+    } else {
+      returnString = `${returnString}${month}.`;
+    }
+    if (year !== '*' && year !== '?') {
+      returnString = `${returnString} (${year})`;
+    }
+    return returnString;
   }
 
   function execute(action: MoreTableRowActionResult<StudyGroup>) {
@@ -216,7 +315,7 @@
         intervention.interventionId as number,
         intervention
       )
-      .then(listInterventions)
+      .then(listInterventionsMap)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
@@ -231,7 +330,7 @@
         props.studyId,
         requestIntervention.interventionId as number
       )
-      .then(listInterventions)
+      .then(listInterventionsMap)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
@@ -251,7 +350,7 @@
         createAction(interventionId.value as number, action);
       });
 
-      listInterventions();
+      await listInterventionsMap();
     }
   }
 
@@ -267,7 +366,7 @@
   async function createAction(interventionId: number, action: Action) {
     await interventionsApi
       .createAction(props.studyId, interventionId, action)
-      .then(listInterventions)
+      .then(listInterventionsMap)
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'Cannot create action on: ' + interventionId)
       );
@@ -309,7 +408,7 @@
         object.intervention.interventionId,
         object.trigger
       ).then(() => {
-        listInterventions();
+        listInterventionsMap();
       });
 
       object.actions.forEach((action: Action) => {
@@ -342,7 +441,7 @@
           intervention.interventionId as number,
           intervention
         )
-        .then(listInterventions)
+        .then(listInterventionsMap)
         .catch((e: AxiosError) =>
           handleIndividualError(
             e,
@@ -354,10 +453,13 @@
   }
 
   function openEditIntervetion(interventionId: number) {
+    console.log('openEditIntervention');
+    console.log(interventionId);
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId
     );
     if (intervention) {
+      console.log(intervention);
       let dialogTitle = t('intervention.dialog.header.edit');
       if (
         props.studyStatus === StudyStatus.Active ||
@@ -423,8 +525,7 @@
       )
       .catch(console.error);
   }
-
-  listInterventions();
+  listInterventionsMap();
 </script>
 
 <template>
@@ -434,7 +535,7 @@
       :title="$t('intervention.interventionList.title')"
       :subtitle="$t('intervention.interventionList.description')"
       :columns="interventionColumns"
-      :rows="interventionList"
+      :rows="mappedInterventionList"
       :row-actions="rowActions"
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"

@@ -11,6 +11,8 @@
       "add": "Add",
       "start": "Start",
       "end": "End",
+      "time": "Time",
+      "repetition": "Repetition",
       "confirm": "Confirm",
       "id": "Id",
       "clone": "Clone",
@@ -541,6 +543,13 @@
       "emptyListMsg": "Add and manage your study's interventions. Your interventions will be listed here.",
       "action": {
         "add": "Add Intervention"
+      },
+      "snippets": {
+        "every": "every",
+        "day": "day",
+        "ofEvery": "of every",
+        "month": "month",
+        "months": "months"
       }
     },
     "factory": {

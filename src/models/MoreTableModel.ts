@@ -1,3 +1,5 @@
+import { Action, Trigger } from '../generated-sources/openapi';
+
 export interface MoreTableColumn {
   field: string;
   header: string;
@@ -107,6 +109,8 @@ export enum MoreTableFieldType {
   datetime,
   statusString,
   booleanIcon,
+  nested,
+  nestedDatetime,
 }
 
 export enum FileUploadModeType {
@@ -152,4 +156,19 @@ export interface MoreIntegrationTableMap {
 export interface MoreIntegrationLink {
   observationId: number;
   tokenLabel: string;
+}
+
+export interface MoreInterventionTableMap {
+  studyId: number;
+  interventionId: number;
+  studyGroupId?: number;
+  title: string;
+  purpose: string;
+  schdeule?: string;
+  trigger?: Trigger;
+  actions?: Action;
+  created: string;
+  modified: string;
+  cronTime?: string;
+  cronRepetition?: string;
 }
