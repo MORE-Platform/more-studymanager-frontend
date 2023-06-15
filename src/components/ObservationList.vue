@@ -111,7 +111,7 @@
     {
       field: 'hidden',
       header: t('observation.props.hidden.true'),
-      type: MoreTableFieldType.booleanIcon,
+      type: MoreTableFieldType.showIcon,
       sortable: true,
       columnWidth: '5vw',
       editable: true,
