@@ -608,7 +608,7 @@
             "
             :show-toggle-all="false"
           />
-          <div v-if="column.type === MoreTableFieldType.booleanIcon">
+          <div v-if="column.type === MoreTableFieldType.showIcon">
             <Checkbox
               v-if="
                 data['type'] !== 'question-observation' &&
@@ -617,11 +617,15 @@
               "
               v-model="data[field]"
               :binary="true"
-              class="icon-checkbox"
-            />
-            <div v-else class="icon-box">
-              <span v-if="data[field]" class="pi pi-check color-approved" />
-              <span v-else class="pi pi-times color-important" />
+              class="icon-checkbox show-icon"
+            >
+            </Checkbox>
+            <div v-else class="icon-box eye">
+              <span
+                v-if="data[field]"
+                class="pi pi-eye-slash color-important"
+              />
+              <span v-else class="pi pi-eye color-approved" />
             </div>
           </div>
         </template>
@@ -713,11 +717,14 @@
               >
             </span>
             <span
-              v-if="column.type === MoreTableFieldType.booleanIcon"
-              class="icon-box"
+              v-if="column.type === MoreTableFieldType.showIcon"
+              class="icon-box eye"
             >
-              <span v-if="data[field]" class="pi pi-check color-approved" />
-              <span v-else class="pi pi-times color-important" />
+              <span
+                v-if="data[field]"
+                class="pi pi-eye-slash color-important"
+              />
+              <span v-else class="pi pi-eye color-approved" />
             </span>
           </div>
         </template>
@@ -906,38 +913,61 @@
     max-width: 80%;
   }
 
-  .icon-box {
-    color: white;
-
+  .icon-box.eye {
     .color-approved,
     .color-important {
       padding: 6px;
-      font-size: 16px;
+      font-size: 22px;
       border-radius: var(--border-radius);
     }
-    .color-approved,
-    .color-important {
-      background-color: var(--green-400);
+    .color-approved {
+      color: var(--green-600);
     }
     .color-important {
-      background-color: var(--red-600);
+      color: var(--red-600);
     }
   }
 
-  :deep(.icon-checkbox.p-checkbox) {
+  :deep(.icon-checkbox.p-checkbox.show-icon) {
     height: 100%;
+    padding: 5px;
   }
 
-  .icon-checkbox {
+  .icon-checkbox.show-icon {
     :deep(.p-checkbox-box) {
       padding: 12px;
+      border: none;
+
       .p-checkbox-icon {
         font-size: 16px;
+        padding: 5px;
+        background: var(--bluegray-50);
+
+        font-family: 'primeicons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        color: var(--primary-color);
+
+        &::before {
+          --webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+          content: '\e966';
+          font-size: 22px;
+        }
       }
       &.p-highlight {
-        background-color: var(--blue-50);
         .p-checkbox-icon {
           color: var(--primary-color);
+
+          &.pi.pi-check::before {
+            content: '\e965';
+          }
         }
       }
     }

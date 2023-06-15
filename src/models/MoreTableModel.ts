@@ -108,7 +108,7 @@ export enum MoreTableFieldType {
   longtext,
   datetime,
   statusString,
-  booleanIcon,
+  showIcon,
   nested,
   nestedDatetime,
 }
