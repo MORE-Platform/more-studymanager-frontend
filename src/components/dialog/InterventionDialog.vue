@@ -425,7 +425,7 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           ></CronSchedulerConfiguration>
-          
+
           <div
             v-if="
               triggerProp &&
