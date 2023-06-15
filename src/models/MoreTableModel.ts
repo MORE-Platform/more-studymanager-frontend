@@ -106,7 +106,7 @@ export enum MoreTableFieldType {
   longtext,
   datetime,
   statusString,
-  booleanIcon,
+  showIcon,
 }
 
 export enum FileUploadModeType {
