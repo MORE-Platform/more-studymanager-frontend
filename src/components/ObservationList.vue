@@ -77,7 +77,7 @@
 
   const observationColumns: MoreTableColumn[] = [
     {
-      field: 'type',
+      field: 'typeLabel',
       header: t('observation.props.type'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
@@ -202,7 +202,25 @@
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
       .listObservations(props.studyId)
-      .then((response: AxiosResponse) => response.data)
+      .then((response: AxiosResponse) => {
+        return response.data.map((item: Observation) => {
+          return {
+            studyId: item.studyId,
+            observationId: item.observationId,
+            studyGroupId: item.studyGroupId,
+            title: item.title,
+            purpose: item.purpose,
+            participantInfo: item.participantInfo,
+            type: item.type,
+            typeLabel: getObservationTypeString(item.type as string),
+            properties: item.properties,
+            schedule: item.schedule,
+            created: item.created,
+            modified: item.modified,
+            hidden: item.hidden,
+          };
+        });
+      })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations')
       );
