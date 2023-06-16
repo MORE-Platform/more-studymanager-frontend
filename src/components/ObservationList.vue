@@ -1,6 +1,6 @@
 <script setup lang="ts">
-  import { ref, Ref, PropType } from 'vue';
-  import { useObservationsApi, useComponentsApi } from '../composable/useApi';
+  import { PropType, Ref, ref } from 'vue';
+  import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
     Observation,
@@ -10,11 +10,11 @@
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
+    MoreTableActionOption,
+    MoreTableChoice,
+    MoreTableCollaboratorItem,
     MoreTableColumn,
     MoreTableFieldType,
-    MoreTableChoice,
-    MoreTableActionOption,
-    MoreTableCollaboratorItem,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -77,7 +77,7 @@
 
   const observationColumns: MoreTableColumn[] = [
     {
-      field: 'type',
+      field: 'typeLabel',
       header: t('observation.props.type'),
       sortable: true,
       filterable: { showFilterMatchModes: false },
@@ -106,7 +106,7 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
-      columnWidth: '15vw',
+      columnWidth: '10vw',
     },
     {
       field: 'hidden',
@@ -115,6 +115,20 @@
       sortable: true,
       columnWidth: '5vw',
       editable: true,
+    },
+    {
+      field: 'schedule.dtstart',
+      header: t('global.labels.start'),
+      type: MoreTableFieldType.nestedDatetime,
+      columnWidth: '5vw',
+      sortable: true,
+    },
+    {
+      field: 'schedule.dtend',
+      header: t('global.labels.end'),
+      type: MoreTableFieldType.nestedDatetime,
+      columnWidth: '5vw',
+      sortable: true,
     },
   ];
 
@@ -188,7 +202,25 @@
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
       .listObservations(props.studyId)
-      .then((response: AxiosResponse) => response.data)
+      .then((response: AxiosResponse) => {
+        return response.data.map((item: Observation) => {
+          return {
+            studyId: item.studyId,
+            observationId: item.observationId,
+            studyGroupId: item.studyGroupId,
+            title: item.title,
+            purpose: item.purpose,
+            participantInfo: item.participantInfo,
+            type: item.type,
+            typeLabel: getObservationTypeString(item.type as string),
+            properties: item.properties,
+            schedule: item.schedule,
+            created: item.created,
+            modified: item.modified,
+            hidden: item.hidden,
+          };
+        });
+      })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations')
       );
@@ -272,6 +304,7 @@
         header: headerText,
         style: {
           width: '50vw',
+          maxHeight: '92vh',
         },
         breakpoints: {
           '960px': '75vw',

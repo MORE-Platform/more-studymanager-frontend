@@ -11,6 +11,8 @@
       "add": "Hinzufügen",
       "start": "Start",
       "end": "Ende",
+      "time": "Zeit",
+      "repetition": "Wiederholung",
       "confirm": "Bestätigen",
       "id": "Id",
       "clone": "Klonen",
@@ -544,6 +546,13 @@
       "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
       "action": {
         "add": "Intervention hinzufügen"
+      },
+      "snippets": {
+        "every": "jeder",
+        "day": "Tag",
+        "ofEvery": "jedes",
+        "month": "Monat",
+        "months": "Monats"
       }
     },
     "factory": {
@@ -566,7 +575,7 @@
     },
     "description": {
       "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu.",
-      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
+      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu.",
     }
   },
 
