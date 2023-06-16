@@ -776,6 +776,8 @@
 </template>
 
 <style scoped lang="postcss">
+  @import '../../styles/components/eye-checkbox.pcss';
+
   :deep(.more-table .row-actions) {
     pointer-events: none;
   }
@@ -901,63 +903,8 @@
     max-width: 80%;
   }
 
-  .icon-box.eye {
-    .color-approved,
-    .color-important {
-      padding: 6px;
-      font-size: 22px;
-      border-radius: var(--border-radius);
-    }
-    .color-approved {
-      color: var(--green-600);
-    }
-    .color-important {
-      color: var(--red-600);
-    }
-  }
-
   :deep(.icon-checkbox.p-checkbox.show-icon) {
     height: 100%;
     padding: 5px;
-  }
-
-  .icon-checkbox.show-icon {
-    :deep(.p-checkbox-box) {
-      padding: 12px;
-      border: none;
-
-      .p-checkbox-icon {
-        font-size: 16px;
-        padding: 5px;
-        background: var(--bluegray-50);
-
-        font-family: 'primeicons';
-        speak: none;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        display: inline-block;
-        -webkit-font-smoothing: antialiased;
-        color: var(--primary-color);
-
-        &::before {
-          --webkit-backface-visibility: hidden;
-          backface-visibility: hidden;
-          content: '\e966';
-          font-size: 22px;
-        }
-      }
-      &.p-highlight {
-        .p-checkbox-icon {
-          color: var(--primary-color);
-
-          &.pi.pi-check::before {
-            content: '\e965';
-          }
-        }
-      }
-    }
   }
 </style>
