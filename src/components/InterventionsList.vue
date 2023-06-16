@@ -500,6 +500,7 @@
               header: headerText,
               style: {
                 width: '60vw',
+                maxHeight: '92vh',
               },
               breakpoints: {
                 '1280px': '70vw',

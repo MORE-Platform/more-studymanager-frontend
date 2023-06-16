@@ -286,6 +286,7 @@
         header: headerText,
         style: {
           width: '50vw',
+          maxHeight: '92vh',
         },
         breakpoints: {
           '960px': '75vw',
