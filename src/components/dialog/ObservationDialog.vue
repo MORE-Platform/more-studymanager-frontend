@@ -553,28 +553,50 @@
               observation.type !== 'external-observation' &&
               editable
             "
-            class="inline"
+            class="inline flex items-center"
           >
-            <Checkbox v-model="hidden" :binary="true" />
-            <div class="ml-2 inline">
+            <Checkbox
+              v-model="hidden"
+              :binary="true"
+              class="icon-checkbox show-icon icon-box eye mr-2"
+            />
+            <span class="ml-2 inline">
               {{ $t('observation.props.hidden.true') }}
-            </div>
-          </div>
-          <div
-            v-else-if="typeof observation.hidden !== 'undefined'"
-            class="inline"
-          >
-            {{ $t(`observation.props.hidden.${observation.hidden}`) }}
-          </div>
-          <div v-else class="inline">
-            <span v-if="observation.type === 'external-observation'">{{
-              $t('observation.props.hidden.true')
-            }}</span>
-            <span v-else>{{ $t('observation.props.hidden.false') }}</span>
-          </div>
-          <div class="inline">
+            </span>
             <span class="pi pi-info-circle color-primary ml-2"></span>
           </div>
+
+          <div v-else class="icon-box eye preview inline flex items-center">
+            <span
+              v-if="typeof observation.hidden !== 'undefined'"
+              class="flex items-center"
+            >
+              <span
+                class="pi mr-0.5"
+                :class="
+                  observation.hidden
+                    ? 'pi-eye-slash color-important'
+                    : 'pi-eye color-approved'
+                "
+              />
+              {{ $t(`observation.props.hidden.${observation.hidden}`) }}
+            </span>
+            <span
+              v-else-if="observation.type === 'external-observation'"
+              class="flex items-center"
+            >
+              <span class="pi pi-eye-slash color-important mr-0.5" />{{
+                $t('observation.props.hidden.true')
+              }}
+            </span>
+            <span v-else class="flex items-center"
+              ><span class="pi pi-eye color-approved mr-0.5" />{{
+                $t('observation.props.hidden.false')
+              }}</span
+            >
+            <span class="pi pi-info-circle color-primary ml-2"></span>
+          </div>
+
           <div class="inline">
             <div class="info-box-hidden">
               {{ $t('observation.dialog.msg.hiddenInfo') }}
@@ -602,6 +624,7 @@
 
 <style scoped lang="postcss">
   @import '../../styles/components/moreTable-dialogs.pcss';
+  @import '../../styles/components/eye-checkbox.pcss';
   .dialog {
     .day {
       &:after {
