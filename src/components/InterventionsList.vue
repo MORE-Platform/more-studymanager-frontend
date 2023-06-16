@@ -268,7 +268,9 @@
         'intervention.interventionList.snippets.day'
       )}`;
     } else {
-      returnString = `${dayOfMonth}.`;
+      returnString = `${t(
+        'intervention.interventionList.snippets.every'
+      )} ${dayOfMonth}.`;
     }
     if (month === '*') {
       returnString = `${returnString} ${t(
