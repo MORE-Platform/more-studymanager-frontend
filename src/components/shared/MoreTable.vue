@@ -733,7 +733,12 @@
         </template>
       </Column>
 
-      <Column key="actions" :row-hover="true" class="row-actions" :frozen="true">
+      <Column
+        key="actions"
+        :row-hover="true"
+        class="row-actions"
+        :frozen="true"
+      >
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
