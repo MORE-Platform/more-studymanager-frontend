@@ -517,7 +517,9 @@
       :loading="loading"
       filter-display="menu"
       selection-mode="single"
+      :scrolable="false"
       responsive-layout="scroll"
+      :frozen-columns="2"
       :paginator="
         paginatorRows
           ? paginator && rows.length >= paginatorRows
@@ -531,6 +533,7 @@
         key="actions"
         :row-hover="true"
         class="row-actions"
+        :frozen="true"
       >
         <template #body="slotProps">
           <div
@@ -730,7 +733,12 @@
         </template>
       </Column>
 
-      <Column key="actions" :row-hover="true" class="row-actions">
+      <Column
+        key="actions"
+        :row-hover="true"
+        class="row-actions"
+        :frozen="true"
+      >
         <template #body="slotProps">
           <div v-if="!isEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id" class="inline">
