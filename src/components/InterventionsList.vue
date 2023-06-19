@@ -202,7 +202,6 @@
                   cronTime: cronRes[0] as string,
                   cronRepetition: cronRes[1] as string,
                 };
-                console.log(mapping);
                 return mapping;
               }
             );
@@ -225,7 +224,6 @@
     }
   }
   async function getTrigger(interventionId?: number) {
-    console.log('getTrigger');
     if (interventionId) {
       return interventionsApi
         .getTrigger(props.studyId, interventionId)
@@ -455,13 +453,10 @@
   }
 
   function openEditIntervetion(interventionId: number) {
-    console.log('openEditIntervention');
-    console.log(interventionId);
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId
     );
     if (intervention) {
-      console.log(intervention);
       let dialogTitle = t('intervention.dialog.header.edit');
       if (
         props.studyStatus === StudyStatus.Active ||

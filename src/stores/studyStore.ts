@@ -120,8 +120,6 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function exportStudy(studyId: number): Promise<void> {
-    console.log(studyId);
-
     await importExportApi
       .exportStudy(studyId)
       .then((response: AxiosResponse) => {
