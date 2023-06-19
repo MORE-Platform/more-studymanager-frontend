@@ -96,7 +96,7 @@
       header: t('study.props.purpose'),
       editable: true,
       type: MoreTableFieldType.longtext,
-      columnWidth: '15vw',
+      columnWidth: '10vw',
     },
     {
       field: 'studyGroupId',
@@ -106,7 +106,7 @@
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.entireStudy'),
-      columnWidth: '7vw',
+      columnWidth: '5vw',
     },
     {
       field: 'hidden',
