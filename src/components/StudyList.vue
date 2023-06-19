@@ -1,7 +1,9 @@
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
   import {
+    FileUploadModeType,
     MoreTableAction,
+    MoreTableActionResult,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
@@ -83,6 +85,18 @@
   ];
   const tableActions: MoreTableAction[] = [
     {
+      id: 'import',
+      icon: 'pi pi-upload',
+      label: 'Import Study',
+      options: {
+        type: 'fileUpload',
+        values: [],
+        uploadOptions: {
+          mode: FileUploadModeType.basic,
+        },
+      },
+    },
+    {
       id: 'create',
       icon: 'pi pi-plus',
       label: t('study.studyList.action.addStudy'),
@@ -125,6 +139,16 @@
           [StudyRole.Admin, StudyRole.Operator].includes(r)
         ),
     },
+    {
+      id: 'export',
+      label: 'Export',
+      icon: 'pi pi-download',
+      visible: (data) =>
+        data.status === StudyStatus.Draft &&
+        data.userRoles.some((r: any) =>
+          [StudyRole.Admin, StudyRole.Operator].includes(r)
+        ),
+    },
   ];
   const frontRowActions: MoreTableAction[] = [
     {
@@ -149,6 +173,10 @@
         return studyStore.deleteStudy(action.row.studyId);
       case 'create':
         return openCreateDialog();
+      case 'import':
+        return onImportStudy(action);
+      case 'export':
+        return onExportStudy(action.row.studyId as number);
       case 'copyId':
         return onCopyId(action.row.studyId, action.row.title);
       default:
@@ -191,6 +219,17 @@
       navigator.clipboard.writeText(studyUrl);
       showMessage.value = true;
       alertMessage.value = t('study.dialog.msg.urlCopied', { studyId, title });
+    }
+  }
+
+  function onExportStudy(studyId: number) {
+    studyStore.exportStudy(studyId);
+  }
+
+  function onImportStudy(action: MoreTableActionResult) {
+    if (action.properties?.files) {
+      const file = action.properties?.files[0];
+      studyStore.importStudy(file);
     }
   }
 
