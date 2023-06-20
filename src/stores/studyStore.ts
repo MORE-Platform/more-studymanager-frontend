@@ -1,13 +1,14 @@
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
-import { useStudiesApi } from '../composable/useApi';
+import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
+  const { importExportApi } = useImportExportApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
 
@@ -103,6 +104,46 @@ export const useStudyStore = defineStore('study', () => {
         );
     }
   }
+
+  async function importStudy(importedStudy: File) {
+    await importExportApi
+      .importStudy(importedStudy, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(() => {
+        setTimeout(function () {
+          listStudies();
+        }, 100);
+      });
+  }
+
+  async function exportStudy(studyId: number): Promise<void> {
+    await importExportApi
+      .exportStudy(studyId)
+      .then((response: AxiosResponse) => {
+        const filename: string = 'study_' + studyId + '.json';
+        downloadJSON(filename, response.data);
+      });
+  }
+
+  function downloadJSON(filename: string, file: File): void {
+    const fileJSON = JSON.stringify(file);
+    const link = document.createElement('a');
+    if (link) {
+      link.setAttribute(
+        'href',
+        'data:aapplication/json; charset=utf-8,' + encodeURIComponent(fileJSON)
+      );
+      link.setAttribute('download', filename);
+      link.style.display = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
   // Getters
   const studyUserRoles: ComputedRef<Array<StudyRole>> = computed(() => [
     ...(study.value.userRoles || []),
@@ -122,6 +163,8 @@ export const useStudyStore = defineStore('study', () => {
     createStudy,
     deleteStudy,
     updateStudyInStudies,
+    importStudy,
+    exportStudy,
     studyUserRoles,
     studyStatus,
     studyId,

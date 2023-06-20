@@ -971,6 +971,52 @@ paths:
         '400':
           description: bad request
 
+
+  /studies/import/study:
+    post:
+      tags:
+        - importExport
+      description: Import Study
+      operationId: importStudy
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+
+      responses:
+        '201':
+          description: import was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: bad request
+
+  /studies/{studyId}/export/study:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - importExport
+      description: Export Study
+      operationId: exportStudy
+      responses:
+        '200':
+          description: foo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyImportExport'
+        '400':
+          description: bad request
+
+
   /studies/{studyId}/import/participants:
     parameters:
       - $ref: '#/components/parameters/StudyId'
@@ -1440,6 +1486,24 @@ components:
     IdReference:
       type: integer
       format: int32
+
+    StudyImportExport:
+      type: object
+      properties:
+        study:
+          $ref: '#/components/schemas/Study'
+        studyGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudyGroup'
+        observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Observation'
+        interventions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Intervention'
 
     UserSearchResultList:
       type: object
