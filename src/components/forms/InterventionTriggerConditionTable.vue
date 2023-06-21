@@ -114,12 +114,12 @@
     { label: '<=', value: '<=' },
     { label: '>=', value: '>=' },
     { label: '=', value: '=' },
-    { label: '!=', value: '!' },
+    { label: '!', value: '!=' },
   ];
 
   const stringOperator: MoreTableChoice[] = [
     { label: '=', value: '=' },
-    { label: '!', value: '!' },
+    { label: '!', value: '!=' },
   ];
 
   async function getFactories() {

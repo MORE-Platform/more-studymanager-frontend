@@ -55,6 +55,9 @@
     triggerProp?.value ? triggerProp.value : ''
   );
   const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+  const cronScheduleProp: Ref<string> = triggerProp.value
+    ? JSON.parse(triggerProp.value).cronSchedule
+    : '0 12 * * ?';
 
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -167,7 +170,7 @@
             trigger: {},
             actions: [],
             studyGroupId: studyGroupId.value,
-            scheduler: intervention.schedule,
+            schedule: intervention.schedule,
           } as Intervention;
 
           const returnObject = {
@@ -184,6 +187,7 @@
             dialogRef.value.close(returnObject);
           }
         })
+
         .catch((reason) => {
           if (reason.component === 'trigger') {
             triggerJsonError.value = reason.msg;
@@ -307,8 +311,12 @@
   }
 
   function setCronSchedule(e: string) {
-    triggerProp.value = e;
-    checkExternalErrors();
+    if (triggerProp.value) {
+      const tempTriggerProp = JSON.parse(triggerProp.value);
+      tempTriggerProp.cronSchedule = e;
+      triggerProp.value = JSON.stringify(tempTriggerProp);
+      checkExternalErrors();
+    }
   }
 
   function updateProps() {
@@ -416,15 +424,13 @@
             {{ triggerJsonError }}
           </div>
           <CronSchedulerConfiguration
-            v-show="showScheduleInput"
             v-if="showScheduleInput"
-            v-model="triggerProp"
             class="mb-4"
-            :trigger-props="triggerProp"
             :editable="editable"
+            :cron-schedule="cronScheduleProp"
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
-          ></CronSchedulerConfiguration>
+          />
 
           <div
             v-if="
