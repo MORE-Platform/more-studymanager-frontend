@@ -57,7 +57,7 @@
   const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
   const cronScheduleProp: Ref<string> = triggerProp.value
     ? JSON.parse(triggerProp.value).cronSchedule
-    : '0 12 * * ?';
+    : '0 0 12 * * ?';
 
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -240,7 +240,9 @@
 
   function checkExternalErrors(e?: string) {
     externalErrors.value = [];
-    if (e) externalErrors.value.push(e);
+    if (e) {
+      externalErrors.value.push(e);
+    }
   }
 
   function cancel() {

@@ -12,7 +12,7 @@
   const props = defineProps({
     cronSchedule: {
       type: String,
-      default: '0 12 * * ?',
+      default: '0 0 12 * * ?',
     },
     editable: {
       type: Boolean,
@@ -92,7 +92,7 @@
 
   const emit = defineEmits<{
     (e: 'onValidSchedule', cronScheduleString: string): string;
-    (e: 'onError', errorMessage: string): string;
+    (e: 'onError', errorMessage?: string): string;
   }>();
 
   function validate() {
@@ -100,16 +100,21 @@
 
     tempCronSchedule.value.forEach((item, index) => {
       parsedTriggerSchedule.value = parsedTriggerSchedule.value + item.value;
-
       if (index < tempCronSchedule.value.length - 1) {
         parsedTriggerSchedule.value = parsedTriggerSchedule.value + ' ';
       }
+    });
+    parsedTriggerSchedule.value.split(' ').forEach((item, index) => {
+      tempCronSchedule.value[index].value = item;
     });
     const validCronValue = cron(parsedTriggerSchedule.value, {
       preset: 'default-preset',
     });
     if (validCronValue.isValid()) {
       returnCronSchdeuleString.value = '0 ' + parsedTriggerSchedule.value;
+      cronError.value = '';
+      hasCronError.value = false;
+      emit('onError', undefined);
       emit('onValidSchedule', returnCronSchdeuleString.value);
     } else {
       hasCronError.value = true;
