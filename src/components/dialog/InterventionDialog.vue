@@ -74,6 +74,14 @@
   setTriggerConfig(triggerData?.type ? triggerData.type : '');
   setNonScheduleTriggerConfig(triggerData?.properties);
 
+  const triggerConditionsError: Ref<string | undefined> = ref(undefined);
+  const interventionRowIsOpen: Ref<boolean> = ref(false);
+
+  function setRowOpenError(isOpen: boolean) {
+    interventionRowIsOpen.value = isOpen;
+    checkErrors();
+  }
+
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
       actionId: item.actionId,
@@ -131,7 +139,7 @@
   }
 
   function save() {
-    if (externalErrors.value.length === 0) {
+    if (externalErrors.value.length === 0 && errors.value.length === 0) {
       updateProps();
       Promise.all(
         [
@@ -229,6 +237,18 @@
         value: 'Please enter your triggerconfig',
       });
     }
+    if (interventionRowIsOpen.value) {
+      errors.value.push({
+        label: 'interventionRowIsOpen',
+        value:
+          'Please save all trigger conditions before saving the intervention.',
+      });
+    }
+  }
+
+  function setTriggerConditionError(triggerTableE?: string) {
+    triggerConditionsError.value = triggerTableE;
+    checkErrors();
   }
 
   function getError(label: string): string | null | undefined {
@@ -482,7 +502,15 @@
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
             @on-emit-trigger-conditions="updateTriggerConditions($event)"
+            @on-error="setTriggerConditionError($event)"
+            @on-row-open-error="setRowOpenError($event)"
           />
+        </div>
+        <div
+          v-if="getError('interventionRowIsOpen')"
+          class="error col-span-6 pt-1 pb-6 text-center"
+        >
+          {{ getError('interventionRowIsOpen') }}
         </div>
       </div>
 
