@@ -233,8 +233,9 @@
     }
     if (
       triggerType.value === 'scheduled-datacheck-trigger' &&
-      !triggerConfigQueryObj.value.length
+      triggerConfigQueryObj.value.length === 0
     ) {
+      console.log('inside');
       errors.value.push({
         label: 'triggerConfig',
         value: 'Please enter your triggerconfig',
@@ -456,7 +457,6 @@
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
           />
-
           <div
             v-if="
               triggerProp &&
@@ -501,6 +501,7 @@
           class="col-start-0 col-span-6 mt-5"
         >
           <InterventionTriggerConditions
+            :tirgger-empty="getError('triggerConfig')"
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
