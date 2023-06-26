@@ -55,6 +55,9 @@
     triggerProp?.value ? triggerProp.value : ''
   );
   const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+  const cronScheduleProp: Ref<string> = triggerProp.value
+    ? JSON.parse(triggerProp.value).cronSchedule
+    : '0 0 12 * * ?';
 
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const studyGroupId = ref(intervention.studyGroupId);
@@ -70,6 +73,14 @@
 
   setTriggerConfig(triggerData?.type ? triggerData.type : '');
   setNonScheduleTriggerConfig(triggerData?.properties);
+
+  const triggerConditionsError: Ref<string | undefined> = ref(undefined);
+  const interventionRowIsOpen: Ref<boolean> = ref(false);
+
+  function setRowOpenError(isOpen: boolean) {
+    interventionRowIsOpen.value = isOpen;
+    checkErrors();
+  }
 
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
@@ -128,7 +139,7 @@
   }
 
   function save() {
-    if (externalErrors.value.length === 0) {
+    if (externalErrors.value.length === 0 && errors.value.length === 0) {
       updateProps();
       Promise.all(
         [
@@ -167,7 +178,7 @@
             trigger: {},
             actions: [],
             studyGroupId: studyGroupId.value,
-            scheduler: intervention.schedule,
+            schedule: intervention.schedule,
           } as Intervention;
 
           const returnObject = {
@@ -184,6 +195,7 @@
             dialogRef.value.close(returnObject);
           }
         })
+
         .catch((reason) => {
           if (reason.component === 'trigger') {
             triggerJsonError.value = reason.msg;
@@ -225,6 +237,18 @@
         value: 'Please enter your triggerconfig',
       });
     }
+    if (interventionRowIsOpen.value) {
+      errors.value.push({
+        label: 'interventionRowIsOpen',
+        value:
+          'Please save all trigger conditions before saving the intervention.',
+      });
+    }
+  }
+
+  function setTriggerConditionError(triggerTableE?: string) {
+    triggerConditionsError.value = triggerTableE;
+    checkErrors();
   }
 
   function getError(label: string): string | null | undefined {
@@ -236,7 +260,9 @@
 
   function checkExternalErrors(e?: string) {
     externalErrors.value = [];
-    if (e) externalErrors.value.push(e);
+    if (e) {
+      externalErrors.value.push(e);
+    }
   }
 
   function cancel() {
@@ -307,8 +333,12 @@
   }
 
   function setCronSchedule(e: string) {
-    triggerProp.value = e;
-    checkExternalErrors();
+    if (triggerProp.value) {
+      const tempTriggerProp = JSON.parse(triggerProp.value);
+      tempTriggerProp.cronSchedule = e;
+      triggerProp.value = JSON.stringify(tempTriggerProp);
+      checkExternalErrors();
+    }
   }
 
   function updateProps() {
@@ -416,15 +446,13 @@
             {{ triggerJsonError }}
           </div>
           <CronSchedulerConfiguration
-            v-show="showScheduleInput"
             v-if="showScheduleInput"
-            v-model="triggerProp"
             class="mb-4"
-            :trigger-props="triggerProp"
             :editable="editable"
+            :cron-schedule="cronScheduleProp"
             @on-valid-schedule="setCronSchedule($event)"
             @on-error="checkExternalErrors($event)"
-          ></CronSchedulerConfiguration>
+          />
 
           <div
             v-if="
@@ -474,7 +502,15 @@
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
             @on-emit-trigger-conditions="updateTriggerConditions($event)"
+            @on-error="setTriggerConditionError($event)"
+            @on-row-open-error="setRowOpenError($event)"
           />
+        </div>
+        <div
+          v-if="getError('interventionRowIsOpen')"
+          class="error col-span-6 pt-1 pb-6 text-center"
+        >
+          {{ getError('interventionRowIsOpen') }}
         </div>
       </div>
 

@@ -59,10 +59,15 @@
       e: 'onEmitTriggerConditions',
       triggerConditions: TriggerConditionGroup[]
     ): void;
+    (e: 'onRowOpenError', isOpen: boolean): void;
   }>();
 
+  const rowOpenError: Ref<boolean> = ref(false);
+
   function emitTriggerConditions() {
-    emit('onEmitTriggerConditions', triggerConditions.value);
+    if (!rowOpenError.value) {
+      emit('onEmitTriggerConditions', triggerConditions.value);
+    }
   }
 
   function addTriggerGroup(groupIndex?: number) {
@@ -227,6 +232,7 @@
         @on-update-row-data="updateRowData($event)"
         @on-delete-row="deleteRow($event)"
         @on-add-row="addRow($event)"
+        @on-row-open="emit('onRowOpenError', $event)"
         @on-change-group-condition="changeGroupCondition($event)"
       />
     </Suspense>

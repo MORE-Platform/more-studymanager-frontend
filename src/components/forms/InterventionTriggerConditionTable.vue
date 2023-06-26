@@ -114,12 +114,12 @@
     { label: '<=', value: '<=' },
     { label: '>=', value: '>=' },
     { label: '=', value: '=' },
-    { label: '!=', value: '!' },
+    { label: '!=', value: '!=' },
   ];
 
   const stringOperator: MoreTableChoice[] = [
     { label: '=', value: '=' },
-    { label: '!', value: '!' },
+    { label: '!=', value: '!=' },
   ];
 
   async function getFactories() {
@@ -136,6 +136,8 @@
     (e: 'onDeleteRow', event: InterventionTriggerUpdateItem): void;
     (e: 'onAddRow', event: InterventionTriggerUpdateItem): void;
     (e: 'onChangeGroupCondition', event: GroupConditionChange): void;
+    (e: 'onError', errorMessage?: string): void;
+    (e: 'onRowOpen', isOpen: boolean): void;
   }>();
 
   function getPropertyOptions(
@@ -220,6 +222,7 @@
   }
 
   function edit(trigger: InterventionTriggerConfig, index: number) {
+    emit('onRowOpen', true);
     emit('onToggleRowEdit', {
       edit: true,
       groupIndex: props.groupIndex,
@@ -230,6 +233,7 @@
   }
 
   function cancel(trigger: InterventionTriggerConfig, index: number) {
+    emit('onRowOpen', false);
     emit('onToggleRowEdit', {
       data: trigger,
       edit: false,
@@ -240,14 +244,32 @@
   }
 
   function save(trigger: InterventionTriggerConfig, index: number) {
-    emit('onUpdateRowData', {
-      data: trigger,
-      groupIndex: props.groupIndex,
-      rowIndex: index,
-    });
+    const returnTrigger: Ref<InterventionTriggerConfig> = ref(trigger);
+
+    if (
+      getPropertyOptions(trigger).find(
+        (item) => item.id === trigger.observationProperty
+      )?.type === 'DOUBLE'
+    ) {
+      returnTrigger.value.propertyValue = Number(
+        returnTrigger.value.propertyValue
+      );
+    }
+
+    if (!returnTrigger.value.editMode) {
+      emit('onRowOpen', false);
+      emit('onUpdateRowData', {
+        data: returnTrigger.value,
+        groupIndex: props.groupIndex,
+        rowIndex: index,
+      });
+    } else {
+      emit('onRowOpen', true);
+    }
   }
 
   function addRow(index: number) {
+    emit('onRowOpen', true);
     emit('onAddRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,

@@ -6,3 +6,9 @@ export interface TriggerSchedule {
   months: string;
   dayOfWeek: string;
 }
+
+export interface CronScheduleChoice {
+  label: string;
+  value: string;
+  placeholder: string;
+}
