@@ -203,6 +203,10 @@
       "title": "Übersicht meiner Studien",
       "description": "Die unten angeführte Liste zeigt alle Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
       "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
+      "labels": {
+        "exportStudyConfig": "Studienconfiguration herunterladen",
+        "exportStudyData": "Studiendaten herunterladen"
+      },
       "action": {
         "addStudy": "Neue Studie hinzufügen",
         "copyUrl": "Studie teilen"

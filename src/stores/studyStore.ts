@@ -2,7 +2,7 @@ import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
 import { useImportExportApi, useStudiesApi } from '../composable/useApi';
-import { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
 
@@ -119,13 +119,20 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  async function exportStudy(studyId: number): Promise<void> {
+  async function exportStudyConfig(studyId: number): Promise<void> {
     await importExportApi
       .exportStudy(studyId)
       .then((response: AxiosResponse) => {
-        const filename: string = 'study_' + studyId + '.json';
+        const filename: string = 'study_config_' + studyId + '.json';
         downloadJSON(filename, response.data);
       });
+  }
+
+  async function exportStudyData(studyId: number): Promise<void> {
+    axios.get(`api/v1/studies/${studyId}/export/studydata`).then((response) => {
+      const filename: string = 'study_data_' + studyId + '.json';
+      downloadJSON(filename, response.data);
+    });
   }
 
   function downloadJSON(filename: string, file: File): void {
@@ -164,7 +171,8 @@ export const useStudyStore = defineStore('study', () => {
     deleteStudy,
     updateStudyInStudies,
     importStudy,
-    exportStudy,
+    exportStudyConfig,
+    exportStudyData,
     studyUserRoles,
     studyStatus,
     studyId,

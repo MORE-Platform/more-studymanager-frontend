@@ -140,11 +140,21 @@
         ),
     },
     {
-      id: 'export',
-      label: 'Export',
+      id: 'exportConfig',
+      label: t('exportStudyConfig'),
       icon: 'pi pi-download',
+      tooltip: t('exportStudyConfig'),
       visible: (data) =>
-        data.status === StudyStatus.Draft &&
+        data.userRoles.some((r: any) =>
+          [StudyRole.Admin, StudyRole.Operator].includes(r)
+        ),
+    },
+    {
+      id: 'exportData',
+      label: t('exportStudyData'),
+      icon: 'pi pi-chart-bar',
+      tooltip: t('exportStudyData'),
+      visible: (data) =>
         data.userRoles.some((r: any) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r)
         ),
@@ -175,8 +185,10 @@
         return openCreateDialog();
       case 'import':
         return onImportStudy(action);
-      case 'export':
-        return onExportStudy(action.row.studyId as number);
+      case 'exportConfig':
+        return onExportStudyConfig(action.row.studyId as number);
+      case 'exportData':
+        return onExportStudyData(action.row.studyId as number);
       case 'copyId':
         return onCopyId(action.row.studyId, action.row.title);
       default:
@@ -222,8 +234,12 @@
     }
   }
 
-  function onExportStudy(studyId: number) {
-    studyStore.exportStudy(studyId);
+  function onExportStudyConfig(studyId: number) {
+    studyStore.exportStudyConfig(studyId);
+  }
+
+  function onExportStudyData(studyId: number) {
+    studyStore.exportStudyData(studyId);
   }
 
   function onImportStudy(action: MoreTableActionResult) {

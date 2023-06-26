@@ -202,6 +202,10 @@
       "title": "My dashboard of studies",
       "description": "This is a list of your studies and the studies that you created or that you were invited to as a collaborator.",
       "emptyListMsg": "No studies yet",
+      "labels": {
+        "exportStudyConfig": "Export Study Config",
+        "exportStudyData": "Export Study Data"
+      },
       "action": {
         "addStudy": "Add new study",
         "copyUrl": "Copy URL"

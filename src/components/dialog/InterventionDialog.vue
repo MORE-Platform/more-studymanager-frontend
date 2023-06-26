@@ -231,7 +231,10 @@
         value: t('intervention.error.addAction'),
       });
     }
-    if (!triggerConfigQueryObj.value.length) {
+    if (
+      triggerType.value === 'scheduled-datacheck-trigger' &&
+      !triggerConfigQueryObj.value.length
+    ) {
       errors.value.push({
         label: 'triggerConfig',
         value: 'Please enter your triggerconfig',
