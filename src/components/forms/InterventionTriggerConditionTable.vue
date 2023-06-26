@@ -255,17 +255,12 @@
         returnTrigger.value.propertyValue
       );
     }
-
-    if (!returnTrigger.value.editMode) {
-      emit('onRowOpen', false);
-      emit('onUpdateRowData', {
-        data: returnTrigger.value,
-        groupIndex: props.groupIndex,
-        rowIndex: index,
-      });
-    } else {
-      emit('onRowOpen', true);
-    }
+    emit('onRowOpen', false);
+    emit('onUpdateRowData', {
+      data: returnTrigger.value,
+      groupIndex: props.groupIndex,
+      rowIndex: index,
+    });
   }
 
   function addRow(index: number) {
@@ -284,6 +279,7 @@
   }
 
   function addTriggerGroup() {
+    emit('onRowOpen', true);
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();
   }
