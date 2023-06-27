@@ -524,7 +524,8 @@
         "addTriggerGroup": "Add Trigger Group",
         "chooseObservation": "Choose observation",
         "triggerType": "Trigger-Type",
-        "window": "Window"
+        "window": "Window",
+        "windowInSeconds": "Observation period in seconds"
       },
       "msg": {
         "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention: ..."

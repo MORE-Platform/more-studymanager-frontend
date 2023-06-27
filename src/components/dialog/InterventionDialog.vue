@@ -448,21 +448,13 @@
           <div v-if="triggerJsonError && editable" class="error mb-4">
             {{ triggerJsonError }}
           </div>
-          <CronSchedulerConfiguration
-            v-if="showScheduleInput"
-            class="mb-4"
-            :editable="editable"
-            :cron-schedule="cronScheduleProp"
-            @on-valid-schedule="setCronSchedule($event)"
-            @on-error="checkExternalErrors($event)"
-          />
           <div
             v-if="
               triggerProp &&
               JSON.parse(triggerProp).hasOwnProperty('window') &&
               JSON.parse(triggerProp).queryObject !== undefined
             "
-            class="grid grid-cols-5 items-center gap-4"
+            class="grid grid-cols-5 items-center gap-2"
           >
             <h6 class="col-span-2 lg:col-span-1">
               {{ $t('intervention.dialog.label.window') }}*
@@ -473,7 +465,18 @@
               class="col-span-3 lg:col-span-4"
               :disabled="!editable"
             ></InputNumber>
+            <div class="col-span-5 mb-4">
+              {{ $t('intervention.dialog.label.windowInSeconds') }}
+            </div>
           </div>
+          <CronSchedulerConfiguration
+            v-if="showScheduleInput"
+            class="mb-4"
+            :editable="editable"
+            :cron-schedule="cronScheduleProp"
+            @on-valid-schedule="setCronSchedule($event)"
+            @on-error="checkExternalErrors($event)"
+          />
 
           <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
             {{ $t('cronSchedule.additionalConfig') }}
@@ -499,8 +502,10 @@
           "
           class="col-start-0 col-span-6 mt-5"
         >
+          <div class="error mt-2">triggerconfig error</div>
+          <div class="error mb-4">{{ getError('triggerConfig') }}</div>
           <InterventionTriggerConditions
-            :tirgger-empty="getError('triggerConfig')"
+            :tirgger-error="getError('triggerConfig')"
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
