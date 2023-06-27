@@ -502,8 +502,6 @@
           "
           class="col-start-0 col-span-6 mt-5"
         >
-          <div class="error mt-2">triggerconfig error</div>
-          <div class="error mb-4">{{ getError('triggerConfig') }}</div>
           <InterventionTriggerConditions
             :tirgger-error="getError('triggerConfig')"
             class="mb-5"
