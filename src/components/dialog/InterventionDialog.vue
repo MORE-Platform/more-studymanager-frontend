@@ -502,7 +502,7 @@
           class="col-start-0 col-span-6 mt-5"
         >
           <InterventionTriggerConditions
-            :error="getError('triggerConfig') ? getError('triggerConfig') as String : getError('interventionRowIsOpen') as string"
+            :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
