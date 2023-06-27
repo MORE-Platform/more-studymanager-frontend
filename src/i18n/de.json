@@ -527,7 +527,8 @@
         "addTriggerGroup": "Konditionsgruppe hinzufügen",
         "chooseObservation": "Datenerhebung auswählen",
         "triggerType": "Triggertyp",
-        "window": "Window"
+        "window": "Window",
+        "windowInSeconds": "Beobachtungszeitraum in Sekunden"
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
@@ -611,7 +612,7 @@
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
     "formTitle": "Cron Scheduler konfigurieren",
-    "formTitleDisabled": "Konfigruation Ihres Cron Schedulers",
+    "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
     "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten"
   },
