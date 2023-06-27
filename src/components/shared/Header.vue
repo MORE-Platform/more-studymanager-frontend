@@ -100,11 +100,6 @@ A
           </svg>
         </div>
       </router-link>
-      <div
-        class="beta-tag text-l rounded border-2 border-gray-400 px-3 py-2 font-bold uppercase text-gray-400"
-      >
-        {{ $t('global.header.privateBeta') }}
-      </div>
       <div class="flex items-center justify-between">
         <div
           class="back-to-dashboard"
