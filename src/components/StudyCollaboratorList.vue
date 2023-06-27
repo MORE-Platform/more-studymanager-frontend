@@ -143,7 +143,7 @@
             onClose: (options) => {
               if (options?.data) {
                 execute({
-                  id: 'deleteCollab',
+                  id: 'delete',
                   row: options.data as MoreTableCollaboratorItem,
                 });
               }
