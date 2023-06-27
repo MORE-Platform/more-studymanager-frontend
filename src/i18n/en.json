@@ -567,7 +567,9 @@
     "error":  {
       "addTitle": "The intervention title is required. Please add a title for your intervention.",
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and it's config.",
-      "addAction": "The intervention needs at least one Trigger. Please add one trigger."
+      "addAction": "The intervention needs at least one Trigger. Please add one trigger.",
+      "addTriggerConfig": "Please add specific trigger configurations to your datacheck.",
+      "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention."
     },
     "placeholder": {
       "noDescription": "No description available",
