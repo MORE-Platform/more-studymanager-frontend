@@ -59,9 +59,9 @@ const routes = [
         component: Interventions,
       },
       {
-        path: 'data',
-        meta: { title: 'Data' },
-        name: 'Data',
+        path: 'monitoring',
+        meta: { title: 'Monitoring' },
+        name: 'Monitoring',
         component: Data,
       },
       {

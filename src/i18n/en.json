@@ -59,7 +59,7 @@
     },
     "tabs": {
       "overview": "Overview",
-      "data": "Data",
+      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
@@ -67,7 +67,7 @@
     },
     "tabLink": {
       "overview": "Overview",
-      "data": "Data",
+      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
@@ -284,7 +284,7 @@
   },
 
   "data": {
-    "title": "Data",
+    "title": "Monitoring",
     "description": "Data collected during the study will be visualized within this dashboard.",
     "dataList": {
       "emptyListMsg": "Currently there are no observations to track."
