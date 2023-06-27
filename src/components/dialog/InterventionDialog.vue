@@ -235,7 +235,6 @@
       triggerType.value === 'scheduled-datacheck-trigger' &&
       triggerConfigQueryObj.value.length === 0
     ) {
-      console.log('inside');
       errors.value.push({
         label: 'triggerConfig',
         value: 'Please enter your triggerconfig',
