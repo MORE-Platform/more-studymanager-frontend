@@ -503,6 +503,7 @@
           class="col-start-0 col-span-6 mt-5"
         >
           <InterventionTriggerConditions
+            :tirgger-empty="getError('triggerConfig')"
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
