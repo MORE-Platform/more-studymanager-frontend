@@ -116,7 +116,10 @@ export const useStudyStore = defineStore('study', () => {
         setTimeout(function () {
           listStudies();
         }, 100);
-      });
+      })
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, 'cannot import study')
+      );
   }
 
   async function exportStudyConfig(studyId: number): Promise<void> {
@@ -125,14 +128,22 @@ export const useStudyStore = defineStore('study', () => {
       .then((response: AxiosResponse) => {
         const filename: string = 'study_config_' + studyId + '.json';
         downloadJSON(filename, response.data);
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot export study config');
       });
   }
 
   async function exportStudyData(studyId: number): Promise<void> {
-    axios.get(`api/v1/studies/${studyId}/export/studydata`).then((response) => {
-      const filename: string = 'study_data_' + studyId + '.json';
-      downloadJSON(filename, response.data);
-    });
+    axios
+      .get(`api/v1/studies/${studyId}/export/studydata`)
+      .then((response) => {
+        const filename: string = 'study_data_' + studyId + '.json';
+        downloadJSON(filename, response.data);
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot export study data');
+      });
   }
 
   function downloadJSON(filename: string, file: File): void {

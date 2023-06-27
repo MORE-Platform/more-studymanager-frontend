@@ -141,9 +141,9 @@
     },
     {
       id: 'exportConfig',
-      label: t('exportStudyConfig'),
+      label: t('study.studyList.labels.exportStudyConfig'),
       icon: 'pi pi-download',
-      tooltip: t('exportStudyConfig'),
+      tooltip: t('study.studyList.labels.exportStudyConfig'),
       visible: (data) =>
         data.userRoles.some((r: any) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r)
@@ -151,9 +151,9 @@
     },
     {
       id: 'exportData',
-      label: t('exportStudyData'),
+      label: t('study.studyList.labels.exportStudyData'),
       icon: 'pi pi-chart-bar',
-      tooltip: t('exportStudyData'),
+      tooltip: t('study.studyList.labels.exportStudyData'),
       visible: (data) =>
         data.userRoles.some((r: any) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r)
