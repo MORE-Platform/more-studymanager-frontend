@@ -44,12 +44,11 @@
   }));
 
   function getTriggerTypeDescription(triggerType: string): string {
-    console.error('getTriggerTypeDescription');
-    console.log(triggerType);
-    return triggerTypesOptions.find((item: any) => item.value === triggerType);
+    const trigger = triggerTypesOptions.find(
+      (item: any) => item.value === triggerType
+    );
+    return trigger.description;
   }
-
-  console.log(triggerTypesOptions);
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
@@ -452,7 +451,7 @@
             [triggerType ? '' : 'is-empty'],
           ]"
         >
-          {{ getTriggerTypeDescription(triggerType).description }}
+          {{ getTriggerTypeDescription(triggerType) }}
         </div>
 
         <div v-if="getError('trigger')" class="error col-span-8 mb-4">
