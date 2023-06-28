@@ -38,10 +38,18 @@
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
   const triggerTypesOptions = triggerFactories.map((item: any) => ({
-    label: item.title,
+    label: t(item.title),
     value: item.componentId,
-    description: item.description,
+    description: t(item.description),
   }));
+
+  function getTriggerTypeDescription(triggerType: string): string {
+    console.error('getTriggerTypeDescription');
+    console.log(triggerType);
+    return triggerTypesOptions.find((item: any) => item.value === triggerType);
+  }
+
+  console.log(triggerTypesOptions);
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);
@@ -92,7 +100,7 @@
 
   const actionTypesOptions = ref(
     actionFactories.map((item: ComponentFactory) => ({
-      label: item.title,
+      label: item.title ? t(item.title) : '',
       value: item.componentId,
       command: () => {
         actionsArray.value.push({
@@ -413,32 +421,40 @@
           :disabled="!editable"
         ></Textarea>
       </div>
-
       <div class="col-start-0 col-span-8 mt-4 grid grid-cols-2 lg:grid-cols-3">
         <h5 class="col-span-2" :class="editable ? 'mb-2' : ''">
           {{ $t('intervention.props.trigger') }}*
         </h5>
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
-          <div v-if="!editable" class="inline font-bold">
-            <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
-            {{ $t('intervention.dialog.label.triggerType') }}
+          <div class="col-span-3">
+            <div v-if="!editable" class="inline font-bold">
+              <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
+              {{ $t('intervention.dialog.label.triggerType') }}
+            </div>
+            <Dropdown
+              v-model="triggerType"
+              :options="triggerTypesOptions"
+              class="dropdown-btn col-span-1 w-full"
+              option-label="label"
+              option-value="value"
+              required
+              :disabled="!editable"
+              :placeholder="$t('intervention.placeholder.trigger')"
+              @change="setTriggerConfig(triggerType)"
+            />
           </div>
-          <Dropdown
-            v-model="triggerType"
-            :options="triggerTypesOptions"
-            class="dropdown-btn col-span-1 w-full"
-            :class="[
-              [editable && !getError('trigger') ? 'mb-4' : 'p-0'],
-              [triggerType ? '' : 'is-empty'],
-            ]"
-            option-label="label"
-            option-value="value"
-            required
-            :disabled="!editable"
-            :placeholder="$t('intervention.placeholder.trigger')"
-            @change="setTriggerConfig(triggerType)"
-          />
         </div>
+        <div
+          v-if="triggerType"
+          class="col-span-8"
+          :class="[
+            [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
+            [triggerType ? '' : 'is-empty'],
+          ]"
+        >
+          {{ getTriggerTypeDescription(triggerType).description }}
+        </div>
+
         <div v-if="getError('trigger')" class="error col-span-8 mb-4">
           {{ getError('trigger') }}
         </div>
@@ -460,12 +476,20 @@
             </h6>
             <InputNumber
               v-model="triggerConfigWindow"
-              :placeholder="'Enter number in ms'"
+              :placeholder="
+                t(
+                  'interventions.factory.scheduledDatacheck.configProps.windowPlaceholder'
+                )
+              "
               class="col-span-3 lg:col-span-4"
               :disabled="!editable"
             ></InputNumber>
             <div class="col-span-5 mb-4">
-              {{ $t('intervention.dialog.label.windowInSeconds') }}
+              {{
+                $t(
+                  'intervention.dialog.factory.trigger.scheduledDatacheck.configProps.timewindowName'
+                )
+              }}
             </div>
           </div>
           <CronSchedulerConfiguration
