@@ -237,14 +237,13 @@
     ) {
       errors.value.push({
         label: 'triggerConfig',
-        value: 'Please enter your triggerconfig',
+        value: t('intervention.error.addTriggerConfig'),
       });
     }
     if (interventionRowIsOpen.value) {
       errors.value.push({
         label: 'interventionRowIsOpen',
-        value:
-          'Please save all trigger conditions before saving the intervention.',
+        value: t('intervention.error.interventionRowIsOpen'),
       });
     }
   }
@@ -503,7 +502,7 @@
           class="col-start-0 col-span-6 mt-5"
         >
           <InterventionTriggerConditions
-            :tirgger-empty="getError('triggerConfig')"
+            :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
             class="mb-5"
             :trigger-conditions="triggerConfigQueryObj"
             :editable="editable"
@@ -511,12 +510,6 @@
             @on-error="setTriggerConditionError($event)"
             @on-row-open-error="setRowOpenError($event)"
           />
-        </div>
-        <div
-          v-if="getError('interventionRowIsOpen')"
-          class="error col-span-6 pt-1 pb-6 text-center"
-        >
-          {{ getError('interventionRowIsOpen') }}
         </div>
       </div>
 

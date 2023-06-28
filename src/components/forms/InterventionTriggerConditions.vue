@@ -20,7 +20,7 @@
     },
     error: {
       type: String,
-      default: '',
+      default: undefined,
     },
     editable: {
       type: Boolean,
@@ -71,6 +71,7 @@
   }
 
   function addTriggerGroup(groupIndex?: number) {
+    emit('onRowOpenError', true);
     if ((groupIndex as number) >= 0) {
       setEditModeFalse();
       triggerConditions.value[groupIndex as number].nextGroupCondition = 'and';

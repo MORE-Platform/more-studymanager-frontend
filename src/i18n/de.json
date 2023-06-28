@@ -59,7 +59,7 @@
     },
     "tabs": {
       "overview": "Überblick",
-      "data": "Daten",
+      "data": "Monitoring",
       "participants": "Teilnehmer",
       "observations": "Datenerhebung",
       "interventions": "Interventionen",
@@ -67,7 +67,7 @@
     },
     "tabLink": {
       "overview": "Overview",
-      "data": "Data",
+      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
@@ -285,7 +285,7 @@
   },
 
   "data": {
-    "title": "Daten",
+    "title": "Monitoring",
     "description": "Die während der Studie gesammelten Daten werden in der darunterliegenden Liste angezeigt.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können."
@@ -570,7 +570,9 @@
     "error":  {
       "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
-      "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu."
+      "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu.",
+      "addTriggerConfig": "Bitte fügen sie weitere Konfigurationen zum Datacheck hinzu.",
+      "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern."
     },
     "placeholder": {
       "noDescription": "Keine Beschreibung verfügbar",
