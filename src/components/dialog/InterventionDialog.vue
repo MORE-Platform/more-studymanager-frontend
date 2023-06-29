@@ -477,7 +477,7 @@
               v-model="triggerConfigWindow"
               :placeholder="
                 t(
-                  'interventions.factory.scheduledDatacheck.configProps.windowPlaceholder'
+                  'intervention.factory.trigger.scheduledDatacheck.configProps.windowPlaceholder'
                 )
               "
               class="col-span-3 lg:col-span-4"
@@ -486,7 +486,7 @@
             <div class="col-span-5 mb-4">
               {{
                 $t(
-                  'intervention.dialog.factory.trigger.scheduledDatacheck.configProps.timewindowName'
+                  'intervention.factory.trigger.scheduledDatacheck.configProps.timewindowName'
                 )
               }}
             </div>
