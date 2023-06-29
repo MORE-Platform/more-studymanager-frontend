@@ -22,6 +22,8 @@
   import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
   import InputNumber from 'primevue/inputnumber';
   import PushNotificationInput from './shared/PushNotificationInput.vue';
+  import { Property } from '../../models/InputModels';
+  import { QueryObject } from '../../models/InterventionInputModels';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -36,6 +38,29 @@
     dialogRef.value.data?.groupPlaceholder || 'Entire Study';
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
+
+  const triggerQueryProps: Ref<Property<any>[]> = ref([]);
+
+  console.log(triggerData);
+
+  if (triggerData.properties?.queryObject.length) {
+    triggerQueryProps.value = triggerData.properties.queryObject.map(
+      (json: any) => QueryObject.fromJson(json)
+    );
+  }
+  console.log(triggerQueryProps.value);
+  console.log(triggerQueryProps.value[0] instanceof QueryObject);
+
+  /*
+  const properties = triggerData.properties?.queryObject.map((json: any) => {
+    console.error(json);
+    return QueryObject.fromJson(json);
+  });
+  console.error(properties);
+   */
+
+  console.log(triggerQueryProps.value);
+  console.log(triggerQueryProps.value[0] instanceof QueryObject);
 
   const triggerTypesOptions = triggerFactories.map((item: any) => ({
     label: item.title,
@@ -302,6 +327,10 @@
 
   function setNonScheduleTriggerConfig(triggerProperties?: object) {
     nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
+      console.log('setNonSchedulerTriggerConfig');
+      console.log(triggerProperties);
+      console.log(key);
+      console.log(value);
       if (key === 'cronSchedule') {
         showScheduleInput.value = true;
         return undefined;
