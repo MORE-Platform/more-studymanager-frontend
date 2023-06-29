@@ -26,7 +26,7 @@
     InterventionTriggerUpdateData,
     InterventionTriggerUpdateItem,
   } from '../../models/InterventionTriggerModel';
-  import { AxiosError, AxiosResponse } from 'axios/index';
+  import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
 
   const { observationsApi } = useObservationsApi();
