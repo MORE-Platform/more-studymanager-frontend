@@ -23,7 +23,10 @@
   import InputNumber from 'primevue/inputnumber';
   import PushNotificationInput from './shared/PushNotificationInput.vue';
   import { Property } from '../../models/InputModels';
-  import { QueryObject } from '../../models/InterventionInputModels';
+  import {
+    QueryObjectList,
+    TriggerProperty,
+  } from '../../models/InterventionInputModels';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -41,24 +44,37 @@
 
   const triggerQueryProps: Ref<Property<any>[]> = ref([]);
 
+  console.log('triggerData......');
   console.log(triggerData);
 
-  if (triggerData.properties?.queryObject.length) {
+  const properties: Ref<TriggerProperty<any>[]> = ref([]);
+
+  console.log(triggerData.properties);
+
+  function getProperties() {
+    if (typeof triggerData && triggerData.properties) {
+      for (const prop in triggerData.properties) {
+        console.error('triggerData.properties');
+        console.log(prop);
+        console.log('--------------');
+        /*properties.value.push(
+          TriggerProperty.fromJson(triggerData.properties[prop], prop)
+        );
+        console.log(properties.value);   */
+      }
+    }
+  }
+
+  getProperties();
+
+  if (
+    typeof triggerData !== 'undefined' &&
+    triggerData.properties?.queryObject.length
+  ) {
     triggerQueryProps.value = triggerData.properties.queryObject.map(
-      (json: any) => QueryObject.fromJson(json)
+      (json: any) => QueryObjectList.fromJson(json)
     );
   }
-  console.log(triggerQueryProps.value);
-  console.log(triggerQueryProps.value[0] instanceof QueryObject);
-
-  /*
-  const properties = triggerData.properties?.queryObject.map((json: any) => {
-    console.error(json);
-    return QueryObject.fromJson(json);
-  });
-  console.error(properties);
-   */
-
   console.log(triggerQueryProps.value);
   console.log(triggerQueryProps.value[0] instanceof QueryObject);
 
@@ -327,10 +343,6 @@
 
   function setNonScheduleTriggerConfig(triggerProperties?: object) {
     nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
-      console.log('setNonSchedulerTriggerConfig');
-      console.log(triggerProperties);
-      console.log(key);
-      console.log(value);
       if (key === 'cronSchedule') {
         showScheduleInput.value = true;
         return undefined;

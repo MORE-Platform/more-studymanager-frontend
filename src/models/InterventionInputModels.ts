@@ -1,5 +1,4 @@
 import cron from 'cron-validate';
-
 export class ValidationError extends Error {
   constructor(public key: string, msg: string) {
     super(msg);
@@ -8,17 +7,28 @@ export class ValidationError extends Error {
 }
 
 export abstract class TriggerProperty<T> {
+  type: string;
+  propertyValue?: T;
   abstract validate(): string | undefined;
 
-  static fromJson(value: any): TriggerProperty<any> {
-    console.log('fromJson');
-    console.log(value.type);
-    switch (value.type) {
-      case 'QueryObject':
-        return QueryObject.fromJson(value);
+  static fromJson(value: any, propName: string): TriggerProperty<any> {
+    console.log(propName);
+    switch (propName) {
+      case 'query':
+        return Query.fromJson(value, propName);
+      case 'queryObject':
+        return QueryObjectList.fromJson(value, propName);
+      case 'window':
+        return WindowProp.fromJson(value, propName);
+      case 'cronSchedule':
+        return CronSchedule.fromJson(value, propName);
       default:
         throw new Error('cannot case property');
     }
+  }
+
+  constructor(type: string) {
+    this.type = type;
   }
 
   abstract getType(): 'QueryObject' | 'Object' | 'Array' | 'Integer' | 'String';
@@ -93,15 +103,15 @@ class QueryObjectInner {
   }
 }
 
-export class QueryObject extends TriggerProperty<QueryObject> {
+class QueryObject {
   nextGroupCondition: string | undefined;
   parameter: QueryObjectInner[];
 
   constructor(
     nextGroupCondition: string | undefined,
-    queryConditions: QueryObjectInner[]
+    queryConditions: QueryObjectInner[],
+    type: string
   ) {
-    super();
     this.nextGroupCondition = nextGroupCondition;
     this.parameter = queryConditions;
   }
@@ -124,16 +134,39 @@ export class QueryObject extends TriggerProperty<QueryObject> {
   }
 
   static fromJson(json: any): QueryObject {
-    return new QueryObject(json.nextGroupCondition, json.parameter);
+    return new QueryObject(json.type, json.nextGroupCondition, json.parameter);
+  }
+}
+
+export class QueryObjectList extends TriggerProperty<QueryObject[]> {
+  propertyValue: QueryObject[];
+  constructor(propertyValue: QueryObject[], type: string) {
+    super(type);
+    this.propertyValue = propertyValue;
+  }
+
+  getType(): 'QueryObject' {
+    return 'QueryObject';
+  }
+
+  validate(): string | undefined {
+    if (!this.propertyValue.length) {
+      return 'Please be sure to add at least one additional condition to your trigger.';
+    } else if (this.propertyValue.length > 0) {
+      this.propertyValue.forEach((item) => {
+        const validate = item.validate();
+        if (validate) {
+          return validate;
+        }
+      });
+    } else return undefined;
   }
 }
 
 export class WindowProp extends TriggerProperty<number> {
-  window: number;
-
-  constructor(window: number) {
-    super();
-    this.window = window;
+  constructor(window: number, type: string) {
+    super(type);
+    this.propertyValue = window;
   }
 
   getType(): 'Integer' | 'String' {
@@ -141,20 +174,20 @@ export class WindowProp extends TriggerProperty<number> {
   }
 
   validate(): string | undefined {
-    if (!this.window) {
+    if (!this.propertyValue) {
       return 'Please be sure to add a value for the window property in seconds.';
-    } else if (this.window && this.window < 0) {
+    } else if (this.propertyValue && this.propertyValue < 0) {
       return 'Invalid Property. The window property is not allowed to be below 0.';
     } else return undefined;
   }
 }
 
-export class cronScheduler extends TriggerProperty<string> {
-  cronSchedule: string;
+export class CronSchedule extends TriggerProperty<string> {
+  propertyValue: string;
 
-  constructor(cronSchedule: string) {
-    super();
-    this.cronSchedule = cronSchedule;
+  constructor(cronSchedule: string, type: string) {
+    super(type);
+    this.propertyValue = cronSchedule;
   }
 
   getType(): 'String' {
@@ -162,15 +195,32 @@ export class cronScheduler extends TriggerProperty<string> {
   }
 
   validate(): string | undefined {
-    if (!this.cronSchedule) {
+    if (!this.propertyValue) {
       return 'Please be sure to add a value for the cron schedule to set the intervall of the intervention.';
-    } else if (this.cronSchedule) {
-      const validCronValue = cron(this.cronSchedule, {
+    } else if (this.propertyValue) {
+      const validCronValue = cron(this.propertyValue, {
         preset: 'default-preset',
       });
       if (!validCronValue.isValid()) {
         return validCronValue.getError().pop();
       }
     } else return undefined;
+  }
+}
+
+export class Query extends TriggerProperty<string> {
+  propertyValue: string | undefined;
+
+  constructor(query: string | undefined, type: string) {
+    super(type);
+    this.propertyValue = query;
+  }
+
+  getType(): 'String' {
+    return 'String';
+  }
+
+  validate(): string | undefined {
+    return undefined;
   }
 }
