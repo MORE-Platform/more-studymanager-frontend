@@ -29,7 +29,9 @@
 
   function getObservationName(type: string): string {
     return (
-      ' (' + factories.find((item) => type === item.componentId)?.title + ')'
+      ' (' +
+      t(factories.find((item) => type === item.componentId)?.title as string) +
+      ')'
     );
   }
 
