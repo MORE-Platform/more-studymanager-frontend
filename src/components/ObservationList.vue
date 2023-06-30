@@ -69,9 +69,9 @@
   const factories: ComponentFactory[] = await getFactories();
   const observationTypes: MoreTableActionOption[] = factories.map(
     (item: any) => ({
-      label: item.title,
+      label: t(item.title),
       value: item.componentId,
-      description: item.description,
+      description: t(item.description),
     })
   );
 
@@ -195,8 +195,10 @@
   ];
 
   function getObservationTypeString(observationType: string) {
-    return factories.find((item) => item.componentId === observationType)
-      ?.title;
+    return t(
+      factories.find((item) => item.componentId === observationType)
+        ?.title as string
+    );
   }
 
   async function listObservations(): Promise<void> {

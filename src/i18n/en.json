@@ -414,7 +414,7 @@
         "description": "This observation enables you to collect GPS data via the smartphone sensor.",
         "configProps": {
           "measurementName": "Measurement Interval",
-          "measurmentDesc": "Measurment Interval in Milliseconds, 30k to 600k"
+          "measurementDesc": "Measurment Interval in Milliseconds, 30k to 600k"
         }
       },
       "simpleQuestion": {
@@ -558,8 +558,31 @@
       }
     },
     "factory": {
+      "trigger":{
+        "scheduled": {
+          "title": "Scheduled Trigger",
+          "description": "This trigger triggers and action based on a cron trigger.",
+          "configProps": {
+            "cronName": "Cron Schedule",
+            "cronDesc":  "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n"
+          }
+        },
+        "scheduledDatacheck": {
+          "title": "Scheduled Datacheck",
+          "description": "This trigger triggers an action based on a cron trigger and specific observation based conditions.",
+          "configProps": {
+            "queryName": "Query",
+            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
+            "queryObjName": "Query Object",
+            "queryObjDesc": "A more complex variant of query",
+            "timeWindowName": "Timewindow in seconds from querytime",
+            "windowPlaceholder": "Enter number in seconds."
+          }
+        }
+      },
       "actions": {
         "pushNotification": {
+          "title": "Push Notification Action",
           "description": "Sends a push notification to all matching participants based on the trigger."
         }
       }
