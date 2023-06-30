@@ -33,7 +33,7 @@
       class="w-full"
       :aria-describedby="property.id + '-help'"
       :disabled="!editable"
-      :placeholder="props.property.description"
+      :placeholder="$t(props.property.description)"
     />
   </div>
 </template>

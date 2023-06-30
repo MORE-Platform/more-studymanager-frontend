@@ -416,7 +416,7 @@
         "description": "Diese Datenerhebung ermöglicht es GPS Daten über den Smartphone Sensor zu sammeln.",
         "configProps": {
           "measurementName": "Messungsinterval",
-          "measurmentDesc": "Messungsinterval in Millisekunden, 30k bis 600k"
+          "measurementDesc": "Messungsinterval in Millisekunden, 30k bis 600k"
         }
       },
       "simpleQuestion": {
@@ -561,8 +561,31 @@
       }
     },
     "factory": {
+      "trigger":{
+        "scheduled": {
+          "title": "Scheduled Trigger",
+          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler aus.",
+          "configProps": {
+              "cronName": "Cron Schedule",
+              "cronDesc":  "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n"
+          }
+        },
+        "scheduledDatacheck": {
+          "title": "Scheduled Datacheck",
+          "description": "Dieser Auslösertyp löst eine Aktion basierend auf dne eingestelltne Cron Scheduler und den definierten zusätzlichen Bedingungen (basierend auf Datenerhebungsmodulen) aus.",
+          "configProps": {
+            "queryName": "Query",
+            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
+            "queryObjName": "Query Objekt",
+            "queryObjDesc": "Eine complexere Variante des Scheduled Triggers.",
+            "timewindowName": "Beobachtungszeitraum in Sekunden",
+            "windowPlaceholder": "Füge eine Nummer in Sekunden ein"
+          }
+        }
+      },
       "actions": {
         "pushNotification": {
+          "title": "Push-Benachrichtigung Aktion",
           "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition."
         }
       }
@@ -582,7 +605,7 @@
     },
     "description": {
       "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu.",
-      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu.",
+      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
     }
   },
 

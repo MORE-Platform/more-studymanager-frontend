@@ -22,6 +22,7 @@
         <span v-if="editable">{{ $t('cronSchedule.formTitle') }}</span>
         <span v-else>{{ $t('cronSchedule.formTitleDisabled') }}</span>
       </div>
+
       <div class="relative">
         <div
           class="pi pi-info-circle info-circle hover-circle mb-4 flex-none"

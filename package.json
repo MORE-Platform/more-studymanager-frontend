@@ -13,7 +13,7 @@
     "coverage": "vitest --environment jsdom --coverage",
     "test:unit": "vitest --environment jsdom",
     "test:unit:once": "vitest --environment jsdom run --outputFile.junit=target/testResults.xml --reporter=junit --reporter=default",
-    "generate:api": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models --type-mappings=set=Array",
+    "generate:api": "openapi-generator-cli generate -i ./openapi/StudyManagerAPI.yaml -g typescript-axios -o src/generated-sources/openapi --additional-properties=supportsES6=true,withSeparateModelsAndApi=true,withInterfaces=true,apiPackage=api,modelPackage=models --type-mappings=set=Array --custom-generator=./openapi/openapi.generator-6.2.0.jar",
     "license:check": "licensee --production --errors-only",
     "license:list": "licensee --production || true"
   },
@@ -44,7 +44,7 @@
     "@headlessui/vue": "1.7.9",
     "@heroicons/vue": "1.0.6",
     "@intlify/vite-plugin-vue-i18n": "7.0.0",
-    "@openapitools/openapi-generator-cli": "2.5.2",
+    "@openapitools/openapi-generator-cli": "2.6.0",
     "@tailwindcss/aspect-ratio": "0.4.2",
     "@tailwindcss/forms": "0.5.3",
     "@tailwindcss/line-clamp": "0.4.2",
