@@ -23,10 +23,6 @@
   import InputNumber from 'primevue/inputnumber';
   import PushNotificationInput from './shared/PushNotificationInput.vue';
   import { Property } from '../../models/InputModels';
-  import {
-    QueryObjectList,
-    TriggerProperty,
-  } from '../../models/InterventionInputModels';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -42,41 +38,23 @@
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
-  const triggerQueryProps: Ref<Property<any>[]> = ref([]);
+  function getProperties(): Property<any>[] | undefined {
+    if (
+      typeof triggerData !== 'undefined' &&
+      typeof triggerData.properties !== 'undefined'
+    ) {
+      const triggerTypeProps = triggerFactories.find(
+        (item: any) => item.componentId === triggerData.type
+      ).properties;
+      const properties: Property<any>[] = triggerTypeProps
+        .map((json: any) => Property.fromJson(json))
+        .map((p: Property<any>) => p.setValue(triggerData.properties?.[p.id]));
 
-  console.log('triggerData......');
-  console.log(triggerData);
-
-  const properties: Ref<TriggerProperty<any>[]> = ref([]);
-
-  console.log(triggerData.properties);
-
-  function getProperties() {
-    if (typeof triggerData && triggerData.properties) {
-      for (const prop in triggerData.properties) {
-        console.error('triggerData.properties');
-        console.log(prop);
-        console.log('--------------');
-        /*properties.value.push(
-          TriggerProperty.fromJson(triggerData.properties[prop], prop)
-        );
-        console.log(properties.value);   */
-      }
+      return properties;
     }
   }
 
-  getProperties();
-
-  if (
-    typeof triggerData !== 'undefined' &&
-    triggerData.properties?.queryObject.length
-  ) {
-    triggerQueryProps.value = triggerData.properties.queryObject.map(
-      (json: any) => QueryObjectList.fromJson(json)
-    );
-  }
-  console.log(triggerQueryProps.value);
-  console.log(triggerQueryProps.value[0] instanceof QueryObject);
+  const triggerProperties: Property<any>[] | undefined = getProperties();
 
   const triggerTypesOptions = triggerFactories.map((item: any) => ({
     label: t(item.title),
@@ -160,7 +138,16 @@
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
-        parsedProps = JSON.parse(props.toString());
+        if (
+          typeof triggerProperties !== 'undefined' &&
+          triggerProperties.length > 0 &&
+          componentType === 'trigger'
+        ) {
+          parsedProps = Property.toJson(triggerProperties);
+        } else {
+          parsedProps = JSON.parse(props.toString());
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         componentsApi
           .validateProperties(component, componentType, parsedProps)
