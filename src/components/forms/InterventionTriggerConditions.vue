@@ -11,11 +11,12 @@
   } from '../../models/InterventionTriggerModel';
   import { useStudyStore } from '../../stores/studyStore';
   import Button from 'primevue/button';
+  import {DataCheckProperty} from "../../models/InputModels";
   const studyStore = useStudyStore();
 
   const props = defineProps({
     triggerConditions: {
-      type: Array as PropType<TriggerConditionGroup[]>,
+      type: Object as PropType<DataCheckProperty>,
       required: true,
     },
     error: {
@@ -27,8 +28,8 @@
       default: true,
     },
   });
-  const triggerConditions: Ref<TriggerConditionGroup[]> = ref(
-    props.triggerConditions
+  const triggerConditions: Ref<DataCheckProperty | undefined> = ref(
+    props.triggerConditions?.value
   );
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([

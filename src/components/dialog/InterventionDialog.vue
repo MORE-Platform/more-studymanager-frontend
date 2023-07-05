@@ -22,7 +22,8 @@
   import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
   import InputNumber from 'primevue/inputnumber';
   import PushNotificationInput from './shared/PushNotificationInput.vue';
-  import { Property } from '../../models/InputModels';
+  import {CronProperty, DataCheckProperty, IntegerProperty, Property} from '../../models/InputModels';
+  import IntegerPropertyInput from "./shared/IntegerPropertyInput.vue";
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -38,14 +39,17 @@
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
-  function getProperties(): Property<any>[] | undefined {
+  /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
+  function getProperties(tType: string): Property<any>[] | undefined {
+    console.error('getProperties');
     if (
       typeof triggerData !== 'undefined' &&
       typeof triggerData.properties !== 'undefined'
     ) {
       const triggerTypeProps = triggerFactories.find(
-        (item: any) => item.componentId === triggerData.type
+        (item: any) => item.componentId === tType
       ).properties;
+      console.log(triggerTypeProps);
       const properties: Property<any>[] = triggerTypeProps
         .map((json: any) => Property.fromJson(json))
         .map((p: Property<any>) => p.setValue(triggerData.properties?.[p.id]));
@@ -54,14 +58,14 @@
     }
   }
 
-  const triggerProperties: Property<any>[] | undefined = getProperties();
-
+  /*trigger type options are used for the trigger type dropdown to switch between and provide a specific description*/
   const triggerTypesOptions = triggerFactories.map((item: any) => ({
     label: t(item.title),
     value: item.componentId,
     description: t(item.description),
   }));
 
+  /*gets the trigger description by type value*/
   function getTriggerTypeDescription(triggerType: string): string {
     const trigger = triggerTypesOptions.find(
       (item: any) => item.value === triggerType
@@ -69,8 +73,7 @@
     return trigger.description;
   }
 
-  const title = ref(intervention.title);
-  const purpose = ref(intervention.purpose);
+  /*
   const triggerProp = ref(
     triggerData ? JSON.stringify(triggerData.properties) : undefined
   );
@@ -80,27 +83,40 @@
   const nonScheduleInput: Ref<string> = ref(
     triggerProp?.value ? triggerProp.value : ''
   );
-  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+
   const cronScheduleProp: Ref<string> = triggerProp.value
     ? JSON.parse(triggerProp.value).cronSchedule
     : '0 0 12 * * ?';
+   */
 
-  const actionsArray: Ref<any[]> = ref(actionsData || []);
-  const studyGroupId = ref(intervention.studyGroupId);
-  const triggerJsonError: Ref<string | undefined> = ref();
-  const actionJsonError: Ref<string[]> = ref([]);
-  const actionsEmptyError: Ref<string> = ref('');
-  const removeActions: Ref<number[]> = ref([]);
-  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
-  const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
     studyStore.study.status === StudyStatus.Paused;
 
+  const title = ref(intervention.title);
+  const purpose = ref(intervention.purpose);
+  const studyGroupId = ref(intervention.studyGroupId);
+
+  const actionsArray: Ref<any[]> = ref(actionsData || []);
+  const triggerProperties: Ref<Property<any>[] | undefined> = ref(
+    getProperties(triggerData.type ? triggerData.type : 'scheduled-trigger')
+  );
+  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
+
+  /*
+  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
+  const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
   setTriggerConfig(triggerData?.type ? triggerData.type : '');
   setNonScheduleTriggerConfig(triggerData?.properties);
+   */
 
+  const removeActions: Ref<number[]> = ref([]);
+
+  const actionJsonError: Ref<string[]> = ref([]);
+  const actionsEmptyError: Ref<string> = ref('');
+  const triggerJsonError: Ref<string | undefined> = ref();
   const triggerConditionsError: Ref<string | undefined> = ref(undefined);
+
   const interventionRowIsOpen: Ref<boolean> = ref(false);
 
   function setRowOpenError(isOpen: boolean) {
@@ -139,11 +155,11 @@
       let parsedProps: any;
       try {
         if (
-          typeof triggerProperties !== 'undefined' &&
-          triggerProperties.length > 0 &&
+          typeof triggerProperties.value !== 'undefined' &&
+          triggerProperties.value.length > 0 &&
           componentType === 'trigger'
         ) {
-          parsedProps = Property.toJson(triggerProperties);
+          parsedProps = Property.toJson(triggerProperties.value);
         } else {
           parsedProps = JSON.parse(props.toString());
         }
@@ -175,7 +191,7 @@
 
   function save() {
     if (externalErrors.value.length === 0 && errors.value.length === 0) {
-      updateProps();
+      //updateProps();
       Promise.all(
         [
           ...actionsArray.value.map((item, id) => ({
@@ -186,17 +202,17 @@
           })),
           {
             component: 'trigger',
-            type: triggerType.value,
-            properties: triggerProp.value,
+            type: triggerData?.type,
+            properties: triggerProperties.value,
             id: -1,
           },
         ].map((v) => validate(v.component, v.type, v.properties, v.id))
       )
         .then(() => {
           const triggerProps = {
-            type: triggerType.value,
-            properties: triggerProp.value
-              ? JSON.parse(triggerProp.value.toString())
+            type: triggerData?.type,
+            properties: triggerProperties.value
+              ? Property.toJson(triggerProperties.value)
               : '{}',
           };
 
@@ -254,7 +270,7 @@
         value: t('intervention.error.addTitle'),
       });
     }
-    if (!triggerProp.value) {
+    if (!triggerProperties.value) {
       errors.value.push({
         label: 'trigger',
         value: t('intervention.error.addTriggerTypeConfig'),
@@ -267,8 +283,8 @@
       });
     }
     if (
-      triggerType.value === 'scheduled-datacheck-trigger' &&
-      triggerConfigQueryObj.value.length === 0
+      triggerData?.type === 'scheduled-datacheck-trigger' &&
+      triggerProperties?.value?.['queryObject']
     ) {
       errors.value.push({
         label: 'triggerConfig',
@@ -317,44 +333,42 @@
     )?.label;
   }
   function setTriggerConfig(tType: string | undefined) {
-    let props: object | undefined;
     if (tType) {
       const trigger = triggerFactories.find(
         (t: ComponentFactory) => t.componentId === tType
       );
-      if (!prevTriggerType.value || prevTriggerType.value !== tType) {
-        props = trigger?.defaultProperties;
-        if (!triggerData) {
-          triggerProp.value = JSON.stringify(props);
-        }
-      } else if (triggerData && tType === triggerData?.type) {
-        props = triggerData?.properties;
+
+      if(prevTriggerType.value !== tType) {
+        triggerProperties.value = getProperties(tType);
+        prevTriggerType.value = tType;
       }
-      setNonScheduleTriggerConfig(props);
-      prevTriggerType.value = tType;
     }
   }
 
-  function setNonScheduleTriggerConfig(triggerProperties?: object) {
-    nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
-      if (key === 'cronSchedule') {
+  /*
+  function setNonScheduleTriggerConfig(triggerProps?: object) {
+    for (const prop in triggerProps) {
+      console.log(prop);
+
+      if (prop === 'cronSchedule') {
         showScheduleInput.value = true;
         return undefined;
-      } else if (key === 'queryObject') {
+      } else if (prop === 'queryObject') {
         triggerConfigQueryObj.value = value ? value : [];
         return undefined;
-      } else if (key === 'window') {
+      } else if (prop === 'window')  {
         triggerConfigWindow.value = value ? value : undefined;
         return value;
-      } else {
+      }  else {
         return value;
       }
-    });
-    triggerProp.value = JSON.stringify(triggerProperties);
+    }
 
     hasAdditionalTriggerConfig.value =
-      triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
+      triggerProperties.value !== undefined && nonScheduleInput.value !== '{}';
   }
+
+   */
 
   function getActionDescription(actionType?: string) {
     return (
@@ -369,17 +383,17 @@
     actionMenu.value.toggle(event);
   }
 
+  /*
   function setCronSchedule(e: string) {
-    if (triggerProp.value) {
-      const tempTriggerProp = JSON.parse(triggerProp.value);
-      tempTriggerProp.cronSchedule = e;
-      triggerProp.value = JSON.stringify(tempTriggerProp);
+    if (triggerProperties.value) {
+      triggerProperties.value.cronSchedule = e;
       checkExternalErrors();
     }
   }
-
+   */
+  /*
   function updateProps() {
-    if (triggerProp.value) {
+    if (triggerProperties.value) {
       const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
       const triggerPropJson = JSON.parse(triggerProp.value);
       nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
@@ -394,7 +408,8 @@
       triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
     }
   }
-
+   */
+  /*
   function updateTriggerConditions(triggerConditions: TriggerConditionGroup[]) {
     if (triggerProp.value) {
       const props: Ref<any> = ref(JSON.parse(triggerProp.value as string));
@@ -406,6 +421,7 @@
       }
     }
   }
+   */
 </script>
 
 <template>
@@ -459,7 +475,7 @@
               {{ $t('intervention.dialog.label.triggerType') }}
             </div>
             <Dropdown
-              v-model="triggerType"
+              v-model="triggerData.type"
               :options="triggerTypesOptions"
               class="dropdown-btn col-span-1 w-full"
               option-label="label"
@@ -467,19 +483,20 @@
               required
               :disabled="!editable"
               :placeholder="$t('intervention.placeholder.trigger')"
-              @change="setTriggerConfig(triggerType)"
+              @change="setTriggerConfig(triggerData.type)"
             />
           </div>
         </div>
+
         <div
-          v-if="triggerType"
+          v-if="prevTriggerType"
           class="col-span-8"
           :class="[
             [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
-            [triggerType ? '' : 'is-empty'],
+            [prevTriggerType ? '' : 'is-empty'],
           ]"
         >
-          {{ getTriggerTypeDescription(triggerType) }}
+          {{ getTriggerTypeDescription(prevTriggerType) }}
         </div>
 
         <div v-if="getError('trigger')" class="error col-span-8 mb-4">
@@ -490,6 +507,42 @@
           <div v-if="triggerJsonError && editable" class="error mb-4">
             {{ triggerJsonError }}
           </div>
+
+          <div v-for="(property, index) in triggerProperties" :key="index" class="col-start-0 col-span-8 grid grid-cols-5">
+            <div class="mb-4">{{property}}</div>
+            <div>{{property instanceof IntegerProperty}}</div>
+
+
+            <CronSchedulerConfiguration
+              v-if="property instanceof CronProperty"
+              class="mb-4 col-span-5"
+              :editable="editable"
+              :cron-schedule="property.value"
+              @on-valid-schedule="property.value = $event"
+              @on-error="checkExternalErrors($event)"
+            />
+
+            <div
+              v-if="
+            property instanceof DataCheckProperty
+          "
+              class="col-start-0 col-span-6 mt-5"
+            >
+              <InterventionTriggerConditions
+                :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
+                class="mb-5"
+                :trigger-conditions="property"
+                :editable="editable"
+                @on-emit-trigger-conditions="property = $event"
+                @on-error="setTriggerConditionError($event)"
+                @on-row-open-error="setRowOpenError($event)"
+              />
+            </div>
+
+
+          </div>
+
+          <!--
           <div
             v-if="
               triggerProp &&
@@ -519,18 +572,14 @@
               }}
             </div>
           </div>
-          <CronSchedulerConfiguration
-            v-if="showScheduleInput"
-            class="mb-4"
-            :editable="editable"
-            :cron-schedule="cronScheduleProp"
-            @on-valid-schedule="setCronSchedule($event)"
-            @on-error="checkExternalErrors($event)"
-          />
+          -->
 
+          <!--
           <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
             {{ $t('cronSchedule.additionalConfig') }}
           </div>
+          -->
+          <!--
           <Textarea
             v-if="
               hasAdditionalTriggerConfig &&
@@ -545,10 +594,12 @@
             :auto-resize="true"
             style="width: 100%"
           ></Textarea>
+          -->
         </div>
+        <!--
         <div
           v-if="
-            triggerProp && JSON.parse(triggerProp).hasOwnProperty('queryObject')
+            triggerProperties && JSON.parse(triggerProp).hasOwnProperty('queryObject')
           "
           class="col-start-0 col-span-6 mt-5"
         >
@@ -562,6 +613,7 @@
             @on-row-open-error="setRowOpenError($event)"
           />
         </div>
+        -->
       </div>
 
       <div class="col-start-0 col-span-8 mt-8 grid grid-cols-9">
