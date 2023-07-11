@@ -70,6 +70,8 @@
     });
   });
 
+  console.error('Intervention Trigger Condition Table....');
+
   const conditionValue: Ref<string> = ref(props.nextGroupCondition);
   const editingRows: Ref<Array<any>> = ref([]);
   const observationList: Ref<Observation[]> = ref([]);
@@ -279,6 +281,8 @@
   }
 
   function addTriggerGroup() {
+    console.log('addTriggerGroup.....');
+    console.log(props.groupIndex);
     emit('onRowOpen', true);
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();

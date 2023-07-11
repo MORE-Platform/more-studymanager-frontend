@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { StringProperty } from '../../../models/InputModels';
-  import { PropType } from 'vue';
+  import { PropType, watch } from 'vue';
   import InputText from 'primevue/inputtext';
 
   const props = defineProps({
@@ -13,16 +13,24 @@
       default: true,
     },
   });
+
+  const emit = defineEmits<{
+    (e: 'onInputChange', stringProperty: StringProperty): void;
+  }>();
+
+  watch(props.property, () => {
+    emit('onInputChange', props.property);
+  });
 </script>
 
 <template>
   <div class="flex flex-col gap-1">
     <h6 class="font-bold">
-      <label :for="property.id"
+      <label v-if="property.name" :for="property.id"
         >{{ $t(property.name) }}<span v-if="property.required">*</span></label
       >
     </h6>
-    <small :id="property.id + '-help'">{{
+    <small v-if="props.property.description" :id="property.id + '-help'">{{
       $t(props.property.description)
     }}</small>
 
@@ -33,7 +41,11 @@
       class="w-full"
       :aria-describedby="property.id + '-help'"
       :disabled="!editable"
-      :placeholder="$t(props.property.description)"
+      :placeholder="
+        props.property.description
+          ? $t(props.property.description)
+          : 'Enter text value'
+      "
     />
   </div>
 </template>

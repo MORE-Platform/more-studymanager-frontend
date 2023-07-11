@@ -7,11 +7,10 @@
     InterventionTriggerConfig,
     InterventionTriggerUpdateData,
     InterventionTriggerUpdateItem,
-    TriggerConditionGroup,
   } from '../../models/InterventionTriggerModel';
   import { useStudyStore } from '../../stores/studyStore';
   import Button from 'primevue/button';
-  import {DataCheckProperty} from "../../models/InputModels";
+  import { DataCheckProperty, QueryObject } from '../../models/InputModels';
   const studyStore = useStudyStore();
 
   const props = defineProps({
@@ -28,9 +27,28 @@
       default: true,
     },
   });
-  const triggerConditions: Ref<DataCheckProperty | undefined> = ref(
-    props.triggerConditions?.value
+  const triggerConditionObj: Ref<DataCheckProperty> = ref(
+    props.triggerConditions
   );
+
+  if (!triggerConditionObj.value.value) {
+    triggerConditionObj.value.value = [
+      {
+        nextGroupCondition: undefined,
+        parameter: [
+          {
+            observationId: undefined,
+            observationType: '',
+            observationProperty: '',
+            operator: '',
+            propertyValue: '',
+            editMode: true,
+            error: false,
+          },
+        ],
+      },
+    ];
+  }
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
@@ -56,30 +74,38 @@
   ]);
 
   const emit = defineEmits<{
-    (
-      e: 'onEmitTriggerConditions',
-      triggerConditions: TriggerConditionGroup[]
-    ): void;
+    (e: 'onEmitTriggerConditions', triggerConditions: DataCheckProperty): void;
     (e: 'onRowOpenError', isOpen: boolean): void;
   }>();
 
   const rowOpenError: Ref<boolean> = ref(false);
 
   function emitTriggerConditions() {
-    if (!rowOpenError.value) {
-      emit('onEmitTriggerConditions', triggerConditions.value);
+    if (
+      !rowOpenError.value &&
+      typeof triggerConditionObj.value.value !== 'undefined'
+    ) {
+      emit('onEmitTriggerConditions', triggerConditionObj.value);
     }
   }
 
   function addTriggerGroup(groupIndex?: number) {
     emit('onRowOpenError', true);
-    if ((groupIndex as number) >= 0) {
+    if (
+      (groupIndex as number) >= 0 &&
+      typeof triggerConditionObj.value.value !== 'undefined'
+    ) {
       setEditModeFalse();
-      triggerConditions.value[groupIndex as number].nextGroupCondition = 'and';
+      triggerConditionObj.value.value[groupIndex as number].nextGroupCondition =
+        'and';
     }
 
-    triggerConditions.value.push({
-      nextGroupCondition: null,
+    if (typeof triggerConditionObj.value.value === 'undefined') {
+      triggerConditionObj.value.value = new Array<QueryObject>();
+    }
+
+    triggerConditionObj?.value?.value?.push({
+      nextGroupCondition: undefined,
       parameter: [
         {
           observationId: undefined,
@@ -88,38 +114,51 @@
           operator: '',
           propertyValue: '',
           editMode: true,
+          error: false,
         },
       ],
     });
   }
 
   function setEditModeFalse() {
-    triggerConditions.value.forEach((item: TriggerConditionGroup) =>
-      item.parameter.forEach((param) => (param.editMode = false))
-    );
-    emitTriggerConditions();
+    if (typeof triggerConditionObj.value.value !== 'undefined') {
+      triggerConditionObj.value.value.forEach((item: QueryObject) =>
+        item.parameter.forEach((param) => (param.editMode = false))
+      );
+      emitTriggerConditions();
+    }
   }
 
   function toggleRowEdit(item: InterventionTriggerUpdateItem) {
-    triggerConditions.value[item.groupIndex].parameter[item.rowIndex].editMode =
-      item.edit || false;
+    if (typeof triggerConditionObj.value.value !== 'undefined') {
+      triggerConditionObj.value.value[item.groupIndex].parameter[
+        item.rowIndex
+      ].editMode = item.edit || false;
 
-    if (
-      !item.edit &&
-      !validateEditedRow(
-        triggerConditions.value[item.groupIndex].parameter[item.rowIndex]
-      )
-    ) {
-      if (triggerConditions.value[item.groupIndex].parameter.length > 1) {
-        triggerConditions.value[item.groupIndex].parameter.splice(
-          item.rowIndex,
-          1
-        );
-      } else if (
-        triggerConditions.value[item.groupIndex].parameter.length === 1
+      if (
+        !item.edit &&
+        !validateEditedRow(
+          triggerConditionObj.value.value[item.groupIndex].parameter[
+            item.rowIndex
+          ]
+        )
       ) {
-        triggerConditions.value[item.groupIndex - 1].nextGroupCondition = null;
-        triggerConditions.value.splice(item.groupIndex, 1);
+        if (
+          triggerConditionObj.value.value[item.groupIndex].parameter.length > 1
+        ) {
+          triggerConditionObj.value.value[item.groupIndex].parameter.splice(
+            item.rowIndex,
+            1
+          );
+        } else if (
+          triggerConditionObj.value.value[item.groupIndex].parameter.length ===
+          1
+        ) {
+          triggerConditionObj.value.value[
+            item.groupIndex - 1
+          ].nextGroupCondition = undefined;
+          triggerConditionObj.value.value.splice(item.groupIndex, 1);
+        }
       }
     }
   }
@@ -143,53 +182,69 @@
   function updateRowData(item: InterventionTriggerUpdateData) {
     if (validateEditedRow(item.data)) {
       item.data.error = false;
-      triggerConditions.value[item.groupIndex].parameter[item.rowIndex] =
-        item.data;
-      if (
-        triggerConditions.value[item.groupIndex].parameter[item.rowIndex]
-          .observationType === 'gps-mobile-observation'
-      ) {
-        triggerConditions.value[item.groupIndex].parameter[
+      if (typeof triggerConditionObj.value.value !== 'undefined') {
+        triggerConditionObj.value.value[item.groupIndex].parameter[
           item.rowIndex
-        ].propertyValue = triggerConditions.value[item.groupIndex].parameter[
+        ] = item.data;
+        if (
+          triggerConditionObj.value.value[item.groupIndex].parameter[
+            item.rowIndex
+          ].observationType === 'gps-mobile-observation'
+        ) {
+          triggerConditionObj.value.value[item.groupIndex].parameter[
+            item.rowIndex
+          ].propertyValue = triggerConditionObj.value.value[item.groupIndex]
+            .parameter[item.rowIndex].propertyValue as number;
+        }
+        triggerConditionObj.value.value[item.groupIndex].parameter[
           item.rowIndex
-        ].propertyValue as number;
+        ].editMode = false;
+        emitTriggerConditions();
+      } else {
+        if (typeof triggerConditionObj.value.value !== 'undefined') {
+          item.data.error = true;
+          triggerConditionObj.value.value[item.groupIndex].parameter[
+            item.rowIndex
+          ].editMode = true;
+        }
       }
-      triggerConditions.value[item.groupIndex].parameter[
-        item.rowIndex
-      ].editMode = false;
-      emitTriggerConditions();
-    } else {
-      item.data.error = true;
-      triggerConditions.value[item.groupIndex].parameter[
-        item.rowIndex
-      ].editMode = true;
     }
   }
 
   function addRow(item: InterventionTriggerUpdateItem) {
-    setEditModeFalse();
-    triggerConditions.value[item.groupIndex].parameter.push({
-      observationId: undefined,
-      observationType: '',
-      observationProperty: '',
-      operator: '',
-      propertyValue: '',
-      editMode: true,
-    });
+    if (typeof triggerConditionObj.value.value !== 'undefined') {
+      setEditModeFalse();
+      triggerConditionObj.value.value[item.groupIndex].parameter.push({
+        observationId: undefined,
+        observationType: '',
+        observationProperty: '',
+        operator: '',
+        propertyValue: '',
+        editMode: true,
+        error: false,
+      });
+    }
   }
   function deleteRow(item: InterventionTriggerUpdateItem) {
-    triggerConditions.value[item.groupIndex].parameter.splice(item.rowIndex, 1);
-    triggerConditions.value.forEach((item, index) => {
-      if (!item.parameter.length) {
-        triggerConditions.value.splice(index, 1);
-      }
-    });
+    if (typeof triggerConditionObj.value.value !== 'undefined') {
+      triggerConditionObj.value.value[item.groupIndex].parameter.splice(
+        item.rowIndex,
+        1
+      );
+      triggerConditionObj.value.value.forEach((item, index) => {
+        if (!item.parameter.length) {
+          triggerConditionObj.value.value?.splice(index, 1);
+        }
+      });
+    }
   }
 
   function changeGroupCondition(item: GroupConditionChange) {
-    triggerConditions.value[item.groupIndex].nextGroupCondition = item.value;
-    emitTriggerConditions();
+    if (typeof triggerConditionObj.value.value !== 'undefined') {
+      triggerConditionObj.value.value[item.groupIndex].nextGroupCondition =
+        item.value;
+      emitTriggerConditions();
+    }
   }
 </script>
 
@@ -204,7 +259,7 @@
 
     <Suspense>
       <div
-        v-if="!triggerConditions.length"
+        v-if="triggerConditionObj.value && triggerConditionObj.value.length <= 1"
         class="mt-6 mb-6 w-full text-center"
       >
         <Button
@@ -215,28 +270,35 @@
           {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
         >
       </div>
+    </Suspense>
 
-      <InterventionTriggerConditionTable
-        v-for="(condition, index) in triggerConditions"
-        v-else
-        :key="index"
-        :rows="condition.parameter"
-        :group-index="index as number"
-        :next-group-condition="
-          condition.nextGroupCondition ? condition.nextGroupCondition : ''
-        "
-        :study-id="studyStore.study.studyId as number"
-        :columns="triggerConditionColumns"
-        class="mt-6"
-        :editable="editable"
-        @on-add-trigger-group="addTriggerGroup($event)"
-        @on-toggle-row-edit="toggleRowEdit($event)"
-        @on-update-row-data="updateRowData($event)"
-        @on-delete-row="deleteRow($event)"
-        @on-add-row="addRow($event)"
-        @on-row-open="emit('onRowOpenError', $event)"
-        @on-change-group-condition="changeGroupCondition($event)"
-      />
+    <Suspense>
+      <div
+        v-if="triggerConditionObj.value && triggerConditionObj.value.length > 0"
+      >
+        <InterventionTriggerConditionTable
+          v-for="(condition, index) in triggerConditionObj.value"
+          :key="index"
+          :rows="condition.parameter"
+          :group-index="index as number"
+          :next-group-condition="
+            condition.nextGroupCondition
+              ? condition.nextGroupCondition
+              : undefined
+          "
+          :study-id="studyStore.study.studyId as number"
+          :columns="triggerConditionColumns"
+          class="mt-6"
+          :editable="editable"
+          @on-add-trigger-group="addTriggerGroup($event)"
+          @on-toggle-row-edit="toggleRowEdit($event)"
+          @on-update-row-data="updateRowData($event)"
+          @on-delete-row="deleteRow($event)"
+          @on-add-row="addRow($event)"
+          @on-row-open="emit('onRowOpenError', $event)"
+          @on-change-group-condition="changeGroupCondition($event)"
+        />
+      </div>
     </Suspense>
   </div>
 </template>

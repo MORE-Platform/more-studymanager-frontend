@@ -43,6 +43,8 @@ export abstract class Property<T> {
     | 'Double';
 
   static toJson(props: Property<any>[]): any {
+    console.log('toJson...');
+    console.log(props);
     const result: any = {};
     props.forEach((item) => {
       //TODO kind of workaround
@@ -69,6 +71,13 @@ export abstract class Property<T> {
     this.immutable = immutable;
     this.name = name;
     this.required = required;
+
+    if (!this.name) {
+      this.name = this.id;
+    }
+    if (!this.description) {
+      this.description = `Please enter a ${this.id}`;
+    }
   }
 
   public setValue(v: T): Property<T> {
@@ -106,6 +115,7 @@ export class StringProperty extends Property<string> {
   }
 
   validate(): string | undefined {
+    console.log('validate string property...');
     if (this.required && this.value === undefined) {
       return 'Value is required';
     } else if (
@@ -176,6 +186,7 @@ export class StringListProperty extends Property<string[]> {
   }
 
   validate(): string | undefined {
+    console.log('validate stringlist property');
     if (this.value === undefined && this.required) {
       return 'Value has to be defined';
     }
@@ -270,6 +281,7 @@ export class CronProperty extends Property<string> {
   }
 
   validate(): string | undefined {
+    console.log('validate cronproperty....');
     if (!this.value) {
       return 'Please be sure to add a value for the cron schedule to set the intervall of the intervention.';
     } else if (this.value) {
@@ -312,12 +324,11 @@ export class DataCheckProperty extends Property<QueryObject[]> {
   }
 
   validate(): string | undefined {
+    console.log('validate queryobject.....');
     if (!this.value?.length) {
       return 'Please be sure to add at least one additional condition to your trigger.';
     } else if (this.value.length > 0) {
       this.value.forEach((item: QueryObject) => {
-        console.error('this.value foreach');
-
         if (!item.parameter.length) {
           return 'Please be sure to add at least one additional condition to your trigger.';
         } else {
@@ -338,8 +349,8 @@ export class DataCheckProperty extends Property<QueryObject[]> {
   }
 }
 
-class QueryObjectInner {
-  observationId: number;
+export class QueryObjectInner {
+  observationId: number | undefined;
   observationType: string;
   observationProperty: string;
   operator: string;
@@ -365,35 +376,6 @@ class QueryObjectInner {
     this.error = error;
   }
 
-  getType(): 'Integer' | 'Object' | 'String' | 'Boolean' | 'Double' | 'Array' {
-    return 'Object';
-  }
-
-  validate(): string | undefined {
-    if (
-      this.observationId === undefined ||
-      this.observationType === undefined ||
-      this.observationProperty === undefined ||
-      this.operator === undefined ||
-      this.propertyValue === undefined
-    ) {
-      return 'Please fill out required fields.';
-    } else if (typeof this.observationId !== 'number') {
-      return 'Invalid Type. Observation Id has to be a number';
-    } else if (typeof this.observationType !== 'string') {
-      return 'Invalid type. Observation type has to be a string.';
-    } else if (typeof this.observationProperty !== 'string') {
-      return 'Invalid type. Observation property has to be a string.';
-    } else if (typeof this.operator !== 'string') {
-      return 'Invalid type. Operator has to be a string.';
-    } else if (
-      typeof this.propertyValue !== 'string' ||
-      typeof this.propertyValue !== 'number'
-    ) {
-      return 'Invalid type. Property value has to be either a string or a number.';
-    } else return undefined;
-  }
-
   static fromJson(json: any): QueryObjectInner {
     return new QueryObjectInner(
       json.observationId,
@@ -407,7 +389,7 @@ class QueryObjectInner {
   }
 }
 
-class QueryObject {
+export class QueryObject {
   nextGroupCondition: string | undefined;
   parameter: QueryObjectInner[];
 
@@ -417,23 +399,6 @@ class QueryObject {
   ) {
     this.nextGroupCondition = nextGroupCondition;
     this.parameter = queryConditions;
-  }
-
-  getType(): 'QueryObject' | 'Object' | 'Array' {
-    return 'QueryObject';
-  }
-
-  validate(): string | undefined {
-    if (!this.parameter.length) {
-      return 'Please be sure to add at least one additional condition to your trigger.';
-    } else if (this.parameter.length > 0) {
-      this.parameter.forEach((item) => {
-        const validate = item.validate();
-        if (validate) {
-          return validate;
-        }
-      });
-    } else return undefined;
   }
 
   static fromJson(json: any): QueryObject {

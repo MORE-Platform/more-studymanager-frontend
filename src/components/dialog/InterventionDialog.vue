@@ -19,11 +19,17 @@
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
-  import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
-  import InputNumber from 'primevue/inputnumber';
-  import PushNotificationInput from './shared/PushNotificationInput.vue';
-  import {CronProperty, DataCheckProperty, IntegerProperty, Property} from '../../models/InputModels';
-  import IntegerPropertyInput from "./shared/IntegerPropertyInput.vue";
+
+  import {
+    CronProperty,
+    DataCheckProperty,
+    IntegerProperty,
+    Property,
+    StringProperty,
+  } from '../../models/InputModels';
+  import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
+  import StringPropertyInput from './shared/StringPropertyInput.vue';
+  import ActionProperty from './shared/ActionProperty.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -40,22 +46,31 @@
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
   /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
-  function getProperties(tType: string): Property<any>[] | undefined {
-    console.error('getProperties');
+  function getTriggerProperties(tType: string): Property<any>[] | undefined {
+    const triggerTypeProps = triggerFactories.find(
+      (item: any) => item.componentId === tType
+    ).properties;
+
+    const properties: Ref<Property<any>[]> = ref(
+      triggerTypeProps.map((json: any) => Property.fromJson(json))
+    );
+
     if (
       typeof triggerData !== 'undefined' &&
       typeof triggerData.properties !== 'undefined'
     ) {
-      const triggerTypeProps = triggerFactories.find(
-        (item: any) => item.componentId === tType
-      ).properties;
-      console.log(triggerTypeProps);
-      const properties: Property<any>[] = triggerTypeProps
-        .map((json: any) => Property.fromJson(json))
-        .map((p: Property<any>) => p.setValue(triggerData.properties?.[p.id]));
-
-      return properties;
+      properties.value = properties.value.map((p: Property<any>) =>
+        triggerData.properties
+          ? p.setValue(triggerData.properties?.[p.id])
+          : p.setValue(p.defaultValue)
+      );
+    } else {
+      properties.value = properties.value.map((p: Property<any>) =>
+        p.setValue(p.defaultValue)
+      );
     }
+
+    return properties.value;
   }
 
   /*trigger type options are used for the trigger type dropdown to switch between and provide a specific description*/
@@ -73,22 +88,6 @@
     return trigger.description;
   }
 
-  /*
-  const triggerProp = ref(
-    triggerData ? JSON.stringify(triggerData.properties) : undefined
-  );
-  const triggerType = ref(triggerData ? triggerData.type : undefined);
-  const showScheduleInput = ref(false);
-  const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
-  const nonScheduleInput: Ref<string> = ref(
-    triggerProp?.value ? triggerProp.value : ''
-  );
-
-  const cronScheduleProp: Ref<string> = triggerProp.value
-    ? JSON.parse(triggerProp.value).cronSchedule
-    : '0 0 12 * * ?';
-   */
-
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
     studyStore.study.status === StudyStatus.Paused;
@@ -97,11 +96,16 @@
   const purpose = ref(intervention.purpose);
   const studyGroupId = ref(intervention.studyGroupId);
 
+  const triggerType: Ref<string> = ref(
+    dialogRef?.value?.data?.triggerData?.type
+      ? dialogRef.value.data.triggerData.type
+      : 'scheduled-trigger'
+  );
+
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const triggerProperties: Ref<Property<any>[] | undefined> = ref(
-    getProperties(triggerData.type ? triggerData.type : 'scheduled-trigger')
+    getTriggerProperties(triggerType.value)
   );
-  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
 
   /*
   const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
@@ -128,7 +132,7 @@
     actionsArray.value = actionsArray.value.map((item) => ({
       actionId: item.actionId,
       type: item.type,
-      properties: JSON.stringify(item.properties),
+      properties: item.properties,
     }));
   }
 
@@ -139,7 +143,7 @@
       command: () => {
         actionsArray.value.push({
           type: item.componentId,
-          properties: JSON.stringify(item.defaultProperties),
+          properties: item.defaultProperties,
         });
       },
     }))
@@ -154,14 +158,10 @@
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
-        if (
-          typeof triggerProperties.value !== 'undefined' &&
-          triggerProperties.value.length > 0 &&
-          componentType === 'trigger'
-        ) {
-          parsedProps = Property.toJson(triggerProperties.value);
+        if (component !== 'action') {
+          parsedProps = Property.toJson(props);
         } else {
-          parsedProps = JSON.parse(props.toString());
+          parsedProps = props;
         }
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -192,6 +192,7 @@
   function save() {
     if (externalErrors.value.length === 0 && errors.value.length === 0) {
       //updateProps();
+
       Promise.all(
         [
           ...actionsArray.value.map((item, id) => ({
@@ -202,24 +203,31 @@
           })),
           {
             component: 'trigger',
-            type: triggerData?.type,
-            properties: triggerProperties.value,
+            type: triggerType.value,
+            properties: triggerProperties.value
+              ? triggerProperties.value
+              : '{}',
             id: -1,
           },
         ].map((v) => validate(v.component, v.type, v.properties, v.id))
       )
-        .then(() => {
-          const triggerProps = {
-            type: triggerData?.type,
-            properties: triggerProperties.value
-              ? Property.toJson(triggerProperties.value)
-              : '{}',
-          };
+        .then((response: any) => {
+          return response;
+        })
+        .then((report: ValidationReport) => {
+          if (report.valid) {
+            console.log('is valide');
+          } else {
+            const jsonError = (report.errors || [])
+              .concat(report.warnings || [])
+              .map((e) => e.message)
+              .join(', ');
+          }
 
           const actionsProps = actionsArray.value.map((item) => ({
             actionId: item?.actionId,
             type: item.type,
-            properties: JSON.parse(item.properties),
+            properties: item.properties,
           }));
 
           const returnIntervention = {
@@ -232,18 +240,23 @@
             schedule: intervention.schedule,
           } as Intervention;
 
-          const returnObject = {
-            intervention: returnIntervention,
-            trigger: triggerProps,
-            actions: actionsProps,
-            removeActions: removeActions.value,
-          };
+          if (triggerProperties.value) {
+            const returnObject = {
+              intervention: returnIntervention,
+              trigger: {
+                type: triggerType.value,
+                properties: Property.toJson(triggerProperties.value),
+              },
+              actions: actionsProps,
+              removeActions: removeActions.value,
+            };
 
-          actionJsonError.value = [];
-          triggerJsonError.value = '';
+            actionJsonError.value = [];
+            triggerJsonError.value = '';
 
-          if (actionsArray.value.length) {
-            dialogRef.value.close(returnObject);
+            if (actionsArray.value.length) {
+              dialogRef.value.close(returnObject);
+            }
           }
         })
 
@@ -280,15 +293,6 @@
       errors.value.push({
         label: 'action',
         value: t('intervention.error.addAction'),
-      });
-    }
-    if (
-      triggerData?.type === 'scheduled-datacheck-trigger' &&
-      triggerProperties?.value?.['queryObject']
-    ) {
-      errors.value.push({
-        label: 'triggerConfig',
-        value: t('intervention.error.addTriggerConfig'),
       });
     }
     if (interventionRowIsOpen.value) {
@@ -332,17 +336,9 @@
       (a: ComponentFactory) => a.componentId === actionType
     )?.label;
   }
-  function setTriggerConfig(tType: string | undefined) {
-    if (tType) {
-      const trigger = triggerFactories.find(
-        (t: ComponentFactory) => t.componentId === tType
-      );
-
-      if(prevTriggerType.value !== tType) {
-        triggerProperties.value = getProperties(tType);
-        prevTriggerType.value = tType;
-      }
-    }
+  function setTriggerConfig(tType: string) {
+    triggerProperties.value = getTriggerProperties(tType);
+    triggerType.value = tType;
   }
 
   /*
@@ -369,14 +365,6 @@
   }
 
    */
-
-  function getActionDescription(actionType?: string) {
-    return (
-      actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
-      )?.description || t('intervention.placeholder.noDescription')
-    );
-  }
 
   const actionMenu = ref();
   function actionToggle(event: MouseEvent) {
@@ -410,18 +398,32 @@
   }
    */
   /*
-  function updateTriggerConditions(triggerConditions: TriggerConditionGroup[]) {
-    if (triggerProp.value) {
-      const props: Ref<any> = ref(JSON.parse(triggerProp.value as string));
+
+   */
+
+  function updateQueryObject(triggerConditions: DataCheckProperty) {
+    if (triggerProperties.value) {
+      triggerProperties.value.find((item: Property<any>) => {
+        if (item instanceof DataCheckProperty) {
+          item = triggerConditions;
+        }
+      });
+
+      /*
+      const props: Ref<any> = ref(JSON.parse(triggerProperties.value as string));
       // eslint-disable-next-line no-prototype-builtins
       if (props.value.hasOwnProperty('queryObject')) {
         props.value.queryObject = triggerConditions;
         setNonScheduleTriggerConfig(props.value);
         triggerProp.value = JSON.stringify(props.value);
       }
+       */
     }
   }
-   */
+
+  function updateActionProps(action: Action, index: number) {
+    actionsArray.value[index] = action;
+  }
 </script>
 
 <template>
@@ -475,7 +477,7 @@
               {{ $t('intervention.dialog.label.triggerType') }}
             </div>
             <Dropdown
-              v-model="triggerData.type"
+              v-model="triggerType"
               :options="triggerTypesOptions"
               class="dropdown-btn col-span-1 w-full"
               option-label="label"
@@ -483,20 +485,20 @@
               required
               :disabled="!editable"
               :placeholder="$t('intervention.placeholder.trigger')"
-              @change="setTriggerConfig(triggerData.type)"
+              @change="setTriggerConfig(triggerType)"
             />
           </div>
         </div>
 
         <div
-          v-if="prevTriggerType"
+          v-if="triggerType"
           class="col-span-8"
           :class="[
             [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
-            [prevTriggerType ? '' : 'is-empty'],
+            [triggerType ? '' : 'is-empty'],
           ]"
         >
-          {{ getTriggerTypeDescription(prevTriggerType) }}
+          {{ getTriggerTypeDescription(triggerType) }}
         </div>
 
         <div v-if="getError('trigger')" class="error col-span-8 mb-4">
@@ -508,14 +510,28 @@
             {{ triggerJsonError }}
           </div>
 
-          <div v-for="(property, index) in triggerProperties" :key="index" class="col-start-0 col-span-8 grid grid-cols-5">
-            <div class="mb-4">{{property}}</div>
-            <div>{{property instanceof IntegerProperty}}</div>
+          <div
+            v-for="(property, index) in triggerProperties"
+            :key="index"
+            class="col-start-0 col-span-8 grid grid-cols-5"
+          >
+            <IntegerPropertyInput
+              v-if="property instanceof IntegerProperty"
+              :property="property"
+              :editable="editable"
+              class="col-span-5"
+            />
 
+            <StringPropertyInput
+              v-if="property instanceof StringProperty"
+              :property="property"
+              :editable="editable"
+              class="col-span-5"
+            />
 
             <CronSchedulerConfiguration
               v-if="property instanceof CronProperty"
-              class="mb-4 col-span-5"
+              class="col-span-5 mb-4"
               :editable="editable"
               :cron-schedule="property.value"
               @on-valid-schedule="property.value = $event"
@@ -523,9 +539,7 @@
             />
 
             <div
-              v-if="
-            property instanceof DataCheckProperty
-          "
+              v-if="property instanceof DataCheckProperty"
               class="col-start-0 col-span-6 mt-5"
             >
               <InterventionTriggerConditions
@@ -533,13 +547,11 @@
                 class="mb-5"
                 :trigger-conditions="property"
                 :editable="editable"
-                @on-emit-trigger-conditions="property = $event"
+                @on-emit-trigger-conditions="updateQueryObject($event)"
                 @on-error="setTriggerConditionError($event)"
                 @on-row-open-error="setRowOpenError($event)"
               />
             </div>
-
-
           </div>
 
           <!--
@@ -639,8 +651,7 @@
           <div v-if="getError('action')" class="error col-span-8 mb-4">
             {{ getError('action') }}
           </div>
-          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
-          </Menu>
+          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true" />
         </div>
         <div v-if="actionsEmptyError" class="error col-span-8">
           {{ actionsEmptyError }}
@@ -662,19 +673,26 @@
               {{ actionJsonError[index] }}
             </div>
 
+            <!--
             <PushNotificationInput
-              v-if="actionsArray[index].type === 'push-notification-action'"
-              :notification-string="actionsArray[index].properties"
-              :description="t(getActionDescription(actionsArray[index].type))"
-              :action-type-name="
-                nameForActionType(actionsArray[index].type) || ''
-              "
+              :aciton="action"
+              :action-factories="actionFactories as ComponentFactory[]"
+              :notification-string="action.properties"
+              :description="t(getActionDescription(action.type))"
+              :action-type-name="nameForActionType(action.type) || ''"
               :editable="editable"
               @on-props-change="actionsArray[index].properties = $event"
             />
+            -->
 
+            <ActionProperty
+              :action-factories="actionFactories as ComponentFactory[]"
+              :action="action"
+              @on-action-prop-change="updateActionProps($event, index)"
+            />
+
+            <!--
             <Textarea
-              v-else
               v-model="actionsArray[index].properties"
               class="border-disabled col-span-9"
               :placeholder="'intervention.description.provideActionConfig'"
@@ -682,7 +700,7 @@
               :disabled="!editable"
               :auto-resize="true"
               style="width: 100%"
-            />
+            />    -->
             <div class="buttons col-span-9 mt-2 text-end">
               <Button
                 v-if="editable"

@@ -499,16 +499,12 @@
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
-          <div>{{ properties }}</div>
           <div
             v-for="(property, index) in properties"
             :key="index"
             class="mb-2"
             :class="index > 0 ? 'mt-4' : ''"
           >
-            <div>Property: {{ property }}</div>
-            <div>{{ typeof property }}</div>
-            <div></div>
             <StringPropertyInput
               v-if="property instanceof StringProperty"
               :property="property"
