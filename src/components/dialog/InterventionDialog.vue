@@ -453,12 +453,6 @@
               @on-check-errors="checkPropertyErrors($event)"
             />
           </div>
-
-          <div
-            v-for="(property, index) in triggerProperties"
-            :key="index"
-            class="col-start-0 col-span-8 grid grid-cols-5"
-          ></div>
         </div>
       </div>
 
