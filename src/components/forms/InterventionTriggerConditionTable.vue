@@ -28,7 +28,7 @@
   } from '../../models/InterventionTriggerModel';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
-  import {QueryObjectInner} from "../../models/InputModels";
+  import { QueryObjectInner } from '../../models/InputModels';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();

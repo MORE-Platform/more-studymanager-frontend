@@ -201,13 +201,6 @@
           item.rowIndex
         ].editMode = false;
         emitTriggerConditions();
-      } else {
-        if (typeof triggerConditionObj.value.value !== 'undefined') {
-          item.data.error = true;
-          triggerConditionObj.value.value[item.groupIndex].parameter[
-            item.rowIndex
-          ].editMode = true;
-        }
       }
     }
   }
@@ -251,9 +244,9 @@
     }
   }
 
-  function rowIsOpen(error: boolean) {
-    console.error(error);
-    emit('onRowOpenError', error);
+  function rowIsOpen(isOpen: boolean) {
+    console.log('rowIsOpen', isOpen);
+    emit('onRowOpenError', isOpen);
   }
 </script>
 
