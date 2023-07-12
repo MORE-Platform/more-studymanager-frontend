@@ -363,11 +363,6 @@
   function updateActionProps(action: Action, index: number) {
     actionsArray.value[index] = action;
   }
-
-  function updateQueryObject(queryObj: any) {
-    console.log('queryObject was updated');
-    console.log(queryObj);
-  }
 </script>
 
 <template>
@@ -490,7 +485,6 @@
                 class="mb-5"
                 :trigger-conditions="property"
                 :editable="editable"
-                @on-emit-trigger-conditions="updateQueryObject($event)"
                 @on-error="setTriggerConditionError($event)"
                 @on-row-open-error="setRowOpenError($event)"
               />

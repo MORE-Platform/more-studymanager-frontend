@@ -245,7 +245,6 @@
   }
 
   function rowIsOpen(isOpen: boolean) {
-    console.log('rowIsOpen', isOpen);
     emit('onRowOpenError', isOpen);
   }
 </script>
