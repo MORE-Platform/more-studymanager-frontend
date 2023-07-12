@@ -256,8 +256,6 @@
     </h5>
     <div>{{ $t('intervention.dialog.label.triggerConditionsDesc') }}</div>
 
-    <div v-if="error" class="error mt-2 mb-2">{{ rowOpenError }}</div>
-
     <Suspense>
       <div
         v-if="

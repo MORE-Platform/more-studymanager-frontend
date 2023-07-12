@@ -107,13 +107,6 @@
     getTriggerProperties(triggerType.value)
   );
 
-  /*
-  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
-  const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
-  setTriggerConfig(triggerData?.type ? triggerData.type : '');
-  setNonScheduleTriggerConfig(triggerData?.properties);
-   */
-
   const removeActions: Ref<number[]> = ref([]);
 
   const actionJsonError: Ref<string[]> = ref([]);
@@ -164,7 +157,6 @@
           parsedProps = props;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         componentsApi
           .validateProperties(component, componentType, parsedProps)
           .then((response: any) => response.data)
@@ -191,8 +183,6 @@
 
   function save() {
     if (externalErrors.value.length === 0 && errors.value.length === 0) {
-      //updateProps();
-
       Promise.all(
         [
           ...actionsArray.value.map((item, id) => ({

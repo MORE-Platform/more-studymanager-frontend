@@ -428,7 +428,7 @@
     </DataTable>
 
     <div v-if="rowOpenError" class="error my-4">
-      Please save all rows before saving the intervention.
+      {{ $t('intervention.error.interventionRowIsOpen') }}
     </div>
     <div class="mt-5 text-center">
       <Button
