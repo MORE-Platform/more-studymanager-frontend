@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { StringProperty } from '../../../models/InputModels';
   import { PropType, watch } from 'vue';
-  import InputText from 'primevue/inputtext';
+  import Textarea from 'primevue/textarea';
 
   const props = defineProps({
     property: {
@@ -34,7 +34,7 @@
       $t(props.property.description)
     }}</small>
 
-    <InputText
+    <Textarea
       :id="property.id"
       v-model="property.value"
       type="text"

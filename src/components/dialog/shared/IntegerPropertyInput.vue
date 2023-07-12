@@ -22,9 +22,11 @@
         >{{ $t(property.name) }}<span v-if="property.required">*</span></label
       >
     </h5>
-    <small :id="property.id + '-help'">{{
+
+    <small v-if="props.property.description" :id="property.id + '-help'">{{
       $t(props.property.description)
     }}</small>
+
     <InputNumber
       :id="property.id"
       v-model="property.value"
