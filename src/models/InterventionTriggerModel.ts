@@ -1,3 +1,5 @@
+import { QueryObjectInner } from './InputModels';
+
 export interface InterventionTriggerConfig {
   observationId: number | undefined;
   observationType: string;
@@ -15,14 +17,14 @@ export interface InterventionTriggerUpdateItem {
   data?: InterventionTriggerConfig;
 }
 export interface InterventionTriggerUpdateData {
-  data: InterventionTriggerConfig;
+  data: QueryObjectInner;
   groupIndex: number;
   rowIndex: number;
 }
 
 export interface TriggerConditionGroup {
   nextGroupCondition: string | null;
-  parameter: Array<InterventionTriggerConfig>;
+  parameter: Array<QueryObjectInner>;
 }
 
 export interface GroupConditionChange {

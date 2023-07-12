@@ -4,13 +4,16 @@
   import { PropType, ref, Ref } from 'vue';
   import {
     GroupConditionChange,
-    InterventionTriggerConfig,
     InterventionTriggerUpdateData,
     InterventionTriggerUpdateItem,
   } from '../../models/InterventionTriggerModel';
   import { useStudyStore } from '../../stores/studyStore';
   import Button from 'primevue/button';
-  import { DataCheckProperty, QueryObject } from '../../models/InputModels';
+  import {
+    DataCheckProperty,
+    QueryObject,
+    QueryObjectInner,
+  } from '../../models/InputModels';
   const studyStore = useStudyStore();
 
   const props = defineProps({
@@ -163,9 +166,7 @@
     }
   }
 
-  function validateEditedRow(
-    triggerConfig: InterventionTriggerConfig
-  ): boolean {
+  function validateEditedRow(triggerConfig: QueryObjectInner): boolean {
     if (
       triggerConfig.observationId &&
       triggerConfig.observationType &&
