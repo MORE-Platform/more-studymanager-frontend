@@ -23,6 +23,8 @@ export abstract class Property<T> {
         return IntegerProperty.fromJson(value);
       case 'STRING':
         return StringProperty.fromJson(value);
+      case 'STRINGTEXT':
+        return StringTextProperty.fromJson(value);
       case 'STRINGLIST':
         return StringListProperty.fromJson(value);
       case 'CRON':
@@ -43,8 +45,6 @@ export abstract class Property<T> {
     | 'Double';
 
   static toJson(props: Property<any>[]): any {
-    console.log('toJson...');
-    console.log(props);
     const result: any = {};
     props.forEach((item) => {
       //TODO kind of workaround
@@ -115,7 +115,6 @@ export class StringProperty extends Property<string> {
   }
 
   validate(): string | undefined {
-    console.log('validate string property...');
     if (this.required && this.value === undefined) {
       return 'Value is required';
     } else if (
@@ -130,6 +129,52 @@ export class StringProperty extends Property<string> {
   }
   static fromJson(json: any): StringProperty {
     return new StringProperty(
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required,
+      json.regex
+    );
+  }
+}
+
+export class StringTextProperty extends Property<string> {
+  regex?: string;
+
+  constructor(
+    defaultValue: string,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean,
+    regex: string
+  ) {
+    super(defaultValue, description, id, immutable, name, required);
+    this.regex = regex;
+  }
+
+  getType(): 'Integer' | 'Object' | 'String' | 'Boolean' | 'Double' {
+    return 'String';
+  }
+
+  validate(): string | undefined {
+    if (this.required && this.value === undefined) {
+      return 'Value is required';
+    } else if (
+      this.regex &&
+      this.value &&
+      !new RegExp(this.regex).test(this.value)
+    ) {
+      return 'Value has wrong value';
+    } else {
+      return undefined;
+    }
+  }
+  static fromJson(json: any): StringTextProperty {
+    return new StringTextProperty(
       json.defaultValue,
       json.description,
       json.id,
@@ -186,7 +231,6 @@ export class StringListProperty extends Property<string[]> {
   }
 
   validate(): string | undefined {
-    console.log('validate stringlist property');
     if (this.value === undefined && this.required) {
       return 'Value has to be defined';
     }
@@ -281,7 +325,6 @@ export class CronProperty extends Property<string> {
   }
 
   validate(): string | undefined {
-    console.log('validate cronproperty....');
     if (!this.value) {
       return 'Please be sure to add a value for the cron schedule to set the intervall of the intervention.';
     } else if (this.value) {
@@ -324,7 +367,6 @@ export class DataCheckProperty extends Property<QueryObject[]> {
   }
 
   validate(): string | undefined {
-    console.log('validate queryobject.....');
     if (!this.value?.length) {
       return 'Please be sure to add at least one additional condition to your trigger.';
     } else if (this.value.length > 0) {

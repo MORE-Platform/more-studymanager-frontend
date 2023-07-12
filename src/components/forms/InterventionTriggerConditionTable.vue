@@ -171,6 +171,8 @@
     ) as ComponentFactoryMeasurementsInner;
   }
 
+  const rowOpenError: Ref<boolean> = ref(false);
+
   function updateEditRows() {
     props.rows.forEach((item: InterventionTriggerConfig) => {
       if (item.editMode) {
@@ -224,7 +226,8 @@
   }
 
   function edit(trigger: InterventionTriggerConfig, index: number) {
-    emit('onRowOpen', true);
+    rowOpenError.value = true;
+    emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       edit: true,
       groupIndex: props.groupIndex,
@@ -235,7 +238,8 @@
   }
 
   function cancel(trigger: InterventionTriggerConfig, index: number) {
-    emit('onRowOpen', false);
+    rowOpenError.value = false;
+    emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       data: trigger,
       edit: false,
@@ -257,7 +261,8 @@
         returnTrigger.value.propertyValue
       );
     }
-    emit('onRowOpen', false);
+    rowOpenError.value = false;
+    emit('onRowOpen', rowOpenError.value);
     emit('onUpdateRowData', {
       data: returnTrigger.value,
       groupIndex: props.groupIndex,
@@ -266,7 +271,8 @@
   }
 
   function addRow(index: number) {
-    emit('onRowOpen', true);
+    rowOpenError.value = true;
+    emit('onRowOpen', rowOpenError.value);
     emit('onAddRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
@@ -281,9 +287,6 @@
   }
 
   function addTriggerGroup() {
-    console.log('addTriggerGroup.....');
-    console.log(props.groupIndex);
-    emit('onRowOpen', true);
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();
   }
@@ -424,6 +427,10 @@
         </template>
       </Column>
     </DataTable>
+
+    <div v-if="rowOpenError" class="error my-4">
+      Please save all rows before saving the intervention.
+    </div>
     <div class="mt-5 text-center">
       <Button
         v-if="!nextGroupCondition"
@@ -432,8 +439,7 @@
         :disabled="!editable"
         @click="addTriggerGroup"
         ><span class="pi pi-plus mr-2"></span>
-        {{ $t('intervention.dialog.label.addTriggerGroup') }} add
-        trigger</Button
+        {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
       >
       <Dropdown
         v-else

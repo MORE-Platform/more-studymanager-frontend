@@ -236,6 +236,9 @@
           triggerConditionObj.value.value?.splice(index, 1);
         }
       });
+      triggerConditionObj.value.value[
+        triggerConditionObj.value.value.length - 1
+      ].nextGroupCondition = undefined;
     }
   }
 
@@ -246,20 +249,28 @@
       emitTriggerConditions();
     }
   }
+
+  function rowIsOpen(error: boolean) {
+    console.error(error);
+    emit('onRowOpenError', error);
+  }
 </script>
 
 <template>
   <div class="intervention-trigger-conditions">
+    <div>error: {{ error }}</div>
     <h5 class="mb-1">
       {{ $t('intervention.dialog.label.triggerConditions') }}*
     </h5>
     <div>{{ $t('intervention.dialog.label.triggerConditionsDesc') }}</div>
 
-    <div v-if="error" class="error mt-2 mb-2">{{ error }}</div>
+    <div v-if="error" class="error mt-2 mb-2">{{ rowOpenError }}</div>
 
     <Suspense>
       <div
-        v-if="triggerConditionObj.value && triggerConditionObj.value.length <= 1"
+        v-if="
+          triggerConditionObj.value && triggerConditionObj.value.length === 0
+        "
         class="mt-6 mb-6 w-full text-center"
       >
         <Button
@@ -295,7 +306,7 @@
           @on-update-row-data="updateRowData($event)"
           @on-delete-row="deleteRow($event)"
           @on-add-row="addRow($event)"
-          @on-row-open="emit('onRowOpenError', $event)"
+          @on-row-open="rowIsOpen($event)"
           @on-change-group-condition="changeGroupCondition($event)"
         />
       </div>

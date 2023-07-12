@@ -216,12 +216,14 @@
         })
         .then((report: ValidationReport) => {
           if (report.valid) {
-            console.log('is valide');
+            console.log('is valid');
           } else {
+            /* eslint-disable */
             const jsonError = (report.errors || [])
               .concat(report.warnings || [])
               .map((e) => e.message)
               .join(', ');
+            /* eslint-enable */
           }
 
           const actionsProps = actionsArray.value.map((item) => ({
@@ -283,11 +285,23 @@
         value: t('intervention.error.addTitle'),
       });
     }
-    if (!triggerProperties.value) {
+    if (typeof triggerProperties.value === 'undefined') {
       errors.value.push({
         label: 'trigger',
         value: t('intervention.error.addTriggerTypeConfig'),
       });
+    }
+    if (triggerProperties.value) {
+      for (const prop in triggerProperties.value) {
+        if (triggerProperties.value[prop] instanceof DataCheckProperty) {
+          if (triggerConditionsError.value) {
+            errors.value.push({
+              label: 'dataCheckTriggerConditions',
+              value: triggerConditionsError.value,
+            });
+          }
+        }
+      }
     }
     if (!actionsArray.value.length) {
       errors.value.push({
@@ -341,88 +355,18 @@
     triggerType.value = tType;
   }
 
-  /*
-  function setNonScheduleTriggerConfig(triggerProps?: object) {
-    for (const prop in triggerProps) {
-      console.log(prop);
-
-      if (prop === 'cronSchedule') {
-        showScheduleInput.value = true;
-        return undefined;
-      } else if (prop === 'queryObject') {
-        triggerConfigQueryObj.value = value ? value : [];
-        return undefined;
-      } else if (prop === 'window')  {
-        triggerConfigWindow.value = value ? value : undefined;
-        return value;
-      }  else {
-        return value;
-      }
-    }
-
-    hasAdditionalTriggerConfig.value =
-      triggerProperties.value !== undefined && nonScheduleInput.value !== '{}';
-  }
-
-   */
-
   const actionMenu = ref();
   function actionToggle(event: MouseEvent) {
     actionMenu.value.toggle(event);
   }
 
-  /*
-  function setCronSchedule(e: string) {
-    if (triggerProperties.value) {
-      triggerProperties.value.cronSchedule = e;
-      checkExternalErrors();
-    }
-  }
-   */
-  /*
-  function updateProps() {
-    if (triggerProperties.value) {
-      const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
-      const triggerPropJson = JSON.parse(triggerProp.value);
-      nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
-      // eslint-disable-next-line no-prototype-builtins
-      if (JSON.parse(triggerProp.value).hasOwnProperty('window')) {
-        nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
-      }
-      // eslint-disable-next-line no-prototype-builtins
-      if (JSON.parse(triggerProp.value).hasOwnProperty('queryObject')) {
-        nonScheduleTriggerPropJson.queryObject = triggerConfigQueryObj.value;
-      }
-      triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
-    }
-  }
-   */
-  /*
-
-   */
-
-  function updateQueryObject(triggerConditions: DataCheckProperty) {
-    if (triggerProperties.value) {
-      triggerProperties.value.find((item: Property<any>) => {
-        if (item instanceof DataCheckProperty) {
-          item = triggerConditions;
-        }
-      });
-
-      /*
-      const props: Ref<any> = ref(JSON.parse(triggerProperties.value as string));
-      // eslint-disable-next-line no-prototype-builtins
-      if (props.value.hasOwnProperty('queryObject')) {
-        props.value.queryObject = triggerConditions;
-        setNonScheduleTriggerConfig(props.value);
-        triggerProp.value = JSON.stringify(props.value);
-      }
-       */
-    }
-  }
-
   function updateActionProps(action: Action, index: number) {
     actionsArray.value[index] = action;
+  }
+
+  function updateQueryObject(queryObj: any) {
+    console.log('queryObject was updated');
+    console.log(queryObj);
   }
 </script>
 
@@ -473,7 +417,6 @@
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
           <div class="col-span-3">
             <div v-if="!editable" class="inline font-bold">
-              <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
               {{ $t('intervention.dialog.label.triggerType') }}
             </div>
             <Dropdown
@@ -551,81 +494,12 @@
                 @on-error="setTriggerConditionError($event)"
                 @on-row-open-error="setRowOpenError($event)"
               />
+              <div v-if="interventionRowIsOpen" class="error my-4">
+                {{ getError('interventionRowIsOpen') }}
+              </div>
             </div>
           </div>
-
-          <!--
-          <div
-            v-if="
-              triggerProp &&
-              JSON.parse(triggerProp).hasOwnProperty('window') &&
-              JSON.parse(triggerProp).queryObject !== undefined
-            "
-            class="grid grid-cols-5 items-center gap-2"
-          >
-            <h6 class="col-span-2 lg:col-span-1">
-              {{ $t('intervention.dialog.label.window') }}*
-            </h6>
-            <InputNumber
-              v-model="triggerConfigWindow"
-              :placeholder="
-                t(
-                  'intervention.factory.trigger.scheduledDatacheck.configProps.windowPlaceholder'
-                )
-              "
-              class="col-span-3 lg:col-span-4"
-              :disabled="!editable"
-            ></InputNumber>
-            <div class="col-span-5 mb-4">
-              {{
-                $t(
-                  'intervention.factory.trigger.scheduledDatacheck.configProps.timewindowName'
-                )
-              }}
-            </div>
-          </div>
-          -->
-
-          <!--
-          <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
-            {{ $t('cronSchedule.additionalConfig') }}
-          </div>
-          -->
-          <!--
-          <Textarea
-            v-if="
-              hasAdditionalTriggerConfig &&
-              triggerProp &&
-              JSON.parse(triggerProp).queryObject === undefined
-            "
-            v-show="hasAdditionalTriggerConfig"
-            v-model="nonScheduleInput"
-            required
-            :disabled="!editable"
-            :placeholder="$t('intervention.description.provideTriggerConfig')"
-            :auto-resize="true"
-            style="width: 100%"
-          ></Textarea>
-          -->
         </div>
-        <!--
-        <div
-          v-if="
-            triggerProperties && JSON.parse(triggerProp).hasOwnProperty('queryObject')
-          "
-          class="col-start-0 col-span-6 mt-5"
-        >
-          <InterventionTriggerConditions
-            :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
-            class="mb-5"
-            :trigger-conditions="triggerConfigQueryObj"
-            :editable="editable"
-            @on-emit-trigger-conditions="updateTriggerConditions($event)"
-            @on-error="setTriggerConditionError($event)"
-            @on-row-open-error="setRowOpenError($event)"
-          />
-        </div>
-        -->
       </div>
 
       <div class="col-start-0 col-span-8 mt-8 grid grid-cols-9">
@@ -667,23 +541,11 @@
                 {{ nameForActionType(action.type) }}
               </div>
             </div>
-            <!-- eslint-disable vue/no-v-html -->
+
             <div class="col-span-4 justify-end"></div>
             <div v-if="actionJsonError[index] && editable" class="error mb-4">
               {{ actionJsonError[index] }}
             </div>
-
-            <!--
-            <PushNotificationInput
-              :aciton="action"
-              :action-factories="actionFactories as ComponentFactory[]"
-              :notification-string="action.properties"
-              :description="t(getActionDescription(action.type))"
-              :action-type-name="nameForActionType(action.type) || ''"
-              :editable="editable"
-              @on-props-change="actionsArray[index].properties = $event"
-            />
-            -->
 
             <ActionProperty
               :action-factories="actionFactories as ComponentFactory[]"
@@ -691,16 +553,6 @@
               @on-action-prop-change="updateActionProps($event, index)"
             />
 
-            <!--
-            <Textarea
-              v-model="actionsArray[index].properties"
-              class="border-disabled col-span-9"
-              :placeholder="'intervention.description.provideActionConfig'"
-              required
-              :disabled="!editable"
-              :auto-resize="true"
-              style="width: 100%"
-            />    -->
             <div class="buttons col-span-9 mt-2 text-end">
               <Button
                 v-if="editable"

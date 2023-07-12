@@ -2,8 +2,13 @@
   import { PropType, Ref, ref } from 'vue';
   import { Action, ComponentFactory } from '../../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
-  import { Property, StringProperty } from '../../../models/InputModels';
+  import {
+    Property,
+    StringProperty,
+    StringTextProperty,
+  } from '../../../models/InputModels';
   import StringPropertyInput from './StringPropertyInput.vue';
+  import StringTextPropertyInput from './StringTextPropertyInput.vue';
 
   const { t } = useI18n();
 
@@ -68,8 +73,8 @@
 </script>
 
 <template>
-  <div class="action-property-input grid grid-cols-6 gap-4">
-    <div class="col-span-6">
+  <div class="action-property-input grid grid-cols-5 gap-4">
+    <div class="col-span-5">
       <h6>
         {{ $t('intervention.dialog.label.pushNotification') }}
       </h6>
@@ -79,13 +84,21 @@
     <div
       v-for="(property, index) in actionProperties"
       :key="index"
-      class="col-span-3"
+      class="col-span-5"
     >
       <StringPropertyInput
         v-if="property instanceof StringProperty"
         :property="property"
         :editable="editable"
         class="col-span-4"
+        @on-input-change="updateProperty($event, index)"
+      />
+
+      <StringTextPropertyInput
+        v-if="property instanceof StringTextProperty"
+        :property="property"
+        :editable="editable"
+        class="col-span-8"
         @on-input-change="updateProperty($event, index)"
       />
     </div>
