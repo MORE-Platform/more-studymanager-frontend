@@ -28,6 +28,7 @@
   } from '../../models/InterventionTriggerModel';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
+  import {QueryObjectInner} from "../../models/InputModels";
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -69,8 +70,6 @@
       }
     });
   });
-
-  console.error('Intervention Trigger Condition Table....');
 
   const conditionValue: Ref<string> = ref(props.nextGroupCondition);
   const editingRows: Ref<Array<any>> = ref([]);
@@ -249,8 +248,8 @@
     editingRows.value = [];
   }
 
-  function save(trigger: InterventionTriggerConfig, index: number) {
-    const returnTrigger: Ref<InterventionTriggerConfig> = ref(trigger);
+  function save(trigger: QueryObjectInner, index: number) {
+    const returnTrigger: Ref<QueryObjectInner> = ref(trigger);
 
     if (
       getPropertyOptions(trigger).find(
