@@ -18,16 +18,10 @@
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
-  import {
-    IntegerProperty,
-    Property,
-    StringListProperty,
-    StringProperty,
-  } from '../../models/InputModels';
-  import StringPropertyInput from './shared/StringPropertyInput.vue';
-  import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
-  import StringListPropertyInput from './shared/StringListPropertyInput.vue';
+  import { Property } from '../../models/InputModels';
   import Checkbox from 'primevue/checkbox';
+  import PropertyInputs from './shared/ProprtyInputs.vue';
+  import { PropertyEmit } from '../../models/PropertyInputModels';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -46,9 +40,11 @@
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
-  const properties: Property<any>[] = factory.properties
-    .map((json: any) => Property.fromJson(json))
-    .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]));
+  const properties: Ref<Property<any>[]> = ref(
+    factory.properties
+      .map((json: any) => Property.fromJson(json))
+      .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]))
+  );
 
   const hidden: Ref<boolean> = ref(
     typeof observation.hidden === 'undefined'
@@ -106,7 +102,7 @@
   function validate() {
     let parsedProps: any;
     try {
-      parsedProps = Property.toJson(properties);
+      parsedProps = Property.toJson(properties.value);
       componentsApi
         .validateProperties(
           'observation',
@@ -263,6 +259,10 @@
     if (scheduler.value) {
       scheduler.value = {};
     }
+  }
+
+  function updateProperty(item: PropertyEmit) {
+    properties.value[item.index].value = item.value;
   }
 </script>
 
@@ -499,27 +499,12 @@
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
         <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
-          <div
-            v-for="(property, index) in properties"
-            :key="index"
-            class="mb-2"
-            :class="index > 0 ? 'mt-4' : ''"
-          >
-            <StringPropertyInput
-              v-if="property instanceof StringProperty"
-              :property="property"
+          <div v-if="properties">
+            <PropertyInputs
               :editable="editable"
-            ></StringPropertyInput>
-            <IntegerPropertyInput
-              v-if="property instanceof IntegerProperty"
-              :property="property"
-              :editable="editable"
-            ></IntegerPropertyInput>
-            <StringListPropertyInput
-              v-if="property instanceof StringListProperty"
-              :property="property"
-              :editable="editable"
-            ></StringListPropertyInput>
+              :property-list="properties"
+              @on-property-change="updateProperty($event)"
+            />
           </div>
         </div>
       </div>

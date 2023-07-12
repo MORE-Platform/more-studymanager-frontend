@@ -14,22 +14,14 @@
     ValidationReport,
     StudyStatus,
   } from '../../generated-sources/openapi';
-  import CronSchedulerConfiguration from '../forms/CronSchedulerConfiguration.vue';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
+  import PropertyInputs from './shared/ProprtyInputs.vue';
 
-  import {
-    CronProperty,
-    DataCheckProperty,
-    IntegerProperty,
-    Property,
-    StringProperty,
-  } from '../../models/InputModels';
-  import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
-  import StringPropertyInput from './shared/StringPropertyInput.vue';
+  import { DataCheckProperty, Property } from '../../models/InputModels';
   import ActionProperty from './shared/ActionProperty.vue';
+  import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -44,6 +36,8 @@
     dialogRef.value.data?.groupPlaceholder || 'Entire Study';
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
+
+  const propInputError: Ref<string> = ref('');
 
   /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
   function getTriggerProperties(tType: string): Property<any>[] | undefined {
@@ -115,11 +109,6 @@
   const triggerConditionsError: Ref<string | undefined> = ref(undefined);
 
   const interventionRowIsOpen: Ref<boolean> = ref(false);
-
-  function setRowOpenError(isOpen: boolean) {
-    interventionRowIsOpen.value = isOpen;
-    checkErrors();
-  }
 
   if (actionsArray.value.length) {
     actionsArray.value = actionsArray.value.map((item) => ({
@@ -305,11 +294,12 @@
         value: t('intervention.error.interventionRowIsOpen'),
       });
     }
-  }
-
-  function setTriggerConditionError(triggerTableE?: string) {
-    triggerConditionsError.value = triggerTableE;
-    checkErrors();
+    if (propInputError.value) {
+      errors.value.push({
+        label: 'propInputError',
+        value: 'A triggerprop has an error.',
+      });
+    }
   }
 
   function getError(label: string): string | null | undefined {
@@ -324,6 +314,11 @@
     if (e) {
       externalErrors.value.push(e);
     }
+  }
+
+  function checkPropertyErrors(value: any) {
+    checkErrors();
+    checkExternalErrors(value);
   }
 
   function cancel() {
@@ -352,6 +347,17 @@
 
   function updateActionProps(action: Action, index: number) {
     actionsArray.value[index] = action;
+  }
+
+  function updateProperty(item: PropertyEmit) {
+    if (triggerProperties.value) {
+      triggerProperties.value[item.index].value = item.value;
+    }
+  }
+
+  function propertyError(item: StringEmit) {
+    propInputError.value = item.value;
+    checkErrors();
   }
 </script>
 
@@ -438,51 +444,21 @@
             {{ triggerJsonError }}
           </div>
 
+          <div v-if="triggerProperties">
+            <PropertyInputs
+              :editable="editable"
+              :property-list="triggerProperties"
+              @on-property-change="updateProperty($event)"
+              @on-error="propertyError($event)"
+              @on-check-errors="checkPropertyErrors($event)"
+            />
+          </div>
+
           <div
             v-for="(property, index) in triggerProperties"
             :key="index"
             class="col-start-0 col-span-8 grid grid-cols-5"
-          >
-            <IntegerPropertyInput
-              v-if="property instanceof IntegerProperty"
-              :property="property"
-              :editable="editable"
-              class="col-span-5"
-            />
-
-            <StringPropertyInput
-              v-if="property instanceof StringProperty"
-              :property="property"
-              :editable="editable"
-              class="col-span-5"
-            />
-
-            <CronSchedulerConfiguration
-              v-if="property instanceof CronProperty"
-              class="col-span-5 mb-4"
-              :editable="editable"
-              :cron-schedule="property.value"
-              @on-valid-schedule="property.value = $event"
-              @on-error="checkExternalErrors($event)"
-            />
-
-            <div
-              v-if="property instanceof DataCheckProperty"
-              class="col-start-0 col-span-6 mt-5"
-            >
-              <InterventionTriggerConditions
-                :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
-                class="mb-5"
-                :trigger-conditions="property"
-                :editable="editable"
-                @on-error="setTriggerConditionError($event)"
-                @on-row-open-error="setRowOpenError($event)"
-              />
-              <div v-if="interventionRowIsOpen" class="error my-4">
-                {{ getError('interventionRowIsOpen') }}
-              </div>
-            </div>
-          </div>
+          ></div>
         </div>
       </div>
 
@@ -534,6 +510,7 @@
             <ActionProperty
               :action-factories="actionFactories as ComponentFactory[]"
               :action="action"
+              :editable="editable"
               @on-action-prop-change="updateActionProps($event, index)"
             />
 

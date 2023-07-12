@@ -16,7 +16,7 @@
     },
     editable: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   });
 
