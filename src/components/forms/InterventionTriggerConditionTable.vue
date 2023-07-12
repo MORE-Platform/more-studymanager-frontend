@@ -28,6 +28,7 @@
   } from '../../models/InterventionTriggerModel';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
+  import { QueryObjectInner } from '../../models/InputModels';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -169,6 +170,8 @@
     ) as ComponentFactoryMeasurementsInner;
   }
 
+  const rowOpenError: Ref<boolean> = ref(false);
+
   function updateEditRows() {
     props.rows.forEach((item: InterventionTriggerConfig) => {
       if (item.editMode) {
@@ -222,7 +225,8 @@
   }
 
   function edit(trigger: InterventionTriggerConfig, index: number) {
-    emit('onRowOpen', true);
+    rowOpenError.value = true;
+    emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       edit: true,
       groupIndex: props.groupIndex,
@@ -233,7 +237,8 @@
   }
 
   function cancel(trigger: InterventionTriggerConfig, index: number) {
-    emit('onRowOpen', false);
+    rowOpenError.value = false;
+    emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       data: trigger,
       edit: false,
@@ -243,8 +248,8 @@
     editingRows.value = [];
   }
 
-  function save(trigger: InterventionTriggerConfig, index: number) {
-    const returnTrigger: Ref<InterventionTriggerConfig> = ref(trigger);
+  function save(trigger: QueryObjectInner, index: number) {
+    const returnTrigger: Ref<QueryObjectInner> = ref(trigger);
 
     if (
       getPropertyOptions(trigger).find(
@@ -255,7 +260,8 @@
         returnTrigger.value.propertyValue
       );
     }
-    emit('onRowOpen', false);
+    rowOpenError.value = false;
+    emit('onRowOpen', rowOpenError.value);
     emit('onUpdateRowData', {
       data: returnTrigger.value,
       groupIndex: props.groupIndex,
@@ -264,7 +270,8 @@
   }
 
   function addRow(index: number) {
-    emit('onRowOpen', true);
+    rowOpenError.value = true;
+    emit('onRowOpen', rowOpenError.value);
     emit('onAddRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
@@ -279,7 +286,6 @@
   }
 
   function addTriggerGroup() {
-    emit('onRowOpen', true);
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();
   }
@@ -420,6 +426,10 @@
         </template>
       </Column>
     </DataTable>
+
+    <div v-if="rowOpenError" class="error my-4">
+      {{ $t('intervention.error.interventionRowIsOpen') }}
+    </div>
     <div class="mt-5 text-center">
       <Button
         v-if="!nextGroupCondition"
@@ -428,8 +438,7 @@
         :disabled="!editable"
         @click="addTriggerGroup"
         ><span class="pi pi-plus mr-2"></span>
-        {{ $t('intervention.dialog.label.addTriggerGroup') }} add
-        trigger</Button
+        {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
       >
       <Dropdown
         v-else

@@ -19,9 +19,17 @@
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import InterventionTriggerConditions from '../forms/InterventionTriggerConditions.vue';
-  import { TriggerConditionGroup } from '../../models/InterventionTriggerModel';
-  import InputNumber from 'primevue/inputnumber';
-  import PushNotificationInput from './shared/PushNotificationInput.vue';
+
+  import {
+    CronProperty,
+    DataCheckProperty,
+    IntegerProperty,
+    Property,
+    StringProperty,
+  } from '../../models/InputModels';
+  import IntegerPropertyInput from './shared/IntegerPropertyInput.vue';
+  import StringPropertyInput from './shared/StringPropertyInput.vue';
+  import ActionProperty from './shared/ActionProperty.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
@@ -37,12 +45,42 @@
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
+  /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
+  function getTriggerProperties(tType: string): Property<any>[] | undefined {
+    const triggerTypeProps = triggerFactories.find(
+      (item: any) => item.componentId === tType
+    ).properties;
+
+    const properties: Ref<Property<any>[]> = ref(
+      triggerTypeProps.map((json: any) => Property.fromJson(json))
+    );
+
+    if (
+      typeof triggerData !== 'undefined' &&
+      typeof triggerData.properties !== 'undefined'
+    ) {
+      properties.value = properties.value.map((p: Property<any>) =>
+        triggerData.properties
+          ? p.setValue(triggerData.properties?.[p.id])
+          : p.setValue(p.defaultValue)
+      );
+    } else {
+      properties.value = properties.value.map((p: Property<any>) =>
+        p.setValue(p.defaultValue)
+      );
+    }
+
+    return properties.value;
+  }
+
+  /*trigger type options are used for the trigger type dropdown to switch between and provide a specific description*/
   const triggerTypesOptions = triggerFactories.map((item: any) => ({
     label: t(item.title),
     value: item.componentId,
     description: t(item.description),
   }));
 
+  /*gets the trigger description by type value*/
   function getTriggerTypeDescription(triggerType: string): string {
     const trigger = triggerTypesOptions.find(
       (item: any) => item.value === triggerType
@@ -50,38 +88,32 @@
     return trigger.description;
   }
 
-  const title = ref(intervention.title);
-  const purpose = ref(intervention.purpose);
-  const triggerProp = ref(
-    triggerData ? JSON.stringify(triggerData.properties) : undefined
-  );
-  const triggerType = ref(triggerData ? triggerData.type : undefined);
-  const showScheduleInput = ref(false);
-  const hasAdditionalTriggerConfig: Ref<boolean> = ref(false);
-  const nonScheduleInput: Ref<string> = ref(
-    triggerProp?.value ? triggerProp.value : ''
-  );
-  const prevTriggerType: Ref<string | undefined> = ref(triggerData?.type);
-  const cronScheduleProp: Ref<string> = triggerProp.value
-    ? JSON.parse(triggerProp.value).cronSchedule
-    : '0 0 12 * * ?';
-
-  const actionsArray: Ref<any[]> = ref(actionsData || []);
-  const studyGroupId = ref(intervention.studyGroupId);
-  const triggerJsonError: Ref<string | undefined> = ref();
-  const actionJsonError: Ref<string[]> = ref([]);
-  const actionsEmptyError: Ref<string> = ref('');
-  const removeActions: Ref<number[]> = ref([]);
-  const triggerConfigQueryObj: Ref<Array<any>> = ref([]);
-  const triggerConfigWindow: Ref<number | undefined> = ref(undefined);
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
     studyStore.study.status === StudyStatus.Paused;
 
-  setTriggerConfig(triggerData?.type ? triggerData.type : '');
-  setNonScheduleTriggerConfig(triggerData?.properties);
+  const title = ref(intervention.title);
+  const purpose = ref(intervention.purpose);
+  const studyGroupId = ref(intervention.studyGroupId);
 
+  const triggerType: Ref<string> = ref(
+    dialogRef?.value?.data?.triggerData?.type
+      ? dialogRef.value.data.triggerData.type
+      : 'scheduled-trigger'
+  );
+
+  const actionsArray: Ref<any[]> = ref(actionsData || []);
+  const triggerProperties: Ref<Property<any>[] | undefined> = ref(
+    getTriggerProperties(triggerType.value)
+  );
+
+  const removeActions: Ref<number[]> = ref([]);
+
+  const actionJsonError: Ref<string[]> = ref([]);
+  const actionsEmptyError: Ref<string> = ref('');
+  const triggerJsonError: Ref<string | undefined> = ref();
   const triggerConditionsError: Ref<string | undefined> = ref(undefined);
+
   const interventionRowIsOpen: Ref<boolean> = ref(false);
 
   function setRowOpenError(isOpen: boolean) {
@@ -93,7 +125,7 @@
     actionsArray.value = actionsArray.value.map((item) => ({
       actionId: item.actionId,
       type: item.type,
-      properties: JSON.stringify(item.properties),
+      properties: item.properties,
     }));
   }
 
@@ -104,7 +136,7 @@
       command: () => {
         actionsArray.value.push({
           type: item.componentId,
-          properties: JSON.stringify(item.defaultProperties),
+          properties: item.defaultProperties,
         });
       },
     }))
@@ -119,8 +151,12 @@
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
-        parsedProps = JSON.parse(props.toString());
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (component !== 'action') {
+          parsedProps = Property.toJson(props);
+        } else {
+          parsedProps = props;
+        }
+
         componentsApi
           .validateProperties(component, componentType, parsedProps)
           .then((response: any) => response.data)
@@ -147,7 +183,6 @@
 
   function save() {
     if (externalErrors.value.length === 0 && errors.value.length === 0) {
-      updateProps();
       Promise.all(
         [
           ...actionsArray.value.map((item, id) => ({
@@ -159,23 +194,32 @@
           {
             component: 'trigger',
             type: triggerType.value,
-            properties: triggerProp.value,
+            properties: triggerProperties.value
+              ? triggerProperties.value
+              : '{}',
             id: -1,
           },
         ].map((v) => validate(v.component, v.type, v.properties, v.id))
       )
-        .then(() => {
-          const triggerProps = {
-            type: triggerType.value,
-            properties: triggerProp.value
-              ? JSON.parse(triggerProp.value.toString())
-              : '{}',
-          };
+        .then((response: any) => {
+          return response;
+        })
+        .then((report: ValidationReport) => {
+          if (report.valid) {
+            console.log('is valid');
+          } else {
+            /* eslint-disable */
+            const jsonError = (report.errors || [])
+              .concat(report.warnings || [])
+              .map((e) => e.message)
+              .join(', ');
+            /* eslint-enable */
+          }
 
           const actionsProps = actionsArray.value.map((item) => ({
             actionId: item?.actionId,
             type: item.type,
-            properties: JSON.parse(item.properties),
+            properties: item.properties,
           }));
 
           const returnIntervention = {
@@ -188,18 +232,23 @@
             schedule: intervention.schedule,
           } as Intervention;
 
-          const returnObject = {
-            intervention: returnIntervention,
-            trigger: triggerProps,
-            actions: actionsProps,
-            removeActions: removeActions.value,
-          };
+          if (triggerProperties.value) {
+            const returnObject = {
+              intervention: returnIntervention,
+              trigger: {
+                type: triggerType.value,
+                properties: Property.toJson(triggerProperties.value),
+              },
+              actions: actionsProps,
+              removeActions: removeActions.value,
+            };
 
-          actionJsonError.value = [];
-          triggerJsonError.value = '';
+            actionJsonError.value = [];
+            triggerJsonError.value = '';
 
-          if (actionsArray.value.length) {
-            dialogRef.value.close(returnObject);
+            if (actionsArray.value.length) {
+              dialogRef.value.close(returnObject);
+            }
           }
         })
 
@@ -226,25 +275,28 @@
         value: t('intervention.error.addTitle'),
       });
     }
-    if (!triggerProp.value) {
+    if (typeof triggerProperties.value === 'undefined') {
       errors.value.push({
         label: 'trigger',
         value: t('intervention.error.addTriggerTypeConfig'),
       });
     }
+    if (triggerProperties.value) {
+      for (const prop in triggerProperties.value) {
+        if (triggerProperties.value[prop] instanceof DataCheckProperty) {
+          if (triggerConditionsError.value) {
+            errors.value.push({
+              label: 'dataCheckTriggerConditions',
+              value: triggerConditionsError.value,
+            });
+          }
+        }
+      }
+    }
     if (!actionsArray.value.length) {
       errors.value.push({
         label: 'action',
         value: t('intervention.error.addAction'),
-      });
-    }
-    if (
-      triggerType.value === 'scheduled-datacheck-trigger' &&
-      triggerConfigQueryObj.value.length === 0
-    ) {
-      errors.value.push({
-        label: 'triggerConfig',
-        value: t('intervention.error.addTriggerConfig'),
       });
     }
     if (interventionRowIsOpen.value) {
@@ -288,52 +340,9 @@
       (a: ComponentFactory) => a.componentId === actionType
     )?.label;
   }
-  function setTriggerConfig(tType: string | undefined) {
-    let props: object | undefined;
-    if (tType) {
-      const trigger = triggerFactories.find(
-        (t: ComponentFactory) => t.componentId === tType
-      );
-      if (!prevTriggerType.value || prevTriggerType.value !== tType) {
-        props = trigger?.defaultProperties;
-        if (!triggerData) {
-          triggerProp.value = JSON.stringify(props);
-        }
-      } else if (triggerData && tType === triggerData?.type) {
-        props = triggerData?.properties;
-      }
-      setNonScheduleTriggerConfig(props);
-      prevTriggerType.value = tType;
-    }
-  }
-
-  function setNonScheduleTriggerConfig(triggerProperties?: object) {
-    nonScheduleInput.value = JSON.stringify(triggerProperties, (key, value) => {
-      if (key === 'cronSchedule') {
-        showScheduleInput.value = true;
-        return undefined;
-      } else if (key === 'queryObject') {
-        triggerConfigQueryObj.value = value ? value : [];
-        return undefined;
-      } else if (key === 'window') {
-        triggerConfigWindow.value = value ? value : undefined;
-        return value;
-      } else {
-        return value;
-      }
-    });
-    triggerProp.value = JSON.stringify(triggerProperties);
-
-    hasAdditionalTriggerConfig.value =
-      triggerProp.value !== undefined && nonScheduleInput.value !== '{}';
-  }
-
-  function getActionDescription(actionType?: string) {
-    return (
-      actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
-      )?.description || t('intervention.placeholder.noDescription')
-    );
+  function setTriggerConfig(tType: string) {
+    triggerProperties.value = getTriggerProperties(tType);
+    triggerType.value = tType;
   }
 
   const actionMenu = ref();
@@ -341,42 +350,8 @@
     actionMenu.value.toggle(event);
   }
 
-  function setCronSchedule(e: string) {
-    if (triggerProp.value) {
-      const tempTriggerProp = JSON.parse(triggerProp.value);
-      tempTriggerProp.cronSchedule = e;
-      triggerProp.value = JSON.stringify(tempTriggerProp);
-      checkExternalErrors();
-    }
-  }
-
-  function updateProps() {
-    if (triggerProp.value) {
-      const nonScheduleTriggerPropJson = JSON.parse(nonScheduleInput.value);
-      const triggerPropJson = JSON.parse(triggerProp.value);
-      nonScheduleTriggerPropJson.cronSchedule = triggerPropJson.cronSchedule;
-      // eslint-disable-next-line no-prototype-builtins
-      if (JSON.parse(triggerProp.value).hasOwnProperty('window')) {
-        nonScheduleTriggerPropJson.window = triggerConfigWindow.value;
-      }
-      // eslint-disable-next-line no-prototype-builtins
-      if (JSON.parse(triggerProp.value).hasOwnProperty('queryObject')) {
-        nonScheduleTriggerPropJson.queryObject = triggerConfigQueryObj.value;
-      }
-      triggerProp.value = JSON.stringify(nonScheduleTriggerPropJson);
-    }
-  }
-
-  function updateTriggerConditions(triggerConditions: TriggerConditionGroup[]) {
-    if (triggerProp.value) {
-      const props: Ref<any> = ref(JSON.parse(triggerProp.value as string));
-      // eslint-disable-next-line no-prototype-builtins
-      if (props.value.hasOwnProperty('queryObject')) {
-        props.value.queryObject = triggerConditions;
-        setNonScheduleTriggerConfig(props.value);
-        triggerProp.value = JSON.stringify(props.value);
-      }
-    }
+  function updateActionProps(action: Action, index: number) {
+    actionsArray.value[index] = action;
   }
 </script>
 
@@ -427,7 +402,6 @@
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
           <div class="col-span-3">
             <div v-if="!editable" class="inline font-bold">
-              <!--{{ $t('intervention.dialog.label.triggerType') }}:  -->
               {{ $t('intervention.dialog.label.triggerType') }}
             </div>
             <Dropdown
@@ -443,6 +417,7 @@
             />
           </div>
         </div>
+
         <div
           v-if="triggerType"
           class="col-span-8"
@@ -462,77 +437,52 @@
           <div v-if="triggerJsonError && editable" class="error mb-4">
             {{ triggerJsonError }}
           </div>
+
           <div
-            v-if="
-              triggerProp &&
-              JSON.parse(triggerProp).hasOwnProperty('window') &&
-              JSON.parse(triggerProp).queryObject !== undefined
-            "
-            class="grid grid-cols-5 items-center gap-2"
+            v-for="(property, index) in triggerProperties"
+            :key="index"
+            class="col-start-0 col-span-8 grid grid-cols-5"
           >
-            <h6 class="col-span-2 lg:col-span-1">
-              {{ $t('intervention.dialog.label.window') }}*
-            </h6>
-            <InputNumber
-              v-model="triggerConfigWindow"
-              :placeholder="
-                t(
-                  'intervention.factory.trigger.scheduledDatacheck.configProps.windowPlaceholder'
-                )
-              "
-              class="col-span-3 lg:col-span-4"
-              :disabled="!editable"
-            ></InputNumber>
-            <div class="col-span-5 mb-4">
-              {{
-                $t(
-                  'intervention.factory.trigger.scheduledDatacheck.configProps.timewindowName'
-                )
-              }}
+            <IntegerPropertyInput
+              v-if="property instanceof IntegerProperty"
+              :property="property"
+              :editable="editable"
+              class="col-span-5"
+            />
+
+            <StringPropertyInput
+              v-if="property instanceof StringProperty"
+              :property="property"
+              :editable="editable"
+              class="col-span-5"
+            />
+
+            <CronSchedulerConfiguration
+              v-if="property instanceof CronProperty"
+              class="col-span-5 mb-4"
+              :editable="editable"
+              :cron-schedule="property.value"
+              @on-valid-schedule="property.value = $event"
+              @on-error="checkExternalErrors($event)"
+            />
+
+            <div
+              v-if="property instanceof DataCheckProperty"
+              class="col-start-0 col-span-6 mt-5"
+            >
+              <InterventionTriggerConditions
+                :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
+                class="mb-5"
+                :trigger-conditions="property"
+                :editable="editable"
+                @on-error="setTriggerConditionError($event)"
+                @on-row-open-error="setRowOpenError($event)"
+              />
+              <div v-if="interventionRowIsOpen" class="error my-4">
+                {{ getError('interventionRowIsOpen') }}
+              </div>
             </div>
           </div>
-          <CronSchedulerConfiguration
-            v-if="showScheduleInput"
-            class="mb-4"
-            :editable="editable"
-            :cron-schedule="cronScheduleProp"
-            @on-valid-schedule="setCronSchedule($event)"
-            @on-error="checkExternalErrors($event)"
-          />
-
-          <div v-if="!editable && hasAdditionalTriggerConfig" class="mb-2">
-            {{ $t('cronSchedule.additionalConfig') }}
-          </div>
-          <Textarea
-            v-if="
-              hasAdditionalTriggerConfig &&
-              triggerProp &&
-              JSON.parse(triggerProp).queryObject === undefined
-            "
-            v-show="hasAdditionalTriggerConfig"
-            v-model="nonScheduleInput"
-            required
-            :disabled="!editable"
-            :placeholder="$t('intervention.description.provideTriggerConfig')"
-            :auto-resize="true"
-            style="width: 100%"
-          ></Textarea>
-        </div>
-        <div
-          v-if="
-            triggerProp && JSON.parse(triggerProp).hasOwnProperty('queryObject')
-          "
-          class="col-start-0 col-span-6 mt-5"
-        >
-          <InterventionTriggerConditions
-            :error="getError('triggerConfig') ? getError('triggerConfig') as string : getError('interventionRowIsOpen') as string"
-            class="mb-5"
-            :trigger-conditions="triggerConfigQueryObj"
-            :editable="editable"
-            @on-emit-trigger-conditions="updateTriggerConditions($event)"
-            @on-error="setTriggerConditionError($event)"
-            @on-row-open-error="setRowOpenError($event)"
-          />
         </div>
       </div>
 
@@ -559,8 +509,7 @@
           <div v-if="getError('action')" class="error col-span-8 mb-4">
             {{ getError('action') }}
           </div>
-          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true">
-          </Menu>
+          <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true" />
         </div>
         <div v-if="actionsEmptyError" class="error col-span-8">
           {{ actionsEmptyError }}
@@ -576,33 +525,18 @@
                 {{ nameForActionType(action.type) }}
               </div>
             </div>
-            <!-- eslint-disable vue/no-v-html -->
+
             <div class="col-span-4 justify-end"></div>
             <div v-if="actionJsonError[index] && editable" class="error mb-4">
               {{ actionJsonError[index] }}
             </div>
 
-            <PushNotificationInput
-              v-if="actionsArray[index].type === 'push-notification-action'"
-              :notification-string="actionsArray[index].properties"
-              :description="t(getActionDescription(actionsArray[index].type))"
-              :action-type-name="
-                nameForActionType(actionsArray[index].type) || ''
-              "
-              :editable="editable"
-              @on-props-change="actionsArray[index].properties = $event"
+            <ActionProperty
+              :action-factories="actionFactories as ComponentFactory[]"
+              :action="action"
+              @on-action-prop-change="updateActionProps($event, index)"
             />
 
-            <Textarea
-              v-else
-              v-model="actionsArray[index].properties"
-              class="border-disabled col-span-9"
-              :placeholder="'intervention.description.provideActionConfig'"
-              required
-              :disabled="!editable"
-              :auto-resize="true"
-              style="width: 100%"
-            />
             <div class="buttons col-span-9 mt-2 text-end">
               <Button
                 v-if="editable"
