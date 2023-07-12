@@ -251,7 +251,6 @@
 
 <template>
   <div class="intervention-trigger-conditions">
-    <div>error: {{ error }}</div>
     <h5 class="mb-1">
       {{ $t('intervention.dialog.label.triggerConditions') }}*
     </h5>
