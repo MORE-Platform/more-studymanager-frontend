@@ -197,12 +197,13 @@
           if (report.valid) {
             console.log('is valid');
           } else {
-            /* eslint-disable */
             const jsonError = (report.errors || [])
               .concat(report.warnings || [])
               .map((e) => e.message)
               .join(', ');
-            /* eslint-enable */
+            if (jsonError.length > 0) {
+              console.error(jsonError);
+            }
           }
 
           const actionsProps = actionsArray.value.map((item) => ({

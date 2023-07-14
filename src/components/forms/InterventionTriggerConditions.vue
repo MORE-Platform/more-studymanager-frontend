@@ -14,7 +14,10 @@
     QueryObject,
     QueryObjectInner,
   } from '../../models/InputModels';
+  import { useI18n } from 'vue-i18n';
   const studyStore = useStudyStore();
+
+  const { t } = useI18n();
 
   const props = defineProps({
     triggerConditions: {
@@ -77,23 +80,41 @@
   ]);
 
   const emit = defineEmits<{
-    (e: 'onEmitTriggerConditions', triggerConditions: DataCheckProperty): void;
-    (e: 'onRowOpenError', isOpen: boolean): void;
+    (e: 'onEmitTriggerConditions', triggerConditions: QueryObject[]): void;
+    (e: 'onError', error: string): void;
   }>();
 
-  const rowOpenError: Ref<boolean> = ref(false);
+  const triggerConditionError: Ref<string | undefined> = ref('');
+  const rowOpenError: Ref<string | undefined> = ref('');
+
+  function setRowOpenError(error: boolean | string) {
+    if (error) {
+      rowOpenError.value = t('intervention.error.interventionRowIsOpen');
+      emit('onError', rowOpenError.value);
+    } else {
+      rowOpenError.value = '';
+      emit('onError', rowOpenError.value);
+    }
+  }
+  function setTriggerConditionError(triggerTableE?: string) {
+    triggerConditionError.value = triggerTableE;
+    emit('onError', triggerTableE ? triggerTableE : '');
+  }
 
   function emitTriggerConditions() {
     if (
       !rowOpenError.value &&
       typeof triggerConditionObj.value.value !== 'undefined'
     ) {
-      emit('onEmitTriggerConditions', triggerConditionObj.value);
+      emit('onEmitTriggerConditions', triggerConditionObj.value.value);
+      setTriggerConditionError('');
+    } else {
+      setTriggerConditionError('has triggercondition error');
     }
   }
 
   function addTriggerGroup(groupIndex?: number) {
-    emit('onRowOpenError', true);
+    setRowOpenError(true);
     if (
       (groupIndex as number) >= 0 &&
       typeof triggerConditionObj.value.value !== 'undefined'
@@ -243,10 +264,6 @@
       emitTriggerConditions();
     }
   }
-
-  function rowIsOpen(isOpen: boolean) {
-    emit('onRowOpenError', isOpen);
-  }
 </script>
 
 <template>
@@ -291,12 +308,13 @@
           :columns="triggerConditionColumns"
           class="mt-6"
           :editable="editable"
+          :row-open-error="rowOpenError ? rowOpenError : ''"
           @on-add-trigger-group="addTriggerGroup($event)"
           @on-toggle-row-edit="toggleRowEdit($event)"
           @on-update-row-data="updateRowData($event)"
           @on-delete-row="deleteRow($event)"
           @on-add-row="addRow($event)"
-          @on-row-open="rowIsOpen($event)"
+          @on-row-open="setRowOpenError($event)"
           @on-change-group-condition="changeGroupCondition($event)"
         />
       </div>

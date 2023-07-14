@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { PropType, ref, Ref } from 'vue';
+  import { PropType } from 'vue';
   import {
     CronProperty,
     DataCheckProperty,
@@ -19,9 +19,6 @@
   } from '../../../models/PropertyInputModels';
   import CronSchedulerConfiguration from '../../forms/CronSchedulerConfiguration.vue';
   import InterventionTriggerConditions from '../../forms/InterventionTriggerConditions.vue';
-  import { useI18n } from 'vue-i18n';
-
-  const { t } = useI18n();
 
   defineProps({
     propertyList: {
@@ -41,30 +38,7 @@
   const emit = defineEmits<{
     (e: 'onPropertyChange', item: PropertyEmit): void;
     (e: 'onError', item: StringEmit): void;
-    (e: 'onCheckErrors'): void;
   }>();
-
-  const triggerConditionError: Ref<string | undefined> = ref('');
-  const rowIsOpenError: Ref<string | undefined> = ref('');
-
-  function setTriggerConditionError(triggerTableE?: string) {
-    triggerConditionError.value = triggerTableE;
-    emit('onError', {
-      value: triggerTableE ? triggerTableE : '',
-      index: -1,
-    });
-    emit('onCheckErrors');
-  }
-  function setRowOpenError(isOpen: boolean) {
-    if (isOpen) {
-      rowIsOpenError.value = t('intervention.error.interventionRowIsOpen');
-      emit('onCheckErrors');
-      emit('onError', { value: 'row is open', index: -1 });
-    } else {
-      rowIsOpenError.value = '';
-      emit('onError', { value: '', index: -1 });
-    }
-  }
 </script>
 
 <template>
@@ -73,6 +47,7 @@
       <StringPropertyInput
         v-if="property instanceof StringProperty"
         :property="property"
+        class="mb-4"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -83,7 +58,7 @@
         v-if="property instanceof StringTextProperty"
         :property="property"
         :editable="editable"
-        class="col-span-8"
+        class="mb-4"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
         "
@@ -92,6 +67,7 @@
       <IntegerPropertyInput
         v-if="property instanceof IntegerProperty"
         :property="property"
+        class="mb-4"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -100,6 +76,7 @@
 
       <StringListPropertyInput
         v-if="property instanceof StringListProperty"
+        class="mb-4"
         :property="property"
         :editable="editable"
         @on-input-change="
@@ -109,7 +86,7 @@
 
       <CronSchedulerConfiguration
         v-if="property instanceof CronProperty"
-        class="col-span-5 mb-4"
+        class="mb-4"
         :editable="editable"
         :cron-schedule="property.value"
         @on-valid-schedule="
@@ -120,24 +97,18 @@
         "
       />
 
-      <div
+      <InterventionTriggerConditions
         v-if="property instanceof DataCheckProperty"
-        class="col-start-0 col-span-6 mt-5"
-      >
-        <InterventionTriggerConditions
-          :error="
-            triggerConditionError ? triggerConditionError : rowIsOpenError
-          "
-          class="mb-5"
-          :trigger-conditions="property"
-          :editable="editable"
-          @on-error="setTriggerConditionError($event)"
-          @on-row-open-error="setRowOpenError($event)"
-        />
-        <div v-if="rowIsOpenError !== ''" class="error my-4">
-          {{ rowIsOpenError }}
-        </div>
-      </div>
+        class="mb-4"
+        :trigger-conditions="property"
+        :editable="editable"
+        @on-emit-trigger-conditions="
+          emit('onPropertyChange', { value: $event, index: index })
+        "
+        @on-error="
+          emit('onError', { value: $event ? $event : '', index: index })
+        "
+      />
     </div>
   </div>
 </template>
