@@ -94,9 +94,10 @@
   const factories: ComponentFactory[] = await getFactories();
 
   function getObservationTypeLabel(observationType: string) {
-    return `(${
-      factories.find((item) => item.componentId === observationType)?.title
-    })`;
+    const label: Ref<string> = ref(
+      `${factories.find((item) => item.componentId === observationType)?.title}`
+    );
+    return `(${t(label.value)})`;
   }
 
   const studyDataColumns: MoreTableColumn[] = [
