@@ -197,6 +197,8 @@ The Monitoring section shows general information on when the last datapoint was 
 
 ## 6. Component Diagram
 
+### 6.1 Diagram from 14.07.2023
+
 ![Component Diagram](./img/Componentdiagram_2023-07-14.png)
 
 - <a href="./img/Componentdiagram_2023-07-14.png" target="_blank">Open image in new tab</a>
