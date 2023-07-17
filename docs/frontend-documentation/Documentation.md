@@ -131,11 +131,6 @@ More complex dialogs like the **Observation Dialog** or **Intervention Dialog**,
 
 Defined types are processed in the frontend through the ```InputModels.ts``` (```./src/models/```). It defines how each property is parsed (```fromJson()```, ```toJson()```) and validated (```validate()```). Each new added type has to be defined through here and added as its own component into the directory ```.src/components/shared```, as well as imported to the ```InputProperty.vue``` component. The ```InputProperty.vue``` component is reused through Intervention and Observation Dialogs.
 
-***Example Triggerfactory type***
-
-![Factory Example](./img/factory-example.png)
-The type on the factory object defines which InputProperty Component will be rendered.
-
 ### 4.4 Extension Blueprint
 
 To be able to parse and handle a new type in the frontend that can be handled via modularisation, its type, functionalities and component input property template has to be prepared beforehand. This will tell the Frontend Application how to handle the specific the type added in the backend and will allow an automatic rendering of the instance by the defined type inside the specific component factory.
@@ -147,13 +142,210 @@ See [Extension Blueprint](https://github.com/MORE-Platform/more-extension-bluepr
 #### 4.4.2 InputModel definition
 The InputModels for each type is based off of the ``abstract class Property<T>``, which defines an abstract blueprint on how to parse and validate a property in general.
 
+##### 4.4.2.1 Constructor
+The constructor is composed of general information of a property (id, description, name, required, immutable), as well as its ```defaultValue``` and actual ```value```. Does the property exist on the object itself but has not yet been defined, the defaultValue will be used as blueprint.
+
+#### 4.4.2.2 fromJson(value)
+The ```static fromJson(value: any): Property<any>``` function defines how each property will be parsed into the Property Object, which will be used to handel the Property Instances on template level.
+The abstract function maps the backend types to their corresponding frontend classes, which defines the specific parsing prosess for each property (e.g. ```CRON``` to ```CronProperty.fromJson()```).
+
+```
+static fromJson(value: any): Property<any> {
+  switch (value.type) {
+    case 'STRING':
+      return StringProperty.fromJson(value);
+    case 'CRON':
+      return CronProperty.fromJson(value);
+    ...
+    default:
+      throw new Error('cannot case property');
+  }
+}
+```
+
+##### 4.4.2.3 toJson(props)
+The ```static toJson(props: Property<any>[]): any{...}``` parses the property back to its original json form. This json property is sent to the backend with the whole (observation or interventino) object, to be saved into the system.
+
+##### 4.4.2.4 setValue(v)
+While using the ```property.fromJson()``` function, the ```public setValue(v: T): Property<T>``` function checks if an already existing value is present and sets it into the ```value``` property. If not the ```defaultValue``` will be set here.
+
+#### 4.4.2.5 Validate()
+The ```validate(): string | undefined {...}``` function defines how each property should be validated, to make sure a valid json property is sent to the backend in the end. It's complexity depends on the complexity of the InputProperty Type.
+
+***Example validated StringProperty based on regex***
+```
+  validate(): string | undefined {
+    if (this.required && this.value === undefined) {
+      return 'Value is required';
+    } else if (
+      this.regex &&
+      this.value &&
+      !new RegExp(this.regex).test(this.value)
+    ) {
+      return 'Value has wrong value';
+    } else {
+      return undefined;
+    }
+  }
+```
+
+#### 4.4.3 Parsing and mapping a property
+To parse a ```Proeprty<T>``` both the specific ```Component Factory``` for an observation, trigger or action and the values of already existing components (if present) have to be mapped on another. Each Component can have more than one property. The property type is defined inside the ```Component Factory``` which is mapped by id on each property.
+
+***TriggerFactory Cron Property (triggerTypeProps)***
+
+![Factory Example](./img/factory-example.png)
+
+***Parsing a property***
+```
+const properties: Ref<Property<any>[]> = ref(
+  triggerTypeProps.map((json: any) => Property.fromJson(json))
+);
+```
+![Parsed Cron property](./img/CronProperty-Parsed.png)
+
+***Parsing a property with value***
+```
+const properties: Ref<Property<any>[]> = ref(
+    factory.properties
+      .map((json: any) => Property.fromJson(json))
+      .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]))
+  );
+```
+
+#### 4.4.4 Vue Template
+The specific parsed Input Property is processed by a specific Input Proeprty Template, that defines the specific Property UI and what kind of form component it is using. Input Property Templates are saved inside the ```./src/components/dialog/shared``` directory. The ```PropertyInputs.vue``` component collects every existing input property component and runs the Property Array through them, to render Input Components based on the Property instance types.
+
+##### 4.4.4.1 Emits
+The PropertyInput.vue component uses two emits to process the change of data.
+
+``onPropertyChange`` sends the new Property value together with the Property index inside the Array to its parent. Inside the parent the property value is updated and validated before being saved to the backend.
+
+``onError``sends the error message to the parent. Based on existing errors the parent will save or not save the form. The location of the displayed error message will be defined by the template itself though.
+
+The specific input property can work with more emit handles, but only the two defined emits can be sent to the parent of the ```InputProperty.vue``` itself.
+
+***Example Cron Scheduler Configuration***
+```
+<CronSchedulerConfiguration
+  v-if="property instanceof CronProperty"
+  class="mb-4"
+  :editable="editable"
+  :cron-schedule="property.value"
+   @on-valid-schedule="
+     emit('onPropertyChange', { value: $event, index: index })
+   "
+   @on-error="
+     emit('onError', { value: $event ? $event : '', index: index })
+    "
+/>
+```
+
+***Example StringProperty***
+```
+<StringPropertyInput
+  v-if="property instanceof StringProperty"
+  :property="property"
+  class="mb-4"
+  :editable="editable"
+  @on-input-change="
+    emit('onPropertyChange', { value: $event.value, index: index })
+  "
+/>
+```
+
+#### 4.4.4.2 StringProperty Input Template
+The ```StringProperty``` describes and easy InputText field, which displays title, description and the input text field for the property and will send the new value to the ``InputProperty.vue`` through an emit template when changed. The ```InputProperty.vue``` component itself will send the changed value to its parent to update the properties itself.
+
+***Input Property taken by the child input component***
+```
+  const props = defineProps({
+    property: {
+      type: Object as PropType<StringProperty>,
+      required: true,
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
+  });
+ ```
+the editable property tells the input component, if the form section is editable (draft and paused status of a study) or in view modus.
+
+***Template StringPropertyInput.vue***
+```
+<template>
+  <div class="flex flex-col gap-1">
+    <h6 class="font-bold">
+      <label v-if="property.name" :for="property.id"
+        >{{ $t(property.name) }}<span v-if="property.required">*</span></label
+      >
+    </h6>
+    <small v-if="props.property.description" :id="property.id + '-help'">{{
+      $t(props.property.description)
+    }}</small>
+
+    <InputText
+      :id="property.id"
+      v-model="property.value"
+      type="text"
+      class="w-full"
+      :aria-describedby="property.id + '-help'"
+      :disabled="!editable"
+      :placeholder="
+        props.property.description
+          ? $t(props.property.description)
+          : 'Enter text value'
+      "
+    />
+  </div>
+</template>
+```
+
+***Watches the input proeprty and emits changes to the PropertyInput.vue***
+```
+  watch(props.property, () => {
+    emit('onInputChange', props.property);
+  });
+```
+
+***Rendered StringPropertyInput***
+![String property Input Window](./img/StringPropertyInput.png)
+
+#### 4.4.5 Processing Properties by the parent
+After the property values were updated on the parent component (example ```ObservationDialog.vue```) and when the user is trying to save the new component object to the backend, the properties will run through their 'backend' validation process. The properties array is be parsed through the ```Property.toJson()``` function and the whole component information is run through the in the backend defined validation process of a component (see ComponentsApi: ```componentsApi.validationProperties(componentType, componentId, parsedProperties)```)). The component object is sent to the backend and saved, if the validation process runs through without any error, and the form dialog is closed.
+
+```
+  function validate() {
+    let parsedProps: any;
+    try {
+      parsedProps = Property.toJson(properties.value);
+      componentsApi
+        .validateProperties(
+          'observation',
+          observation.type as string,
+          parsedProps
+        )
+        .then((response: any) => response.data)
+        .then((report: ValidationReport) => {
+          if (report.valid) {
+            save(parsedProps);
+          } else {
+            jsonError.value = (report.errors || [])
+              .concat(report.warnings || [])
+              .map((e) => e.message)
+              .join(', ');
+          }
+        });
+    } catch (e: any) {
+      jsonError.value =
+        t('observation.error.noValidField') + " '" + e.key + "': " + e.message;
+    }
+  }
+```
 
 
-
-
-
-
-### 4.4 Multilinguality i18n
+### 4.5 Multilinguality i18n
 The language used on the StudyManager Frontend Web App is automatically set based on the used browser language. Each language can be defined via its own ```language.json``` file inside the ```./src/i18n```. For the time being only english and german is available, setting english as default.
 
 ## 5. Studymanager Components Overview
