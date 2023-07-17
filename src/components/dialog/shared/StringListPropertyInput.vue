@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { StringListProperty } from '../../../models/InputModels';
-  import { PropType } from 'vue';
+  import { PropType, watch } from 'vue';
   import InputText from 'primevue/inputtext';
   import { useI18n } from 'vue-i18n';
 
@@ -22,6 +22,14 @@
       props.property.value[index] = (event.target as HTMLInputElement).value;
     }
   };
+
+  const emit = defineEmits<{
+    (e: 'onInputChange', stringListProperty: StringListProperty): void;
+  }>();
+
+  watch(props.property, () => {
+    emit('onInputChange', props.property);
+  });
 </script>
 
 <template>

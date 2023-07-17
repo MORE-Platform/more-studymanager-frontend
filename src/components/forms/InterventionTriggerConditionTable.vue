@@ -29,10 +29,13 @@
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
   import { QueryObjectInner } from '../../models/InputModels';
+  import { useI18n } from 'vue-i18n';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
   const { handleIndividualError } = useErrorHandling();
+
+  const { t } = useI18n();
 
   const props = defineProps({
     columns: {
@@ -58,6 +61,10 @@
     editable: {
       type: Boolean,
       default: true,
+    },
+    rowOpenError: {
+      type: String,
+      required: true,
     },
   });
 
@@ -138,7 +145,7 @@
     (e: 'onAddRow', event: InterventionTriggerUpdateItem): void;
     (e: 'onChangeGroupCondition', event: GroupConditionChange): void;
     (e: 'onError', errorMessage?: string): void;
-    (e: 'onRowOpen', isOpen: boolean): void;
+    (e: 'onRowOpen', error: string): void;
   }>();
 
   function getPropertyOptions(
@@ -170,7 +177,7 @@
     ) as ComponentFactoryMeasurementsInner;
   }
 
-  const rowOpenError: Ref<boolean> = ref(false);
+  const rowOpenError: Ref<string> = ref(props.rowOpenError);
 
   function updateEditRows() {
     props.rows.forEach((item: InterventionTriggerConfig) => {
@@ -225,7 +232,7 @@
   }
 
   function edit(trigger: InterventionTriggerConfig, index: number) {
-    rowOpenError.value = true;
+    rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       edit: true,
@@ -237,7 +244,7 @@
   }
 
   function cancel(trigger: InterventionTriggerConfig, index: number) {
-    rowOpenError.value = false;
+    rowOpenError.value = '';
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
       data: trigger,
@@ -260,7 +267,7 @@
         returnTrigger.value.propertyValue
       );
     }
-    rowOpenError.value = false;
+    rowOpenError.value = '';
     emit('onRowOpen', rowOpenError.value);
     emit('onUpdateRowData', {
       data: returnTrigger.value,
@@ -270,7 +277,7 @@
   }
 
   function addRow(index: number) {
-    rowOpenError.value = true;
+    rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onAddRow', {
       groupIndex: props.groupIndex,
@@ -428,7 +435,7 @@
     </DataTable>
 
     <div v-if="rowOpenError" class="error my-4">
-      {{ $t('intervention.error.interventionRowIsOpen') }}
+      {{ rowOpenError }}
     </div>
     <div class="mt-5 text-center">
       <Button

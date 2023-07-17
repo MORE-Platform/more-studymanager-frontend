@@ -2,13 +2,8 @@
   import { PropType, Ref, ref } from 'vue';
   import { Action, ComponentFactory } from '../../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
-  import {
-    Property,
-    StringProperty,
-    StringTextProperty,
-  } from '../../../models/InputModels';
-  import StringPropertyInput from './StringPropertyInput.vue';
-  import StringTextPropertyInput from './StringTextPropertyInput.vue';
+  import { Property } from '../../../models/InputModels';
+  import PropertyInputs from './ProprtyInputs.vue';
 
   const { t } = useI18n();
 
@@ -23,7 +18,7 @@
     },
     editable: {
       type: Boolean,
-      default: true,
+      default: false,
     },
   });
 
@@ -57,9 +52,9 @@
     return properties;
   }
 
-  function updateProperty(prop: StringProperty, i: number) {
+  function updateProperty(prop: Property<any>, i: number) {
     //@ts-ignore
-    actionProperties.value[i] = prop;
+    actionProperties.value[i].value = prop;
 
     if (actionProperties.value) {
       const returnAction: Ref<Action> = ref(props.action);
@@ -81,25 +76,11 @@
       <div>{{ $t(getActionDescription(actionObj.type)) }}</div>
     </div>
 
-    <div
-      v-for="(property, index) in actionProperties"
-      :key="index"
-      class="col-span-5"
-    >
-      <StringPropertyInput
-        v-if="property instanceof StringProperty"
-        :property="property"
+    <div v-if="actionProperties" class="col-span-5">
+      <PropertyInputs
         :editable="editable"
-        class="col-span-4"
-        @on-input-change="updateProperty($event, index)"
-      />
-
-      <StringTextPropertyInput
-        v-if="property instanceof StringTextProperty"
-        :property="property"
-        :editable="editable"
-        class="col-span-8"
-        @on-input-change="updateProperty($event, index)"
+        :property-list="actionProperties"
+        @on-property-change="updateProperty($event.value, $event.index)"
       />
     </div>
   </div>

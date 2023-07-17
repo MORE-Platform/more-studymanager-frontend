@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { IntegerProperty } from '../../../models/InputModels';
-  import { PropType } from 'vue';
+  import { PropType, watch } from 'vue';
   import InputNumber from 'primevue/inputnumber';
 
   const props = defineProps({
@@ -12,6 +12,14 @@
       type: Boolean,
       default: true,
     },
+  });
+
+  const emit = defineEmits<{
+    (e: 'onInputChange', integerInput: IntegerProperty): void;
+  }>();
+
+  watch(props.property, () => {
+    emit('onInputChange', props.property);
   });
 </script>
 
