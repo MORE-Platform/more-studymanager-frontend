@@ -131,23 +131,24 @@ More complex dialogs like the **Observation Dialog** or **Intervention Dialog**,
 
 Defined types are processed in the frontend through the ```InputModels.ts``` (```./src/models/```). It defines how each property is parsed (```fromJson()```, ```toJson()```) and validated (```validate()```). Each new added type has to be defined through here and added as its own component into the directory ```.src/components/shared```, as well as imported to the ```InputProperty.vue``` component. The ```InputProperty.vue``` component is reused through Intervention and Observation Dialogs.
 
-### 4.4 Extension Blueprint
+### 4.4 Extension Blueprint Frontend
 
-To be able to parse and handle a new type in the frontend that can be handled via modularisation, its type, functionalities and component input property template has to be prepared beforehand. This will tell the Frontend Application how to handle the specific the type added in the backend and will allow an automatic rendering of the instance by the defined type inside the specific component factory.
+To be able to parse and handle a new type in the frontend that can be handled via modularisation, its type, functionalities and component input property template has to be prepared beforehand. This will tell the Frontend Application how to handle the specific type added in the backend and will allow an automatic rendering of the instance by the property types of an component inside its component factory.
 
 #### 4.4.1 Extension Blueprint for the Backend
 
 See [Extension Blueprint](https://github.com/MORE-Platform/more-extension-blueprint) for further information on adding types and extensions in the backend.
 
 #### 4.4.2 InputModel definition
-The InputModels for each type is based off of the ``abstract class Property<T>``, which defines an abstract blueprint on how to parse and validate a property in general.
+The InputModels for each type is based off of the ``abstract class Property<T>``, which defines an abstract blueprint on how to parse and validate a property in general. The definitions can be found in ```./src/models/InputModels.ts```.
 
 ##### 4.4.2.1 Constructor
-The constructor is composed of general information of a property (id, description, name, required, immutable), as well as its ```defaultValue``` and actual ```value```. Does the property exist on the object itself but has not yet been defined, the defaultValue will be used as blueprint.
+The constructor is composed of general information of a property (id, description, name, required, immutable), as well as its ```defaultValue``` and actual ```value```. Does the property exist on the component object itself but has not yet been defined, the defaultValue will be used as blueprint.
 
 #### 4.4.2.2 fromJson(value)
-The ```static fromJson(value: any): Property<any>``` function defines how each property will be parsed into the Property Object, which will be used to handel the Property Instances on template level.
-The abstract function maps the backend types to their corresponding frontend classes, which defines the specific parsing prosess for each property (e.g. ```CRON``` to ```CronProperty.fromJson()```).
+The ```static fromJson(value: any): Property<any> {...}``` function defines how each property will be parsed into the Property Object. This is used to handel the Property Instances on template level.
+
+The abstract function maps the backend types to their corresponding frontend classes, which defines the specific parsing prosesses for each property (e.g. ```CRON``` to ```CronProperty.fromJson()```).
 
 ```
 static fromJson(value: any): Property<any> {
@@ -164,10 +165,12 @@ static fromJson(value: any): Property<any> {
 ```
 
 ##### 4.4.2.3 toJson(props)
-The ```static toJson(props: Property<any>[]): any{...}``` parses the property back to its original json form. This json property is sent to the backend with the whole (observation or interventino) object, to be saved into the system.
+The ```static toJson(props: Property<any>[]): any{...}``` function parses the property back to its original json form. This json property is sent to the backend with the whole (observation or intervention) object, to be saved into the backend.
 
 ##### 4.4.2.4 setValue(v)
 While using the ```property.fromJson()``` function, the ```public setValue(v: T): Property<T>``` function checks if an already existing value is present and sets it into the ```value``` property. If not the ```defaultValue``` will be set here.
+
+See [4.4.3 Parsing and mapping a property](#4.4.3-parsing-and-mapping-a-property) for specifics.
 
 #### 4.4.2.5 Validate()
 The ```validate(): string | undefined {...}``` function defines how each property should be validated, to make sure a valid json property is sent to the backend in the end. It's complexity depends on the complexity of the InputProperty Type.
@@ -190,7 +193,7 @@ The ```validate(): string | undefined {...}``` function defines how each propert
 ```
 
 #### 4.4.3 Parsing and mapping a property
-To parse a ```Proeprty<T>``` both the specific ```Component Factory``` for an observation, trigger or action and the values of already existing components (if present) have to be mapped on another. Each Component can have more than one property. The property type is defined inside the ```Component Factory``` which is mapped by id on each property.
+To parse a ```Proeprty<T>``` both the specific ```Component Factory``` for an observation, trigger or action and the ```values``` of already existing components (if present) have to be mapped on another. Each Component can have more than one property. The property type is defined inside the ```Component Factory``` which is mapped by id on each property.
 
 ***TriggerFactory Cron Property (triggerTypeProps)***
 
@@ -214,16 +217,16 @@ const properties: Ref<Property<any>[]> = ref(
 ```
 
 #### 4.4.4 Vue Template
-The specific parsed Input Property is processed by a specific Input Proeprty Template, that defines the specific Property UI and what kind of form component it is using. Input Property Templates are saved inside the ```./src/components/dialog/shared``` directory. The ```PropertyInputs.vue``` component collects every existing input property component and runs the Property Array through them, to render Input Components based on the Property instance types.
+The parsed Input Property is processed by a specific Input Proeprty Template, that defines how the Property UI should look like. Input Property Templates are saved inside the ```./src/components/dialog/shared``` directory. The ```PropertyInputs.vue``` component collects every existing input property component and runs from the parent given Property Array through them, to render Input Components based on the Property instance types.
 
 ##### 4.4.4.1 Emits
-The PropertyInput.vue component uses two emits to process the change of data.
+The ```PropertyInput.vue``` component uses two ``emits`` to process the change of data.
 
 ``onPropertyChange`` sends the new Property value together with the Property index inside the Array to its parent. Inside the parent the property value is updated and validated before being saved to the backend.
 
 ``onError``sends the error message to the parent. Based on existing errors the parent will save or not save the form. The location of the displayed error message will be defined by the template itself though.
 
-The specific input property can work with more emit handles, but only the two defined emits can be sent to the parent of the ```InputProperty.vue``` itself.
+The specific input property components can work with more emit handles, but only the two defined emits can be sent to the parent of the ```InputProperty.vue``` itself.
 
 ***Example Cron Scheduler Configuration***
 ```
@@ -254,7 +257,7 @@ The specific input property can work with more emit handles, but only the two de
 />
 ```
 
-#### 4.4.4.2 StringProperty Input Template
+#### 4.4.4.2 StringProperty Input Template Example
 The ```StringProperty``` describes and easy InputText field, which displays title, description and the input text field for the property and will send the new value to the ``InputProperty.vue`` through an emit template when changed. The ```InputProperty.vue``` component itself will send the changed value to its parent to update the properties itself.
 
 ***Input Property taken by the child input component***
@@ -270,7 +273,7 @@ The ```StringProperty``` describes and easy InputText field, which displays titl
     },
   });
  ```
-the editable property tells the input component, if the form section is editable (draft and paused status of a study) or in view modus.
+The ```editable``` property tells the input component, if the form section is editable (draft and paused status of a study) or in view modus.
 
 ***Template StringPropertyInput.vue***
 ```
@@ -313,7 +316,7 @@ the editable property tells the input component, if the form section is editable
 ![String property Input Window](./img/StringPropertyInput.png)
 
 #### 4.4.5 Processing Properties by the parent
-After the property values were updated on the parent component (example ```ObservationDialog.vue```) and when the user is trying to save the new component object to the backend, the properties will run through their 'backend' validation process. The properties array is be parsed through the ```Property.toJson()``` function and the whole component information is run through the in the backend defined validation process of a component (see ComponentsApi: ```componentsApi.validationProperties(componentType, componentId, parsedProperties)```)). The component object is sent to the backend and saved, if the validation process runs through without any error, and the form dialog is closed.
+After the property values were updated on the parent component (example ```ObservationDialog.vue```) and when the user is trying to save the new component object to the backend, the properties will run through their 'backend' validation process. The properties array is parsed through the ```Property.toJson()``` function and the whole component information is run through the in the backend defined validation process of a component (see ComponentsApi: ```componentsApi.validationProperties(componentType, componentId, parsedProperties)```)). The component object is sent to the backend and saved and the form dialog is closed, if the validation process runs through without any error.
 
 ```
   function validate() {
