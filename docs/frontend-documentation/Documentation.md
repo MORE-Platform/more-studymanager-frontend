@@ -136,7 +136,22 @@ Defined types are processed in the frontend through the ```InputModels.ts``` (``
 ![Factory Example](./img/factory-example.png)
 The type on the factory object defines which InputProperty Component will be rendered.
 
-See [Extension Blueprint](https://github.com/MORE-Platform/more-extension-blueprint) for further information.
+### 4.4 Extension Blueprint
+
+To be able to parse and handle a new type in the frontend that can be handled via modularisation, its type, functionalities and component input property template has to be prepared beforehand. This will tell the Frontend Application how to handle the specific the type added in the backend and will allow an automatic rendering of the instance by the defined type inside the specific component factory.
+
+#### 4.4.1 Extension Blueprint for the Backend
+
+See [Extension Blueprint](https://github.com/MORE-Platform/more-extension-blueprint) for further information on adding types and extensions in the backend.
+
+#### 4.4.2 InputModel definition
+The InputModels for each type is based off of the ``abstract class Property<T>``, which defines an abstract blueprint on how to parse and validate a property in general.
+
+
+
+
+
+
 
 ### 4.4 Multilinguality i18n
 The language used on the StudyManager Frontend Web App is automatically set based on the used browser language. Each language can be defined via its own ```language.json``` file inside the ```./src/i18n```. For the time being only english and german is available, setting english as default.
