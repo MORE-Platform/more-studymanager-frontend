@@ -1165,6 +1165,8 @@ components:
           type: object
         hasWebComponent:
           type: boolean
+        hidden:
+          type: boolean
 
     ValidationReport:
       type: object
