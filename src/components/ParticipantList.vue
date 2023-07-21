@@ -313,13 +313,15 @@
     participant: Participant,
     withData: boolean
   ) {
+    console.log('delete participant')
+    console.log(withData);
     participantsApi
       .deleteParticipant(
         participant.studyId as number,
         participant.participantId as number,
         withData
       )
-      .then(listParticipant);
+      .then((response) => {listParticipant; console.log(response.data); console.log('test')});
   }
 
   async function importParticipants(
