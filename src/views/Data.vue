@@ -24,9 +24,7 @@
       "
       class="container rounded-lg bg-white p-10"
     >
-      <Suspense>
-        <ParticipationDataList :study-id="studyStore.studyId" />
-      </Suspense>
+      <ParticipationDataList :study-id="studyStore.studyId" />
     </div>
   </div>
 </template>

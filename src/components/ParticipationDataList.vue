@@ -5,7 +5,7 @@
   import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { onMounted, ref, Ref } from 'vue';
+  import { ref, Ref } from 'vue';
   import {
     ParticipationDataGrouping,
     ParticipationDataMapping,
@@ -16,7 +16,7 @@
     MoreTableFieldType,
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import { ComponentFactory } from '../generated-sources/openapi';
+  import {ComponentFactory} from '../generated-sources/openapi';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import { onBeforeRouteLeave, useRoute } from 'vue-router';
@@ -32,33 +32,33 @@
     },
   });
 
-  const timer = ref();
+  let timer: NodeJS.Timer;
 
-  onMounted(() => {
-    timer.value = setInterval(function () {
+  function loadData() {
+    timer ??= setInterval(function () {
       if (route.name === 'Monitoring') {
-        listParticipationData();
+        listParticipationData().then(setObservationGroups);
       }
     }, 10000);
-  });
+    listParticipationData().then(setObservationGroups);
+  }
 
   onBeforeRouteLeave(() => {
-    clearInterval(timer.value);
+    clearInterval(timer);
   });
 
   const loader = useLoader();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const participationDataListMapping: Ref<ParticipationDataMapping[]> = ref([]);
   const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
 
-  async function listParticipationData(): Promise<void> {
-    participationDataListMapping.value = await dataApi
+  function listParticipationData(): Promise<ParticipationDataMapping[]> {
+    return dataApi
       .getParticipationData(props.studyId)
-      .then(async (response) => {
-        return response.data.map((item) => {
-          const mapping: ParticipationDataMapping = {
+      .then((response) =>
+        response.data.map((item) => {
+          return {
             participantAlias: item.participantNamedId?.title || '-',
             observationId: item.observationNamedId?.id || -1,
             observationTitle:
@@ -77,27 +77,19 @@
               ? item.lastDataReceived
               : '-',
           };
-          return mapping;
-        });
-      })
+        })
+      )
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participationDataList');
         return [];
       });
   }
 
-  async function getFactories() {
-    return componentsApi.listComponents('observation').then((response: any) => {
-      return response.data;
-    });
-  }
-  const factories: ComponentFactory[] = await getFactories();
+  let factories: ComponentFactory[];
 
   function getObservationTypeLabel(observationType: string) {
-    const label: Ref<string> = ref(
-      `${factories.find((item) => item.componentId === observationType)?.title}`
-    );
-    return `(${t(label.value)})`;
+    const label = factories.find((item) => item.componentId === observationType)?.title;
+    return label !== undefined ? t(label) : '';
   }
 
   const studyDataColumns: MoreTableColumn[] = [
@@ -138,8 +130,8 @@
     },
   ];
 
-  function getObservationGroups() {
-    groupedParticipantData.value = participationDataListMapping.value.reduce(
+  function setObservationGroups(data: ParticipationDataMapping[]) {
+    groupedParticipantData.value = data.reduce(
       function (r, a) {
         r[a.observationId] = r[a.observationId] || [];
         r[a.observationId].push(a);
@@ -149,8 +141,12 @@
     );
   }
 
-  await listParticipationData();
-  getObservationGroups();
+  componentsApi
+    .listComponents('observation')
+    .then((response: any) => response.data)
+    .then((rsp) => (factories = rsp))
+    .then(loadData);
+
 </script>
 
 <template>
@@ -159,6 +155,7 @@
       <h3 class="font-bold">{{ $t('data.title') }}</h3>
       <div>{{ $t('data.description') }}</div>
     </div>
+
     <div>
       <Accordion
         :active-index="0"
@@ -170,7 +167,6 @@
           v-for="observationData in groupedParticipantData"
           :key="observationData[0].observationId"
           :header="observationData[0].observationTitle as string"
-          class="mt-10 mb-10"
         >
           <MoreTable
             v-if="observationData.length"

@@ -22,10 +22,7 @@ const { uiConfigApi } = useUiConfigApi();
 
 const uiConfig = await uiConfigApi
   .getFrontendConfig()
-  .then((r: AxiosResponse<FrontendConfiguration>) => {
-    console.log('Retrieved UI-Config from remote server:', r.data);
-    return r.data;
-  })
+  .then(r => r.data)
   .catch((err: AxiosError) => {
     console.warn(
       'Could not retrieve UI-Config from remote server, using default fallback:',
