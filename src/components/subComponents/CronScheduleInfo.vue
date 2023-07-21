@@ -4,7 +4,7 @@
   defineProps({
     editable: {
       type: Boolean,
-      required: true,
+      default: false,
     },
   });
 
@@ -17,15 +17,15 @@
 
 <template>
   <div class="cron-schedule-info">
-    <div class="flex items-center gap-4">
-      <div class="mb-4 flex-none">
+    <div class="gap-2">
+      <div class="inline">
         <span v-if="editable">{{ $t('cronSchedule.formTitle') }}</span>
         <span v-else>{{ $t('cronSchedule.formTitleDisabled') }}</span>
       </div>
 
-      <div class="relative">
+      <div class="relative ml-2 inline">
         <div
-          class="pi pi-info-circle info-circle hover-circle mb-4 flex-none"
+          class="pi pi-info-circle info-circle hover-circle mb-2"
           @click="openDialog"
         ></div>
         <div
@@ -43,6 +43,23 @@
             <i class="pi pi-external-link"></i>
             <span class="pl-2"> {{ $t('cronSchedule.cronScheduleTip') }} </span>
           </a>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="mb-4">
+        <!-- eslint-disable vue/no-v-html -->
+        <span v-html="$t('cronSchedule.quickStart')" />
+        <div class="info-popup-container relative ml-2 inline">
+          <span
+            class="pi pi-info-circle info-circle color-primary font-bold"
+          ></span>
+
+          <div
+            class="md-4 info-popup info-popup-note absolute grid w-80 grid-cols-1 gap-4"
+          >
+            {{ $t('cronSchedule.quickStartNote') }}
+          </div>
         </div>
       </div>
     </div>
@@ -66,12 +83,29 @@
     transform: translateX(-50%);
     top: 16px;
     background-color: white;
-    transition: ease-in-out all 0.25s;
     font-size: var(--default-font-size);
     box-shadow: 0 4px 4px -1px rgb(0 0 0 / 0.2);
     border-radius: 0.25rem;
     padding: 8px 12px 8px;
     z-index: 1;
     border: 1px solid lightgray;
+    transition: ease-in-out opacity 0.35s;
+    margin-top: 6px;
+
+    &-container {
+      &:hover,
+      &:active,
+      &:focus {
+        .info-popup-note {
+          opacity: 1;
+          cursor-events: all;
+        }
+      }
+    }
+
+    &.info-popup-note {
+      transition: ease-in-out opacity 0.35s;
+      opacity: 0;
+    }
   }
 </style>

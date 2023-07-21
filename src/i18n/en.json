@@ -633,10 +633,12 @@
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
     },
-    "formTitle": "Configure your Cron Schedule",
+    "formTitle": "Configure your Cron Schedule manually.",
     "formTitleDisabled": "Configuration of your Cron Schedule",
     "additionalConfig":  "Additional Configuration",
-    "cronScheduleTip": "Further info on cron values"
+    "cronScheduleTip": "Further info on cron values",
+    "quickStart": "Or use cron <a href=\"https://www.freeformatter.com/cron-expression-generator-quartz.html\" target=\"_blank\"> Cron Expression Generator Quartz</a> to get quickly started.",
+    "quickStartNote": "Seconds and years are handled automatically."
   },
 
   "scheduler": {
