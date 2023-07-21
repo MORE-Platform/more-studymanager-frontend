@@ -2,7 +2,7 @@
 
 The StudyManager Web Application offers an user interface to researchers and their collaboraters to set up, regulate and control a study from its start to end. It provides and controls all configurations to the data, that should be collected from participants. The More App actively collects data from participants based on the configurations made on the StudyManger Web App.
 
-## 2. Lcoal Setup
+## 2. Local Setup
 
 To be able to run the web app locally, there are only a view simple steps needed, **after setting up the Authentication and Backend server** (see [ARC42: 7. Deployment View](https://github.com/MORE-Platform/.github-private/blob/main/docs/07_deplyoment_view.md)).
 
@@ -347,8 +347,12 @@ After the property values were updated on the parent component (example ```Obser
   }
 ```
 
+### 4.5 Configur cron scheduler on the intervention
+The cron scheduler, used to schedule the interval of an intervention is a rather powerful and complex tooling and can seem overwhelming at first glance. Due to its complex nature there are many open source and free tools that can help to get a quick start on setting up the cron scheduler properties themselves. Not that the Cron Schedule used by the More interventions will set seconds and years automatically by default to full second (0) and any year (?).
 
-### 4.5 Multilinguality i18n
+See a complete guide to the Cron scheduler at the [Cron Schedule Documantation](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) Website or get a quick start with the [Cron Expression Generator Quartz](https://www.freeformatter.com/cron-expression-generator-quartz.html) to help you set up your intervention interval.
+
+### 4.6 Multilinguality i18n
 The language used on the StudyManager Frontend Web App is automatically set based on the used browser language. Each language can be defined via its own ```language.json``` file inside the ```./src/i18n```. For the time being only english and german is available, setting english as default.
 
 ## 5. Studymanager Components Overview
