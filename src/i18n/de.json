@@ -268,7 +268,7 @@
     },
     "collaboratorList": {
       "title": "Studien-Mitarbeiter",
-      "description": "Studien-Mitarbeitern können unterschiedliche Rollen zugeteilt werden, welche den Zugang und die Berechtigungen der jeweiligen Mitarbeiter festlegen. Ein <b>Studien-Mitarbeiter</b> hat Zugriff auf alles und keine Einschränkungen. Ein <b>Studien-Operator</b> kann alles beaufsichtigen, bearbeiten und einsehen. Ein <b>Studien-Beobachter</b> kann jedoch nur die grundsätzlichen Infromationen (Überblic Tab) und die eingehenden Daten (Monitoring Tab) einsehen und hat keine Berechtigungen irgendetwas zu verändern oder zu bearbeiten.",
+      "description": "Studien-Mitarbeitern können unterschiedliche Rollen zugeteilt werden, welche den Zugang und die Berechtigungen der jeweiligen Mitarbeiter festlegen. Ein <b>Studien-Administrator</b> hat Zugriff auf alles und keine Einschränkungen. Ein <b>Studien-Operator</b> kann alles beaufsichtigen, bearbeiten und einsehen. Ein <b>Studien-Beobachter</b> kann jedoch nur die grundsätzlichen Infromationen (Überblick Tab) und die eingehenden Daten (Monitoring Tab) einsehen und hat keine Berechtigungen irgendetwas zu verändern oder zu bearbeiten.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
