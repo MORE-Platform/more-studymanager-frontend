@@ -111,7 +111,7 @@
           v-model="size"
           :options="[1, 3, 10, 100]"
           placeholder="Select a size"
-          class="ml-1 small"
+          class="small ml-1"
           @change="listDataPoints()"
         />
       </div>
@@ -145,7 +145,7 @@
       <Column field="participant" header="Participant"></Column>
       <Column field="time" header="Time" sortable>
         <template #body="slotProps">
-          {{ formatTime(slotProps['time']) }}
+          {{ formatTime(slotProps['data']['time']) }}
         </template>
       </Column>
       <Column field="data" header="Data">
