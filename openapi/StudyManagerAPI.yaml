@@ -1016,7 +1016,7 @@ paths:
         '400':
           description: bad request
 
-  /studies/{studyId}/export/getStudySnapshot:
+  /studies/{studyId}/export/createStudySnapshot:
     parameters:
       - $ref: '#/components/parameters/StudyId'
     post:
@@ -1030,13 +1030,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/parameters/StudySnapshotId'
+                $ref: '#/components/schemas/StudySnapshot'
         '400':
           description: bad request
 
   /studies/{studyId}/export/downloadStudySnapshot:
     parameters:
       - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/StudySnapshotId'
     get:
       tags:
         - importExport
