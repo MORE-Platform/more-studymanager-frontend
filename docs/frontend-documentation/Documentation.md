@@ -347,7 +347,7 @@ After the property values were updated on the parent component (example ```Obser
   }
 ```
 
-### 4.5 Configur cron scheduler on the intervention
+### 4.5 Configure cron scheduler on the intervention
 The cron scheduler, used to schedule the interval of an intervention is a rather powerful and complex tooling and can seem overwhelming at first glance. Due to its complex nature there are many open source and free tools that can help to get a quick start on setting up the cron scheduler properties themselves. Not that the Cron Schedule used by the More interventions will set seconds and years automatically by default to full second (0) and any year (?).
 
 See a complete guide to the Cron scheduler at the [Cron Schedule Documantation](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) Website or get a quick start with the [Cron Expression Generator Quartz](https://www.freeformatter.com/cron-expression-generator-quartz.html) to help you set up your intervention interval.
