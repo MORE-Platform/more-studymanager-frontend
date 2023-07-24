@@ -289,7 +289,12 @@
     "title": "Monitoring",
     "description": "Die während der Studie gesammelten Daten werden in der darunterliegenden Liste angezeigt.",
     "dataList": {
-      "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können."
+      "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
+      "title": "Erhaltene Datenpunkte pro Datenerhebungsmodul"
+    },
+    "dataPointsList": {
+      "lastDatapoints": "Letzte Datenpunkte",
+      "resultSize": "Größe des ErgebnissesÏ"
     }
   },
 
