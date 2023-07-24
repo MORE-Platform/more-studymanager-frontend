@@ -18,13 +18,15 @@
     ></MoreTabNav>
 
     <Suspense>
-      <IntegrationList
-        :study-id="studyStore.studyId"
-        :actions-visible="
-          studyStore.study.status === StudyStatus.Draft ||
-          studyStore.study.status === StudyStatus.Paused
-        "
-      />
+      <div class="container rounded-lg bg-white p-10">
+        <IntegrationList
+          :study-id="studyStore.studyId"
+          :actions-visible="
+            studyStore.study.status === StudyStatus.Draft ||
+            studyStore.study.status === StudyStatus.Paused
+          "
+        />
+      </div>
     </Suspense>
   </div>
 </template>

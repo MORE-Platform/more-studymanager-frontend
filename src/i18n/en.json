@@ -63,7 +63,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "dataDownload": "Data"
     },
     "tabLink": {
       "overview": "Overview",
@@ -71,7 +72,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "dataDownload": "Data"
     }
   },
 
@@ -294,6 +296,21 @@
     "dataPointsList": {
       "lastDatapoints": "Last Datapoints",
       "resultSize": "Size of Result"
+    }
+  },
+
+  "dataDownload": {
+    "singular": "Data",
+        "snapshotList": {
+          "emptyListMsg": "Currently there are no snapshots. If you want to add a snapshot click 'Create Snapshot'. The snapshot will be created and is available to download from the table after a short time.",
+          "title": "Data Snapshots",
+          "description": "Data can be collected into snapshots here and downloaded when needed.",
+          "downloadSnapshot": "Download Snapshot",
+          "createSnapshot": "Create Snapshot"
+    },
+    "props": {
+      "timestamp": "Timestamp",
+      "status": "Status"
     }
   },
 

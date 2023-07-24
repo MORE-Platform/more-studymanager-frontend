@@ -70,6 +70,12 @@
       params: { studyId: props.studyId },
       access: [StudyRole.Viewer, StudyRole.Admin],
     },
+    {
+      title: t('studyNavigation.tabs.dataDownload'),
+      name: t('studyNavigation.tabs.dataDownload'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Viewer, StudyRole.Admin],
+    },
   ] as Tab[];
 
   const studyRoleValues: MoreTableChoice[] = [

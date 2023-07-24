@@ -63,7 +63,8 @@
       "participants": "Teilnehmer",
       "observations": "Datenerhebung",
       "interventions": "Interventionen",
-      "integration": "Integrationen"
+      "integration": "Integrationen",
+      "dataDownload": "Data"
     },
     "tabLink": {
       "overview": "Overview",
@@ -71,7 +72,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "dataDownload": "Data"
     }
   },
 
