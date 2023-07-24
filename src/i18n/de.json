@@ -637,10 +637,12 @@
       "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
-    "formTitle": "Cron Scheduler konfigurieren",
+    "formTitle": "Cron Scheduler manuell konfigurieren.",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
-    "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten"
+    "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten",
+    "quickStart": "Oder verwenden Sie den <a href=\"https://www.freeformatter.com/cron-expression-generator-quartz.html\" target=\"_blank\" > Cron Expression Generator Quartz</a>, um schnell starten zu können.",
+    "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt."
   },
 
   "scheduler": {
