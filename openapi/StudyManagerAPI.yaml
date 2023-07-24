@@ -1079,6 +1079,48 @@ paths:
         '404':
           description: not found
 
+  /studies/{studyId}/datapoints:
+    get:
+      tags:
+        - data
+      description: Get Data Points
+      operationId: getDataPoints
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: observationId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: participantId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date-time
+            readOnly: true
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 100
+          required: true
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DataPoint'
+        '404':
+          description: not found
+
   /users/me:
     get:
       tags:
@@ -1399,6 +1441,21 @@ components:
           type: string
           format: date-time
           readOnly: true
+    DataPoint:
+      type: object
+      properties:
+        observation:
+          type: string
+        observationId:
+          type: integer
+        participant:
+          type: string
+        participantId:
+          type: integer
+        time:
+          type: string
+        data:
+          type: object
 
     IdTitle:
       type: object

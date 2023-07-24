@@ -19,11 +19,11 @@
   import {ComponentFactory} from '../generated-sources/openapi';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
-  import { onBeforeRouteLeave, useRoute } from 'vue-router';
+  import { onBeforeRouteLeave } from 'vue-router';
+  import DatapointList from './subComponents/DatapointList.vue';
 
   const { componentsApi } = useComponentsApi();
   const { dataApi } = useDataApi();
-  const route = useRoute();
 
   const props = defineProps({
     studyId: {
@@ -36,9 +36,7 @@
 
   function loadData() {
     timer ??= setInterval(function () {
-      if (route.name === 'Monitoring') {
-        listParticipationData().then(setObservationGroups);
-      }
+      listParticipationData().then(setObservationGroups);
     }, 10000);
     listParticipationData().then(setObservationGroups);
   }
@@ -155,7 +153,7 @@
       <h3 class="font-bold">{{ $t('data.title') }}</h3>
       <div>{{ $t('data.description') }}</div>
     </div>
-
+      <DatapointList :study-id="studyId"></DatapointList>
     <div>
       <Accordion
         :active-index="0"
@@ -177,7 +175,6 @@
             :row-edit-btn="false"
             :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
             :editable="() => false"
-            :loading="loader.isLoading.value"
             :empty-message="$t('data.dataList.emptyListMsg')"
           />
         </AccordionTab>
