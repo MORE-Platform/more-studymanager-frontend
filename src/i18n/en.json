@@ -288,7 +288,12 @@
     "title": "Monitoring",
     "description": "Data collected during the study will be visualized within this dashboard.",
     "dataList": {
-      "emptyListMsg": "Currently there are no observations to track."
+      "emptyListMsg": "Currently there are no observations to track.",
+      "title": "Received Datapoints per Observation"
+    },
+    "dataPointsList": {
+      "lastDatapoints": "Last Datapoints",
+      "resultSize": "Size of Result"
     }
   },
 
@@ -346,7 +351,7 @@
         "warning": "If you distribute your participants, they will be randomly assigned to the studies study groups. The participants will be evenly seperated, so that each group have the same number of participants. Distributing participants again after they were already distributed, will conclude into all participants being randomly assinged to the study groups.",
         "confirm": "Distribution of participants can't be revoked. Are you sure you want to distribute this studies participants to your study groups?"
       }
-    }
+    },
   },
 
   "observation": {

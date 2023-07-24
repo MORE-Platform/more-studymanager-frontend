@@ -2,7 +2,6 @@
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import { useComponentsApi, useDataApi } from '../composable/useApi';
-  import useLoader from '../composable/useLoader';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { ref, Ref } from 'vue';
@@ -16,7 +15,7 @@
     MoreTableFieldType,
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import {ComponentFactory} from '../generated-sources/openapi';
+  import { ComponentFactory } from '../generated-sources/openapi';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import { onBeforeRouteLeave } from 'vue-router';
@@ -45,7 +44,6 @@
     clearInterval(timer);
   });
 
-  const loader = useLoader();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
@@ -86,7 +84,9 @@
   let factories: ComponentFactory[];
 
   function getObservationTypeLabel(observationType: string) {
-    const label = factories.find((item) => item.componentId === observationType)?.title;
+    const label = factories.find(
+      (item) => item.componentId === observationType
+    )?.title;
     return label !== undefined ? t(label) : '';
   }
 
@@ -129,14 +129,11 @@
   ];
 
   function setObservationGroups(data: ParticipationDataMapping[]) {
-    groupedParticipantData.value = data.reduce(
-      function (r, a) {
-        r[a.observationId] = r[a.observationId] || [];
-        r[a.observationId].push(a);
-        return r;
-      },
-      Object.create(null)
-    );
+    groupedParticipantData.value = data.reduce(function (r, a) {
+      r[a.observationId] = r[a.observationId] || [];
+      r[a.observationId].push(a);
+      return r;
+    }, Object.create(null));
   }
 
   componentsApi
@@ -144,7 +141,6 @@
     .then((response: any) => response.data)
     .then((rsp) => (factories = rsp))
     .then(loadData);
-
 </script>
 
 <template>
@@ -153,8 +149,12 @@
       <h3 class="font-bold">{{ $t('data.title') }}</h3>
       <div>{{ $t('data.description') }}</div>
     </div>
-      <DatapointList :study-id="studyId"></DatapointList>
+    <DatapointList :study-id="studyId" class="mb-14"></DatapointList>
+
     <div>
+      <h4 class="color-primary mb-4 font-bold">
+        {{ $t('data.dataList.title') }}
+      </h4>
       <Accordion
         :active-index="0"
         lazy
@@ -191,13 +191,17 @@
       margin: 0;
     }
   }
+  :deep(.p-accordion) {
+    margin-top: 0;
+  }
   :deep(.p-accordion-header) {
-    margin-top: 1.2rem !important;
-
+    margin-top: 10px;
+  }
+  :deep(.p-accordion-header) {
     a {
       padding: 0.5rem 0 1rem 0 !important;
-      font-size: 1.25rem;
-      font-weight: bold;
+      font-size: 1.1rem;
+      font-weight: normal;
       color: var(--primary-color) !important;
       border: transparent !important;
       border-bottom: 1px solid var(--surface-c) !important;

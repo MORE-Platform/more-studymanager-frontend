@@ -10,7 +10,7 @@ import DialogService from 'primevue/dialogservice';
 // Router
 import { Router } from './router';
 import AuthService from './service/AuthService';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { createPinia } from 'pinia';
 import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
@@ -22,7 +22,7 @@ const { uiConfigApi } = useUiConfigApi();
 
 const uiConfig = await uiConfigApi
   .getFrontendConfig()
-  .then(r => r.data)
+  .then((r) => r.data)
   .catch((err: AxiosError) => {
     console.warn(
       'Could not retrieve UI-Config from remote server, using default fallback:',
