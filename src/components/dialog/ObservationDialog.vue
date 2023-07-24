@@ -46,7 +46,9 @@
       .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]))
   );
 
-  const hidden: Ref<boolean> = ref(observation.hidden !== undefined ? observation.hidden : factory.hidden);
+  const hidden: Ref<boolean> = ref(
+    observation.hidden !== undefined ? observation.hidden : factory.hidden
+  );
 
   const scheduler: Ref<Event> = ref(
     observation.schedule ? observation.schedule : {}

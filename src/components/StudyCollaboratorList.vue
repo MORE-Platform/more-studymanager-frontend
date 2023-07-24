@@ -334,6 +334,7 @@
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyCollaborator.collaboratorList.title')"
+      :subtitle="$t('studyCollaborator.collaboratorList.description')"
       :columns="collaboratorColumns"
       :rows="collaboratorsList"
       :row-actions="rowActions"

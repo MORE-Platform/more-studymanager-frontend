@@ -267,6 +267,7 @@
     },
     "collaboratorList": {
       "title": "Study Collaborators",
+      "description": "Study Collaborators are provided with different roles that give them different access to the data and information of a study. A <b>Study Administrator</b> has access to everything in the study. A <b>Study Opoerator</b> is allowed to manage and view information and data. A <b>Study Viewer</b> however can only view the basic Overview and Monitoring information and is not allowed to manage or change anything else.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
@@ -633,10 +634,12 @@
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
     },
-    "formTitle": "Configure your Cron Schedule",
+    "formTitle": "Configure your Cron Schedule manually.",
     "formTitleDisabled": "Configuration of your Cron Schedule",
     "additionalConfig":  "Additional Configuration",
-    "cronScheduleTip": "Further info on cron values"
+    "cronScheduleTip": "Further info on cron values",
+    "quickStart": "Or use cron <a href=\"https://www.freeformatter.com/cron-expression-generator-quartz.html\" target=\"_blank\"> Cron Expression Generator Quartz</a> to get quickly started.",
+    "quickStartNote": "Seconds and years are handled automatically."
   },
 
   "scheduler": {
