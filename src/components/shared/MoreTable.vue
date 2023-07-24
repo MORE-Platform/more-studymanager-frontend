@@ -393,7 +393,10 @@
     <div class="mb-8 flex">
       <div class="title w-full">
         <h3 v-if="title">{{ title }}</h3>
-        <h4 v-if="subtitle">{{ subtitle }}</h4>
+        <h4 v-if="subtitle">
+          <!-- eslint-disable vue/no-v-html -->
+          <span v-html="subtitle" />
+        </h4>
       </div>
       <div class="actions table-actions flex flex-1 justify-end">
         <div

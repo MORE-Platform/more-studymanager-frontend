@@ -267,6 +267,7 @@
     },
     "collaboratorList": {
       "title": "Study Collaborators",
+      "description": "Study Collaborators are provided with different roles that give them different access to the data and information of a study. A <b>Study Administrator</b> has access to everything in the study. A <b>Study Opoerator</b> is allowed to manage and view information and data. A <b>Study Viewer</b> however can only view the basic Overview and Monitoring information and is not allowed to manage or change anything else.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
