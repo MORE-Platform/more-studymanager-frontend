@@ -61,7 +61,7 @@
   }
 
   function formatTime(property: string): string {
-    return dayjs(property).format('DD/MM/YYYY, HH:mm');
+    return dayjs(property).format('DD/MM/YYYY, HH:mm:ss');
   }
 
   function formatDataPoints(property: any): string {
@@ -117,13 +117,13 @@
       </div>
       <div>
         {{ $t('participants.plural') }}:
-
         <Dropdown
           v-model="participant"
           option-label="name"
           :options="participants"
           placeholder="Select a participant"
           class="ml-1"
+          filter
           @change="listDataPoints()"
         />
       </div>
@@ -135,6 +135,7 @@
           :options="observations"
           placeholder="Select an observation"
           class="ml-1"
+          filter
           @change="listDataPoints()"
         />
       </div>
