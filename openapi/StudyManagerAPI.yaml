@@ -1016,6 +1016,42 @@ paths:
         '400':
           description: bad request
 
+  /studies/{studyId}/export/createStudySnapshot:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    post:
+      tags:
+        - importExport
+      description: Create export snapshot of existing study data
+      operationId: createStudySnapshot
+      responses:
+        '200':
+          description: creating a new snapshot was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudySnapshot'
+        '400':
+          description: bad request
+
+  /studies/{studyId}/export/downloadStudySnapshot:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/StudySnapshotId'
+    get:
+      tags:
+        - importExport
+      description: Export Study Snapshot
+      operationId: exportStudySnapshot
+      responses:
+        '200':
+          description: downloads a created snapshot
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyImportExport'
+        '400':
+          description: bad request
 
   /studies/{studyId}/import/participants:
     parameters:
@@ -1078,6 +1114,24 @@ paths:
                   $ref: '#/components/schemas/ParticipationData'
         '404':
           description: not found
+
+  /studies/{studyId}/studyDataSnapshot:
+    get:
+      tags:
+        - data
+      description: Gets the available data snapshot list of a study
+      operationId: getDataSnapshots
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: List of Data Snapshots successfully fetched
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudySnapshot'
 
   /studies/{studyId}/datapoints:
     get:
@@ -1700,6 +1754,21 @@ components:
         - roles
       readOnly: true
 
+    StudySnapshot:
+      type: object
+      properties:
+        studySnapshotId:
+          type: integer
+          format: int32
+        name:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+      readOnly: true
+
     PlatformRole:
       description: |
         We differentiate between the following roles within a study:
@@ -1805,6 +1874,13 @@ components:
       required: true
     TokenId:
       name: tokenId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+    StudySnapshotId:
+      name: studySnapshotId
       in: path
       schema:
         type: integer
