@@ -351,7 +351,7 @@
         "warning": "If you distribute your participants, they will be randomly assigned to the studies study groups. The participants will be evenly seperated, so that each group have the same number of participants. Distributing participants again after they were already distributed, will conclude into all participants being randomly assinged to the study groups.",
         "confirm": "Distribution of participants can't be revoked. Are you sure you want to distribute this studies participants to your study groups?"
       }
-    },
+    }
   },
 
   "observation": {
@@ -618,6 +618,7 @@
   },
 
   "cronSchedule": {
+    "singular": "Cron Scheduler",
     "placeholders": {
       "secondsAndMinutes": "0-59",
       "hours": "0-23",
@@ -639,12 +640,30 @@
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
     },
-    "formTitle": "Configure your Cron Schedule manually.",
+    "example":{
+      "title": "Examples",
+      "titles": {
+        "everyMinute": "Every minute",
+        "hourly": "Every hour at xx:30",
+        "daily": "Every Day at 12:00",
+        "specificDayOfMonth": "Every 4th of every month",
+        "specificMonth": "Every day at 8 in March"
+      },
+      "values": {
+        "everyMinute": "* * ? * *",
+        "hourly": "30 * ? * *",
+        "daily": "0 12 ? * *",
+        "specificDayOfMonth": "* * 5 * *",
+        "specificMonth": "0 8 * 3 *"
+      }
+    },
+    "formTitle": "Configure your <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Schedule manually</a> ",
     "formTitleDisabled": "Configuration of your Cron Schedule",
     "additionalConfig":  "Additional Configuration",
     "cronScheduleTip": "Further info on cron values",
-    "quickStart": "Or use cron <a href=\"https://www.freeformatter.com/cron-expression-generator-quartz.html\" target=\"_blank\"> Cron Expression Generator Quartz</a> to get quickly started.",
-    "quickStartNote": "Seconds and years are handled automatically."
+    "quickStart": "or use <a href=\"https://crontab.guru/\" target=\"_blank\">Cron Tab Guru</a> to get quickly started.",
+    "quickStartNote": "Seconds and years are handled automatically.",
+    "limitDescription": "This version of the More Cron Scheduler only supports whole numbers, * or ?. Expressions like 0/1 or 3-20 are not supported for the time being."
   },
 
   "scheduler": {

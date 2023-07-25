@@ -152,7 +152,7 @@ export const useStudyStore = defineStore('study', () => {
     if (link) {
       link.setAttribute(
         'href',
-        'data:aapplication/json; charset=utf-8,' + encodeURIComponent(fileJSON)
+        'data:application/json; charset=utf-8,' + encodeURIComponent(fileJSON)
       );
       link.setAttribute('download', filename);
       link.style.display = 'hidden';

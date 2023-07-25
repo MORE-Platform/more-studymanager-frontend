@@ -621,6 +621,7 @@
   },
 
   "cronSchedule": {
+    "singular": "Cron Scheduler",
     "placeholders": {
       "secondsAndMinutes": "0-59",
       "hours": "0-23",
@@ -642,12 +643,30 @@
       "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
-    "formTitle": "Cron Scheduler manuell konfigurieren.",
+    "example":{
+      "title": "Beispiele",
+      "titles": {
+        "everyMinute": "Jede Minute",
+        "hourly": "Jede Stunde um xx:30",
+        "daily": "Jeder Tag um 12:00",
+        "specificDayOfMonth": "Jeder 4ter des Monats",
+        "specificMonth": "Jeder Tag um 8:00 im März"
+      },
+      "values": {
+        "everyMinute": "* * ? * *",
+        "hourly": "30 * ? * *",
+        "daily": "0 12 ? * *",
+        "specificDayOfMonth": "* * 5 * *",
+        "specificMonth": "0 8 * 3 *"
+      }
+    },
+    "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
     "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten",
-    "quickStart": "Oder verwenden Sie den <a href=\"https://www.freeformatter.com/cron-expression-generator-quartz.html\" target=\"_blank\" > Cron Expression Generator Quartz</a>, um schnell starten zu können.",
-    "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt."
+    "quickStart": "oder verwenden Sie den <a href=\"https://crontab.guru/\" target=\"_blank\"> Cron Tab Guru</a>, um schnell starten zu können.",
+    "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
+    "limitDescription": "Diese Version des More Cron Schedulers unterstützt nur Nummern, * oder ?. 'Ausdrücke, wie z.B. 0/1 oder 1-10 werden noch nicht unterstützt."
   },
 
   "scheduler": {
