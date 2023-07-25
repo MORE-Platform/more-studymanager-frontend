@@ -6,6 +6,7 @@
   import { registerOptionPreset } from 'cron-validate/lib/option';
   import { useI18n } from 'vue-i18n';
   import CronScheduleInfo from '../subComponents/CronScheduleInfo.vue';
+  import CronScheduleExamples from '../subComponents/CronScheduleExamples.vue';
 
   const { t } = useI18n();
 
@@ -134,14 +135,16 @@
   >
     <CronScheduleInfo :editable="editable" />
 
-    <form class="mb-4 grid grid-cols-5 grid-rows-2 items-center gap-4">
+    <form
+      class="mb-4 grid grid-cols-3 grid-rows-2 items-center gap-4 lg:grid-cols-5"
+    >
       <div
         v-for="(item, index) in tempCronSchedule"
         :key="index"
         class="col-span-1 row-span-2"
       >
         <label for="item.label">
-          {{ item.label }}
+          <span class="mb-1 font-medium">{{ item.label }}</span>
           <InputText
             v-model="tempCronSchedule[index].value"
             type="text"
@@ -155,9 +158,10 @@
         </label>
       </div>
     </form>
-    <div v-show="hasCronError && editable" class="error mb-4">
+    <div v-show="hasCronError && editable" class="error">
       {{ cronError }}
     </div>
+    <CronScheduleExamples />
   </div>
 </template>
 

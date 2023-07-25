@@ -86,7 +86,7 @@
 
       <CronSchedulerConfiguration
         v-if="property instanceof CronProperty"
-        class="mb-4"
+        class="mb-8"
         :editable="editable"
         :cron-schedule="property.value"
         @on-valid-schedule="
@@ -99,7 +99,7 @@
 
       <InterventionTriggerConditions
         v-if="property instanceof DataCheckProperty"
-        class="mb-4"
+        class="mb-8"
         :trigger-conditions="property"
         :editable="editable"
         @on-emit-trigger-conditions="

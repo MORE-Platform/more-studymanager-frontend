@@ -16,10 +16,32 @@
 </script>
 
 <template>
-  <div class="cron-schedule-info">
+  <div class="cron-schedule-info mb-3">
     <div class="gap-2">
+      <h6 class="mb-2 font-bold">{{ $t('cronSchedule.singular') }}</h6>
+
+      <div class="mb-1">
+        <span>{{ $t('cronSchedule.limitDescription') }}</span>
+        <div class="info-popup-container relative ml-2 inline">
+          <span
+            class="pi pi-info-circle info-circle color-primary font-bold"
+          ></span>
+
+          <div
+            class="md-4 info-popup info-popup-note absolute grid w-80 grid-cols-1 gap-4"
+          >
+            {{ $t('cronSchedule.quickStartNote') }}
+          </div>
+        </div>
+      </div>
       <div class="inline">
-        <span v-if="editable">{{ $t('cronSchedule.formTitle') }}</span>
+        <span v-if="editable">
+          <!-- eslint-disable vue/no-v-html -->
+          <span v-html="$t('cronSchedule.formTitle')" />
+          <!-- eslint-disable vue/no-v-html -->
+          <span v-html="$t('cronSchedule.quickStart')" />
+        </span>
+
         <span v-else>{{ $t('cronSchedule.formTitleDisabled') }}</span>
       </div>
 
@@ -43,23 +65,6 @@
             <i class="pi pi-external-link"></i>
             <span class="pl-2"> {{ $t('cronSchedule.cronScheduleTip') }} </span>
           </a>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="mb-4">
-        <!-- eslint-disable vue/no-v-html -->
-        <span v-html="$t('cronSchedule.quickStart')" />
-        <div class="info-popup-container relative ml-2 inline">
-          <span
-            class="pi pi-info-circle info-circle color-primary font-bold"
-          ></span>
-
-          <div
-            class="md-4 info-popup info-popup-note absolute grid w-80 grid-cols-1 gap-4"
-          >
-            {{ $t('cronSchedule.quickStartNote') }}
-          </div>
         </div>
       </div>
     </div>
