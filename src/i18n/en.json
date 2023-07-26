@@ -195,7 +195,7 @@
         "purpose": "The purpose property describes the general purpose of the study. It will be shown study collaborators to give them information about the study and it's goals.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give them short information about the study and their taken part in it.",
         "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants. It gives general information to the data that will be collected.",
-        "contactData": "This contact information will be displayed on the app for the participants. It's the information to contact if there are problems during the study participation.",
+        "contactData": "This contact information will be displayed on the app for the participants. It's the information to contact if there are problems during the study participation."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
