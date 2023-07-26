@@ -170,6 +170,15 @@
       </div>
     </div>
     <div class="mb-6">
+      <h5>{{ $t('study.props.finishText') }}</h5>
+      <div>
+        <span v-if="study.finishText">{{ study.finishText }}</span>
+        <span v-else class="placeholder">{{
+          $t('study.placeholder.finishTextDesc')
+        }}</span>
+      </div>
+    </div>
+    <div class="mb-6">
       <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
       <div
         v-if="

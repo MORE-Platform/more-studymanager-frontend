@@ -91,7 +91,8 @@
       "participantInfo": "Participant Information",
       "consentInfo": "Consent Information",
       "language": "Language",
-      "studyGroup":  "Study Group"
+      "studyGroup":  "Study Group",
+      "finishText": "Study End Message"
     },
     "roles": {
       "admin": "Study Administrator",
@@ -159,7 +160,9 @@
       "contactPerson": "Enter the information of the contact person.",
       "contactEmail": "Enter the contact email.",
       "contactTel": "Enter the contact telephone number.",
-      "missingContactData": "Currently there is no contact information set. Please set at least a contact person and contact email address, that participants can contact you when problems occur. This information will be shown on the app."
+      "missingContactData": "Currently there is no contact information set. Please set at least a contact person and contact email address, that participants can contact you when problems occur. This information will be shown on the app.",
+      "finishText": "Enter a end message that will be displayed on the app, when the study has ended.",
+      "finishTextDesc": "The end message will be shown at the App after a study has ended. Is no specific end message set and default message will be displayed."
     },
     "dialog": {
       "header":{
