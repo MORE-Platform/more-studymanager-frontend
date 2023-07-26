@@ -656,7 +656,7 @@
         "everyMinute": "* * ? * *",
         "hourly": "30 * ? * *",
         "daily": "0 12 ? * *",
-        "specificDayOfMonth": "* * 5 * *",
+        "specificDayOfMonth": "* * 4 * *",
         "specificMonth": "0 8 * 3 *"
       }
     },
