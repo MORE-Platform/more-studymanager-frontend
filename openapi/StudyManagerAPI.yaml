@@ -1016,6 +1016,26 @@ paths:
         '400':
           description: bad request
 
+  /studies/{studyId}/export/studydata:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    post:
+      tags:
+        - importExport
+      operationId: generateDownloadToken
+      description: generate a download token that can be used once for download and is valid for 10 minutes
+      responses:
+        '200':
+          description: foo
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '404':
+          description: study not found
 
   /studies/{studyId}/import/participants:
     parameters:

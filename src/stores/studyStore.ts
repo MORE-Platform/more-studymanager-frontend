@@ -2,7 +2,7 @@ import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
 import { useImportExportApi, useStudiesApi } from '../composable/useApi';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
 
@@ -135,14 +135,18 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function exportStudyData(studyId: number): Promise<void> {
-    axios
-      .get(`api/v1/studies/${studyId}/export/studydata`)
-      .then((response) => {
-        const filename: string = 'study_data_' + studyId + '.json';
-        downloadJSON(filename, response.data);
+    await importExportApi
+      .generateDownloadToken(studyId)
+      .then((token) => {
+        window.open(
+          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`
+        );
       })
       .catch((e: AxiosError) => {
-        handleIndividualError(e, 'cannot export study data');
+        handleIndividualError(
+          e,
+          'cannot generate download token to export study data'
+        );
       });
   }
 
