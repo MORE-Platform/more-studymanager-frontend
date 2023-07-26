@@ -182,7 +182,7 @@
         "contactTel": "Telephone number"
       },
       "deleteMsg": {
-        "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date.",
+        "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date. It is only possible to delete a study without its data for the time being.",
         "intro": "You are about to delete the following study:",
         "confirm": "Are you sure you want to delete your study?"
       },

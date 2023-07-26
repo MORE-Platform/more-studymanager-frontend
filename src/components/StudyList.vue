@@ -134,10 +134,14 @@
           }),
       },
       visible: (data) =>
-        data.status === StudyStatus.Draft &&
-        data.userRoles.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
-        ),
+        (data.status === StudyStatus.Draft &&
+          data.userRoles.some((r: any) =>
+            [StudyRole.Admin, StudyRole.Operator].includes(r)
+          )) ||
+        (data.status === StudyStatus.Closed &&
+          data.userRoles.some((r: any) =>
+            [StudyRole.Admin, StudyRole.Operator].includes(r)
+          )),
     },
     {
       id: 'exportConfig',

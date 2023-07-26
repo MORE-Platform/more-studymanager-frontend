@@ -49,17 +49,20 @@
 
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
-    <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
+    <div class="flex justify-end gap-2">
+      <Button type="button" class="p-button btn-gray" @click="closeDialog">
         {{ $t('global.labels.close') }}
+      </Button>
+      <Button type="button" class="p-button btn-important" @click="deleteStudy">
+        {{ $t('global.labels.delete') }}
       </Button>
       <Button
         type="button"
-        class="p-button btn-important ml-2"
+        class="p-button btn-important disabled"
+        disabled
         @click="deleteStudy"
+        >{{ $t('participants.dialog.deleteMsg.deleteWithData') }}</Button
       >
-        {{ $t('global.labels.delete') }}
-      </Button>
     </div>
   </div>
 </template>
@@ -81,7 +84,8 @@
       border-color: var(--gray-400);
     }
   }
-  .btn-gray {
-    margin-right: 0.5rem;
+
+  .disabled {
+    pointer-events: none;
   }
 </style>
