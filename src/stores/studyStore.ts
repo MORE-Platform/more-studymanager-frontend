@@ -138,7 +138,9 @@ export const useStudyStore = defineStore('study', () => {
     await importExportApi
       .generateDownloadToken(studyId)
       .then((token) => {
-        window.open(`api/v1/studies/${studyId}/export/studydata/${token.data.token}`);
+        window.open(
+          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`
+        );
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
