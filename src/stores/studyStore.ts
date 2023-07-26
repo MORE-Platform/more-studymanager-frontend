@@ -138,17 +138,7 @@ export const useStudyStore = defineStore('study', () => {
     await importExportApi
       .generateDownloadToken(studyId)
       .then((token) => {
-        const a = document.createElement('a');
-        if (a) {
-          a.setAttribute(
-            'href',
-            `api/v1/studies/${studyId}/export/studydata/${token.data.token}`
-          );
-          a.style.display = 'hidden';
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-        }
+        window.open(`api/v1/studies/${studyId}/export/studydata/${token.data.token}`);
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
