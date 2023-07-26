@@ -91,7 +91,8 @@
       "participantInfo": "Teilnehmerinformationen",
       "consentInfo": "Berechtigungsinformation",
       "language": "Sprache",
-      "studyGroup":  "Studiengruppe"
+      "studyGroup":  "Studiengruppe",
+      "finishText": "Endnachricht der Studie"
     },
     "roles": {
       "admin": "Studien-Administrator",
@@ -160,7 +161,9 @@
       "contactPerson": "Gib den Namen der Kontaktperson ein.",
       "contactEmail": "Gib eine Kontakt Emailadresse ein.",
       "contactTel": "Gib eine Kontakt Telephonnummer ein.",
-      "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt."
+      "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt.",
+      "finishTextDesc": "Die Endnachricht wird auf der App nach Beendigung der Studie angezeigt. Ist keine gesetzt, wird eine Default-Nachricht verwendet.",
+      "finishText": "Gib eine Endnachricht ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird. Wenn keine spezifische Endnachricht gesetzt wurde, wird ein Default-Text auf der App angezeigt."
     },
     "dialog": {
       "header":{

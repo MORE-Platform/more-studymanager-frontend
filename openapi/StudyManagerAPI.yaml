@@ -1267,6 +1267,8 @@ components:
           type: string
         consentInfo:
           type: string
+        finishText:
+          type: string
         status:
           $ref: '#/components/schemas/StudyStatus'
         start:

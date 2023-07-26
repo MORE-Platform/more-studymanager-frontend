@@ -22,6 +22,7 @@
     consentInfo: study.consentInfo,
     participantInfo: study.participantInfo,
     contact: undefined,
+    finishText: study.finishText,
   }) as Ref<Study>;
 
   const start = ref(
@@ -228,6 +229,17 @@
           :auto-resize="true"
           style="width: 100%"
         ></Textarea>
+      </div>
+      <div class="col-start-0 col-span-6">
+        <h5 class="mb-2">{{ $t('study.props.finishText') }}</h5>
+        <div class="mb-2">{{ $t('study.placeholder.finishTextDesc') }}</div>
+        <Textarea
+          v-model="returnStudy.finishText"
+          :name="'finishText'"
+          :placeholder="$t('study.placeholder.finishText')"
+          auto-rezise="true"
+          style="width: 100%"
+        />
       </div>
       <div class="col-span-6 mb-4 mt-2">
         <h5
