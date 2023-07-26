@@ -183,7 +183,7 @@
         "contactTel": "Kontakt Telefonnummer"
       },
       "deleteMsg": {
-        "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden.",
+        "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden. Zur Zeit ist es nur möglich eine Studie ohne ihre Daten zu löschen.",
         "intro": "Sie sind kurz davor folgende Studie zu löschen:",
         "confirm": "Möchten Sie die Studie wirklich löschen?"
       },
