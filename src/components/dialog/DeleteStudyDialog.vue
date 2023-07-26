@@ -53,11 +53,7 @@
       <Button type="button" class="p-button btn-gray" @click="closeDialog">
         {{ $t('global.labels.close') }}
       </Button>
-      <Button
-        type="button"
-        class="p-button btn-important"
-        @click="deleteStudy"
-      >
+      <Button type="button" class="p-button btn-important" @click="deleteStudy">
         {{ $t('global.labels.delete') }}
       </Button>
       <Button
@@ -65,7 +61,8 @@
         class="p-button btn-important disabled"
         disabled
         @click="deleteStudy"
-      >{{ $t('participants.dialog.deleteMsg.deleteWithData') }}</Button>
+        >{{ $t('participants.dialog.deleteMsg.deleteWithData') }}</Button
+      >
     </div>
   </div>
 </template>
@@ -90,6 +87,5 @@
 
   .disabled {
     pointer-events: none;
-
   }
 </style>
