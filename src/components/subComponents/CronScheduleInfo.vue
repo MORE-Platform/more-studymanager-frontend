@@ -22,17 +22,6 @@
 
       <div class="mb-1">
         <span>{{ $t('cronSchedule.limitDescription') }}</span>
-        <div class="info-popup-container relative ml-2 inline">
-          <span
-            class="pi pi-info-circle info-circle color-primary font-bold"
-          ></span>
-
-          <div
-            class="md-4 info-popup info-popup-note absolute grid w-80 grid-cols-1 gap-4"
-          >
-            {{ $t('cronSchedule.quickStartNote') }}
-          </div>
-        </div>
       </div>
       <div class="inline">
         <span v-if="editable">
