@@ -54,13 +54,13 @@
   "studyNavigation": {
     "accessDialog": {
       "header": "Zugriff verweigert",
-      "permissionWarningMsg": ". Bitte kontaktiere deinen Studien-Administrator, wenn du Zugang zu diesem Abschnitt benötigst.",
+      "permissionWarningMsg": ". Bitte kontaktieren Sie Ihren Studien-Administrator, wenn Sie Zugang zu diesem Abschnitt benötigen.",
       "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: "
     },
     "tabs": {
       "overview": "Überblick",
       "data": "Monitoring",
-      "participants": "Teilnehmer",
+      "participants": "Teilnehmer:innen",
       "observations": "Datenerhebungen",
       "interventions": "Interventionen",
       "integration": "Integrationen"
@@ -121,7 +121,7 @@
         },
         "toCompleted":{
           "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
-          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich neue Daten einzubringen oder weiter teilzunehmen.",
+          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer:innen auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich, neue Daten einzubringen oder weiter teilzunehmen.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
         }
       },
@@ -144,9 +144,9 @@
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse der Studie hinzu, über diese die Teilehmer bei Problemen erreichen können.",
-      "addContactPerson": "Bitte fügen Sie eine Kontaktperson der Studie hinzu, welche die Teilnehmer bei Problemen kontaktieren können.",
-      "addContactEmail": "Bitte fügen Sie eine Kontaktemail der Studie hinzu, welche die Teilnehmer bei Problemen anschreiben können."
+      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
+      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer bei Problemen kontaktieren können.",
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer bei Problemen anschreiben können."
     },
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
@@ -292,10 +292,10 @@
 
   "data": {
     "title": "Monitoring",
-    "description": "Die während der Studie gesammelten Daten werden in der darunterliegenden Liste angezeigt.",
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10sec aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhaltene Datenpunkte pro Datenerhebungsmodul"
+      "title": "Erhaltene Datenpunkte pro Datenerhebung"
     },
     "dataPointsList": {
       "lastDatapoints": "Letzte Datenpunkte",
@@ -316,20 +316,20 @@
       "header": {
         "delete": "Teilnehmer:in löschen",
         "deleteWithData": "Daten löschen",
-        "edit": "Teilnehmer bearbeiten",
-        "create": "Teilnehmer hinzufügen",
+        "edit": "Teilnehmer:in bearbeiten",
+        "create": "Teilnehmer:in hinzufügen",
         "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen"
       },
       "msg": {
-        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
-        "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
+        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
+        "deleteWithData": "Sollen alle Daten gelöscht werden?"
       },
       "btn": {
         "distributeBtn": "Zuweisen",
-        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?"
+        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?"
       },
       "deleteMsg": {
-        "warning": "Gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen.",
+        "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen.",
         "intro": "Sie sind kurz davor eine Teilnehmer:in zu löschen:",
         "confirm": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
         "deleteWithoutData": "Löschen",
@@ -354,7 +354,7 @@
         "add50": "50 hinzufügen"
       },
       "distributeMsg": {
-        "intro": "Sie können die Studienteilnehmer:innen automatisch auf alle Gruppen aufteilen.",
+        "intro": "Sie können die Studienteilnehmer:innen automatisch auf alle vorhandenen Gruppen aufteilen.",
         "warning": "Die automatische Zuweisung von Studienteilnehmer:innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Waren Teilnehmer:innen schon Gruppen zugewiesen, werden ALLE Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
         "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer:innen automatisch Studiengruppen zuweisen?"
       }
@@ -407,7 +407,7 @@
     "factory": {
       "limeSurvey": {
         "title": "Lime Survey",
-        "description": "Diese Datenerhebung ermöglicht dir ein über die More Platform erstelltes Lime Survey mit More zu verknüpfen.",
+        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden.",
         "configProps": {
           "idName": "Fragebogen",
           "idDesc": "Die ID des Lime Surveys"
@@ -415,7 +415,7 @@
       },
       "polarVerity": {
         "title": "Polar Verity Sensor",
-        "description": "Diese Datenerhebung ermöglicht es dir, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln."
+        "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln."
 
       },
       "external": {
@@ -432,17 +432,17 @@
       },
       "simpleQuestion": {
         "title": "Einfache Frage",
-        "description": "Diese Datenerhebung ermöglicht es dir eine einfache Multiple Choice Frage zu erstellen.",
+        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
         "configProps": {
           "questionName": "Frage",
-          "questionDesc": "Die Frage, die du stellen möchtest.",
+          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
           "answerName": "Antworten",
           "answerDesc": "Mögliche Antworten (min. 2, max.5)"
         }
       },
       "accelerometerMobile": {
         "title": "Accelerometer Mobile Sensor",
-        "description": "Diese Datenerhebung ermöglicht es dir Bewegungsdaten über das Smartphone zu sammeln."
+        "description": "Diese Datenerhebung ermöglicht es, Bewegungsdaten über das Smartphone zu sammeln."
       }
     },
     "error":  {
@@ -668,10 +668,10 @@
     "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
-    "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten",
+    "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
     "quickStart": "oder verwenden Sie den <a href=\"https://crontab.guru/\" target=\"_blank\"> Cron Tab Guru</a>, um schnell starten zu können.",
     "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
-    "limitDescription": "Diese Version des More Cron Schedulers unterstützt nur Nummern, * oder ?. 'Ausdrücke, wie z.B. 0/1 oder 1-10 werden noch nicht unterstützt."
+    "limitDescription": ""
   },
 
   "scheduler": {
@@ -779,7 +779,7 @@
           "values": {
             "singleDay": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00",
             "series": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00, Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
-            "fullTimespan": "Start: 27/07/2024 08:00, End: 27/09/2024 20:00, (Optional: Ganztägig)",
+            "fullTimespan": "Start: 27/07/2024 08:00, End: 27/09/2024 20:00, (Optional: ganztägig)",
           }
         
       }
@@ -787,10 +787,10 @@
     "placeholder": {
       "chooseMonth": "Monat auswählen",
       "enterDayOfMonth": "Tag des Monats einfügen",
-      "chooseGeneralInterval": "Wähle ein Intervall",
-      "chooseDayInterval": "Wähle ein Tagesintervall",
-      "chooseRepetitionEnd": "Wähle das Wiederholungsende",
-      "enterRepeatCount": "Füge die Anzahl der Wiederholungen ein"
+      "chooseGeneralInterval": "Wählen Sie ein Intervall",
+      "chooseDayInterval": "Wählen Sie ein Tagesintervall",
+      "chooseRepetitionEnd": "Wählen Sie das Wiederholungsende",
+      "enterRepeatCount": "Fügen Sie die Anzahl der Wiederholungen ein"
     }
   },
 
@@ -799,13 +799,13 @@
     "editBtn": "Bearbeiten",
     "downloadBtn": "Herunterladen",
     "moreTable": {
-      "editBtn": "Bearbeite die gezeigten Eckdaten.",
+      "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "saveChanges": "Änderungen speichern",
       "cancelAction": "Abbrechen",
       "deleteStudyBtn": "Studie löschen",
-      "deleteStudyGroupBtn": "Studeingruppe löschen",
+      "deleteStudyGroupBtn": "Studiengruppe löschen",
       "copyStudyUrl": "Studie teilen",
-      "showStudy": "Klicke auf die Zeile, um auf die Studiendetails seite zu kommen."
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
     }
   },
 
@@ -819,7 +819,7 @@
     "kickedOut": "rausgeschmissen"
   },
   "inputModel": {
-    "enterValue": "Bitte fügen Sie einen Wert hinzu."
+    "enterValue": "Bitte geben Sie einen Wert hinzu."
   },
 
   "title": "Titel",
