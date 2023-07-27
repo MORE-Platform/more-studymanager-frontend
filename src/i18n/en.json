@@ -33,7 +33,8 @@
       "lastDataReceived": "Last Data Received",
       "to": "to",
       "message": "Message",
-      "option": "Option"
+      "option": "Option",
+      "data": "Data"
     },
     "placeholder": {
       "entireStudy": "Entire Study",

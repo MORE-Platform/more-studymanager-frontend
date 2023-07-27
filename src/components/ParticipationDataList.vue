@@ -55,6 +55,7 @@
       .then((response) =>
         response.data.map((item) => {
           return {
+            participantId: item.participantNamedId?.id,
             participantAlias: item.participantNamedId?.title || '-',
             observationId: item.observationNamedId?.id || -1,
             observationTitle:
@@ -91,6 +92,12 @@
   }
 
   const studyDataColumns: MoreTableColumn[] = [
+    {
+      field: 'participantId',
+      header: t('global.labels.id'),
+      editable: false,
+      sortable: true,
+    },
     {
       field: 'participantAlias',
       header: t('participants.singular'),

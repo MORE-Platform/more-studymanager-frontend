@@ -33,7 +33,8 @@
       "lastDataReceived": "Letzte Daten erhalten",
       "to": "zu",
       "message": "Nachricht",
-      "option": "Option"
+      "option": "Option",
+      "data": "Daten"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
