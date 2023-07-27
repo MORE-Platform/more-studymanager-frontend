@@ -76,7 +76,7 @@ export abstract class Property<T> {
       this.name = this.id;
     }
     if (!this.description) {
-      this.description = `Please enter a ${this.id} value.`;
+      this.description = `inputModel.enterValue`;
     }
   }
 

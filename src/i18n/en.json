@@ -527,7 +527,7 @@
         "view": "Intervention Details"
       },
       "label": {
-        "interventionTitle": "Intervention title",
+        "interventionTitle": "Intervention Title",
         "triggerConditions": "Trigger Conditions",
         "triggerConditionsDesc": "Configure Trigger properties from Observations or Observation Types. To compare to property value use <, >, >=, <=, = or != (Is not). Conditions can be added to connected groups. Start and end of intervention will be defined by first and last date of the properties, if no overall date range is Set.",
         "pushNotification": "Push Notification",
@@ -802,5 +802,11 @@
     "accepted": "accepted",
     "droppedOut": "dropped out",
     "kickedOut": "kicked out"
-  }
+  },
+
+  "inputModel": {
+    "enterValue": "Please enter a value."
+  },
+  "title": "Title",
+  "message": "Message"
 }

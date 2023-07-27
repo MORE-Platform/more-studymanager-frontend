@@ -805,5 +805,11 @@
     "accepted": "akzeptiert",
     "droppedOut": "abgebrochen",
     "kickedOut": "rausgeschmissen"
-  }
+  },
+  "inputModel": {
+    "enterValue": "Bitte fügen Sie einen Wert hinzu."
+  },
+
+  "title": "Titel",
+  "message": "Nachricht"
 }
