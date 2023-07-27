@@ -128,10 +128,6 @@
 
 <template>
   <div>
-    <div class="mb-4">
-      <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="$t('study.dialog.description.study')"></h6>
-    </div>
     <form
       id="studyDialogForm"
       class="grid grid-cols-6 items-center gap-4"

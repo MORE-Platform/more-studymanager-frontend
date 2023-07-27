@@ -37,14 +37,13 @@
       "data": "Data"
     },
     "placeholder": {
-      "entireStudy": "Entire Study",
-      "chooseDropdownOptionDefault": "Choose Option",
-      "chooseRole": "Choose Role",
-      "noGroup": "No Group"
+      "entireStudy": "Entire study",
+      "chooseDropdownOptionDefault": "Choose option",
+      "chooseRole": "Choose role",
+      "noGroup": "No group"
     },
     "header": {
-      "privateBeta": "Private Beta",
-      "logout": "Log Out",
+      "logout": "Log out",
       "backToDashboard": "Dashboard"
     },
     "footer": {
@@ -88,12 +87,12 @@
       "plannedStart": "Planned start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
-      "actualEnd": "Actual End",
-      "participantInfo": "Participant Information",
-      "consentInfo": "Consent Information",
+      "actualEnd": "Actual end",
+      "participantInfo": "Participant information",
+      "consentInfo": "Consent information",
       "language": "Language",
-      "studyGroup":  "Study Group",
-      "finishText": "Study End Message"
+      "studyGroup":  "Study group",
+      "finishText": "Study end message"
     },
     "roles": {
       "admin": "Study Administrator",
@@ -117,7 +116,7 @@
           "confirm": "Are you sure you want to set your Study Status to 'PAUSED'?"
         },
         "pausedToActive": {
-          "warning": "All Observationmodules, interventions, schedules and data captures will be available again. Participants will be able to participant in the research again.",
+          "warning": "All observations, interventions, schedules and data captures will be available again. Participants will be able to participant in the research again.",
           "confirm": "Are you sure you want to set your Study Status to 'ACTIVE'"
         },
         "toCompleted":{
@@ -143,7 +142,7 @@
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
-      "addParticipantInfo": "The participant information is required. Please entere a description.",
+      "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
       "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
       "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
@@ -162,8 +161,8 @@
       "contactEmail": "Enter the contact email.",
       "contactTel": "Enter the contact telephone number.",
       "missingContactData": "Currently there is no contact information set. Please set at least a contact person and contact email address, that participants can contact you when problems occur. This information will be shown on the app.",
-      "finishText": "Enter a end message that will be displayed on the app, when the study has ended.",
-      "finishTextDesc": "The end message will be shown at the App after a study has ended. Is no specific end message set and default message will be displayed."
+      "finishText": "Enter an ending information that will be displayed in the app when the study is completed.",
+      "finishTextDesc": "The ending information will be displayed in the App after a study was completed. Is no specific ending information set a default message will be displayed."
     },
     "dialog": {
       "header":{
@@ -177,10 +176,10 @@
         "studyStart": "Study start",
         "studyEnd": "Study end",
         "contactInfo": "Contact information",
-        "contactPerson": "Contact Person",
+        "contactPerson": "Name",
         "institute": "Institute",
-        "contactEmail": "Contact Email",
-        "contactTel": "Telephone number"
+        "contactEmail": "Email",
+        "contactTel": "Phone"
       },
       "deleteMsg": {
         "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date. It is only possible to delete a study without its data for the time being.",
@@ -193,10 +192,10 @@
       },
       "description": {
         "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
-        "purpose": "The purpose property describes the general purpose of the study. It will be shown study collaborators to give them information about the study and it's goals.",
-        "participantInfo": "The participant information will be displayed on the app as the studies description. It should give them short information about the study and their taken part in it.",
-        "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants. It gives general information to the data that will be collected.",
-        "contactData": "This contact information will be displayed on the app for the participants. It's the information to contact if there are problems during the study participation."
+        "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
+        "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose.",
+        "consentInfo": "The consent information will be displayed on the app and has to be approved by the participants.",
+        "contactData": "This contact information will be displayed in the app for participants to use when they encounter problems."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
@@ -212,14 +211,15 @@
       },
       "action": {
         "addStudy": "Add new study",
-        "copyUrl": "Copy URL"
+        "copyUrl": "Copy URL",
+        "importStudy": "Import Study"
       }
     }
   },
 
   "studyGroup": {
-    "singular": "Study Group",
-    "plural": "Study Groups",
+    "singular": "Study group",
+    "plural": "Study groups",
     "dialog": {
       "header": {
         "delete": "Delete Group",
@@ -235,9 +235,10 @@
       }
     },
     "groupList": {
+      "description": "Study groups are used to group participants, interventions and/or observations.",
       "placeholder": {
         "title": "Set a title",
-        "purpose": "Set a proper purpose for this group",
+        "purpose": "Describe the purpose of the group.",
         "emptyGroupList": "Add groups to your study to use group functionalities. Your study groups will be listed here."
       },
       "action": {
@@ -271,7 +272,7 @@
     },
     "collaboratorList": {
       "title": "Study Collaborators",
-      "description": "Study Collaborators are provided with different roles that give them different access to the data and information of a study. A <b>Study Administrator</b> has access to everything in the study. A <b>Study Operator</b> is allowed to manage and view information and data. A <b>Study Viewer</b> however can only view the basic Overview and Monitoring information and is not allowed to manage or change anything else.",
+      "description": "Study collaborators can be provided with one or more roles. A <b>Study Administrator</b> has no limitation. A <b>Study Operator</b> is allowed to manage and view information, but is not allowed to view recorded data. A <b>Study Viewer</b> can only view the basic overview information and recorded data.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
@@ -290,14 +291,14 @@
 
   "data": {
     "title": "Monitoring",
-    "description": "Data collected during the study will be visualized within this dashboard.",
+    "description": "You can view the live data of your study here. Data will be updated all 10 seconds.",
     "dataList": {
       "emptyListMsg": "Currently there are no observations to track.",
-      "title": "Received Datapoints per Observation"
+      "title": "Received datapoints per observation"
     },
     "dataPointsList": {
-      "lastDatapoints": "Last Datapoints",
-      "resultSize": "Size of Result"
+      "lastDatapoints": "Last datapoints",
+      "resultSize": "Size of result"
     }
   },
 
@@ -305,17 +306,17 @@
     "singular": "Participant",
     "plural": "Participants",
     "props":{
-      "participantId": "Participant Id",
+      "participantId": "Participant ID",
       "alias": "Alias",
       "token": "Token",
-      "registrationToken": "Registration Token"
+      "registrationToken": "Registration token"
     },
     "dialog": {
       "header": {
-        "delete": "Delete Participant",
-        "deleteWithData": "Delete Data",
-        "edit": "Edit Participant",
-        "create": "Create Participant",
+        "delete": "Delete participant",
+        "deleteWithData": "Delete data",
+        "edit": "Edit participant",
+        "create": "Create participant",
         "distribute": "Distribute participants randomly to study groups"
       },
       "msg": {
@@ -326,7 +327,7 @@
         "distributeBtn": "Distribute"
       },
       "deleteMsg": {
-        "warning": "A deleted participant can't be restored. If you delete this participant you won't be able to reuse them later on. You have the option to delete the participant including all the collected data or the participant alone.",
+        "warning": "A deleted participant can't be restored. You have the option to delete a participant including all the collected data or the participant alone.",
         "intro": "You are about to delete the following participant:",
         "confirm": "Are you sure you want to delete this participant?",
         "deleteWithoutData": "Delete",
@@ -335,13 +336,13 @@
     },
     "participantsList": {
       "title": "Participants",
-      "description": "This is the list of participants of your study. You can add or import participants.",
-      "emptyListMsg": "Add and manage your study's participants. Your participants will be listed here.",
+      "description": "Add participants manually or by importing a CSV with alias names. Participants can be automatically assigned to groups and exported to a CSV.",
+      "emptyListMsg": "Add study participants to your study",
       "action": {
         "distribute": "Assign study groups",
         "import": "Import CSV",
         "export": "Export CSV",
-        "add": "Add Participant"
+        "add": "Add participant"
       },
       "labels": {
         "add1": "Add 1",
@@ -351,8 +352,8 @@
         "add50": "Add 50"
       },
       "distributeMsg": {
-        "intro": "You are about to distribute all participants of this study to your study groups.",
-        "warning": "If you distribute your participants, they will be randomly assigned to the studies study groups. The participants will be evenly seperated, so that each group have the same number of participants. Distributing participants again after they were already distributed, will conclude into all participants being randomly assinged to the study groups.",
+        "intro": "You are about to distribute all participants to your study groups.",
+        "warning": "Participants will be randomly assigned to the created study groups. They are evenly seperated to the groups. Reassigning participants will assign all participants randomly to your groups again.",
         "confirm": "Distribution of participants can't be revoked. Are you sure you want to distribute this studies participants to your study groups?"
       }
     }
@@ -396,14 +397,14 @@
         "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view of the app."
       },
       "deleteMsg": {
-        "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost and you won't be able to use it at a later date.",
+        "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost.",
         "intro": "You are about to delete the following observation:",
         "confirm": "Are you sure you want to delete your observation?"
       }
     },
     "factory": {
       "limeSurvey": {
-        "title": "Lime Survey Observation",
+        "title": "Lime Survey",
         "description": "This observation enables you to create a Lime Survey questionnaire",
         "configProps": {
           "idName": "Survey",
@@ -413,23 +414,23 @@
       },
       "polarVerity": {
         "title": "Polar Verity Sensor",
-        "description": "This observation enables you to collect heart rate data via the polar verity sensor. No properties are supported."
+        "description": "This observation enables you to collect heart rate data via the polar verity sensor."
       },
       "external": {
         "title": "External Observation",
-        "description": "A stub observation for data that is collected via the external data api."
+        "description": "An observation for data that is collected via the external data api."
       },
       "gpsMobile": {
         "title": "GPS Mobile Sensor",
         "description": "This observation enables you to collect GPS data via the smartphone sensor.",
         "configProps": {
-          "measurementName": "Measurement Interval",
-          "measurementDesc": "Measurment Interval in Milliseconds, 30k to 600k"
+          "measurementName": "Measurement interval",
+          "measurementDesc": "Measurement interval in milliseconds, 30k to 600k"
         }
       },
       "simpleQuestion": {
-        "title": "Question Observation",
-        "description": "This observation enables you to create a simple MultipleChoice question.",
+        "title": "Simple Question",
+        "description": "This observation enables you to create a simple multiple choice question.",
         "configProps": {
           "questionName": "Question",
           "questionDesc": "The question you want to ask.",
@@ -761,11 +762,23 @@
       },
       "event": {
         "first": "First Event",
-        "allDay": "Entire time",
+        "allDay": "Entire day",
         "setDates": "Set dates",
-        "setDatesDesc": "Set the first occurance of your observation modul. This duration can be set from one day to any timeframe. The modul will be active during that time. Consider that the given time (if 'Entire time' isn't checked), will be the start time on the first and the end time on the last day chosen.",
+        "setDatesDesc": "You can define a timeframe for your observation with start and end date for one day. The timeframe can be set to 'Entire day'. A series of data collection can be defined through the repetition definition below. Alternatively you can set a full time span over more days.",
         "repeat": "Repeat set duration above",
-        "repeatDesc": "If you repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated. If you e.g. want to repeat a set timeframe each day, you would need to set both dates above on the starting date, and set repeat to daily. The data capture will be repeated each day at the set time from above for x-amount of days."
+        "repeatDesc": "To repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated.",
+        "example": {
+          "titles": {
+            "singleDay": "Single data capture",
+            "series": "Repeat single day schedule for 10 days",
+            "fullTimespan": "Leave observation active from 27.07.2024 - 27.07.2024"
+          },
+          "values": {
+            "singleDay": "Start: 27/07/2024 14:00 - End: 27/07/2024 16:00",
+            "series": "Start: 27/07/2024 14:00 - End: 27/07/2024 16:00, Repeat: Daily - After 10 days",
+            "fullTimespan": "Start: 27/07/2024 08:00 - End: 27/09/2024 20:00 (optional 'Entire day')"
+          }
+        }
       }
 
     },

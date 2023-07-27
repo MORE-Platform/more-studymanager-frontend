@@ -31,9 +31,9 @@
       >
     </h5>
 
-    <small v-if="props.property.description" :id="property.id + '-help'">{{
+    <div v-if="props.property.description" :id="property.id + '-help'">{{
       $t(props.property.description)
-    }}</small>
+    }}</div>
 
     <InputNumber
       :id="property.id"
