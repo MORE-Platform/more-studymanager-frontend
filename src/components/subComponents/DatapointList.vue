@@ -144,7 +144,10 @@
     <DataTable :value="dataPoints">
       <Column field="observationId" :header="$t('global.labels.id')"></Column>
       <Column field="observation" :header="$t('observation.singular')"></Column>
-      <Column field="participant" :header="$t('participants.singular')"></Column>
+      <Column
+        field="participant"
+        :header="$t('participants.singular')"
+      ></Column>
       <Column field="time" :header="$t('global.labels.time')" sortable>
         <template #body="slotProps">
           {{ formatTime(slotProps['data']['time']) }}
