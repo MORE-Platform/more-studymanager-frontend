@@ -650,7 +650,8 @@
         "hourly": "Every hour at xx:30",
         "daily": "Every Day at 12:00",
         "specificDayOfMonth": "Every 4th of every month",
-        "specificMonth": "Every day at 8 in March"
+        "specificMonth": "Every day at 8 in March",
+        "notAllowed": "'Day of month' and 'Day of week' are not allowed to have a * at the same time."
       },
       "values": {
         "everyMinute": "* * ? * *",

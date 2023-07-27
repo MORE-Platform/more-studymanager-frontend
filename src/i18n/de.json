@@ -653,7 +653,8 @@
         "hourly": "Jede Stunde um xx:30",
         "daily": "Jeder Tag um 12:00",
         "specificDayOfMonth": "Jeder 4ter des Monats",
-        "specificMonth": "Jeder Tag um 8:00 im März"
+        "specificMonth": "Jeder Tag um 8:00 im März",
+        "notAllowed": "'Tag des Monats' und 'Tag der Woche' dürfen zur gleichen Zeit nicht mit * ausgefüllt werden."
       },
       "values": {
         "everyMinute": "* * ? * *",
