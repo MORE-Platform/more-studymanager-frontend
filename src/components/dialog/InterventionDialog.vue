@@ -495,7 +495,7 @@
               v-for="(action, index) in actionsArray"
               :key="index"
               class="col-start-0 js-action col-span-9"
-              :class="index < actionsArray - 1 ? 'mb-4' : ''"
+              :class="index < actionsArray.length - 1 ? 'mb-4' : ''"
             >
               <hr v-if="index !== 0" class="my-4" />
 
