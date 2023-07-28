@@ -398,6 +398,6 @@
     position: relative;
   }
   :deep(.width-65 .title) {
-    width: 65% !important;
+    width: 65%;
   }
 </style>
