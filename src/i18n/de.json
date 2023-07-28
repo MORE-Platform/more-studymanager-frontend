@@ -487,6 +487,14 @@
         "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
         "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
       },
+      "example": {
+        "title": "Beispiel",
+        "connectTitle": "Verbinden Sie sich mit der Daten API via token",
+        "filledExample": "Ausgefülltes Beispiel",
+        "yourDomain": "DOMÄNE",
+        "yourToken": "TOKEN",
+        "yourData": "DATEN OBJEKT"
+      },
       "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
       "msg": {
         "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",

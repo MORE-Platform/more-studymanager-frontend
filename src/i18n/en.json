@@ -485,6 +485,14 @@
         "tokenLabelInput": "Please enter a label for your token.",
         "selectObservation": "Please select an existing observation."
       },
+      "example": {
+        "title": "Example",
+        "connectTitle": "Connect to API with your token",
+        "filledExample": "Filled example",
+        "yourDomain": "DOMAIN",
+        "yourToken": "TOKEN",
+        "yourData": "DATA OBJECT"
+      },
       "msg": {
         "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?",
         "createdToken": "Please copy your token to be able to link. The token won't be reviewable afterwards, so be mindful with your usage. If you loose a token you can recreate it at anytime."

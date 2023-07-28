@@ -3,6 +3,7 @@
   import Button from 'primevue/button';
   import AlertMsg from '../shared/AlertMsg.vue';
   import { useI18n } from 'vue-i18n';
+  import IntegrationExample from '../subComponents/IntegrationExample.vue';
 
   const infoDialogRef: any = inject('dialogRef');
   const title: string = infoDialogRef?.value?.data?.title;
@@ -27,6 +28,7 @@
     <h5 class="mb-2">{{ title }}</h5>
     <div class="mb-4">{{ message }}</div>
     <div class="h6 color-primary font-medium">{{ token }}</div>
+    <IntegrationExample />
     <div class="mt-8 flex justify-end">
       <Button type="button" class="btn-gray" @click="closeDialog">{{
         $t('global.labels.close')
