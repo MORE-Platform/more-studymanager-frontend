@@ -23,7 +23,6 @@
 
   registerOptionPreset('default-preset', {
     presetId: 'default-preset',
-    allowOnlyOneBlankDayField: false,
     daysOfMonth: {
       minValue: 1,
       maxValue: 31,
@@ -55,6 +54,8 @@
       maxValue: 31,
     },
     useBlankDay: true,
+    allowOnlyOneBlankDayField: true,
+    mustHaveBlankDayField: true,
   });
 
   const cronArray = props.cronSchedule?.split(' ');
@@ -121,8 +122,15 @@
       hasCronError.value = true;
       const error = validCronValue.getError().pop();
       if (error) {
-        cronError.value = error;
-        emit('onError', error);
+        cronError.value = t(
+          `cronSchedule.error.${error?.split('.')[0].split('(')[0]}`
+        );
+        emit(
+          'onError',
+          t(
+            `cronSchedule.error.${error?.split('.')[0].split('(')[0]}`
+          )
+        );
       }
     }
   }
@@ -158,7 +166,7 @@
         </label>
       </div>
     </form>
-    <div v-show="hasCronError && editable" class="error">
+    <div v-show="hasCronError && editable" class="error mb-4">
       {{ cronError }}
     </div>
     <CronScheduleExamples />

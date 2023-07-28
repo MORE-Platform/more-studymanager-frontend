@@ -661,6 +661,19 @@
         "specificMonth": "0 8 * 3 *"
       }
     },
+    "error": {
+      "test it": "testing",
+      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use * each. Use a ? (blank value) in either of them.",
+      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use ? each. Use a * (every day of month or every day of week) in either of them.",
+      "Expected 5 values, but got 4": "Please fill out all fields above.",
+      "Expected 5 values, but got 3": "Please fill out all fields above.",
+      "Expected 5 values, but got 2": "Please fill out all fields above.",
+      "Expected 5 values, but got 1": "Please fill out all fields above.",
+      "months field is undefined": "Please fill out all fields above.",
+      "daysOfMonth field is undefined": "Please fill out all fields above.",
+      "blank notation is not allowed in hours field": "Months field doesn't support ? (blank value). Please use a * (every hour) or a specific value.",
+      "blank notation is not allowed in months field": "Hours field doesn't support ? (blank value). Please use a * (every hour) or a specific value."
+    },
     "formTitle": "Configure your <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Schedule manually</a> ",
     "formTitleDisabled": "Configuration of your Cron Schedule",
     "additionalConfig":  "Additional Configuration",
