@@ -442,7 +442,6 @@
             {{ getError('trigger') }}
           </div>
           <div class="col-start-0 col-span-3">
-            <!-- eslint-disable vue/no-v-html -->
             <div v-if="triggerJsonError && editable" class="error mb-4">
               {{ triggerJsonError }}
             </div>
