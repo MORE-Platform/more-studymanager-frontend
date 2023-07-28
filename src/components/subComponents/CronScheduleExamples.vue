@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="cron-schedule-examples">
@@ -69,7 +68,6 @@
           {{ $t('cronSchedule.example.values.everyMinuteInSetTime') }}
         </div>
       </div>
-
     </div>
   </div>
 </template>

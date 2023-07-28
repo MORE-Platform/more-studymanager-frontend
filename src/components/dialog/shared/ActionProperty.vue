@@ -70,7 +70,7 @@
 <template>
   <div class="action-property-input grid grid-cols-5 gap-4">
     <div class="col-span-5">
-      <h6>
+      <h6 class="color-primary font-bold">
         {{ $t('intervention.dialog.label.pushNotification') }}
       </h6>
       <div>{{ $t(getActionDescription(actionObj.type)) }}</div>

@@ -47,7 +47,7 @@
       <StringPropertyInput
         v-if="property instanceof StringProperty"
         :property="property"
-        class="mb-4"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -58,7 +58,7 @@
         v-if="property instanceof StringTextProperty"
         :property="property"
         :editable="editable"
-        class="mb-4"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
         "
@@ -67,7 +67,7 @@
       <IntegerPropertyInput
         v-if="property instanceof IntegerProperty"
         :property="property"
-        class="mb-4"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -76,17 +76,16 @@
 
       <StringListPropertyInput
         v-if="property instanceof StringListProperty"
-        class="mb-4"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
         :property="property"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
         "
       />
-
       <CronSchedulerConfiguration
         v-if="property instanceof CronProperty"
-        class="mb-8"
+        :class="index < propertyList.length - 1 ? 'mb-6' : ''"
         :editable="editable"
         :cron-schedule="property.value"
         @on-valid-schedule="
@@ -99,7 +98,7 @@
 
       <InterventionTriggerConditions
         v-if="property instanceof DataCheckProperty"
-        class="mb-8"
+        :class="index < propertyList.length - 1 ? 'mb-8' : ''"
         :trigger-conditions="property"
         :editable="editable"
         @on-emit-trigger-conditions="

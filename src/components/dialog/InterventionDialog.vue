@@ -402,10 +402,11 @@
           :disabled="!editable"
         ></Textarea>
       </div>
-      <div class="col-start-0 col-span-8 mt-4 grid grid-cols-2 lg:grid-cols-3">
-        <h5 class="col-span-2" :class="editable ? 'mb-2' : ''">
-          {{ $t('intervention.props.trigger') }}*
-        </h5>
+
+      <div
+        class="section-group col-start-0 col-span-8 mt-4 grid grid-cols-2 items-end lg:grid-cols-3"
+      >
+        <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
         <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
           <div class="col-span-3">
             <div v-if="!editable" class="inline font-bold">
@@ -424,44 +425,44 @@
             />
           </div>
         </div>
-
         <div
-          v-if="triggerType"
-          class="col-span-8"
-          :class="[
-            [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
-            [triggerType ? '' : 'is-empty'],
-          ]"
+          class="section-content col-span-2 grid grid-cols-2 lg:col-span-3 lg:grid-cols-3"
         >
-          {{ getTriggerTypeDescription(triggerType) }}
-        </div>
-
-        <div v-if="getError('trigger')" class="error col-span-8 mb-4">
-          {{ getError('trigger') }}
-        </div>
-        <div class="col-start-0 col-span-3">
-          <!-- eslint-disable vue/no-v-html -->
-          <div v-if="triggerJsonError && editable" class="error mb-4">
-            {{ triggerJsonError }}
+          <div
+            v-if="triggerType"
+            class="col-span-8"
+            :class="[
+              [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
+              [triggerType ? '' : 'is-empty'],
+            ]"
+          >
+            {{ getTriggerTypeDescription(triggerType) }}
           </div>
+          <div v-if="getError('trigger')" class="error col-span-8 mb-4">
+            {{ getError('trigger') }}
+          </div>
+          <div class="col-start-0 col-span-3">
+            <!-- eslint-disable vue/no-v-html -->
+            <div v-if="triggerJsonError && editable" class="error mb-4">
+              {{ triggerJsonError }}
+            </div>
 
-          <div v-if="triggerProperties">
-            <PropertyInputs
-              :editable="editable"
-              :property-list="triggerProperties"
-              @on-property-change="updateProperty($event)"
-              @on-error="propertyError($event)"
-              @on-check-errors="checkPropertyErrors($event)"
-            />
+            <div v-if="triggerProperties">
+              <PropertyInputs
+                :editable="editable"
+                :property-list="triggerProperties"
+                @on-property-change="updateProperty($event)"
+                @on-error="propertyError($event)"
+                @on-check-errors="checkPropertyErrors($event)"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col-start-0 col-span-8 mt-8 grid grid-cols-9">
-        <div class="col-span-9 grid grid-cols-2 lg:grid-cols-3">
-          <h5 class="lg:col-span-2" :class="editable ? 'mb-2' : ''">
-            {{ $t('intervention.props.action') }}*
-          </h5>
+      <div class="section-group col-start-0 col-span-8 mt-8 grid grid-cols-9">
+        <div class="col-span-9 grid grid-cols-2 items-end lg:grid-cols-3">
+          <h5 class="lg:col-span-2">{{ $t('intervention.props.action') }}*</h5>
           <Button
             v-if="editable"
             class="disable-left lg:cols-pan-1 flex w-full justify-between"
@@ -485,37 +486,45 @@
         <div v-if="actionsEmptyError" class="error col-span-8">
           {{ actionsEmptyError }}
         </div>
-        <div v-if="actionsArray.length" class="col-span-9">
-          <div
-            v-for="(action, index) in actionsArray"
-            :key="index"
-            class="col-start-0 js-action col-span-9 mb-4"
-          >
-            <div class="mb-3 mt-4">
-              <div class="col-span-3 inline font-medium">
-                {{ nameForActionType(action.type) }}
+        <div
+          v-if="actionsArray.length"
+          class="section-content col-span-9 grid grid-cols-2 lg:grid-cols-3"
+        >
+          <div v-if="actionsArray.length" class="col-span-9">
+            <div
+              v-for="(action, index) in actionsArray"
+              :key="index"
+              class="col-start-0 js-action col-span-9"
+              :class="index < actionsArray - 1 ? 'mb-4' : ''"
+            >
+              <hr v-if="index !== 0" class="my-4" />
+
+              <div>
+                <div class="col-span-3 inline font-bold">
+                  {{ nameForActionType(action.type) }}
+                </div>
               </div>
-            </div>
 
-            <div class="col-span-4 justify-end"></div>
-            <div v-if="actionJsonError[index] && editable" class="error mb-4">
-              {{ actionJsonError[index] }}
-            </div>
+              <div class="col-span-4 justify-end"></div>
+              <div v-if="actionJsonError[index] && editable" class="error mb-4">
+                {{ actionJsonError[index] }}
+              </div>
 
-            <ActionProperty
-              :action-factories="actionFactories as ComponentFactory[]"
-              :action="action"
-              :editable="editable"
-              @on-action-prop-change="updateActionProps($event, index)"
-            />
-
-            <div class="buttons col-span-9 mt-2 text-end">
-              <Button
-                v-if="editable"
-                :icon="'pi pi-trash'"
-                :disabled="!editable"
-                @click="deleteAction(actionsArray[index].actionId, index)"
+              <ActionProperty
+                :action-factories="actionFactories as ComponentFactory[]"
+                :action="action"
+                :editable="editable"
+                @on-action-prop-change="updateActionProps($event, index)"
               />
+
+              <div class="buttons col-span-9 mt-2 text-end">
+                <Button
+                  v-if="editable"
+                  :icon="'pi pi-trash'"
+                  :disabled="!editable"
+                  @click="deleteAction(actionsArray[index].actionId, index)"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -570,5 +579,12 @@
         color: white;
       }
     }
+  }
+
+  .dialog #interventionDialogForm .section-group .section-content {
+    margin-top: 10px;
+    border: 1px solid var(--bluegray-50);
+    padding: 20px;
+    border-radius: 4px;
   }
 </style>
