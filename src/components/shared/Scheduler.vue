@@ -428,21 +428,21 @@
           {{ $t('cronSchedule.example.title') }}
         </h5>
         <div class="mb-1">
-          <div class="color-primary font-medium">{{
-            $t('scheduler.labels.event.example.titles.singleDay')
-          }}</div>
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.singleDay') }}
+          </div>
           <div>{{ $t('scheduler.labels.event.example.values.singleDay') }}</div>
         </div>
         <div class="mb-1">
-          <div class="color-primary font-medium">{{
-            $t('scheduler.labels.event.example.titles.series')
-          }}</div>
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.series') }}
+          </div>
           <div>{{ $t('scheduler.labels.event.example.values.series') }}</div>
         </div>
         <div class="mb-1">
-          <div class="color-primary font-medium">{{
-            $t('scheduler.labels.event.example.titles.fullTimespan')
-          }}</div>
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.fullTimespan') }}
+          </div>
           <div>
             {{ $t('scheduler.labels.event.example.values.fullTimespan') }}
           </div>

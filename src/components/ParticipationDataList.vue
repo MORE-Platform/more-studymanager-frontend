@@ -159,7 +159,10 @@
     <DatapointList :study-id="studyId" class="mb-14"></DatapointList>
 
     <div>
-      <h4 v-if="Object.keys(groupedParticipantData).length" class="color-primary mb-4 font-bold">
+      <h4
+        v-if="Object.keys(groupedParticipantData).length"
+        class="color-primary mb-4 font-bold"
+      >
         {{ $t('data.dataList.title') }}
       </h4>
       <Accordion

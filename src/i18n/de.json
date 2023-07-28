@@ -770,7 +770,7 @@
         "setDatesDesc": "Mit Start- und Endzeit können Sie eine Zeitspanne für eine Datenerhebung an einem Tag festlegen. Die Datenerhebung kann auch ganztags gesetzt werden. Durch die Angaben von Wiederholdungen könenn Sie eine Serie von Datenerhebungen definieren. Alternativ dazu können Sie einen gesamten Zeitraum definieren.",
         "repeat": "Wiederhole die oben definierte Zeitspanne",
         "repeatDesc": "Um die gesetzte Zeitspanne zu wiederholen, können Sie dies bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird.",
-        "example": { 
+        "example": {
           "titles": {
             "singleDay": "Einmalige Datenerhebung",
             "series": "Serie von Datenerhebungen über 10 Tage",
@@ -779,9 +779,9 @@
           "values": {
             "singleDay": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00",
             "series": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00, Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
-            "fullTimespan": "Start: 27/07/2024 08:00, End: 27/09/2024 20:00, (Optional: ganztägig)",
+            "fullTimespan": "Start: 27/07/2024 08:00, End: 27/09/2024 20:00, (Optional: ganztägig)"
           }
-        
+        }
       }
     },
     "placeholder": {
