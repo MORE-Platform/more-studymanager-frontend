@@ -44,6 +44,30 @@
           {{ $t('cronSchedule.example.values.specificMonth') }}
         </div>
       </div>
+      <div>
+        <div class="color-primary">
+          {{ $t('cronSchedule.example.titles.everyFiveMinutes') }}
+        </div>
+        <div class="font-medium">
+          {{ $t('cronSchedule.example.values.everyFiveMinutes') }}
+        </div>
+      </div>
+      <div>
+        <div class="color-primary">
+          {{ $t('cronSchedule.example.titles.specificHourRange') }}
+        </div>
+        <div class="font-medium">
+          {{ $t('cronSchedule.example.values.specificHourRange') }}
+        </div>
+      </div>
+      <div class="col-span-2">
+        <div class="color-primary">
+          {{ $t('cronSchedule.example.titles.everyMinuteInSetTime') }}
+        </div>
+        <div class="font-medium">
+          {{ $t('cronSchedule.example.values.everyMinuteInSetTime') }}
+        </div>
+      </div>
     </div>
   </div>
 </template>

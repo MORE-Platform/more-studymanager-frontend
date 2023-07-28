@@ -137,6 +137,7 @@
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyGroup.plural')"
+      :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
       :rows="studyGroupStore.studyGroups"
       :editable-access="getEditAccess()"

@@ -19,10 +19,6 @@
   <div class="cron-schedule-info mb-3">
     <div class="gap-2">
       <h6 class="mb-2 font-bold">{{ $t('cronSchedule.singular') }}</h6>
-
-      <div class="mb-1">
-        <span>{{ $t('cronSchedule.limitDescription') }}</span>
-      </div>
       <div class="inline">
         <span v-if="editable">
           <!-- eslint-disable vue/no-v-html -->

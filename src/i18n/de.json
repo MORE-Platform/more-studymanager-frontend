@@ -1,5 +1,5 @@
 {
-  "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
+  "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie, indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
 
   "global": {
     "labels": {
@@ -33,7 +33,8 @@
       "lastDataReceived": "Letzte Daten erhalten",
       "to": "zu",
       "message": "Nachricht",
-      "option": "Option"
+      "option": "Option",
+      "data": "Daten"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -42,7 +43,6 @@
       "noGroup": "Keine Gruppe"
     },
     "header": {
-      "privateBeta": "Private Beta",
       "logout": "Ausloggen",
       "backToDashboard": "Dashboard"
     },
@@ -54,14 +54,14 @@
   "studyNavigation": {
     "accessDialog": {
       "header": "Zugriff verweigert",
-      "permissionWarningMsg": ". Bitte kontaktiere deinen Studien-Administrator, wenn du Zugang zu diesem Abschnitt benötigst.",
+      "permissionWarningMsg": ". Bitte kontaktieren Sie Ihren Studien-Administrator, wenn Sie Zugang zu diesem Abschnitt benötigen.",
       "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: "
     },
     "tabs": {
       "overview": "Überblick",
       "data": "Monitoring",
-      "participants": "Teilnehmer",
-      "observations": "Datenerhebung",
+      "participants": "Teilnehmer:innen",
+      "observations": "Datenerhebungen",
       "interventions": "Interventionen",
       "integration": "Integrationen"
     },
@@ -92,7 +92,7 @@
       "consentInfo": "Berechtigungsinformation",
       "language": "Sprache",
       "studyGroup":  "Studiengruppe",
-      "finishText": "Endnachricht der Studie"
+      "finishText": "Information nach Studienabschluss"
     },
     "roles": {
       "admin": "Studien-Administrator",
@@ -121,7 +121,7 @@
         },
         "toCompleted":{
           "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
-          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich neue Daten einzubringen oder weiter teilzunehmen.",
+          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer:innen auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich, neue Daten einzubringen oder weiter teilzunehmen.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
         }
       },
@@ -144,9 +144,9 @@
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse der Studie hinzu, über diese die Teilehmer bei Problemen erreichen können.",
-      "addContactPerson": "Bitte fügen Sie eine Kontaktperson der Studie hinzu, welche die Teilnehmer bei Problemen kontaktieren können.",
-      "addContactEmail": "Bitte fügen Sie eine Kontaktemail der Studie hinzu, welche die Teilnehmer bei Problemen anschreiben können."
+      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
+      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer bei Problemen kontaktieren können.",
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer bei Problemen anschreiben können."
     },
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
@@ -157,13 +157,13 @@
       "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
       "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
       "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu.",
-      "institute": "Gib das Institut der Studie ein.",
-      "contactPerson": "Gib den Namen der Kontaktperson ein.",
-      "contactEmail": "Gib eine Kontakt Emailadresse ein.",
-      "contactTel": "Gib eine Kontakt Telephonnummer ein.",
+      "institute": "Geben Sie das durchführende Institut der Studie an.",
+      "contactPerson": "Geben Sie den Namen einer Kontaktperson an.",
+      "contactEmail": "Geben Sie eine Kontakt-Emailadresse an.",
+      "contactTel": "Geben Sie eine Kontakt-Telefonnummer an.",
       "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt.",
-      "finishTextDesc": "Die Endnachricht wird auf der App nach Beendigung der Studie angezeigt. Ist keine gesetzt, wird eine Default-Nachricht verwendet.",
-      "finishText": "Gib eine Endnachricht ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird. Wenn keine spezifische Endnachricht gesetzt wurde, wird ein Default-Text auf der App angezeigt."
+      "finishTextDesc": "Diese Information wird in der App nach Beendigung der Studie angezeigt. Ist keine gesetzt, wird eine Default-Information verwendet.",
+      "finishText": "Geben Sie Informatonen ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird."
     },
     "dialog": {
       "header":{
@@ -177,10 +177,10 @@
         "studyStart": "Studienstart",
         "studyEnd": "Studienende",
         "contactInfo": "Kontaktinformationen",
-        "contactPerson": "Kontaktperson",
+        "contactPerson": "Name",
         "institute": "Institut",
-        "contactEmail": "Kontakt Emailadresse",
-        "contactTel": "Kontakt Telefonnummer"
+        "contactEmail": "E-mail",
+        "contactTel": "Telefon"
       },
       "deleteMsg": {
         "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden. Zur Zeit ist es nur möglich eine Studie ohne ihre Daten zu löschen.",
@@ -193,10 +193,10 @@
       },
       "description": {
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
-        "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist den Studien-Mitarbeitern zugänglich.",
-        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Diese sollte den Teilnehmer:innen eine kurze Beschreibung über die Studie und evtl. ihren Aufgaben preisgeben.",
-        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt und muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen. Es soll generelle Informationen über die aufzuzeichnenden Daten geben.",
-        "contactData": "Diese Kontaktdaten werden auf der App den TeilnehmerInnen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Absolvierung der Studie oder einzelner Tasks gibt."
+        "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
+        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten.",
+        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
+        "contactData": "Diese Kontaktdaten werden in der App den Teilnehmer:innen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Teilnahme an der Studie gibt."
       },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
@@ -212,6 +212,7 @@
       },
       "action": {
         "addStudy": "Neue Studie hinzufügen",
+        "importStudy": "Studie importieren",
         "copyUrl": "Studie teilen"
       }
     }
@@ -235,9 +236,10 @@
       }
     },
     "groupList": {
+      "description": "Studiengruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventionen zu gruppieren",
       "placeholder": {
         "title": "Stellen Sie einen Titel bereit",
-        "purpose": "Stellen sie die Zielsetzung für diese Gruppe bereit",
+        "purpose": "Beschreiben Sie die Zielsetzung für diese Gruppe",
         "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet."
       },
       "action": {
@@ -271,7 +273,7 @@
     },
     "collaboratorList": {
       "title": "Studien-Mitarbeiter",
-      "description": "Studien-Mitarbeitern können unterschiedliche Rollen zugeteilt werden, welche den Zugang und die Berechtigungen der jeweiligen Mitarbeiter festlegen. Ein <b>Studien-Administrator</b> hat Zugriff auf alles und keine Einschränkungen. Ein <b>Studien-Operator</b> kann alles beaufsichtigen, bearbeiten und einsehen. Ein <b>Studien-Beobachter</b> kann jedoch nur die grundsätzlichen Infromationen (Überblick Tab) und die eingehenden Daten (Monitoring Tab) einsehen und hat keine Berechtigungen irgendetwas zu verändern oder zu bearbeiten.",
+      "description": "Studien-Mitarbeiter können eine oder mehrer Rollen haben. Ein <b>Studien-Administrator</b> hat keine Einschränkungen. Ein <b>Studien-Operator</b> kann die Studeie beaufsichtigen, bearbeiten und einsehen, sieht aber keine Daten. Ein <b>Studien-Beobachter</b> kann nur die grundsätzlichen Informationen (Overview) und die eingehenden Daten (Monitoring Tab) einsehen.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
@@ -290,10 +292,10 @@
 
   "data": {
     "title": "Monitoring",
-    "description": "Die während der Studie gesammelten Daten werden in der darunterliegenden Liste angezeigt.",
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10sec aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhaltene Datenpunkte pro Datenerhebungsmodul"
+      "title": "Erhaltene Datenpunkte pro Datenerhebung"
     },
     "dataPointsList": {
       "lastDatapoints": "Letzte Datenpunkte",
@@ -314,35 +316,35 @@
       "header": {
         "delete": "Teilnehmer:in löschen",
         "deleteWithData": "Daten löschen",
-        "edit": "Teilnehmer bearbeiten",
-        "create": "Teilnehmer hinzufügen",
+        "edit": "Teilnehmer:in bearbeiten",
+        "create": "Teilnehmer:in hinzufügen",
         "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen"
       },
       "msg": {
-        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?",
-        "deleteWithData": "Sollen alle Daten des Teilnehmers miteinbezogen werden?"
+        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
+        "deleteWithData": "Sollen alle Daten gelöscht werden?"
       },
       "btn": {
         "distributeBtn": "Zuweisen",
-        "delete": "Möchten Sie diesen Teilnehmer wirklich löschen?"
+        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?"
       },
       "deleteMsg": {
-        "warning": "Ein/ gelöschte/r Teilnehmer/in kann nicht wiederhergestellt werden. Wenn Sie diese/n Teilnehmer/in löschen, können Sie auf diese/n zu einem späteren Zeitpunkt nicht mehr zugreifen. Sie haben die Option die/den Teilnehmer/in mit oder ohne der gesammelten Daten zu löschen.",
-        "intro": "Sie sind kurz davor folgende/n Teilnehmer/in zu löschen:",
-        "confirm": "Möchten Sie diese/n Teilnehmer/in wirklich löschen?",
+        "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen.",
+        "intro": "Sie sind kurz davor eine Teilnehmer:in zu löschen:",
+        "confirm": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
         "deleteWithoutData": "Löschen",
         "deleteWithData": "Inklusive Daten löschen"
       }
     },
     "participantsList": {
-      "title": "Teilnehmer",
-      "description": "Hier wird die Liste Ihrer Studienteilnehmer angezeigt. Um die Liste zu erweitern, können Sie Teilnehmer hinzufügen oder importieren.",
-      "emptyListMsg": "Verwalten oder fügen Sie Studien Teilnehmer hinzu. Ihre Studienteilnehmer werden hier aufgelistet.",
+      "title": "Teilnehmer:innen",
+      "description": "Sie können Teilnehmer:innen hinzufügen durch Import eines CSV mit Alias-Namen, oder erstellen Sie sie manuell. Dann können Teilnehmer:innen verteilt werden über die Gruppen. Teilnehmer:innen können auch als CSV exportiert werden.",
+      "emptyListMsg": "Fügen Sie Teilnehmer:innen zu Ihrer Studie hinzu",
       "action": {
         "distribute": "Automatische Gruppenzuweisung",
         "import": "CSV importieren",
         "export": "CSV exportieren",
-        "add": "Teilnehmer hinzufügen"
+        "add": "Teilnehmer:innen hinzufügen"
       },
       "labels": {
         "add1": "1 hinzufügen",
@@ -352,9 +354,9 @@
         "add50": "50 hinzufügen"
       },
       "distributeMsg": {
-        "intro": "Sie sind kurz davor alle Studienteilnehmer/innen dieser Studie automatisch auf Gruppen aufzuteilen.",
-        "warning": "Die automatische Zuweisung von Studienteilnehmer/innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Wurden die Teilnehmer/innen schon Gruppen zugewiesen, werden trotzdem alle Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
-        "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer/innen automatisch Studiengruppen zuweisen?"
+        "intro": "Sie können die Studienteilnehmer:innen automatisch auf alle vorhandenen Gruppen aufteilen.",
+        "warning": "Die automatische Zuweisung von Studienteilnehmer:innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Waren Teilnehmer:innen schon Gruppen zugewiesen, werden ALLE Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
+        "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer:innen automatisch Studiengruppen zuweisen?"
       }
     }
   },
@@ -375,37 +377,37 @@
     },
     "observationList": {
       "title": "Datenerhebung",
-      "description": "Ein Datenerhebungsmodul kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln. Das Datenerhebungsmodul kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt das Modul für alle Gruppen.",
-      "emptyListMsg": "Verwalten oder fügen Sie ein Datenerhebungsmodul hinzu. Diese werden hier angezeigt.",
+      "description": "Eine Datenerhebung kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln. Eine Datenerhebung kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt die Datenerhebung für alle Gruppen.",
+      "emptyListMsg": "Verwalten oder fügen Sie eine Datenerhebung hinzu. Diese werden hier angezeigt.",
       "action": {
-        "add": "Datenerhebungsmodul hinzufügen"
+        "add": "Datenerhebung hinzufügen"
       }
     },
     "dialog": {
       "header": {
-        "delete": "Datenerhebungsmodul löschen",
-        "clone": "Datenerhebungsmodul klonen",
-        "create": "Datenerhebungsmodul hinzufügen",
-        "edit": "Datenerhebungsmodul bearbeiten",
-        "view": "Datenerhebungsmodul Details"
+        "delete": "Datenerhebung löschen",
+        "clone": "Datenerhebung klonen",
+        "create": "Datenerhebung hinzufügen",
+        "edit": "Datenerhebung bearbeiten",
+        "view": "Details einer Datenerhebung"
       },
       "label": {
-        "observationTitle": "Datenerhebungsmodulstitel"
+        "observationTitle": "Titel"
       },
       "msg": {
-        "delete": "Ein gelöschtes Datenerhebungsmodul kann nicht mehr wiederhergestellt werden! Möchten Sie das Aufzeichnungsmodul wirklich löschen?",
-        "hiddenInfo": "Wenn ein Datenerhebungsmodul versteckt ist, wird es, sofern der Teilnehmer eingelogged ist, automatisch im Hintergrund gestartet. Das Datenerhebungsmodul wird nicht bei den To-Dos auf dem Zeitplan Screen der App angezeigt."
+        "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
+        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der Teilnehmer eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
       },
       "deleteMsg": {
-        "warning": "Eine gelöschtes Datenerhebungsmodul kann nicht wiederhergestellt werden. Wenn Sie das Datenerhebungsmodul löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
-        "intro": "Sie sind kurz davor folgendes Datenerhebungsmodul zu löschen:",
-        "confirm": "Möchten Sie dieses Datenerhebungsmodul wirklich löschen?"
+        "warning": "Eine gelöschte Datenerhebung kann nicht wiederhergestellt werden. Wenn Sie die Datenerhebung löschen, gehen alle Konfigurationen verloren.",
+        "intro": "Sie sind kurz davor folgende Datenerhebung zu löschen:",
+        "confirm": "Möchten Sie diese Datenerhebung wirklich löschen?"
       }
     },
     "factory": {
       "limeSurvey": {
-        "title": "Lime Survey Datenerhebung",
-        "description": "Diese Datenerhebung ermöglicht dir ein über die More Platform erstelltes Lime Survey mit More zu verknüpfen.",
+        "title": "Lime Survey",
+        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden.",
         "configProps": {
           "idName": "Fragebogen",
           "idDesc": "Die ID des Lime Surveys"
@@ -413,34 +415,34 @@
       },
       "polarVerity": {
         "title": "Polar Verity Sensor",
-        "description": "Diese Datenerhebung ermöglicht es dir Herzfrequenzdaten über den Polar Verity Sensor zu sammeln. Es werden keine zusätzlichen Eigenschaften unterstützt."
+        "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln."
 
       },
       "external": {
         "title": "Externe Datenerhebung",
-        "description": "Ein Kontrolldatenerhebugnsmodul für Daten, die über die externe API Schnittstelle gesammelt werden sollen."
+        "description": "Eine Daterhebung für Daten, die über die externe API Schnittstelle gesammelt werden sollen."
       },
       "gpsMobile": {
         "title": "GPS Mobile Sensor",
-        "description": "Diese Datenerhebung ermöglicht es GPS Daten über den Smartphone Sensor zu sammeln.",
+        "description": "Diese Datenerhebung ermöglicht es, Ortsdaten über das Smartphone zu sammeln.",
         "configProps": {
-          "measurementName": "Messungsinterval",
-          "measurementDesc": "Messungsinterval in Millisekunden, 30k bis 600k"
+          "measurementName": "Messintervall",
+          "measurementDesc": "Messintervall in Millisekunden, 30k bis 600k"
         }
       },
       "simpleQuestion": {
-        "title": "Frage Datenerhebung",
-        "description": "Diese Datenerhebung ermöglicht es dir eine einfache Multiple Choice Frage zu erstellen.",
+        "title": "Einfache Frage",
+        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
         "configProps": {
           "questionName": "Frage",
-          "questionDesc": "Die Frage, die du stellen möchtest.",
+          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
           "answerName": "Antworten",
           "answerDesc": "Mögliche Antworten (min. 2, max.5)"
         }
       },
       "accelerometerMobile": {
         "title": "Accelerometer Mobile Sensor",
-        "description": "Diese Datenerhebung ermöglicht es dir Bewegungsdaten über das Smartphone zu sammeln."
+        "description": "Diese Datenerhebung ermöglicht es, Bewegungsdaten über das Smartphone zu sammeln."
       }
     },
     "error":  {
@@ -452,7 +454,7 @@
     },
     "placeholder": {
       "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
-      "enterMainPurpose": "Fügen Sie die Hauptzielsetzung der Studie hinzu."
+      "enterMainPurpose": "Fügen Sie die Ziele der Studie hinzu."
     }
   },
 
@@ -484,6 +486,14 @@
       "placeholder": {
         "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
         "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
+      },
+      "example": {
+        "title": "Beispiel",
+        "connectTitle": "Verbinden Sie sich mit der Daten API via token",
+        "filledExample": "Ausgefülltes Beispiel",
+        "yourDomain": "DOMÄNE",
+        "yourToken": "TOKEN",
+        "yourData": "DATEN OBJEKT"
       },
       "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
       "msg": {
@@ -653,23 +663,29 @@
         "hourly": "Jede Stunde um xx:30",
         "daily": "Jeder Tag um 12:00",
         "specificDayOfMonth": "Jeder 4ter des Monats",
-        "specificMonth": "Jeder Tag um 8:00 im März"
+        "specificMonth": "Jeder Tag um 8:00 im März",
+        "everyFiveMinutes": "Jede 5 Minuten",
+        "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
+        "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00"
       },
       "values": {
         "everyMinute": "* * ? * *",
         "hourly": "30 * ? * *",
         "daily": "0 12 ? * *",
         "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 *"
+        "specificMonth": "0 8 * 3 *",
+        "everyFiveMinutes": "0/5 * ? * *",
+        "everyMinuteInSetTime": "0-5 * ? * *",
+        "specificHourRange": "30 8-10 ? * *"
       }
     },
     "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
-    "cronScheduleTip": "Weiter Infromationen zu den Cron Scheduler Werten",
+    "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
     "quickStart": "oder verwenden Sie den <a href=\"https://crontab.guru/\" target=\"_blank\"> Cron Tab Guru</a>, um schnell starten zu können.",
     "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
-    "limitDescription": "Diese Version des More Cron Schedulers unterstützt nur Nummern, * oder ?. 'Ausdrücke, wie z.B. 0/1 oder 1-10 werden noch nicht unterstützt."
+    "limitDescription": ""
   },
 
   "scheduler": {
@@ -765,19 +781,30 @@
         "first": "Erstes Ereignis",
         "allDay": "Ganztags",
         "setDates": "Setze den Zeitrahmen",
-        "setDatesDesc": "Setze das erste Auftreten des Datenerhebungsmoduls. Dieser Zeitrahmen kann von einem einzelnen Tag bis zu einer beliebigen Zeitspanne gesetzt werden. Das Datenerhebungsmodul ist in dieser Zeitspanne aktiv und sammelt Daten. Beachte, dass die gegebene Zeitspanne (falls ganztags nicht angehakt ist) die Startzeit am ersten und die Endzeit am letzten Tag der Aufzeichnung beschreibt.",
+        "setDatesDesc": "Mit Start- und Endzeit können Sie eine Zeitspanne für eine Datenerhebung an einem Tag festlegen. Die Datenerhebung kann auch ganztags gesetzt werden. Durch die Angaben von Wiederholdungen könenn Sie eine Serie von Datenerhebungen definieren. Alternativ dazu können Sie einen gesamten Zeitraum definieren.",
         "repeat": "Wiederhole die oben definierte Zeitspanne",
-        "repeatDesc": "Wenn Sie die oben gesetzte Zeitspanne wiederholen, können Sie diese bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird. Wenn Sie z.B. eine Datenerhebung täglich wiederholen wollen, müssen Sie beide Datumsangaben auf denselben Tag setzen, und eine tägliche Wiederholung auswählen. Die Daten werden dann täglich, bis zur angegebenen Wiederholungsanzahl der Tage, zur selben ausgewählten Zeit erfasst. "
-
+        "repeatDesc": "Um die gesetzte Zeitspanne zu wiederholen, können Sie dies bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird.",
+        "example": {
+          "titles": {
+            "singleDay": "Einmalige Datenerhebung",
+            "series": "Serie von Datenerhebungen über 10 Tage",
+            "fullTimespan": "Eine Datenerhebung über ganze Zeitspanne von zwei Monaten"
+          },
+          "values": {
+            "singleDay": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00",
+            "series": "Start: 27/07/2024 14:00, End: 27/07/2024 16:00, Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
+            "fullTimespan": "Start: 27/07/2024 08:00, End: 27/09/2024 20:00, (Optional: ganztägig)"
+          }
+        }
       }
     },
     "placeholder": {
       "chooseMonth": "Monat auswählen",
       "enterDayOfMonth": "Tag des Monats einfügen",
-      "chooseGeneralInterval": "Wähle ein Intervall",
-      "chooseDayInterval": "Wähle ein Tagesintervall",
-      "chooseRepetitionEnd": "Wähle das Wiederholungsende",
-      "enterRepeatCount": "Füge die Anzahl der Wiederholungen ein"
+      "chooseGeneralInterval": "Wählen Sie ein Intervall",
+      "chooseDayInterval": "Wählen Sie ein Tagesintervall",
+      "chooseRepetitionEnd": "Wählen Sie das Wiederholungsende",
+      "enterRepeatCount": "Fügen Sie die Anzahl der Wiederholungen ein"
     }
   },
 
@@ -786,13 +813,13 @@
     "editBtn": "Bearbeiten",
     "downloadBtn": "Herunterladen",
     "moreTable": {
-      "editBtn": "Bearbeite die gezeigten Eckdaten.",
+      "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "saveChanges": "Änderungen speichern",
       "cancelAction": "Abbrechen",
       "deleteStudyBtn": "Studie löschen",
-      "deleteStudyGroupBtn": "Studeingruppe löschen",
+      "deleteStudyGroupBtn": "Studiengruppe löschen",
       "copyStudyUrl": "Studie teilen",
-      "showStudy": "Klicke auf die Zeile, um auf die Studiendetails seite zu kommen."
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
     }
   },
 
@@ -804,5 +831,11 @@
     "accepted": "akzeptiert",
     "droppedOut": "abgebrochen",
     "kickedOut": "rausgeschmissen"
-  }
+  },
+  "inputModel": {
+    "enterValue": "Bitte geben Sie einen Wert hinzu."
+  },
+
+  "title": "Titel",
+  "message": "Nachricht"
 }

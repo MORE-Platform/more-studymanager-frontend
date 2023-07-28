@@ -30,9 +30,9 @@
         >{{ $t(property.name) }}<span v-if="property.required">*</span></label
       >
     </h6>
-    <small v-if="props.property.description" :id="property.id + '-help'">{{
-      $t(props.property.description)
-    }}</small>
+    <div v-if="props.property.description" :id="property.id + '-help'">
+      {{ $t(props.property.description) }}
+    </div>
 
     <InputText
       :id="property.id"
