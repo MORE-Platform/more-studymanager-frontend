@@ -655,14 +655,20 @@
         "hourly": "Jede Stunde um xx:30",
         "daily": "Jeder Tag um 12:00",
         "specificDayOfMonth": "Jeder 4ter des Monats",
-        "specificMonth": "Jeder Tag um 8:00 im März"
+        "specificMonth": "Jeder Tag um 8:00 im März",
+        "everyFiveMinutes": "Jede 5 Minuten",
+        "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
+        "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00"
       },
       "values": {
         "everyMinute": "* * ? * *",
         "hourly": "30 * ? * *",
         "daily": "0 12 ? * *",
         "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 *"
+        "specificMonth": "0 8 * 3 *",
+        "everyFiveMinutes": "0/5 * ? * *",
+        "everyMinuteInSetTime": "0-5 * ? * *",
+        "specificHourRange": "30 8-10 ? * *"
       }
     },
     "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
