@@ -3,7 +3,7 @@
 <template>
   <div class="cron-schedule-examples">
     <h6 class="mb-1 font-medium">{{ $t('cronSchedule.example.title') }}</h6>
-    <div class="examples grid grid-cols-3 gap-6 lg:grid-cols-5">
+    <div class="examples grid grid-cols-3 gap-2 lg:grid-cols-5">
       <div>
         <div class="color-primary">
           {{ $t('cronSchedule.example.titles.everyMinute') }}
