@@ -423,28 +423,32 @@
       <div class="col-span-6 mb-1">
         {{ $t('scheduler.labels.event.setDatesDesc') }}
       </div>
-      <div class="examples col-span-6 mb-4">
+      <div class="col-span-6 mb-4">
         <h5 class="text-color mb-1 font-bold">
           {{ $t('cronSchedule.example.title') }}
         </h5>
-        <div class="mb-1">
-          <div class="color-primary font-medium">
-            {{ $t('scheduler.labels.event.example.titles.singleDay') }}
+        <div class="examples">
+          <div class="mb-1">
+            <div class="color-primary font-medium">
+              {{ $t('scheduler.labels.event.example.titles.singleDay') }}
+            </div>
+            <div>
+              {{ $t('scheduler.labels.event.example.values.singleDay') }}
+            </div>
           </div>
-          <div>{{ $t('scheduler.labels.event.example.values.singleDay') }}</div>
-        </div>
-        <div class="mb-1">
-          <div class="color-primary font-medium">
-            {{ $t('scheduler.labels.event.example.titles.series') }}
+          <div class="mb-1">
+            <div class="color-primary font-medium">
+              {{ $t('scheduler.labels.event.example.titles.series') }}
+            </div>
+            <div>{{ $t('scheduler.labels.event.example.values.series') }}</div>
           </div>
-          <div>{{ $t('scheduler.labels.event.example.values.series') }}</div>
-        </div>
-        <div class="mb-1">
-          <div class="color-primary font-medium">
-            {{ $t('scheduler.labels.event.example.titles.fullTimespan') }}
-          </div>
-          <div>
-            {{ $t('scheduler.labels.event.example.values.fullTimespan') }}
+          <div class="mb-1">
+            <div class="color-primary font-medium">
+              {{ $t('scheduler.labels.event.example.titles.fullTimespan') }}
+            </div>
+            <div>
+              {{ $t('scheduler.labels.event.example.values.fullTimespan') }}
+            </div>
           </div>
         </div>
       </div>
