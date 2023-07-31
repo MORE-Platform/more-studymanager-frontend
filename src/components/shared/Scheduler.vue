@@ -11,6 +11,7 @@
   import { Nullable } from 'vitest';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
+  import dayjs from 'dayjs';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -241,7 +242,7 @@
     end.value = new Date(end.value);
   }
   function save() {
-    const s = start.value;
+    let s = start.value;
     const e = end.value;
 
     s.setMilliseconds(0);
@@ -250,8 +251,28 @@
     e.setSeconds(0);
 
     if (allDayChecked.value) {
-      s.setHours(0, 0, 0);
-      e.setHours(23, 59, 59);
+      if (
+        studyStore.study.plannedStart &&
+        dayjs(s).format('YYYY-MM-DD') > studyStore.study.plannedStart
+      ) {
+        s.setHours(0, 0, 0);
+      } else if (
+        studyStore.study.plannedStart &&
+        dayjs(s).format('YYYY-MM-DD') === studyStore.study.plannedStart
+      ) {
+        s = new Date();
+      }
+      if (
+        studyStore.study.plannedEnd &&
+        dayjs(e).format('YYYY-MM-DD') < studyStore.study.plannedEnd
+      ) {
+        e.setHours(23, 59, 59);
+      } else if (
+        studyStore.study.plannedEnd &&
+        dayjs(e).format('YYYY-MM-DD') === studyStore.study.plannedEnd
+      ) {
+        e.setHours(0, 0, 0);
+      }
     }
 
     if (repeatCount.value && repeatByDay.value?.length) {
