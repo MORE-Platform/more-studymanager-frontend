@@ -664,6 +664,20 @@
         "specificMonth": "0 8 * 3 *"
       }
     },
+    "error": {
+      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide einen * verwenden. Bitte verwenden Sie ein ? (leerer Wert) in einem der Felder.",
+      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide den Wert ? verwenden. Bitte verwenden Sie einen * (jeden Tag des Monats oder jeden Tag der Woche) in einem der Felder.",
+      "Expected 5 values, but got 4": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 3": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 2": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 1": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "months field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "hours field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "daysOfMonth field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "blank notation is not allowed in minutes field": "Das Minuten Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Minute) oder einen spezifischen Wert.",
+      "blank notation is not allowed in hours field": "Das Stunden Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Stunde) oder einen spezifischen Wert.",
+      "blank notation is not allowed in months field": "Das Monats Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jedes Monat) oder einen spezifischen Wert."
+    },
     "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",

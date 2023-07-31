@@ -120,17 +120,15 @@
       emit('onValidSchedule', returnCronSchdeuleString.value);
     } else {
       hasCronError.value = true;
-      const error = validCronValue.getError().pop();
+      let error = validCronValue.getError().pop();
+      error = error?.split('.')[0].split('(')[0];
+      if (error && error[error.length - 1] === ' ') {
+        error = error.substring(0, error.length - 1);
+      }
+
       if (error) {
-        cronError.value = t(
-          `cronSchedule.error.${error?.split('.')[0].split('(')[0]}`
-        );
-        emit(
-          'onError',
-          t(
-            `cronSchedule.error.${error?.split('.')[0].split('(')[0]}`
-          )
-        );
+        cronError.value = t(`cronSchedule.error.${error}`);
+        emit('onError', t(`cronSchedule.error.${error}`));
       }
     }
   }
