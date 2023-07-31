@@ -242,7 +242,7 @@
     end.value = new Date(end.value);
   }
   function save() {
-    const s = start.value;
+    let s = start.value;
     const e = end.value;
 
     s.setMilliseconds(0);
@@ -256,12 +256,22 @@
         dayjs(s).format('YYYY-MM-DD') > studyStore.study.plannedStart
       ) {
         s.setHours(0, 0, 0);
+      } else if (
+        studyStore.study.plannedStart &&
+        dayjs(s).format('YYYY-MM-DD') === studyStore.study.plannedStart
+      ) {
+        s = new Date();
       }
       if (
         studyStore.study.plannedEnd &&
         dayjs(e).format('YYYY-MM-DD') < studyStore.study.plannedEnd
       ) {
         e.setHours(23, 59, 59);
+      } else if (
+        studyStore.study.plannedEnd &&
+        dayjs(e).format('YYYY-MM-DD') === studyStore.study.plannedEnd
+      ) {
+        e.setHours(0, 0, 0);
       }
     }
 
