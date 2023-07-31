@@ -87,7 +87,7 @@
     {
       id: 'import',
       icon: 'pi pi-upload',
-      label: 'Import Study',
+      label: t('study.studyList.action.importStudy'),
       options: {
         type: 'fileUpload',
         values: [],
@@ -159,9 +159,7 @@
       icon: 'pi pi-chart-bar',
       tooltip: t('study.studyList.labels.exportStudyData'),
       visible: (data) =>
-        data.userRoles.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
-        ),
+        data.userRoles.some((r: any) => [StudyRole.Admin].includes(r)),
     },
   ];
   const frontRowActions: MoreTableAction[] = [

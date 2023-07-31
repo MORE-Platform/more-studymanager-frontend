@@ -55,6 +55,7 @@
       .then((response) =>
         response.data.map((item) => {
           return {
+            participantId: item.participantNamedId?.id,
             participantAlias: item.participantNamedId?.title || '-',
             observationId: item.observationNamedId?.id || -1,
             observationTitle:
@@ -91,6 +92,12 @@
   }
 
   const studyDataColumns: MoreTableColumn[] = [
+    {
+      field: 'participantId',
+      header: t('global.labels.id'),
+      editable: false,
+      sortable: true,
+    },
     {
       field: 'participantAlias',
       header: t('participants.singular'),
@@ -152,7 +159,10 @@
     <DatapointList :study-id="studyId" class="mb-14"></DatapointList>
 
     <div>
-      <h4 class="color-primary mb-4 font-bold">
+      <h4
+        v-if="Object.keys(groupedParticipantData).length"
+        class="color-primary mb-4 font-bold"
+      >
         {{ $t('data.dataList.title') }}
       </h4>
       <Accordion

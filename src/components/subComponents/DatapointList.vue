@@ -142,14 +142,18 @@
     </div>
 
     <DataTable :value="dataPoints">
-      <Column field="observation" header="Observation"></Column>
-      <Column field="participant" header="Participant"></Column>
-      <Column field="time" header="Time" sortable>
+      <Column field="observationId" :header="$t('global.labels.id')"></Column>
+      <Column field="observation" :header="$t('observation.singular')"></Column>
+      <Column
+        field="participant"
+        :header="$t('participants.singular')"
+      ></Column>
+      <Column field="time" :header="$t('global.labels.time')" sortable>
         <template #body="slotProps">
           {{ formatTime(slotProps['data']['time']) }}
         </template>
       </Column>
-      <Column field="data" header="Data">
+      <Column field="data" :header="$t('global.labels.data')">
         <template #body="slotProps">
           {{ formatDataPoints(slotProps['data']['data']) }}
         </template>

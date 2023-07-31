@@ -40,7 +40,7 @@
         ><span v-if="property.required">*</span></label
       >
     </h6>
-    <small>{{ $t(props.property.description) }}</small>
+    <div>{{ $t(props.property.description) }}</div>
     <!-- eslint-disable -->
     <div v-if="editable" class="w-full flex gap-1 flex-col">
       <InputText

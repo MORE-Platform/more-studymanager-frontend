@@ -382,6 +382,7 @@
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
+      class="width-65"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />
@@ -395,5 +396,8 @@
     display: block;
     margin: 0.063rem 0.188rem 0 0;
     position: relative;
+  }
+  :deep(.width-65 .title) {
+    width: 65%;
   }
 </style>

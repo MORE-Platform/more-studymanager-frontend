@@ -420,8 +420,33 @@
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
       <h6 class="col-span-6">{{ $t('scheduler.labels.event.setDates') }}</h6>
-      <div class="col-span-6 mb-2">
+      <div class="col-span-6 mb-1">
         {{ $t('scheduler.labels.event.setDatesDesc') }}
+      </div>
+      <div class="examples col-span-6 mb-4">
+        <h5 class="text-color mb-1 font-bold">
+          {{ $t('cronSchedule.example.title') }}
+        </h5>
+        <div class="mb-1">
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.singleDay') }}
+          </div>
+          <div>{{ $t('scheduler.labels.event.example.values.singleDay') }}</div>
+        </div>
+        <div class="mb-1">
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.series') }}
+          </div>
+          <div>{{ $t('scheduler.labels.event.example.values.series') }}</div>
+        </div>
+        <div class="mb-1">
+          <div class="color-primary font-medium">
+            {{ $t('scheduler.labels.event.example.titles.fullTimespan') }}
+          </div>
+          <div>
+            {{ $t('scheduler.labels.event.example.values.fullTimespan') }}
+          </div>
+        </div>
       </div>
       <div class="col-span-1">{{ $t('global.labels.start') }}</div>
       <Calendar
@@ -676,5 +701,12 @@
 
   :deep(.input-error input) {
     background: var(--red-200);
+  }
+
+  .examples {
+    border: 1px solid var(--surface-50);
+    padding: 0.5rem;
+    border-radius: 6px;
+    background-color: var(--surface-50);
   }
 </style>
