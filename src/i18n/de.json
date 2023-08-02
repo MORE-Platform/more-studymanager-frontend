@@ -547,7 +547,7 @@
         "chooseObservation": "Datenerhebung auswählen",
         "triggerType": "Triggertyp",
         "window": "Window",
-        "windowInSeconds": "Beobachtungszeitraum in Sekunden"
+        "windowInSeconds": "Zeitfenster rückwärts vom Triggerzeitpunkt (in Sekunden) "
       },
       "msg": {
         "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
