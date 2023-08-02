@@ -142,8 +142,8 @@
     </div>
 
     <DataTable :value="dataPoints">
-      <Column field="observationId" :header="$t('global.labels.id')"></Column>
       <Column field="observation" :header="$t('observation.singular')"></Column>
+      <Column field="participantId" :header="$t('global.labels.id')"></Column>
       <Column
         field="participant"
         :header="$t('participants.singular')"
