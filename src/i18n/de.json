@@ -673,7 +673,7 @@
         "hourly": "30 * ? * *",
         "daily": "0 12 ? * *",
         "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 *",
+        "specificMonth": "0 8 * 3 ?",
         "everyFiveMinutes": "0/5 * ? * *",
         "everyMinuteInSetTime": "0-5 * ? * *",
         "specificHourRange": "30 8-10 ? * *"
@@ -697,7 +697,7 @@
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
     "additionalConfig":  "Zusätzliche Konfiguration",
     "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
-    "quickStart": "oder verwenden Sie den <a href=\"https://crontab.guru/\" target=\"_blank\"> Cron Tab Guru</a>, um schnell starten zu können.",
+    "quickStart": "oder verwenden Sie den <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a>, um schnell starten zu können.",
     "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
     "limitDescription": ""
   },

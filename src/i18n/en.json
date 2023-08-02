@@ -670,7 +670,7 @@
         "hourly": "30 * ? * *",
         "daily": "0 12 ? * *",
         "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 *",
+        "specificMonth": "0 8 * 3 ?",
         "everyFiveMinutes": "0/5 * ? * *",
         "everyMinuteInSetTime": "0-5 * ? * *",
         "specificHourRange": "30 8-10 ? * *"
@@ -694,7 +694,7 @@
     "formTitleDisabled": "Configuration of your Cron Schedule",
     "additionalConfig":  "Additional configuration",
     "cronScheduleTip": "Further info on specific cron values",
-    "quickStart": "or use <a href=\"https://crontab.guru/\" target=\"_blank\">Cron Tab Guru</a> to get quickly started.",
+    "quickStart": "or use <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a> to get quickly started.",
     "quickStartNote": "Seconds and years are handled automatically.",
     "limitDescription": "This version of the More Cron Scheduler only supports whole numbers, * or ?. Expressions like 0/1 or 3-20 are not supported for the time being."
   },
