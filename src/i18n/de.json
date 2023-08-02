@@ -498,7 +498,7 @@
       "description": "An integration enables to link an external API to an existing observation. Choose the observation which you want to create a token with, to link the observation to your external device.",
       "msg": {
         "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",
-        "createdToken": "Bitte kopieren Sie Ihren Token und speichern sich diesen wo ab. Dieser wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren."
+        "createdToken": "Bitte kopieren Sie den API-Token und speichern diesen zur Verwendung. Der Token wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren, indem Sie eine neue Integration erstellen."
       },
       "deleteMsg": {
         "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
@@ -661,10 +661,10 @@
       "titles": {
         "everyMinute": "Jede Minute",
         "hourly": "Jede Stunde um xx:30",
-        "daily": "Jeder Tag um 12:00",
-        "specificDayOfMonth": "Jeder 4ter des Monats",
-        "specificMonth": "Jeder Tag um 8:00 im März",
-        "everyFiveMinutes": "Jede 5 Minuten",
+        "daily": "Täglich um 12:00",
+        "specificDayOfMonth": "Jeden 4ten Tag des Monats",
+        "specificMonth": "Jeden Tag um 8:00 im März",
+        "everyFiveMinutes": "Alle 5 Minuten",
         "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
         "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00"
       },
