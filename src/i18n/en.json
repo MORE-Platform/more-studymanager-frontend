@@ -405,7 +405,7 @@
     "factory": {
       "limeSurvey": {
         "title": "Lime Survey",
-        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with it's ID.",
+        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for "multiple responses or update responses with one access code" and that your survey is active.",
         "configProps": {
           "idName": "Survey",
           "idDesc": "The id of the survey",
