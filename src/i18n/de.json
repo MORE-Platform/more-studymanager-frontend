@@ -407,7 +407,7 @@
     "factory": {
       "limeSurvey": {
         "title": "Lime Survey",
-        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden.",
+        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden. Bitte verwenden Sie dafür More <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a> Instanz. Denken Sie daran die Option <b>\"multiple responses or update responses with one access code\"</b> innerhalb ihres Lime Surveys zu aktivieren und das Lime Survey auf aktive zu stellen.",
         "configProps": {
           "idName": "Fragebogen",
           "idDesc": "Die ID des Lime Surveys"
