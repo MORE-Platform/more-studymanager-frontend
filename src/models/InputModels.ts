@@ -27,6 +27,8 @@ export abstract class Property<T> {
         return StringTextProperty.fromJson(value);
       case 'STRINGLIST':
         return StringListProperty.fromJson(value);
+      case 'BOOLEAN':
+        return BooleanProperty.fromJson(value);
       case 'CRON':
         return CronProperty.fromJson(value);
       case 'DATACHECKQUERY':
@@ -293,6 +295,43 @@ export class IntegerProperty extends Property<number> {
       json.required,
       json.min,
       json.max
+    );
+  }
+}
+
+export class BooleanProperty extends Property<boolean> {
+  constructor(
+    defaultValue: boolean,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean
+  ) {
+    super(defaultValue, description, id, immutable, name, required);
+  }
+
+  getType(): 'Integer' | 'Boolean' | 'String' | 'Boolean' | 'Double' {
+    return 'Boolean';
+  }
+
+  validate(): string | undefined {
+    if (this.required && this.value === undefined) {
+      return 'Value is required';
+    } else if (typeof this.value !== 'boolean') {
+      return 'Value has wrong value';
+    } else {
+      return undefined;
+    }
+  }
+  static fromJson(json: any): BooleanProperty {
+    return new BooleanProperty(
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required
     );
   }
 }

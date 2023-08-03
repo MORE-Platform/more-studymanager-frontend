@@ -1,0 +1,47 @@
+<script setup lang="ts">
+  import { BooleanProperty } from '../../../models/InputModels';
+  import { PropType, ref, Ref } from 'vue';
+  import Checkbox from 'primevue/checkbox';
+
+  const props = defineProps({
+    property: {
+      type: Object as PropType<BooleanProperty>,
+      required: true,
+    },
+    editable: {
+      type: Boolean,
+      default: true,
+    },
+  });
+
+  const booleanChecked: Ref<boolean> = ref(
+    props.property.value
+      ? props.property.value
+      : props.property?.defaultValue
+      ? props.property?.defaultValue
+      : false
+  );
+
+  const emit = defineEmits<{
+    (e: 'onBooleanChange', boolean: boolean): void;
+  }>();
+</script>
+
+<template>
+  <div class="flex flex-col gap-1">
+    <h6 class="font-bold">
+      <label v-if="property.name" :for="property.id"
+        >{{ $t(property.name) }}<span v-if="property.required">*</span></label
+      >
+    </h6>
+    <div v-if="props.property.description" :id="property.id + '-help'">
+      {{ $t(props.property.description) }}
+    </div>
+
+    <Checkbox
+      v-model="booleanChecked"
+      :label="property.name"
+      @change="emit('onBooleanChange', booleanChecked)"
+    />
+  </div>
+</template>
