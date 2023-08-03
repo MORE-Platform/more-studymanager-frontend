@@ -795,6 +795,11 @@
         "setDatesDesc": "You can define a timeframe for your observation with start and end date for one day. The timeframe can be set to 'Entire day'. A series of data collection can be defined through the repetition definition below. Alternatively you can set a full time span over more days.",
         "repeat": "Repeat set duration above",
         "repeatDesc": "To repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated.",
+        "oneDayObservation": "One day observation",
+        "repetitionEnd": {
+          "studyEnd": "Until end of study",
+          "after": "After"
+        },
         "example": {
           "titles": {
             "singleDay": "Single data capture",
