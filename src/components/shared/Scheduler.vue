@@ -11,7 +11,6 @@
   import { Nullable } from 'vitest';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
-  import dayjs from 'dayjs';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -108,6 +107,12 @@
   const plannedStartDate: Date = new Date(
     studyStore.study.plannedStart as string
   );
+
+  const minDate: Date = new Date(studyStore.study.plannedStart as string);
+  minDate.setHours(0, 0, 0);
+  const maxDate: Date = new Date(studyStore.study.plannedEnd as string);
+  maxDate.setHours(23, 59, 59);
+
   const setStartDate: Date =
     studyStore.study.plannedStart && plannedStartDate > new Date()
       ? plannedStartDate
@@ -124,8 +129,8 @@
   const repeatChecked: Ref<boolean> = ref(false);
 
   if (
-    scheduler?.dtstart?.substring(11, 19) === '23:00:00' &&
-    scheduler?.dtend?.substring(11, 19) === '22:59:59'
+    scheduler?.dtstart?.substring(11, 19) === '22:00:00' &&
+    scheduler?.dtend?.substring(11, 19) === '21:59:59'
   ) {
     allDayChecked.value = true;
   }
@@ -242,7 +247,7 @@
     end.value = new Date(end.value);
   }
   function save() {
-    let s = start.value;
+    const s = start.value;
     const e = end.value;
 
     s.setMilliseconds(0);
@@ -251,28 +256,8 @@
     e.setSeconds(0);
 
     if (allDayChecked.value) {
-      if (
-        studyStore.study.plannedStart &&
-        dayjs(s).format('YYYY-MM-DD') > studyStore.study.plannedStart
-      ) {
-        s.setHours(0, 0, 0);
-      } else if (
-        studyStore.study.plannedStart &&
-        dayjs(s).format('YYYY-MM-DD') === studyStore.study.plannedStart
-      ) {
-        s = new Date();
-      }
-      if (
-        studyStore.study.plannedEnd &&
-        dayjs(e).format('YYYY-MM-DD') < studyStore.study.plannedEnd
-      ) {
-        e.setHours(23, 59, 59);
-      } else if (
-        studyStore.study.plannedEnd &&
-        dayjs(e).format('YYYY-MM-DD') === studyStore.study.plannedEnd
-      ) {
-        e.setHours(0, 0, 0);
-      }
+      s.setHours(0, 0, 0);
+      e.setHours(23, 59, 59);
     }
 
     if (repeatCount.value && repeatByDay.value?.length) {
@@ -370,10 +355,7 @@
     );
 
     if (date === 'start') {
-      if (
-        eventDate.value < new Date(studyStore.study.plannedStart as string) ||
-        eventDate.value > new Date(studyStore.study.plannedEnd as string)
-      ) {
+      if (eventDate.value < minDate || eventDate.value > maxDate) {
         calendarInputErrors.value.start =
           'Please enter a start date-time that lies inside the study range.';
       } else {
@@ -401,11 +383,7 @@
   }
 
   function checkEndDateError(endDate: Date, startDate: Date): boolean {
-    if (
-      endDate < startDate ||
-      endDate < new Date(studyStore.study.plannedStart as string) ||
-      endDate > new Date(studyStore.study.plannedEnd as string)
-    ) {
+    if (endDate < startDate || endDate < minDate || endDate > maxDate) {
       calendarInputErrors.value.end =
         'Please enter a end date-time that lies inside the study range and is not in the past.';
       return true;
@@ -416,10 +394,7 @@
   }
 
   function checkStartDateError(startDate: Date): boolean {
-    const plannedStartDate = new Date(studyStore.study.plannedStart as string);
-    const plannedEndDate = new Date(studyStore.study.plannedEnd as string);
-
-    if (startDate < plannedStartDate || startDate > plannedEndDate) {
+    if (startDate < minDate || startDate > maxDate) {
       calendarInputErrors.value.start =
         'Please enter a start date-time that lies inside the study range.';
       return true;
@@ -480,8 +455,8 @@
         hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
-        :min-date="(new Date(studyStore.study.plannedStart as string) > new Date()) ? new Date(studyStore.study.plannedStart as string) : new Date()"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         autocomplete="off"
         style="width: 100%"
         class="col-span-5"
@@ -503,8 +478,8 @@
         hour-format="24"
         :show-time="!allDayChecked"
         :placeholder="allDayChecked ? 'dd/mm/yyyy' : 'dd/mm/yyyy hh:mm'"
-        :min-date="start > new Date() ? start : new Date()"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="start > minDate ? start : minDate"
+        :max-date="maxDate"
         autocomplete="off"
         style="width: 100%"
         class="col-span-5"
