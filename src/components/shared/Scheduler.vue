@@ -589,10 +589,7 @@
       </div>
 
       <div class="col-span-2">
-        <span v-if="oneDayObservationChecked">{{
-          $t('scheduler.labels.event.allDay')
-        }}</span
-        ><span v-else>Entire time</span>:
+        <span>{{ $t('scheduler.labels.event.allDay') }}</span>
         <Checkbox
           v-model="allDayChecked"
           class="ml-2"
