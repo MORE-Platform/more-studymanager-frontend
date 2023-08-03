@@ -154,7 +154,11 @@
   if (
     scheduler?.dtstart?.substring(0, 10) !== scheduler?.dtend?.substring(0, 10)
   ) {
-    console.log('not whole day');
+    oneDayObservationChecked.value = false;
+  } else if (
+    parseInt(scheduler?.dtend?.substring(11, 13)) >= 21 &&
+    parseInt(scheduler?.dtend?.substring(11, 13)) !== 0
+  ) {
     oneDayObservationChecked.value = false;
   }
 
@@ -248,14 +252,10 @@
   }
 
   function setRepetitionEnd(repeatEnd: string | undefined) {
-    console.log('setRepetitionEnd');
     if (repeatEnd) {
       const repeatValue = repetitionEndArray.find(
         (f: any) => f.value === repeatEnd
       )?.unit;
-
-      console.log(repeatValue);
-
       repeatEndOption.value = repeatValue ? repeatValue : 'never';
     }
   }
@@ -268,12 +268,10 @@
     repeatUntil.value = undefined;
   }
   function resetRepeatEndOptions() {
-    console.log('resetRepeatEndOptions');
     repeatUntil.value = undefined;
     repeatCount.value = undefined;
   }
   function resetRepeatFreqOptions() {
-    console.log('resetRepeatReqOptions');
     repeatInterval.value = undefined;
     repeatEndOption.value = 'never';
     resetYearlyInterval();
@@ -285,11 +283,13 @@
     end.value = new Date(end.value);
   }
   function changeOneDayObservation(checked: boolean) {
-    console.log(scheduler.value);
     if (checked) {
       end.value = start.value;
+    } else {
       repeatChecked.value = false;
       resetRepeatOptions();
+      resetRepeatEndOptions();
+      resetRepeatFreqOptions();
     }
   }
 
@@ -333,7 +333,7 @@
             bymonthday: repeatByMonthDay.value
               ? parseInt(repeatByMonthDay.value)
               : undefined,
-            bfysetpos: repeatBySetPos.value,
+            bysetpos: repeatBySetPos.value,
           };
           if (
             !returnEvent.rrule.count &&
@@ -389,9 +389,6 @@
   });
 
   function handleCalendarInputUpdate(event: any, date: string) {
-    console.log('handleCalendarInputUpdate');
-    console.log(event);
-    console.log(date);
     const eventDate: Ref<Date> = ref(
       new Date(
         event.value.substring(3, 5) +
@@ -412,11 +409,9 @@
       }
       checkEndDateError(end.value, eventDate.value);
     } else if (date === 'end') {
-      console.log(eventDate.value);
       if (!checkEndDateError(eventDate.value, start.value)) {
         end.value = eventDate.value;
       }
-      eventDate.value.setHours(23, 59, 59);
     }
 
     if (eventDate.value.toString() === 'Invalid Date') {
@@ -474,31 +469,49 @@
           {{ $t('cronSchedule.example.title') }}
         </h5>
         <div class="examples">
-          <div class="mb-1">
+          <div class="mb-1.5">
             <div class="color-primary font-medium">
               {{ $t('scheduler.labels.event.example.titles.singleDay') }}
             </div>
             <div>
-              {{ $t('scheduler.labels.event.example.values.singleDay') }}
+              <!-- eslint-disable vue/no-v-html -->
+              <span
+                v-html="$t('scheduler.labels.event.example.values.singleDay')"
+              />
             </div>
           </div>
-          <div class="mb-1">
+          <div class="mb-1.5">
             <div class="color-primary font-medium">
               {{ $t('scheduler.labels.event.example.titles.series') }}
             </div>
-            <div>{{ $t('scheduler.labels.event.example.values.series') }}</div>
+            <div>
+              <!-- eslint-disable vue/no-v-html -->
+              <span
+                v-html="$t('scheduler.labels.event.example.values.series')"
+              />
+            </div>
           </div>
-          <div class="mb-1">
+          <div class="mb-1.5">
             <div class="color-primary font-medium">
               {{ $t('scheduler.labels.event.example.titles.fullTimespan') }}
             </div>
             <div>
-              {{ $t('scheduler.labels.event.example.values.fullTimespan') }}
+              <!-- eslint-disable vue/no-v-html -->
+              <span
+                v-html="
+                  $t('scheduler.labels.event.example.values.fullTimespan')
+                "
+              />
             </div>
           </div>
         </div>
       </div>
-      <div class="col-span-1 col-start-1">{{ $t('global.labels.start') }}</div>
+      <div class="col-span-1 col-start-1 font-bold">
+        <span v-if="oneDayObservationChecked">{{
+          $t('scheduler.labels.timeframe')
+        }}</span>
+        <span v-else>{{ $t('global.labels.start') }}</span>
+      </div>
       <Calendar
         v-model="start"
         date-format="dd/mm/yy"
