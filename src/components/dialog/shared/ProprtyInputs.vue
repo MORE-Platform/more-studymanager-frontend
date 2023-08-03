@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
   import {
+    BooleanProperty,
     CronProperty,
     DataCheckProperty,
     IntegerProperty,
@@ -19,6 +20,7 @@
   } from '../../../models/PropertyInputModels';
   import CronSchedulerConfiguration from '../../forms/CronSchedulerConfiguration.vue';
   import InterventionTriggerConditions from '../../forms/InterventionTriggerConditions.vue';
+  import BooleanPropertyInput from './BooleanPropertyInput.vue';
 
   defineProps({
     propertyList: {
@@ -83,6 +85,16 @@
           emit('onPropertyChange', { value: $event.value, index: index })
         "
       />
+
+      <BooleanPropertyInput
+        v-if="property instanceof BooleanProperty"
+        :property="property"
+        :editable="editable"
+        @on-boolean-change="
+          emit('onPropertyChange', { value: $event, index: index })
+        "
+      />
+
       <CronSchedulerConfiguration
         v-if="property instanceof CronProperty"
         :class="index < propertyList.length - 1 ? 'mb-6' : ''"
