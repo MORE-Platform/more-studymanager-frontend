@@ -111,13 +111,6 @@
       value: [Weekday.Sa, Weekday.Su],
     },
   ];
-  /*
-  const repeatEndOptionArray: Ref<MoreTableEditableChoicePropertyValues[]> =
-    ref([
-      /*{label: 'Never', value: 'never'},*/
-  //{ label: t('scheduler.labels.after'), value: 'after' },
-  //{label: 'On Date', value: 'onDate'}
-  //]);
 
   const plannedStartDate: Date = new Date(
     studyStore.study.plannedStart as string
@@ -631,10 +624,6 @@
               @click="setRepeatCountLabel(repeatFreq)"
               @change="resetRepeatFreqOptions"
             />
-            <!--<div v-if="intervalError" class="col-span-5 error">{{intervalError}}</div>-->
-            <!--<div v-if="repeatFreq" class="col-span-5">
-              Every <InputText v-model="repeatInterval" type="text" :placeholder="'2'"/>  <span class="ml-2">{{repeatCountLabel}}</span>
-            </div> -->
           </div>
 
           <!-- weekday select -->
@@ -738,16 +727,6 @@
               class="mr-4 inline w-full"
               @click="setRepetitionEnd(repeatEndOption)"
             ></SelectButton>
-            <!--
-            <Dropdown
-              v-model="repeatEndOption"
-              :options="repeatEndOptionArray"
-              :option-label="'label'"
-              :option-value="'value'"
-              class="col-span-1"
-              :placeholder="$t('scheduler.placeholder.chooseRepetitionEnd')"
-              @change="resetRepeatEndOptions"
-            />         -->
             <div v-if="repeatEndOption === 'after'" class="inline">
               <InputText
                 v-model="repeatCount"
