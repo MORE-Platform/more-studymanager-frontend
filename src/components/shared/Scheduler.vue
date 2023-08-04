@@ -499,6 +499,9 @@
           </div>
         </div>
       </div>
+      <div v-if="!oneDayObservationChecked" class="col-span-5 font-bold">
+        {{ $t('scheduler.labels.timeframe') }}
+      </div>
       <div class="col-span-1 col-start-1 font-bold">
         <span v-if="oneDayObservationChecked">{{
           $t('scheduler.labels.timeframe')
@@ -542,7 +545,10 @@
       >
         {{ calendarInputErrors.start }}
       </div>
-      <div v-if="!oneDayObservationChecked" class="col-span-1 col-start-1">
+      <div
+        v-if="!oneDayObservationChecked"
+        class="col-span-1 col-start-1 font-bold"
+      >
         {{ $t('global.labels.end') }}
       </div>
       <Calendar

@@ -320,14 +320,6 @@
               v-if="typeof observation.hidden !== 'undefined'"
               class="flex items-center"
             >
-              <span
-                class="pi mr-0.5"
-                :class="
-                  observation.hidden
-                    ? 'pi-eye-slash color-important'
-                    : 'pi-eye color-approved'
-                "
-              />
               {{ $t(`observation.props.hidden.${observation.hidden}`) }}
             </span>
             <span
@@ -343,7 +335,15 @@
                 $t('observation.props.hidden.false')
               }}</span
             >
-            <span class="pi pi-info-circle color-primary ml-2"></span>
+            <span class="pi pi-info-circle color-primary ml-1"></span>
+            <span
+              class="pi mr-0.5"
+              :class="
+                observation.hidden
+                  ? 'pi-eye-slash color-important'
+                  : 'pi-eye color-approved'
+              "
+            />
           </div>
 
           <div class="inline">
