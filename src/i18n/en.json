@@ -595,7 +595,9 @@
             "queryObjName": "Query Object",
             "queryObjDesc": "A more complex variant of query",
             "timeWindowName": "Time window in seconds from the query time",
-            "windowPlaceholder": "Enter number in seconds."
+            "windowPlaceholder": "Enter number in seconds.",
+            "onlyOnceName": "Only Once",
+            "onlyOnceDesc": "Triggers only once when value is matching; resets when value is not matching anymore"
           }
         }
       },

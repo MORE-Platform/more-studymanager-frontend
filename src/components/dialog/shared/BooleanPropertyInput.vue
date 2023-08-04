@@ -41,6 +41,7 @@
     <Checkbox
       v-model="booleanChecked"
       :label="property.name"
+      :binary="true"
       @change="emit('onBooleanChange', booleanChecked)"
     />
   </div>
