@@ -693,7 +693,7 @@
           v-model="oneDayObservationChecked"
           class="ml-2"
           :binary="true"
-          @change="changeOneDayObservation(oneDayObservationChecked)"
+          @change="changeOneDayObservation()"
         />
       </div>
 
