@@ -88,6 +88,7 @@
 
       <BooleanPropertyInput
         v-if="property instanceof BooleanProperty"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
         :property="property"
         :editable="editable"
         @on-boolean-change="

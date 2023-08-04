@@ -29,19 +29,23 @@
 
 <template>
   <div class="flex flex-col gap-1">
-    <h6 class="font-bold">
+    <h5 class="font-bold">
       <label v-if="property.name" :for="property.id"
         >{{ $t(property.name) }}<span v-if="property.required">*</span></label
       >
-    </h6>
+    </h5>
     <div v-if="props.property.description" :id="property.id + '-help'">
       {{ $t(props.property.description) }}
     </div>
 
-    <Checkbox
-      v-model="booleanChecked"
-      :label="property.name"
-      @change="emit('onBooleanChange', booleanChecked)"
-    />
+    <div>
+      <Checkbox
+        v-model="booleanChecked"
+        class="mr-2 inline"
+        :label="property.name"
+        @change="emit('onBooleanChange', booleanChecked)"
+      />
+      {{ $t(property.name) }}
+    </div>
   </div>
 </template>
