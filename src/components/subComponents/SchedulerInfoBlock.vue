@@ -170,6 +170,7 @@
               Every {{ scheduler.rrule.bymonthday
               }}{{ getByMonthDayLabel(scheduler.rrule.bymonthday) }}
             </div>
+
             <div
               v-if="
                 scheduler.rrule.bysetpos &&
@@ -185,6 +186,7 @@
                 >{{ day }}</span
               >
             </div>
+
             <div
               v-if="scheduler.rrule.freq === Frequency.Yearly"
               class="col-span-1 col-start-2"
@@ -240,7 +242,7 @@
               {{ scheduler.rrule.count / scheduler.rrule.byday.length }}</span
             >
             <span v-else> {{ scheduler.rrule.count }}</span>
-            <span v-if="scheduler.rrule.freq">
+            <span v-if="scheduler.rrule.freq" class="ml-1">
               {{ getFrequencyLabel(scheduler.rrule.freq) }}
             </span>
           </div>
