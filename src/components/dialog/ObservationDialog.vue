@@ -290,6 +290,7 @@
           >
           </Dropdown>
         </div>
+
         <div class="info-box relative">
           <div
             v-if="
@@ -315,35 +316,80 @@
             />
           </div>
 
-          <div v-else class="icon-box eye preview inline flex items-center">
+          <div
+            v-else-if="!editable"
+            class="icon-box eye preview flex items-center"
+          >
+            {{ $t(`observation.props.hidden.${observation.hidden}`) }}
             <span
-              v-if="typeof observation.hidden !== 'undefined'"
-              class="flex items-center"
-            >
-              {{ $t(`observation.props.hidden.${observation.hidden}`) }}
-            </span>
-            <span
-              v-else-if="observation.type === 'external-observation'"
-              class="flex items-center"
-            >
-              <span class="pi pi-eye-slash color-important mr-0.5" />{{
-                $t('observation.props.hidden.true')
-              }}
-            </span>
-            <span v-else class="flex items-center"
-              ><span class="pi pi-eye color-approved mr-0.5" />{{
-                $t('observation.props.hidden.false')
-              }}</span
-            >
-            <span class="pi pi-info-circle color-primary ml-1"></span>
-            <span
-              class="pi mr-0.5"
+              class="pi"
               :class="
                 observation.hidden
                   ? 'pi-eye-slash color-important'
                   : 'pi-eye color-approved'
               "
             />
+          </div>
+
+          <div v-else class="icon-box eye preview inline flex items-center">
+            <div class="inline">
+              <span
+                v-if="typeof observation.hidden !== 'undefined'"
+                class="flex items-center"
+              >
+                first
+                {{ $t(`observation.props.hidden.${observation.hidden}`) }}
+              </span>
+              <span
+                v-else-if="observation.type === 'external-observation'"
+                class="flex items-center"
+              >
+                {{ $t('observation.props.hidden.true') }}
+              </span>
+              <span v-else class="flex items-center"
+                ><span class="color-approved mr-0.5" />{{
+                  $t('observation.props.hidden.false')
+                }}</span
+              >
+            </div>
+            <span class="pi pi-info-circle color-primary ml-1"></span>
+            <div class="inline">
+              <span v-if="typeof observation.hidden !== 'undefined'">
+                <span
+                  v-if="observation.type === 'external-observation'"
+                  class="pi pi-eye-slash color-important"
+                />
+                <span
+                  v-if="
+                    observation.type === 'question-observation' ||
+                    observation.type === 'lime-survey-observation'
+                  "
+                  class="pi pi-eye color-approved"
+                />
+                <span
+                  v-else
+                  class="pi"
+                  :class="
+                    observation.hidden
+                      ? 'pi-eye-slash color-important'
+                      : 'pi-eye color-approved'
+                  "
+                />
+              </span>
+              <span v-else>
+                <span
+                  v-if="observation.type === 'external-observation'"
+                  class="pi pi-eye-slash color-important"
+                />
+                <span
+                  v-if="
+                    observation.type === 'question-observation' ||
+                    observation.type === 'lime-survey-observation'
+                  "
+                  class="pi pi-eye color-approved"
+                />
+              </span>
+            </div>
           </div>
 
           <div class="inline">
