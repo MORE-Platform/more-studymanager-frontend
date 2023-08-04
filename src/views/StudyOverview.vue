@@ -50,6 +50,7 @@
         :use-confirm-dialog="false"
         class="mt-20"
       />
+      <div class="mb-30"></div>
     </div>
   </div>
 </template>

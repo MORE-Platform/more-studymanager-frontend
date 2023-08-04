@@ -1,33 +1,33 @@
 <script setup lang="ts">
-  import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
-  import {
-    MoreTableAction,
-    MoreTableActionOption,
-    MoreTableChoice,
-    MoreTableChoiceOptions,
-    MoreTableColumn,
-    MoreTableEditableChoiceProperties,
-    MoreTableFieldType,
-    MoreTableSortOptions,
-  } from '../../models/MoreTableModel';
-  import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
-  import Column from 'primevue/column';
-  import Button from 'primevue/button';
-  import SplitButton from 'primevue/splitbutton';
-  import Menu from 'primevue/menu';
-  import InputText from 'primevue/inputtext';
-  import Calendar from 'primevue/calendar';
-  import Dropdown from 'primevue/dropdown';
-  import MultiSelect from 'primevue/multiselect';
-  import { useConfirm } from 'primevue/useconfirm';
-  import FileUpload from 'primevue/fileupload';
-  import dayjs from 'dayjs';
-  import { FilterMatchMode } from 'primevue/api';
-  import { dateToDateString } from '../../utils/dateUtils';
-  import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
-  import Checkbox from 'primevue/checkbox';
+import {onBeforeMount, onUpdated, PropType, Ref, ref} from 'vue';
+import {
+  MoreTableAction,
+  MoreTableActionOption,
+  MoreTableChoice,
+  MoreTableChoiceOptions,
+  MoreTableColumn,
+  MoreTableEditableChoiceProperties,
+  MoreTableFieldType,
+  MoreTableSortOptions,
+} from '../../models/MoreTableModel';
+import DataTable, {DataTableFilterMeta} from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import SplitButton from 'primevue/splitbutton';
+import Menu from 'primevue/menu';
+import InputText from 'primevue/inputtext';
+import Calendar from 'primevue/calendar';
+import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
+import {useConfirm} from 'primevue/useconfirm';
+import FileUpload from 'primevue/fileupload';
+import dayjs from 'dayjs';
+import {FilterMatchMode} from 'primevue/api';
+import {dateToDateString} from '../../utils/dateUtils';
+import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
+import Checkbox from 'primevue/checkbox';
 
-  const props = defineProps({
+const props = defineProps({
     title: {
       type: String,
       default: undefined,
@@ -53,6 +53,10 @@
       default: () => [],
     },
     frontRowActions: {
+      type: Array as PropType<Array<MoreTableAction>>,
+      default: () => [],
+    },
+    rowEndActions: {
       type: Array as PropType<Array<MoreTableAction>>,
       default: () => [],
     },
@@ -603,10 +607,11 @@
             "
           ></Dropdown>
           <MultiSelect
-            v-if="column.type === MoreTableFieldType.multiselect"
+            v-if="column.type === MoreTableFieldType.multiselect || column.type === MoreTableFieldType.singleselect"
             v-model="data[field]"
             :options="isEditableWithValues(column.editable)"
             option-label="label"
+            :selection-limit="column.type === MoreTableFieldType.singleselect ? 1 : undefined"
             :placeholder="
               column.placeholder
                 ? column.placeholder
@@ -712,7 +717,7 @@
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenFieldText(data[field]) }}
             </span>
-            <span v-if="column.type === MoreTableFieldType.multiselect">
+            <span v-if="column.type === MoreTableFieldType.multiselect || column.type === MoreTableFieldType.singleselect">
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
                   data[field]
@@ -766,6 +771,23 @@
               @click="edit(slotProps.data)"
             >
             </Button>
+            <div
+              v-for="action in rowEndActions"
+              :key="action.id"
+              class="inline"
+            >
+              <Button
+                v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
+                type="button"
+                :title="action.label"
+                :icon="action.icon"
+                :disabled="isVisible(action, slotProps.data) === false"
+                :class="action.id === 'delete' ? 'btn-important' : ''"
+                @click="rowActionHandler(action, slotProps.data)"
+              >
+                <span v-if="!action.icon">{{ action.label }}</span>
+              </Button>
+            </div>
             <div v-if="rowEndIcon" class="ml-2 self-center">
               <span :class="rowEndIcon" style="font-size: 1.3rem" />
             </div>

@@ -840,7 +840,8 @@
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
       "copyStudyUrl": "Share study",
-      "showStudy": "Click on row to show study details page."
+      "showStudy": "Click on row to show study details page.",
+      "goToStudy": "Go to study"
     }
   },
 

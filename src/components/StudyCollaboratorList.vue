@@ -90,7 +90,7 @@
     {
       field: 'roles',
       header: t('study.props.roles'),
-      type: MoreTableFieldType.multiselect,
+      type: MoreTableFieldType.singleselect,
       editable: {
         values: [
           { label: t('study.roles.admin'), value: StudyRole.Admin },

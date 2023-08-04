@@ -842,7 +842,8 @@
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
       "copyStudyUrl": "Studie teilen",
-      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
+      "goToStudy": "Studie öffnen"
     }
   },
 
