@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { inject, onUpdated, ref, Ref } from 'vue';
+  import { inject, onUpdated, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
@@ -130,9 +130,11 @@
   const start: Ref<Date> = ref(
     scheduler.dtstart ? new Date(scheduler.dtstart) : setStartDate
   );
+  const startTime: Ref<Date> = ref(start.value);
   const end: Ref<Date> = ref(
     scheduler.dtend ? new Date(scheduler.dtend) : setStartDate
   );
+  const endTime: Ref<Date> = ref(end.value);
 
   const allDayChecked: Ref<boolean> = ref(false);
   const oneDayObservationChecked: Ref<boolean> = ref(true);
@@ -284,18 +286,50 @@
   }
 
   function changeDateTime() {
-    start.value = new Date(start.value);
-    end.value = new Date(end.value);
+    console.log('allDayChecked');
+    if (allDayChecked.value) {
+      start.value.setHours(0, 0, 0);
+      end.value.setHours(23, 59, 59);
+    } else {
+      start.value.setHours(
+        startTime.value.getHours(),
+        startTime.value.getMinutes(),
+        startTime.value.getSeconds()
+      );
+      end.value.setHours(
+        endTime.value.getHours(),
+        endTime.value.getMinutes(),
+        endTime.value.getSeconds()
+      );
+    }
+
+    startTime.value = start.value;
+    endTime.value = end.value;
   }
-  function changeOneDayObservation(checked: boolean) {
-    if (checked) {
+
+  function changeOneDayObservation() {
+    if (oneDayObservationChecked.value) {
       end.value = start.value;
+      end.value.setHours(
+        endTime.value.getHours(),
+        endTime.value.getMinutes(),
+        endTime.value.getSeconds()
+      );
+      start.value.setHours(
+        startTime.value.getHours(),
+        startTime.value.getMinutes(),
+        startTime.value.getSeconds()
+      );
+
+      startTime.value = start.value;
+      endTime.value = end.value;
     } else {
       repeatChecked.value = false;
       resetRepeatOptions();
       resetRepeatEndOptions();
       resetRepeatFreqOptions();
     }
+
     allDayChecked.value = false;
   }
 
@@ -362,6 +396,8 @@
   onUpdated(() => {
     if (end.value < start.value) {
       end.value = start.value;
+      endTime.value = end.value;
+      startTime.value = start.value;
       calendarInputErrors.value.end = '';
     }
   });
@@ -394,6 +430,32 @@
     end: '',
   });
 
+  function changeTime(event: any, dateType: string) {
+    if (dateType === 'start') {
+      start.value.setHours(
+        event.value.substring(0, 2),
+        event.value.substring(3, 5),
+        0
+      );
+      startTime.value.setHours(
+        start.value.getHours(),
+        start.value.getMinutes(),
+        start.value.getSeconds()
+      );
+    } else if (dateType === 'end') {
+      end.value.setHours(
+        event.value.substring(0, 2),
+        event.value.substring(3, 5),
+        0
+      );
+      endTime.value.setHours(
+        end.value.getHours(),
+        end.value.getMinutes(),
+        end.value.getSeconds()
+      );
+    }
+  }
+
   function handleCalendarInputUpdate(event: any, date: string) {
     const eventDate: Ref<Date> = ref(
       new Date(
@@ -412,21 +474,27 @@
       } else {
         calendarInputErrors.value.start = '';
         start.value = eventDate.value;
+        start.value.setHours(0, 0, 0);
+        startTime.value = start.value;
       }
       checkEndDateError(end.value, eventDate.value);
     } else if (date === 'end') {
       if (!checkEndDateError(eventDate.value, start.value)) {
         end.value = eventDate.value;
+        end.value.setHours(23, 59, 59);
+        endTime.value = end.value;
       }
     }
 
     if (eventDate.value.toString() === 'Invalid Date') {
       if (date === 'start') {
         start.value = new Date();
+        startTime.value = start.value;
         calendarInputErrors.value.start =
           'Please enter a valid Date. Date was resetted to today.';
       } else {
         end.value = new Date();
+        endTime.value = end.value;
         calendarInputErrors.value.end =
           'Please enter a valid date! Date was resetted to today.';
       }
@@ -461,6 +529,32 @@
   }
 
   checkDateRange();
+
+  watch(allDayChecked, () => {
+    if (allDayChecked.value) {
+      start.value.setHours(0, 0, 0);
+      end.value.setHours(23, 59, 59);
+
+      startTime.value = start.value;
+      endTime.value = end.value;
+    } else {
+      start.value.setHours(
+        startTime.value.getHours(),
+        startTime.value.getMinutes(),
+        startTime.value.getSeconds()
+      );
+      end.value.setHours(
+        endTime.value.getHours(),
+        endTime.value.getMinutes(),
+        endTime.value.getSeconds()
+      );
+    }
+
+    startTime.value = start.value;
+    endTime.value = end.value;
+    console.log(start.value, startTime.value);
+    console.log(end.value, endTime.value);
+  });
 </script>
 
 <template>
@@ -537,18 +631,20 @@
       />
       <Calendar
         v-if="!allDayChecked"
-        v-model="start"
+        v-model="startTime"
         :placeholder="'hh:mm'"
         class="p-calendar-timeonly col-span-1"
         time-only
+        @blur="changeTime($event, 'start')"
       />
       <div v-if="oneDayObservationChecked && !allDayChecked" class="col-span-2">
         <span class="ml-1 mr-4">-</span>
         <Calendar
-          v-model="end"
+          v-model="endTime"
           :placeholder="'hh:mm'"
           class="p-calendar-timeonly col-span-1"
           time-only
+          @blur="changeTime($event, 'end')"
         />
       </div>
 
@@ -581,10 +677,11 @@
       />
       <Calendar
         v-if="!allDayChecked && !oneDayObservationChecked"
-        v-model="end"
+        v-model="endTime"
         :placeholder="'hh:mm'"
         class="p-calendar-timeonly col-span-1"
         time-only
+        @blur="changeTime($event, 'end')"
       />
       <div v-if="calendarInputErrors.end" class="error col-span-5 col-start-2">
         {{ calendarInputErrors.end }}
@@ -596,7 +693,7 @@
           v-model="oneDayObservationChecked"
           class="ml-2"
           :binary="true"
-          @change="changeOneDayObservation(oneDayObservationChecked)"
+          @change="changeOneDayObservation()"
         />
       </div>
 
