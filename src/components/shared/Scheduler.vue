@@ -10,6 +10,7 @@
   import { Nullable } from 'vitest';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
+  import { dateToDateTimeString } from '../../utils/dateUtils';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -144,15 +145,26 @@
     allDayChecked.value = true;
   }
 
-  if (
-    scheduler?.dtstart?.substring(0, 10) !== scheduler?.dtend?.substring(0, 10)
-  ) {
-    oneDayObservationChecked.value = false;
-  } else if (
-    parseInt(scheduler?.dtend?.substring(11, 13)) >= 21 &&
-    parseInt(scheduler?.dtend?.substring(11, 13)) !== 0
-  ) {
-    oneDayObservationChecked.value = false;
+  if (scheduler && scheduler.dtstart && scheduler.dtend) {
+    if (
+      dateToDateTimeString(new Date(scheduler?.dtstart))
+        ?.toString()
+        .substring(0, 10) !==
+      dateToDateTimeString(new Date(scheduler?.dtend))
+        ?.toString()
+        .substring(0, 10)
+    ) {
+      oneDayObservationChecked.value = false;
+    } else if (
+      dateToDateTimeString(new Date(scheduler?.dtstart))
+        ?.toString()
+        .substring(0, 10) ===
+      dateToDateTimeString(new Date(scheduler?.dtend))
+        ?.toString()
+        .substring(0, 10)
+    ) {
+      oneDayObservationChecked.value = true;
+    }
   }
 
   const repeatFreq: Ref<Frequency | undefined> = ref(
@@ -284,6 +296,7 @@
       resetRepeatEndOptions();
       resetRepeatFreqOptions();
     }
+    allDayChecked.value = false;
   }
 
   function save() {
