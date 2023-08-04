@@ -41,8 +41,9 @@
     <div>
       <Checkbox
         v-model="booleanChecked"
-        class="mr-2 inline"
         :label="property.name"
+        class="mr-2 inline"
+        :binary="true"
         @change="emit('onBooleanChange', booleanChecked)"
       />
       {{ $t(property.name) }}

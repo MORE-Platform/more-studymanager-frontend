@@ -598,7 +598,9 @@
             "queryObjName": "Query Objekt",
             "queryObjDesc": "Eine complexere Variante des Scheduled Triggers.",
             "timeWindowName": "Beobachtungszeitraum in Sekunden",
-            "windowPlaceholder": "Füge eine Nummer in Sekunden ein"
+            "windowPlaceholder": "Füge eine Nummer in Sekunden ein",
+            "onlyOnceName": "Nur einmal",
+            "onlyOnceDesc": "Trigger löst nur einmal aus, wenn der Wert übereinstimmt; wenn der Wert nicht mehr übereinstimmt, löst der Trigger beim nächsten mal wieder aus."
           }
         }
       },
