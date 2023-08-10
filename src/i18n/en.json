@@ -826,6 +826,15 @@
       "chooseDayInterval": "Choose day interval",
       "chooseRepetitionEnd": "Choose repetition end",
       "enterRepeatCount": "Enter repeat count"
+    },
+    "info": {
+      "timeOverlapStart": "End time was changed with start time. Please be sure to set start and end time within each others range.",
+      "timeOverlapEnd": "Start time was changed with end time. Please be sure to set start and end time within each others range.",
+      "dateOverlapStart": "End date was changed with start date. Please be sure to set start and end time within each others range.",
+      "dateOverlapEnd": "Start date was resetted to end date. Please be sure to set start and end time within each others range.",
+      "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
     }
   },
 
