@@ -113,25 +113,16 @@
     },
   ];
 
-  const plannedStartDate: Date = new Date(
-    studyStore.study.plannedStart as string
-  );
-
   const minDate: Date = new Date(studyStore.study.plannedStart as string);
   minDate.setHours(0, 0, 0);
   const maxDate: Date = new Date(studyStore.study.plannedEnd as string);
   maxDate.setHours(23, 59, 59);
 
-  const setStartDate: Date =
-    studyStore.study.plannedStart && plannedStartDate > new Date()
-      ? plannedStartDate
-      : new Date();
-
   const start: Ref<Date> = ref(
-    scheduler.dtstart ? new Date(scheduler.dtstart) : setStartDate
+    scheduler.dtstart ? new Date(scheduler.dtstart) : new Date()
   );
   const end: Ref<Date> = ref(
-    scheduler.dtend ? new Date(scheduler.dtend) : setStartDate
+    scheduler.dtend ? new Date(scheduler.dtend) : new Date()
   );
 
   const formerStart: Ref<Date> = ref(start.value);
@@ -142,8 +133,12 @@
   const repeatChecked: Ref<boolean> = ref(false);
 
   if (
-    scheduler?.dtstart?.substring(11, 19) === '22:00:00' &&
-    scheduler?.dtend?.substring(11, 19) === '21:59:59'
+    scheduler?.dtstart &&
+    scheduler?.dtend &&
+    dateToDateTimeString(new Date(scheduler?.dtstart))?.substring(11, 16) ===
+      '00:00' &&
+    dateToDateTimeString(new Date(scheduler?.dtend))?.substring(11, 16) ===
+      '23:59'
   ) {
     allDayChecked.value = true;
   }
@@ -307,9 +302,8 @@
 
   function changeAllDayChecked() {
     start.value.setHours(0, 0, 0);
-    end.value.setHours(23, 59, 59);
-
     formerStart.value = start.value;
+    end.value.setHours(23, 59, 59);
     formerEnd.value = end.value;
   }
 
@@ -382,7 +376,7 @@
         end.value.setHours(
           formerEnd.value.getHours(),
           formerEnd.value.getMinutes(),
-          formerEnd.value(getSelection())
+          formerEnd.value.getSeconds()
         );
         formerEnd.value = start.value;
         validateTime('end', true);
@@ -617,7 +611,6 @@
           :placeholder="'hh:mm'"
           class="p-calendar-timeonly end-date end-time col-span-1"
           time-only
-          @update:model-value="test('end')"
           @blur="validateTime('end')"
         />
       </div>
