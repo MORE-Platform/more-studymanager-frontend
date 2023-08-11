@@ -22,9 +22,9 @@
   const repetitionEndArray = [
     {
       label: t('scheduler.labels.event.repetitionEnd.studyEnd'),
-      value: 'never',
+      value: 'onDate',
       active: true,
-      unit: 'never',
+      unit: 'onDate',
     },
     {
       label: t('scheduler.labels.event.repetitionEnd.after'),
@@ -259,7 +259,19 @@
       const repeatValue = repetitionEndArray.find(
         (f: any) => f.value === repeatEnd
       )?.unit;
-      repeatEndOption.value = repeatValue ? repeatValue : 'never';
+      if (repeatValue === 'onDate') {
+        repeatCount.value = undefined;
+        const date = new Date(studyStore.study.plannedEnd as string);
+        date.setHours(23, 59, 59);
+        repeatUntil.value = date;
+      } else if (repeatValue === 'after') {
+        repeatUntil.value = undefined;
+        repeatEndOption.value = repeatValue ? repeatValue : 'never';
+      } else {
+        repeatEndOption.value = 'never';
+        repeatUntil.value = undefined;
+        repeatCount.value = undefined;
+      }
     }
   }
 
