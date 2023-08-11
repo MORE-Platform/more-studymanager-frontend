@@ -2,6 +2,7 @@
   import { StringProperty } from '../../../models/InputModels';
   import { PropType, watch } from 'vue';
   import Textarea from 'primevue/textarea';
+  import Editor from 'primevue/editor';
 
   const props = defineProps({
     property: {

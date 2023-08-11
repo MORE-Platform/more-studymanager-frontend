@@ -8,6 +8,7 @@
   import { dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
+  import Editor from 'primevue/editor';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -207,7 +208,7 @@
           :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
           style="width: 100%"
-        ></Textarea>
+        />
       </div>
       <div class="col-start-0 col-span-6">
         <h5 :class="getError('consentInfo') ? '' : 'mb-2'">
@@ -217,14 +218,14 @@
           {{ getError('consentInfo') }}
         </div>
         <div class="mb-2">{{ $t('study.dialog.description.consentInfo') }}</div>
-        <Textarea
+        <Editor
           v-model="returnStudy.consentInfo"
           :name="'consentInfo'"
           :required="true"
           :placeholder="$t('study.placeholder.consentInfoInput')"
           :auto-resize="true"
           style="width: 100%"
-        ></Textarea>
+        />
       </div>
       <div class="col-start-0 col-span-6">
         <h5 class="mb-2">{{ $t('study.props.finishText') }}</h5>
@@ -325,6 +326,16 @@
 </template>
 
 <style scoped lang="postcss">
+  :deep(.ql-editor) {
+    font-size: 14px;
+    height: 300px;
+  }
+
+  :deep(.p-editor-container) {
+    margin-bottom: 16px;
+    margin-top: 12px;
+  }
+
   .buttons {
     button {
       margin-left: 10px;

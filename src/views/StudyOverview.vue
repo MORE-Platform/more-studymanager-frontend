@@ -41,7 +41,7 @@
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
-      ></StudyGroupList>
+      />
 
       <StudyCollaboratorList
         :study-id="studyId"
