@@ -606,8 +606,6 @@
             autocomplete="off"
             date-format="dd/mm/yy"
           />
-
-          <!-- @ts-ignore -->
           <Dropdown
             v-if="column.type === MoreTableFieldType.choice"
             v-model="data[field]"
