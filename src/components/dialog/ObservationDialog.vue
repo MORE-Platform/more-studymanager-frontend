@@ -292,6 +292,7 @@
         </div>
 
         <div class="info-box relative">
+          <!-- if editable with checkbox-->
           <div
             v-if="
               observation.type !== 'question-observation' &&
@@ -316,35 +317,48 @@
             />
           </div>
 
+          <!-- if not editable or fixed value -->
           <div v-else class="icon-box eye preview inline flex items-center">
-            <span
-              v-if="typeof observation.hidden !== 'undefined'"
+            <!-- if fixed visible -->
+            <div
+              v-if="
+                observation.type === 'question-observation' ||
+                observation.type === 'lime-survey-observation'
+              "
               class="flex items-center"
             >
-              {{ $t(`observation.props.hidden.${observation.hidden}`) }}
-            </span>
-            <span
+              <span class="ml-1 inline">
+                {{ $t('observation.props.hidden.false') }}
+              </span>
+              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+              <span class="pi pi-eye color-approved" />
+            </div>
+            <!-- if fixed not visible -->
+            <div
               v-else-if="observation.type === 'external-observation'"
               class="flex items-center"
             >
-              <span class="pi pi-eye-slash color-important mr-0.5" />{{
-                $t('observation.props.hidden.true')
-              }}
-            </span>
-            <span v-else class="flex items-center"
-              ><span class="pi pi-eye color-approved mr-0.5" />{{
-                $t('observation.props.hidden.false')
-              }}</span
-            >
-            <span class="pi pi-info-circle color-primary ml-1"></span>
-            <span
-              class="pi mr-0.5"
-              :class="
-                observation.hidden
-                  ? 'pi-eye-slash color-important'
-                  : 'pi-eye color-approved'
-              "
-            />
+              <span class="ml-1 inline">
+                {{ $t('observation.props.hidden.true') }}
+              </span>
+              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+              <span class="pi pi-eye-slash color-important" />
+            </div>
+            <!-- if not fixed and not editable -->
+            <div v-else-if="!editable" class="flex items-center">
+              <span class="ml-1 inline">{{
+                $t(`observation.props.hidden.${observation.hidden}`)
+              }}</span>
+              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+              <span
+                class="pi mr-0.5"
+                :class="
+                  observation.hidden
+                    ? 'pi-eye-slash color-important'
+                    : 'pi-eye color-approved'
+                "
+              />
+            </div>
           </div>
 
           <div class="inline">
