@@ -1,33 +1,33 @@
 <script setup lang="ts">
-import {onBeforeMount, onUpdated, PropType, Ref, ref} from 'vue';
-import {
-  MoreTableAction,
-  MoreTableActionOption,
-  MoreTableChoice,
-  MoreTableChoiceOptions,
-  MoreTableColumn,
-  MoreTableEditableChoiceProperties,
-  MoreTableFieldType,
-  MoreTableSortOptions,
-} from '../../models/MoreTableModel';
-import DataTable, {DataTableFilterMeta} from 'primevue/datatable';
-import Column from 'primevue/column';
-import Button from 'primevue/button';
-import SplitButton from 'primevue/splitbutton';
-import Menu from 'primevue/menu';
-import InputText from 'primevue/inputtext';
-import Calendar from 'primevue/calendar';
-import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
-import {useConfirm} from 'primevue/useconfirm';
-import FileUpload from 'primevue/fileupload';
-import dayjs from 'dayjs';
-import {FilterMatchMode} from 'primevue/api';
-import {dateToDateString} from '../../utils/dateUtils';
-import {StudyRole, StudyStatus} from '../../generated-sources/openapi';
-import Checkbox from 'primevue/checkbox';
+  import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
+  import {
+    MoreTableAction,
+    MoreTableActionOption,
+    MoreTableChoice,
+    MoreTableChoiceOptions,
+    MoreTableColumn,
+    MoreTableEditableChoiceProperties,
+    MoreTableFieldType,
+    MoreTableSortOptions,
+  } from '../../models/MoreTableModel';
+  import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import Button from 'primevue/button';
+  import SplitButton from 'primevue/splitbutton';
+  import Menu from 'primevue/menu';
+  import InputText from 'primevue/inputtext';
+  import Calendar from 'primevue/calendar';
+  import Dropdown from 'primevue/dropdown';
+  import MultiSelect from 'primevue/multiselect';
+  import { useConfirm } from 'primevue/useconfirm';
+  import FileUpload from 'primevue/fileupload';
+  import dayjs from 'dayjs';
+  import { FilterMatchMode } from 'primevue/api';
+  import { dateToDateString } from '../../utils/dateUtils';
+  import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
+  import Checkbox from 'primevue/checkbox';
 
-const props = defineProps({
+  const props = defineProps({
     title: {
       type: String,
       default: undefined,
@@ -607,17 +607,23 @@ const props = defineProps({
             "
           ></Dropdown>
           <MultiSelect
-            v-if="column.type === MoreTableFieldType.multiselect || column.type === MoreTableFieldType.singleselect"
+            v-if="
+              column.type === MoreTableFieldType.multiselect ||
+              column.type === MoreTableFieldType.singleselect
+            "
             v-model="data[field]"
             :options="isEditableWithValues(column.editable)"
             option-label="label"
-            :selection-limit="column.type === MoreTableFieldType.singleselect ? 1 : undefined"
+            :selection-limit="
+              column.type === MoreTableFieldType.singleselect ? 1 : undefined
+            "
             :placeholder="
               column.placeholder
                 ? column.placeholder
                 : $t('global.labels.chooseDropdownOptionDefault')
             "
             :show-toggle-all="false"
+            class="z-top"
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <Checkbox
@@ -717,7 +723,12 @@ const props = defineProps({
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenFieldText(data[field]) }}
             </span>
-            <span v-if="column.type === MoreTableFieldType.multiselect || column.type === MoreTableFieldType.singleselect">
+            <span
+              v-if="
+                column.type === MoreTableFieldType.multiselect ||
+                column.type === MoreTableFieldType.singleselect
+              "
+            >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
                   data[field]
@@ -888,6 +899,11 @@ const props = defineProps({
 
     .p-multiselect {
       width: 100%;
+      z-index: 1000;
+    }
+
+    .p-checkbox .p-checkbox-box {
+      border-radius: 50%;
     }
 
     .multiselect-item {

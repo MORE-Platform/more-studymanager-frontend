@@ -142,6 +142,28 @@
 
   const tableActions: MoreTableAction[] = [
     {
+      id: 'create',
+      label: t('participants.participantsList.action.add'),
+      icon: 'pi pi-angle-down',
+      visible: () => {
+        return (
+          props.statusStatus === StudyStatus.Draft ||
+          props.statusStatus === StudyStatus.Paused
+        );
+      },
+
+      options: {
+        type: 'menu',
+        values: [
+          { label: t('participants.participantsList.labels.add1'), value: 1 },
+          { label: t('participants.participantsList.labels.add3'), value: 3 },
+          { label: t('participants.participantsList.labels.add10'), value: 10 },
+          { label: t('participants.participantsList.labels.add25'), value: 25 },
+          { label: t('participants.participantsList.labels.add50'), value: 50 },
+        ],
+      },
+    },
+    {
       id: 'distribute',
       label: t('participants.participantsList.action.distribute'),
       visible: () => {
@@ -168,28 +190,6 @@
       icon: 'pi pi-download',
       visible: () => {
         return participantsList.value.length > 0;
-      },
-    },
-    {
-      id: 'create',
-      label: t('participants.participantsList.action.add'),
-      icon: 'pi pi-angle-down',
-      visible: () => {
-        return (
-          props.statusStatus === StudyStatus.Draft ||
-          props.statusStatus === StudyStatus.Paused
-        );
-      },
-
-      options: {
-        type: 'menu',
-        values: [
-          { label: t('participants.participantsList.labels.add1'), value: 1 },
-          { label: t('participants.participantsList.labels.add3'), value: 3 },
-          { label: t('participants.participantsList.labels.add10'), value: 10 },
-          { label: t('participants.participantsList.labels.add25'), value: 25 },
-          { label: t('participants.participantsList.labels.add50'), value: 50 },
-        ],
       },
     },
   ];

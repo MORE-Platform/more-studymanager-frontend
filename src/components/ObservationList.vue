@@ -194,6 +194,14 @@
     },
   ];
 
+  const rowEndActions: MoreTableAction[] = [
+    {
+      id: 'edit',
+      label: t('global.labels.edit'),
+      icon: 'pi pi-cog',
+    },
+  ];
+
   function getObservationTypeString(observationType: string) {
     return t(
       factories.find((item) => item.componentId === observationType)
@@ -242,6 +250,8 @@
           action.row,
           'clone'
         );
+      case 'edit':
+        return openEditObservation(action.row.observationId);
       default:
         console.error('no handler for action', action);
     }
@@ -342,6 +352,7 @@
   }
 
   function openEditObservation(observationId: number) {
+    console.log(observationId);
     const observation = observationList.value.find(
       (o) => o.observationId === observationId
     );
@@ -369,6 +380,7 @@
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
+      :row-end-actions="rowEndActions"
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"
       :editable-access="actionsVisible"
