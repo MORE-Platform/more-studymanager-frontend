@@ -629,7 +629,8 @@
 
   "moreTable": {
     "defaultEmptyMsg": "No records",
-    "filterBy": "Filter by"
+    "filterBy": "Filter by",
+    "saveLine": "Please save"
   },
 
   "cronSchedule": {

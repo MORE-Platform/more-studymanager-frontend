@@ -64,7 +64,7 @@
 
   const editAccessRoles: StudyRole[] = [StudyRole.Admin];
 
-  const editAccess = props.userRoles.some(
+  const editAccess: boolean = props.userRoles.some(
     (r: StudyRole) =>
       editAccessRoles.includes(r) && props.studyStatus !== StudyStatus.Closed
   );
@@ -347,6 +347,7 @@
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />
+
     <div v-if="useConfirmDialog">
       <ConfirmDialog></ConfirmDialog>
     </div>

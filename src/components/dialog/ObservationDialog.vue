@@ -283,12 +283,12 @@
             option-label="label"
             option-value="value"
             :disabled="!editable"
+            :class="studyGroupId ? 'dropdown-has-value' : ''"
             :placeholder="
               getLabelForChoiceValue(studyGroupId, groupStates) ||
               $t('global.placeholder.entireStudy')
             "
-          >
-          </Dropdown>
+          />
         </div>
         <div class="info-box relative">
           <div
@@ -375,6 +375,10 @@
   @import '../../styles/components/moreTable-dialogs.pcss';
   @import '../../styles/components/eye-checkbox.pcss';
   .dialog {
+    :deep(.dropdown-has-value .p-dropdown-label) {
+      color: var(--text-color) !important;
+    }
+
     .day {
       &:after {
         content: ', ';

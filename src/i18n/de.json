@@ -632,7 +632,8 @@
 
   "moreTable": {
     "defaultEmptyMsg": "Keine Berichte vorhanden",
-    "filterBy": "Filtern"
+    "filterBy": "Filtern",
+    "saveLine": "Bitte speichern"
   },
 
   "cronSchedule": {

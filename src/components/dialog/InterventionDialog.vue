@@ -31,7 +31,8 @@
   const intervention: Intervention = dialogRef.value.data?.intervention || {};
   const actionsData: Action[] = dialogRef.value.data?.actionsData;
   const triggerData: Trigger = dialogRef.value.data?.triggerData;
-  const groupStates = dialogRef.value.data?.groupStates || undefined;
+  const groupStates: MoreTableChoice[] =
+    dialogRef.value.data?.groupStates || [];
   const groupPlaceholder =
     dialogRef.value.data?.groupPlaceholder || 'Entire Study';
   const actionFactories = dialogRef.value.data?.actionFactories;
@@ -360,6 +361,14 @@
     propInputError.value = item.value;
     checkErrors();
   }
+
+  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+    if (value) {
+      const v = value.toString();
+      return values.find((s: any) => s.value === v)?.label;
+    }
+    return undefined;
+  }
 </script>
 
 <template>
@@ -539,7 +548,8 @@
           option-label="label"
           option-value="value"
           :disabled="!editable"
-          :placeholder="groupPlaceholder"
+          :class="studyGroupId ? 'dropdown-has-value' : ''"
+          :placeholder="studyGroupId ? getLabelForChoiceValue(studyGroupId as number, groupStates) : groupPlaceholder ? groupPlaceholder as string : $t('global.placeholder.entireStudy')"
         >
           <template #option="optionProps">
             <div class="p-dropdown-car-option">
@@ -568,6 +578,10 @@
 
 <style scoped lang="postcss">
   @import '../../styles/components/moreTable-dialogs.pcss';
+
+  :deep(.dropdown-has-value .p-dropdown-label) {
+    color: var(--text-color) !important;
+  }
 
   .dropdown-btn {
     &.is-empty {
