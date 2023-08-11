@@ -352,7 +352,6 @@
   }
 
   function openEditObservation(observationId: number) {
-    console.log(observationId);
     const observation = observationList.value.find(
       (o) => o.observationId === observationId
     );

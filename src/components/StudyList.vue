@@ -183,7 +183,6 @@
   const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
   function goToStudy(id: string) {
-    console.log('goToStudy');
     router.push({
       name: t('studyNavigation.tabLink.overview'),
       params: { studyId: id },

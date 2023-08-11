@@ -364,7 +364,6 @@
   }
 
   function openEditIntervetion(interventionId: number) {
-    console.log(interventionId);
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId
     );
