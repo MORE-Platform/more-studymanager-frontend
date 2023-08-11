@@ -166,7 +166,7 @@
       <h5>{{ $t('study.props.consentInfo') }}</h5>
       <div class="mt-2">
         <span v-if="study.consentInfo">
-          <span class="formatted-text" v-html="study.consentInfo" />
+          {{ study.consentInfo }}
         </span>
         <span v-else>{{ $t('study.placeholder.emptyConsentInfo') }}</span>
       </div>

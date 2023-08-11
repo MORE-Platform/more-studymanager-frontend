@@ -8,7 +8,6 @@
   import { dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import Editor from 'primevue/editor';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -218,7 +217,7 @@
           {{ getError('consentInfo') }}
         </div>
         <div class="mb-2">{{ $t('study.dialog.description.consentInfo') }}</div>
-        <Editor
+        <Textarea
           v-model="returnStudy.consentInfo"
           :name="'consentInfo'"
           :required="true"
