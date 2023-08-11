@@ -613,7 +613,8 @@
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
       "addAction": "The intervention needs at least one Trigger. Please add a trigger.",
       "addTriggerConfig": "Please add specific trigger configurations to your data check.",
-      "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention."
+      "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
+      "emptyTriggerConditions": "Please save at least one trigger condition to your trigger."
     },
     "placeholder": {
       "noDescription": "No description available",

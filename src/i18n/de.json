@@ -616,7 +616,8 @@
       "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
       "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu.",
       "addTriggerConfig": "Bitte fügen sie weitere Konfigurationen zum Datacheck hinzu.",
-      "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern."
+      "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern.",
+      "emptyTriggerConditions": "Bitte fügen Sie mindesetens eine Auslöserkondition zu ihrem Trigger hinzu."
     },
     "placeholder": {
       "noDescription": "Keine Beschreibung verfügbar",

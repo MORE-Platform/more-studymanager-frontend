@@ -37,25 +37,6 @@
     props.triggerConditions
   );
 
-  if (!triggerConditionObj.value.value) {
-    triggerConditionObj.value.value = [
-      {
-        nextGroupCondition: undefined,
-        parameter: [
-          {
-            observationId: undefined,
-            observationType: '',
-            observationProperty: '',
-            operator: '',
-            propertyValue: '',
-            editMode: true,
-            error: false,
-          },
-        ],
-      },
-    ];
-  }
-
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
       field: 'observationId',
@@ -114,18 +95,20 @@
   }
 
   function addTriggerGroup(groupIndex?: number) {
+    console.log('add trigger group');
+    console.log(groupIndex);
     setRowOpenError(true);
     if (
       (groupIndex as number) >= 0 &&
       typeof triggerConditionObj.value.value !== 'undefined'
     ) {
-      setEditModeFalse();
+      console.error('if');
       triggerConditionObj.value.value[groupIndex as number].nextGroupCondition =
         'and';
-    }
-
-    if (typeof triggerConditionObj.value.value === 'undefined') {
+    } else {
+      console.error('else');
       triggerConditionObj.value.value = new Array<QueryObject>();
+      console.log(triggerConditionObj.value);
     }
 
     triggerConditionObj?.value?.value?.push({
@@ -138,10 +121,11 @@
           operator: '',
           propertyValue: '',
           editMode: true,
-          error: false,
+          error: true,
         },
       ],
     });
+    checkTriggerConditionErrors();
   }
 
   function setEditModeFalse() {
@@ -151,6 +135,7 @@
       );
       emitTriggerConditions();
     }
+    checkTriggerConditionErrors();
   }
 
   function toggleRowEdit(item: InterventionTriggerUpdateItem) {
@@ -158,6 +143,10 @@
       triggerConditionObj.value.value[item.groupIndex].parameter[
         item.rowIndex
       ].editMode = item.edit || false;
+
+      triggerConditionObj.value.value[item.groupIndex].parameter[
+        item.rowIndex
+      ].error = item.edit || false;
 
       if (
         !item.edit &&
@@ -178,13 +167,18 @@
           triggerConditionObj.value.value[item.groupIndex].parameter.length ===
           1
         ) {
-          triggerConditionObj.value.value[
-            item.groupIndex - 1
-          ].nextGroupCondition = undefined;
-          triggerConditionObj.value.value.splice(item.groupIndex, 1);
+          if (item.groupIndex === 0) {
+            triggerConditionObj.value.value = undefined;
+          } else {
+            triggerConditionObj.value.value[
+              item.groupIndex - 1
+            ].nextGroupCondition = undefined;
+            triggerConditionObj.value.value.splice(item.groupIndex, 1);
+          }
         }
       }
     }
+    checkTriggerConditionErrors();
   }
 
   function validateEditedRow(triggerConfig: QueryObjectInner): boolean {
@@ -239,6 +233,7 @@
         error: false,
       });
     }
+    checkTriggerConditionErrors();
   }
   function deleteRow(item: InterventionTriggerUpdateItem) {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
@@ -255,6 +250,7 @@
         triggerConditionObj.value.value.length - 1
       ].nextGroupCondition = undefined;
     }
+    checkTriggerConditionErrors();
   }
 
   function changeGroupCondition(item: GroupConditionChange) {
@@ -262,6 +258,22 @@
       triggerConditionObj.value.value[item.groupIndex].nextGroupCondition =
         item.value;
       emitTriggerConditions();
+    }
+  }
+
+  function checkTriggerConditionErrors() {
+    let hasErrors = false;
+    triggerConditionObj.value?.value?.forEach((item: QueryObject) => {
+      console.log(item.parameter);
+      item.parameter.forEach((p) => {
+        if (p.error) {
+          hasErrors = true;
+        }
+      });
+    });
+
+    if (hasErrors) {
+      emit('onError', 'Trigger Condition Table is not saved.');
     }
   }
 </script>
@@ -317,6 +329,27 @@
           @on-row-open="setRowOpenError($event)"
           @on-change-group-condition="changeGroupCondition($event)"
         />
+      </div>
+      <div v-else>
+        <div
+          v-if="
+            triggerConditionObj.value !== null ||
+            triggerConditionObj.value !== undefined
+          "
+          class="error mt-2 mb-4"
+        >
+          {{ $t('intervention.error.emptyTriggerConditions') }}
+        </div>
+        <div class="flex justify-center">
+          <Button
+            type="button"
+            class="p-button"
+            :disabled="!editable"
+            @click="addTriggerGroup(-1)"
+            ><span class="pi pi-plus mr-2"></span>
+            {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
+          >
+        </div>
       </div>
     </Suspense>
   </div>

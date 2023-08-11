@@ -94,12 +94,12 @@
   const triggerType: Ref<string> = ref(
     dialogRef?.value?.data?.triggerData?.type
       ? dialogRef.value.data.triggerData.type
-      : 'scheduled-trigger'
+      : undefined
   );
 
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const triggerProperties: Ref<Property<any>[] | undefined> = ref(
-    getTriggerProperties(triggerType.value)
+    triggerType.value ? getTriggerProperties(triggerType.value) : undefined
   );
 
   const removeActions: Ref<number[]> = ref([]);
@@ -340,6 +340,7 @@
   function setTriggerConfig(tType: string) {
     triggerProperties.value = getTriggerProperties(tType);
     triggerType.value = tType;
+    checkErrors();
   }
 
   const actionMenu = ref();
@@ -434,7 +435,13 @@
             />
           </div>
         </div>
+        <div class="col-span-6">
+          <div v-if="getError('trigger')" class="error col-span-8 mb-4">
+            {{ getError('trigger') }}
+          </div>
+        </div>
         <div
+          v-if="triggerType"
           class="section-content col-span-2 grid grid-cols-2 lg:col-span-3 lg:grid-cols-3"
         >
           <div
@@ -446,9 +453,6 @@
             ]"
           >
             {{ getTriggerTypeDescription(triggerType) }}
-          </div>
-          <div v-if="getError('trigger')" class="error col-span-8 mb-4">
-            {{ getError('trigger') }}
           </div>
           <div class="col-start-0 col-span-3">
             <div v-if="triggerJsonError && editable" class="error mb-4">
@@ -584,13 +588,11 @@
   }
 
   .dropdown-btn {
-    &.is-empty {
-      background-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+    :deep(.p-dropdown-label),
+    :deep(.p-dropdown-trigger-icon) {
       color: white;
-      :deep(.p-dropdown-label),
-      :deep(.p-dropdown-trigger-icon) {
-        color: white;
-      }
     }
   }
 
