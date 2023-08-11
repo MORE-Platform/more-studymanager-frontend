@@ -157,6 +157,14 @@
     },
   ];
 
+  const rowEndActions: MoreTableAction[] = [
+    {
+      id: 'edit',
+      label: t('global.labels.edit'),
+      icon: 'pi pi-cog',
+    },
+  ];
+
   function listInterventions(): void {
     interventionsApi
       .listInterventions(props.studyId)
@@ -184,7 +192,7 @@
     }
   }
 
-  function execute(action: MoreTableRowActionResult<StudyGroup>) {
+  function execute(action: MoreTableRowActionResult<any>) {
     switch (action.id) {
       case 'delete':
         return deleteIntervention(action.row);
@@ -196,6 +204,8 @@
           action.row,
           true
         );
+      case 'edit':
+        return openEditIntervetion(action.row.interventionId);
       default:
         console.error('no handler for action', action);
     }
@@ -436,6 +446,7 @@
       :columns="interventionColumns"
       :rows="interventionList"
       :row-actions="rowActions"
+      :row-end-actions="rowEndActions"
       :table-actions="tableActions"
       :sort-options="{ sortField: 'title', sortOrder: -1 }"
       :loading="loader.isLoading.value"

@@ -61,8 +61,9 @@
       :placeholder="placeholder"
       :show-toggle-all="false"
       :class="'w-1/4'"
-    >
-    </MultiSelect>
+      class="radio"
+      :selection-limit="1"
+    />
 
     <div class="buttons mt-1 justify-end text-right">
       <Button class="btn-gray" @click="cancel()">{{
@@ -76,5 +77,9 @@
 <style scoped lang="postcss">
   .buttons button:first-of-type {
     margin-right: 10px;
+  }
+
+  :deep(.p-checkbox .p-checkbox-box) {
+    border-radius: 50% !important;
   }
 </style>

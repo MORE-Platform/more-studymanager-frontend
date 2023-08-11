@@ -85,6 +85,11 @@
   ];
   const tableActions: MoreTableAction[] = [
     {
+      id: 'create',
+      icon: 'pi pi-plus',
+      label: t('study.studyList.action.addStudy'),
+    },
+    {
       id: 'import',
       icon: 'pi pi-upload',
       label: t('study.studyList.action.importStudy'),
@@ -95,11 +100,6 @@
           mode: FileUploadModeType.basic,
         },
       },
-    },
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('study.studyList.action.addStudy'),
     },
   ];
   const rowActions: MoreTableAction[] = [
@@ -162,6 +162,16 @@
         data.userRoles.some((r: any) => [StudyRole.Admin].includes(r)),
     },
   ];
+
+  const rowEndActions: MoreTableAction[] = [
+    {
+      id: 'goToStudy',
+      label: t('tooltips.moreTable.goToStudy'),
+      icon: 'pi pi-chevron-right',
+      tooltip: t('tooltips.moreTable.goToStudy'),
+      visible: () => true,
+    },
+  ];
   const frontRowActions: MoreTableAction[] = [
     {
       id: 'copyId',
@@ -193,6 +203,8 @@
         return onExportStudyData(action.row.studyId as number);
       case 'copyId':
         return onCopyId(action.row.studyId, action.row.title);
+      case 'goToStudy':
+        return goToStudy((action.row.studyId as number).toString());
       default:
         console.error('no handler for action', action);
     }
@@ -263,6 +275,7 @@
       :columns="studyColumnsDraft"
       :rows="studyStore.studies"
       :row-actions="rowActions"
+      :row-end-actions="rowEndActions"
       :front-row-actions="frontRowActions"
       :table-actions="tableActions"
       :editable-access="true"
@@ -271,7 +284,6 @@
       :edit-access-roles="editAccessRoles"
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
-      row-end-icon="pi pi-angle-right"
       class="table-title-width"
       @onselect="goToStudy($event)"
       @onaction="executeAction($event)"

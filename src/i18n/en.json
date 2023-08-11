@@ -58,7 +58,7 @@
       "accessInformation": "-section can't be viewed. Access requires following permissions: "
     },
     "tabs": {
-      "overview": "Overview",
+      "overview": "Study",
       "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
@@ -629,7 +629,8 @@
 
   "moreTable": {
     "defaultEmptyMsg": "No records",
-    "filterBy": "Filter by"
+    "filterBy": "Filter by",
+    "saveLine": "Please save"
   },
 
   "cronSchedule": {
@@ -849,7 +850,8 @@
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
       "copyStudyUrl": "Share study",
-      "showStudy": "Click on row to show study details page."
+      "showStudy": "Click on row to show study details page.",
+      "goToStudy": "Go to study"
     }
   },
 

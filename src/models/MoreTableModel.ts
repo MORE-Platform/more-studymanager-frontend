@@ -105,6 +105,7 @@ export enum MoreTableFieldType {
   choice,
   calendar,
   multiselect,
+  singleselect,
   longtext,
   datetime,
   statusString,

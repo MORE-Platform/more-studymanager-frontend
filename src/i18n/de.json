@@ -632,7 +632,8 @@
 
   "moreTable": {
     "defaultEmptyMsg": "Keine Berichte vorhanden",
-    "filterBy": "Filtern"
+    "filterBy": "Filtern",
+    "saveLine": "Bitte speichern"
   },
 
   "cronSchedule": {
@@ -851,7 +852,8 @@
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
       "copyStudyUrl": "Studie teilen",
-      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
+      "goToStudy": "Studie öffnen"
     }
   },
 

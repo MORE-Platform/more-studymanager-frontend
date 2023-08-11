@@ -56,6 +56,10 @@
       type: Array as PropType<Array<MoreTableAction>>,
       default: () => [],
     },
+    rowEndActions: {
+      type: Array as PropType<Array<MoreTableAction>>,
+      default: () => [],
+    },
     tableActions: {
       type: Array as PropType<Array<MoreTableAction>>,
       default: () => [],
@@ -190,17 +194,26 @@
   }
 
   function isEditMode(row: any) {
-    // @ts-expect-error: cannot really fix
-    return editMode.value.includes(row[props.rowId]);
+    if (row[props.rowId]) {
+      // @ts-expect-error: cannot really fix
+      return editMode.value.includes(row[props.rowId]);
+    } else if (row.uid) {
+      // @ts-expect-error: cannot really fix
+      return editMode.value.includes(row.uid);
+    }
   }
 
   function edit(row: any) {
     editMode.value = [];
     editingRows.value = [];
 
-    // @ts-expect-error: cannot really fix
-    editMode.value.push(row[props.rowId]);
-
+    if (row[props.rowId]) {
+      // @ts-expect-error: cannot really fix
+      editMode.value.push(row[props.rowId]);
+    } else if (row.uid) {
+      // @ts-expect-error: cannot really fix
+      editMode.value.push(row.uid);
+    }
     // @ts-expect-error: cannot really fix
     editingRows.value.push(row);
   }
@@ -386,6 +399,10 @@
     const p = field.split('.')[1];
     return data[f][p];
   }
+
+  function getMoreTableChoiceValues(array: MoreTableChoiceOptions) {
+    return array.values;
+  }
 </script>
 
 <template>
@@ -485,7 +502,7 @@
           <div v-if="!!action.options && action.options.type === 'menu'">
             <Button
               type="button"
-              :disabled="isVisible(action) === false"
+              :disabled="editMode.length ? true : isVisible(action) === false"
               @click="toggle(action, $event)"
               >{{ action.label }} <span class="ml-3" :class="action.icon"></span
             ></Button>
@@ -596,23 +613,33 @@
             :options="isEditableWithValues(column.editable)"
             option-label="label"
             option-value="value"
+            :class="data[field] ? 'dropdown-has-value' : ''"
             :placeholder="
-              column.placeholder
+              data[field]
+                ? getLabelForChoiceValue(data[field], getMoreTableChoiceValues(column.editable as MoreTableChoiceOptions))
+                : column.placeholder
                 ? column.placeholder
                 : $t('global.placeholder.chooseDropdownOptionDefault')
             "
-          ></Dropdown>
+          />
           <MultiSelect
-            v-if="column.type === MoreTableFieldType.multiselect"
+            v-if="
+              column.type === MoreTableFieldType.multiselect ||
+              column.type === MoreTableFieldType.singleselect
+            "
             v-model="data[field]"
             :options="isEditableWithValues(column.editable)"
             option-label="label"
+            :selection-limit="
+              column.type === MoreTableFieldType.singleselect ? 1 : undefined
+            "
             :placeholder="
               column.placeholder
                 ? column.placeholder
                 : $t('global.labels.chooseDropdownOptionDefault')
             "
             :show-toggle-all="false"
+            class="z-top"
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <Checkbox
@@ -712,7 +739,12 @@
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenFieldText(data[field]) }}
             </span>
-            <span v-if="column.type === MoreTableFieldType.multiselect">
+            <span
+              v-if="
+                column.type === MoreTableFieldType.multiselect ||
+                column.type === MoreTableFieldType.singleselect
+              "
+            >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
                   data[field]
@@ -750,7 +782,11 @@
                 type="button"
                 :title="action.label"
                 :icon="action.icon"
-                :disabled="isVisible(action, slotProps.data) === false"
+                :disabled="
+                  editMode.length
+                    ? true
+                    : isVisible(action, slotProps.data) === false
+                "
                 :class="action.id === 'delete' ? 'btn-important' : ''"
                 @click="rowActionHandler(action, slotProps.data)"
               >
@@ -762,15 +798,40 @@
               v-tooltip.bottom="$t('tooltips.moreTable.editBtn')"
               type="button"
               icon="pi pi-pencil"
-              :disabled="isEditable(slotProps.data) === false"
+              :disabled="
+                editMode.length ? true : isEditable(slotProps.data) === false
+              "
               @click="edit(slotProps.data)"
             >
             </Button>
+            <div
+              v-for="action in rowEndActions"
+              :key="action.id"
+              class="inline"
+            >
+              <Button
+                v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
+                type="button"
+                :title="action.label"
+                :icon="action.icon"
+                :disabled="
+                  editMode.length
+                    ? true
+                    : isVisible(action, slotProps.data) === false
+                "
+                :class="action.id === 'delete' ? 'btn-important' : ''"
+                @click="rowActionHandler(action, slotProps.data)"
+              >
+                <span v-if="!action.icon">{{ action.label }}</span>
+              </Button>
+            </div>
             <div v-if="rowEndIcon" class="ml-2 self-center">
               <span :class="rowEndIcon" style="font-size: 1.3rem" />
             </div>
           </div>
-          <div v-else-if="isEditMode(slotProps.data)">
+          <div v-else-if="isEditMode(slotProps.data)" class="items-center">
+            <div class="error pi pi-info-circle big" />
+            <div class="error mx-2">{{ $t('moreTable.saveLine') }}</div>
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
               type="button"
@@ -800,6 +861,14 @@
 
 <style scoped lang="postcss">
   @import '../../styles/components/eye-checkbox.pcss';
+
+  .pi.big {
+    font-size: 1.2rem;
+  }
+
+  :deep(.dropdown-has-value .p-dropdown-label) {
+    color: var(--text-color) !important;
+  }
 
   :deep(.more-table .row-actions) {
     pointer-events: none;
@@ -866,6 +935,11 @@
 
     .p-multiselect {
       width: 100%;
+      z-index: 1000;
+    }
+
+    .p-checkbox .p-checkbox-box {
+      border-radius: 50%;
     }
 
     .multiselect-item {

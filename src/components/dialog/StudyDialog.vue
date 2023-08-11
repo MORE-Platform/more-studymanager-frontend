@@ -207,7 +207,7 @@
           :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
           style="width: 100%"
-        ></Textarea>
+        />
       </div>
       <div class="col-start-0 col-span-6">
         <h5 :class="getError('consentInfo') ? '' : 'mb-2'">
@@ -224,7 +224,7 @@
           :placeholder="$t('study.placeholder.consentInfoInput')"
           :auto-resize="true"
           style="width: 100%"
-        ></Textarea>
+        />
       </div>
       <div class="col-start-0 col-span-6">
         <h5 class="mb-2">{{ $t('study.props.finishText') }}</h5>
@@ -325,6 +325,16 @@
 </template>
 
 <style scoped lang="postcss">
+  :deep(.ql-editor) {
+    font-size: 14px;
+    height: 300px;
+  }
+
+  :deep(.p-editor-container) {
+    margin-bottom: 16px;
+    margin-top: 12px;
+  }
+
   .buttons {
     button {
       margin-left: 10px;

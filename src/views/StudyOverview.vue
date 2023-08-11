@@ -41,7 +41,7 @@
         :study-id="studyId"
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
-      ></StudyGroupList>
+      />
 
       <StudyCollaboratorList
         :study-id="studyId"
@@ -50,6 +50,7 @@
         :use-confirm-dialog="false"
         class="mt-20"
       />
+      <div class="mb-30"></div>
     </div>
   </div>
 </template>

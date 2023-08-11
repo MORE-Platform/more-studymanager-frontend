@@ -164,8 +164,10 @@
     </div>
     <div class="mb-6">
       <h5>{{ $t('study.props.consentInfo') }}</h5>
-      <div>
-        <span v-if="study.consentInfo">{{ study.consentInfo }}</span>
+      <div class="mt-2">
+        <span v-if="study.consentInfo">
+          {{ study.consentInfo }}
+        </span>
         <span v-else>{{ $t('study.placeholder.emptyConsentInfo') }}</span>
       </div>
     </div>
@@ -227,9 +229,20 @@
 </template>
 
 <style scoped lang="postcss">
+  :deep(.formatted-text) {
+    ul {
+      margin: 10px 0 10px 5px;
+      list-style: disc;
+      li {
+        margin-left: 30px;
+      }
+    }
+  }
+
   h5 {
     font-size: 18px;
     font-weight: bold;
+    margin-bottom: 2px;
   }
   button.edit-btn {
     border: none;
