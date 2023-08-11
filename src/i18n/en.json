@@ -800,7 +800,7 @@
         "setDatesDesc": "You can define a timeframe for your observation with start and end date for one day. The timeframe can be set to 'Entire day'. A series of data collection can be defined through the repetition definition below. Alternatively you can set a full time span over more days.",
         "repeat": "Repeat set duration above",
         "repeatDesc": "To repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated.",
-        "oneDayObservation": "One day observation",
+        "oneDayObservation": "Individual Observation",
         "repetitionEnd": {
           "studyEnd": "Until end of study",
           "after": "After"
@@ -809,7 +809,7 @@
           "titles": {
             "singleDay": "Single data capture",
             "series": "Repeat single day schedule for 10 days",
-            "fullTimespan": "Leave observation active from 27.07.2024 - 27.07.2024"
+            "fullTimespan": "Continuous observation from 27.07.2024 - 27.07.2024"
           },
           "values": {
             "singleDay": "Check 'One day observation' &bull; Timeframe: 27/07/2024, 14:00 - 16:00",
@@ -827,6 +827,15 @@
       "chooseDayInterval": "Choose day interval",
       "chooseRepetitionEnd": "Choose repetition end",
       "enterRepeatCount": "Enter repeat count"
+    },
+    "info": {
+      "timeOverlapStart": "End time was changed with start time. Please be sure to set start and end time within each others range.",
+      "timeOverlapEnd": "Start time was changed with end time. Please be sure to set start and end time within each others range.",
+      "dateOverlapStart": "End date was changed with start date. Please be sure to set start and end time within each others range.",
+      "dateOverlapEnd": "Start date was resetted to end date. Please be sure to set start and end time within each others range.",
+      "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
     }
   },
 

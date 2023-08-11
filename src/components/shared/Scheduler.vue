@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { inject, onUpdated, ref, Ref } from 'vue';
+  import { inject, ref, Ref } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputText from 'primevue/inputtext';
@@ -22,9 +22,9 @@
   const repetitionEndArray = [
     {
       label: t('scheduler.labels.event.repetitionEnd.studyEnd'),
-      value: 'never',
+      value: 'onDate',
       active: true,
-      unit: 'never',
+      unit: 'onDate',
     },
     {
       label: t('scheduler.labels.event.repetitionEnd.after'),
@@ -113,34 +113,32 @@
     },
   ];
 
-  const plannedStartDate: Date = new Date(
-    studyStore.study.plannedStart as string
-  );
-
   const minDate: Date = new Date(studyStore.study.plannedStart as string);
   minDate.setHours(0, 0, 0);
   const maxDate: Date = new Date(studyStore.study.plannedEnd as string);
   maxDate.setHours(23, 59, 59);
 
-  const setStartDate: Date =
-    studyStore.study.plannedStart && plannedStartDate > new Date()
-      ? plannedStartDate
-      : new Date();
-
   const start: Ref<Date> = ref(
-    scheduler.dtstart ? new Date(scheduler.dtstart) : setStartDate
+    scheduler.dtstart ? new Date(scheduler.dtstart) : new Date()
   );
   const end: Ref<Date> = ref(
-    scheduler.dtend ? new Date(scheduler.dtend) : setStartDate
+    scheduler.dtend ? new Date(scheduler.dtend) : new Date()
   );
+
+  const formerStart: Ref<Date> = ref(start.value);
+  const formerEnd: Ref<Date> = ref(end.value);
 
   const allDayChecked: Ref<boolean> = ref(false);
   const oneDayObservationChecked: Ref<boolean> = ref(true);
   const repeatChecked: Ref<boolean> = ref(false);
 
   if (
-    scheduler?.dtstart?.substring(11, 19) === '22:00:00' &&
-    scheduler?.dtend?.substring(11, 19) === '21:59:59'
+    scheduler?.dtstart &&
+    scheduler?.dtend &&
+    dateToDateTimeString(new Date(scheduler?.dtstart))?.substring(11, 16) ===
+      '00:00' &&
+    dateToDateTimeString(new Date(scheduler?.dtend))?.substring(11, 16) ===
+      '23:59'
   ) {
     allDayChecked.value = true;
   }
@@ -261,7 +259,19 @@
       const repeatValue = repetitionEndArray.find(
         (f: any) => f.value === repeatEnd
       )?.unit;
-      repeatEndOption.value = repeatValue ? repeatValue : 'never';
+      if (repeatValue === 'onDate') {
+        repeatCount.value = undefined;
+        const date = new Date(studyStore.study.plannedEnd as string);
+        date.setHours(23, 59, 59);
+        repeatUntil.value = date;
+      } else if (repeatValue === 'after') {
+        repeatUntil.value = undefined;
+        repeatEndOption.value = repeatValue ? repeatValue : 'never';
+      } else {
+        repeatEndOption.value = 'never';
+        repeatUntil.value = undefined;
+        repeatCount.value = undefined;
+      }
     }
   }
 
@@ -283,20 +293,142 @@
     resetRepeatEndOptions();
   }
 
-  function changeDateTime() {
-    start.value = new Date(start.value);
-    end.value = new Date(end.value);
-  }
-  function changeOneDayObservation(checked: boolean) {
-    if (checked) {
-      end.value = start.value;
-    } else {
+  function changeOneDayObservation() {
+    if (oneDayObservationChecked.value) {
+      if (start.value.getDate() !== end.value.getDate()) {
+        end.value = start.value;
+        end.value.setHours(
+          formerEnd.value.getHours(),
+          formerEnd.value.getMinutes(),
+          formerEnd.value.getSeconds()
+        );
+        formerEnd.value = end.value;
+      }
+    } else if (!oneDayObservationChecked.value) {
       repeatChecked.value = false;
       resetRepeatOptions();
       resetRepeatEndOptions();
       resetRepeatFreqOptions();
     }
-    allDayChecked.value = false;
+  }
+
+  function changeAllDayChecked() {
+    start.value.setHours(0, 0, 0);
+    formerStart.value = start.value;
+    end.value.setHours(23, 59, 59);
+    formerEnd.value = end.value;
+  }
+
+  const calendarInfo: Ref<string> = ref('');
+
+  function validateTime(dateType: string, dateTimeCheck?: boolean) {
+    if (dateType === 'start' && start.value > end.value) {
+      end.value = start.value;
+      formerStart.value = start.value;
+      formerEnd.value = start.value;
+      calendarInfo.value = t('scheduler.info.timeOverlapStart');
+      highlightElement('end-date');
+    } else if (dateType === 'end' && end.value < start.value) {
+      start.value = end.value;
+      formerStart.value = end.value;
+      formerEnd.value = end.value;
+      calendarInfo.value = t('scheduler.info.timeOverlapEnd');
+      highlightElement('start-time');
+    }
+
+    if (typeof dateTimeCheck === 'undefined') {
+      formerEnd.value.setHours(
+        end.value.getHours(),
+        end.value.getMinutes(),
+        end.value.getSeconds()
+      );
+      end.value = formerEnd.value;
+    } else if (dateTimeCheck && dateType === 'end') {
+      formerEnd.value = end.value;
+    }
+  }
+
+  function validateDate(dateType: string) {
+    if (dateType === 'start') {
+      start.value.setHours(
+        formerStart.value.getHours(),
+        formerStart.value.getMinutes(),
+        formerStart.value.getSeconds()
+      );
+      if (start.value < minDate || start.value > maxDate) {
+        start.value = formerStart.value;
+        if (!oneDayObservationChecked.value) {
+          calendarInfo.value = t('scheduler.info.startDateNotWithinRange');
+        } else {
+          formerStart.value = start.value;
+        }
+        highlightElement('start-date');
+      } else if (start.value.getDate() > end.value.getDate()) {
+        end.value = start.value;
+        formerStart.value = start.value;
+        formerEnd.value = end.value;
+        if (!oneDayObservationChecked.value) {
+          calendarInfo.value = t('scheduler.info.dateOverlapStart');
+        }
+        highlightElement('end-date');
+      }
+    } else if (dateType === 'end') {
+      end.value.setHours(
+        formerEnd.value.getHours(),
+        formerEnd.value.getMinutes(),
+        formerEnd.value.getMinutes()
+      );
+      if (end.value < minDate || end.value > maxDate) {
+        end.value = formerEnd.value;
+        validateTime('end', true);
+        calendarInfo.value = t('scheduler.info.endDateNotWithinRange');
+        highlightElement('end-date');
+      } else if (end.value.getDate() < start.value.getDate()) {
+        end.value = start.value;
+        end.value.setHours(
+          formerEnd.value.getHours(),
+          formerEnd.value.getMinutes(),
+          formerEnd.value.getSeconds()
+        );
+        formerEnd.value = start.value;
+        validateTime('end', true);
+        calendarInfo.value = t('scheduler.info.dateOverlapEnd');
+        highlightElement('start-date');
+      } else {
+        formerEnd.value = end.value;
+        validateTime('end', true);
+      }
+    } else {
+      calendarInfo.value = '';
+      calendarInputErrors.value.start = '';
+      calendarInputErrors.value.end = '';
+    }
+  }
+
+  function highlightElement(elClass: string) {
+    const items = document.getElementsByClassName(elClass);
+    setTimeout(() => {
+      for (const el of items) {
+        el.classList.add('highlight');
+      }
+    }, 200);
+
+    setTimeout(() => {
+      for (const el of items) {
+        el.classList.remove('highlight');
+      }
+    }, 1000);
+  }
+
+  function repeatCheckedData() {
+    if (!repeatChecked.value) {
+      resetRepeatOptions();
+    }
+  }
+
+  function checkDateRange() {
+    checkStartDateError(start.value);
+    checkEndDateError(end.value);
   }
 
   function save() {
@@ -351,7 +483,6 @@
             returnEvent.rrule.until = endDate.toISOString();
           }
         }
-
         dialogRef.value.close(returnEvent);
       } catch (e) {
         console.error('Cannot send schedule event ', e);
@@ -359,21 +490,8 @@
     }
   }
 
-  onUpdated(() => {
-    if (end.value < start.value) {
-      end.value = start.value;
-      calendarInputErrors.value.end = '';
-    }
-  });
-
   function cancel() {
     dialogRef.value.close();
-  }
-
-  function repeatCheckedData() {
-    if (!repeatChecked.value) {
-      resetRepeatOptions();
-    }
   }
 
   function resetRepeatOptions() {
@@ -394,47 +512,8 @@
     end: '',
   });
 
-  function handleCalendarInputUpdate(event: any, date: string) {
-    const eventDate: Ref<Date> = ref(
-      new Date(
-        event.value.substring(3, 5) +
-          '/' +
-          event.value.substring(0, 2) +
-          '/' +
-          event.value.substring(6, 10)
-      )
-    );
-
-    if (date === 'start') {
-      if (eventDate.value < minDate || eventDate.value > maxDate) {
-        calendarInputErrors.value.start =
-          'Please enter a start date-time that lies inside the study range.';
-      } else {
-        calendarInputErrors.value.start = '';
-        start.value = eventDate.value;
-      }
-      checkEndDateError(end.value, eventDate.value);
-    } else if (date === 'end') {
-      if (!checkEndDateError(eventDate.value, start.value)) {
-        end.value = eventDate.value;
-      }
-    }
-
-    if (eventDate.value.toString() === 'Invalid Date') {
-      if (date === 'start') {
-        start.value = new Date();
-        calendarInputErrors.value.start =
-          'Please enter a valid Date. Date was resetted to today.';
-      } else {
-        end.value = new Date();
-        calendarInputErrors.value.end =
-          'Please enter a valid date! Date was resetted to today.';
-      }
-    }
-  }
-
-  function checkEndDateError(endDate: Date, startDate: Date): boolean {
-    if (endDate < startDate || endDate < minDate || endDate > maxDate) {
+  function checkEndDateError(endDate: Date): boolean {
+    if (endDate < minDate || endDate > maxDate) {
       calendarInputErrors.value.end =
         'Please enter a end date-time that lies inside the study range and is not in the past.';
       return true;
@@ -453,11 +532,6 @@
       calendarInputErrors.value.start = '';
       return false;
     }
-  }
-
-  function checkDateRange() {
-    checkStartDateError(start.value);
-    checkEndDateError(end.value, start.value);
   }
 
   checkDateRange();
@@ -529,26 +603,27 @@
         :max-date="maxDate"
         autocomplete="off"
         style="width: 100%"
-        class="col-span-2 col-start-2"
+        class="start-date col-span-2 col-start-2"
         :class="calendarInputErrors.start ? 'input-error' : ''"
-        :update:model-value="checkDateRange"
-        @date-select="checkDateRange()"
-        @blur="handleCalendarInputUpdate($event, 'start')"
+        @date-select="validateDate('start')"
+        @blur="validateDate('start')"
       />
       <Calendar
         v-if="!allDayChecked"
         v-model="start"
         :placeholder="'hh:mm'"
-        class="p-calendar-timeonly col-span-1"
+        class="p-calendar-timeonly start-date start-time col-span-1"
         time-only
+        @blur="validateTime('start')"
       />
       <div v-if="oneDayObservationChecked && !allDayChecked" class="col-span-2">
         <span class="ml-1 mr-4">-</span>
         <Calendar
           v-model="end"
           :placeholder="'hh:mm'"
-          class="p-calendar-timeonly col-span-1"
+          class="p-calendar-timeonly end-date end-time col-span-1"
           time-only
+          @blur="validateTime('end')"
         />
       </div>
 
@@ -573,19 +648,22 @@
         :max-date="maxDate"
         autocomplete="off"
         style="width: 100%"
-        class="col-span-2 col-start-2"
+        class="end-date col-span-2 col-start-2"
         :class="calendarInputErrors.end ? 'input-error' : ''"
-        :update:model-value="checkDateRange"
-        @date-select="checkDateRange()"
-        @blur="handleCalendarInputUpdate($event, 'end')"
+        @date-select="validateDate('end')"
+        @blur="validateDate('end')"
       />
       <Calendar
         v-if="!allDayChecked && !oneDayObservationChecked"
         v-model="end"
         :placeholder="'hh:mm'"
-        class="p-calendar-timeonly col-span-1"
+        class="p-calendar-timeonly end-date end-time col-span-1"
         time-only
+        @blur="validateTime('end')"
       />
+      <div v-if="calendarInfo" class="col-span-5 col-start-2">
+        <span class="pi pi-info-circle color-primary mr-2" />{{ calendarInfo }}
+      </div>
       <div v-if="calendarInputErrors.end" class="error col-span-5 col-start-2">
         {{ calendarInputErrors.end }}
       </div>
@@ -596,7 +674,7 @@
           v-model="oneDayObservationChecked"
           class="ml-2"
           :binary="true"
-          @change="changeOneDayObservation(oneDayObservationChecked)"
+          @change="changeOneDayObservation()"
         />
       </div>
 
@@ -606,7 +684,7 @@
           v-model="allDayChecked"
           class="ml-2"
           :binary="true"
-          @change="changeDateTime()"
+          @change="changeAllDayChecked()"
         />
       </div>
 
@@ -783,6 +861,10 @@
 </template>
 
 <style scoped lang="postcss">
+  :deep(.highlight input) {
+    background-color: var(--red-200) !important;
+  }
+
   .scheduler {
     min-height: 37.5rem;
 
