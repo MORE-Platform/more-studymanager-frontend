@@ -399,6 +399,10 @@
     const p = field.split('.')[1];
     return data[f][p];
   }
+
+  function getMoreTableChoiceValues(array: MoreTableChoiceOptions) {
+    return array.values;
+  }
 </script>
 
 <template>
@@ -602,6 +606,8 @@
             autocomplete="off"
             date-format="dd/mm/yy"
           />
+
+          <!-- @ts-ignore -->
           <Dropdown
             v-if="column.type === MoreTableFieldType.choice"
             v-model="data[field]"
@@ -612,7 +618,7 @@
             :class="data[field] ? 'dropdown-has-value' : ''"
             :placeholder="
               data[field]
-                ? getLabelForChoiceValue(data[field], column.editable.values)
+                ? getLabelForChoiceValue(data[field], getMoreTableChoiceValues(column.editable as MoreTableChoiceOptions))
                 : column.placeholder
                 ? column.placeholder
                 : $t('global.placeholder.chooseDropdownOptionDefault')
