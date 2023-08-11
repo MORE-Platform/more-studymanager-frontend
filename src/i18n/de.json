@@ -828,6 +828,15 @@
       "chooseDayInterval": "Wählen Sie ein Tagesintervall",
       "chooseRepetitionEnd": "Wählen Sie das Wiederholungsende",
       "enterRepeatCount": "Fügen Sie die Anzahl der Wiederholungen ein"
+    },
+    "info": {
+      "timeOverlapStart": "Die Endzeit wurde der Startzeit angepasst.",
+      "timeOverlapEnd": "Die Startzeit wurde der Endzeit angepasst.",
+      "dateOverlapStart": "Das Enddatum wurde dem Startdatum angepasst.",
+      "dateOverlapEnd": "Das Startdatum wurde dem Enddatum angepasst.",
+      "startDateNotWithinRange": "Das Startdatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
+      "endDateNotWithinRange": "Das Enddatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
+      "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
     }
   },
 
