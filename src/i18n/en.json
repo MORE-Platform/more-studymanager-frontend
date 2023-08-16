@@ -658,7 +658,7 @@
       "asterisk": "All values (e.g. every minute)"
     },
     "example":{
-      "title": "Examples",
+      "title": "Cron Scheduler examples",
       "titles": {
         "everyMinute": "Every minute",
         "hourly": "Every hour at xx:30",

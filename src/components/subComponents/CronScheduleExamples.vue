@@ -1,6 +1,8 @@
 <script setup lang="ts">
   import DataTable from 'primevue/datatable';
   import Column from 'primevue/column';
+  import Accordion from 'primevue/accordion';
+  import AccordionTab from 'primevue/accordiontab';
   import { useI18n } from 'vue-i18n';
   const { t } = useI18n();
 
@@ -100,29 +102,48 @@
 </script>
 
 <template>
-  <div class="cron-schedule-examples mt-5">
-    <h6 class="mb-1 font-medium">{{ $t('cronSchedule.example.title') }}</h6>
-
-    <div class="examples">
-      <DataTable :value="tableRows">
-        <Column
-          v-for="col in tableColumns"
-          :key="col.field"
-          :field="col.field"
-          :header="col.header"
-        />
-      </DataTable>
-    </div>
+  <div class="cron-schedule-examples">
+    <Accordion>
+      <AccordionTab :header="$t('cronSchedule.example.title')">
+        <div class="examples">
+          <DataTable :value="tableRows">
+            <Column
+              v-for="col in tableColumns"
+              :key="col.field"
+              :field="col.field"
+              :header="col.header"
+            />
+          </DataTable>
+        </div>
+      </AccordionTab>
+    </Accordion>
   </div>
 </template>
 
 <style scoped lang="postcss">
   .cron-schedule-examples .examples {
     border: 1px solid var(--surface-50);
-    padding: 1rem;
     border-radius: 6px;
     background-color: var(--surface-50);
   }
+
+  :deep(.p-accordion) {
+    .p-accordion-header-link {
+      border: 1px solid var(--surface-100);
+      background: var(--surface-50);
+      transition: ease-in-out 0.35s;
+
+      &:hover {
+        background: var(--surface-100);
+      }
+    }
+    .p-accordion-content {
+      background: var(--surface-50);
+      border: 1px solid var(--surface-50);
+      padding: 1rem 1.5rem 1.5rem;
+    }
+  }
+
   :deep(.p-datatable-wrapper tr) {
     th {
       padding-top: 0;
