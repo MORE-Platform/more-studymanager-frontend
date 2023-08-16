@@ -591,7 +591,7 @@
         },
         "scheduledDatacheck": {
           "title": "Scheduled Datacheck",
-          "description": "Dieser Auslösertyp löst eine Aktion basierend auf dne eingestelltne Cron Scheduler und den definierten zusätzlichen Bedingungen (basierend auf Datenerhebungsmodulen) aus.",
+          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler und den definierten zusätzlichen Bedingungen (basierend auf Datenerhebungsmodulen) aus.",
           "configProps": {
             "queryName": "Query",
             "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
@@ -661,7 +661,7 @@
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
     "example":{
-      "title": "Beispiele",
+      "title": "Cron Scheduler Beispiele",
       "titles": {
         "everyMinute": "Jede Minute",
         "hourly": "Jede Stunde um xx:30",
