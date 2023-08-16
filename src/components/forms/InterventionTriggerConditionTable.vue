@@ -410,12 +410,18 @@
               ></Button>
             </div>
           </div>
-          <div v-else-if="slotProps.data.editMode" class="text-end">
-            <div v-if="slotProps.data.error" class="error inline p-5">
+          <div
+            v-else-if="slotProps.data.editMode"
+            class="flex items-center justify-center text-end"
+          >
+            <div class="error inline">
               <span
                 class="pi pi-exclamation-circle"
                 style="font-size: 2rem"
               ></span>
+            </div>
+            <div class="error m-2">
+              {{ $t('moreTable.saveLine') }}
             </div>
             <Button
               type="button"

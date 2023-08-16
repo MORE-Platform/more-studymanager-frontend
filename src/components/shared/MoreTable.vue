@@ -830,7 +830,7 @@
             </div>
           </div>
           <div v-else-if="isEditMode(slotProps.data)" class="items-center">
-            <div class="error pi pi-info-circle big" />
+            <div class="error pi pi-exclamation-circle big" />
             <div class="error mx-2">{{ $t('moreTable.saveLine') }}</div>
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
@@ -880,6 +880,10 @@
     :deep(.p-datatable-loading-overlay) {
       filter: blur(5px);
       background-color: #ffffff99;
+    }
+
+    :deep(.pi-exclamation-circle.big:before) {
+      font-size: 30px;
     }
 
     h3 {

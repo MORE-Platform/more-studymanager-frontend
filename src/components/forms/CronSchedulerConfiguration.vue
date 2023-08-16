@@ -140,7 +140,6 @@
     :class="editable ? '' : 'schedule-disabled'"
   >
     <CronScheduleInfo :editable="editable" />
-
     <form
       class="mb-4 grid grid-cols-3 grid-rows-2 items-center gap-4 lg:grid-cols-5"
     >
