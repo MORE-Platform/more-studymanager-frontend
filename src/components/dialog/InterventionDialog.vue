@@ -19,7 +19,11 @@
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import PropertyInputs from './shared/ProprtyInputs.vue';
 
-  import { DataCheckProperty, Property } from '../../models/InputModels';
+  import {
+    CronProperty,
+    DataCheckProperty,
+    Property,
+  } from '../../models/InputModels';
   import ActionProperty from './shared/ActionProperty.vue';
   import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
 
@@ -338,7 +342,17 @@
     )?.label;
   }
   function setTriggerConfig(tType: string) {
+    const cronValue = triggerProperties.value?.find(
+      (item) => item.id === 'cronSchedule'
+    )?.value;
     triggerProperties.value = getTriggerProperties(tType);
+
+    if (cronValue) {
+      const cron = triggerProperties.value?.find(
+        (item) => item.id === 'cronSchedule'
+      ) as Property<CronProperty>;
+      cron.value = cronValue;
+    }
     triggerType.value = tType;
     checkErrors();
   }
@@ -412,7 +426,6 @@
           :disabled="!editable"
         ></Textarea>
       </div>
-
       <div
         class="section-group col-start-0 col-span-8 mt-4 grid grid-cols-2 items-end lg:grid-cols-3"
       >

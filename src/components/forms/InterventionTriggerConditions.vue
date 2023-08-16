@@ -95,20 +95,15 @@
   }
 
   function addTriggerGroup(groupIndex?: number) {
-    console.log('add trigger group');
-    console.log(groupIndex);
     setRowOpenError(true);
     if (
       (groupIndex as number) >= 0 &&
       typeof triggerConditionObj.value.value !== 'undefined'
     ) {
-      console.error('if');
       triggerConditionObj.value.value[groupIndex as number].nextGroupCondition =
         'and';
     } else {
-      console.error('else');
       triggerConditionObj.value.value = new Array<QueryObject>();
-      console.log(triggerConditionObj.value);
     }
 
     triggerConditionObj?.value?.value?.push({
@@ -264,7 +259,6 @@
   function checkTriggerConditionErrors() {
     let hasErrors = false;
     triggerConditionObj.value?.value?.forEach((item: QueryObject) => {
-      console.log(item.parameter);
       item.parameter.forEach((p) => {
         if (p.error) {
           hasErrors = true;
