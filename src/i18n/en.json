@@ -664,20 +664,10 @@
         "hourly": "Every hour at xx:30",
         "daily": "Every Day at 12:00",
         "specificDayOfMonth": "Every 4th of every month",
-        "specificMonth": "Every day at 8 in March",
+        "specificMonth": "Every day at 8:00 in March",
         "everyFiveMinutes": "Every 5 minutes",
         "everyMinuteInSetTime": "Every minute in the range of xx:00 to xx:10",
         "specificHourRange": "At xx:30 between 8:00 and 10:00"
-      },
-      "values": {
-        "everyMinute": "* * ? * *",
-        "hourly": "30 * ? * *",
-        "daily": "0 12 ? * *",
-        "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 ?",
-        "everyFiveMinutes": "0/5 * ? * *",
-        "everyMinuteInSetTime": "0-5 * ? * *",
-        "specificHourRange": "30 8-10 ? * *"
       }
     },
     "error": {

@@ -671,16 +671,6 @@
         "everyFiveMinutes": "Alle 5 Minuten",
         "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
         "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00"
-      },
-      "values": {
-        "everyMinute": "* * ? * *",
-        "hourly": "30 * ? * *",
-        "daily": "0 12 ? * *",
-        "specificDayOfMonth": "* * 4 * *",
-        "specificMonth": "0 8 * 3 ?",
-        "everyFiveMinutes": "0/5 * ? * *",
-        "everyMinuteInSetTime": "0-5 * ? * *",
-        "specificHourRange": "30 8-10 ? * *"
       }
     },
     "error": {
