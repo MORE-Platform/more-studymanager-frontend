@@ -426,12 +426,17 @@
     }
   }
 
-  function checkDateRange() {
-    checkStartDateError(start.value);
-    checkEndDateError(end.value);
+  function hasDateRangeError() {
+    const e1 = checkStartDateError(start.value)
+    const e2 =checkEndDateError(end.value);
+    return e1 || e2;
   }
 
   function save() {
+    if(hasDateRangeError()) {
+      return;
+    }
+
     const s = start.value;
     const e = end.value;
 
@@ -533,8 +538,6 @@
       return false;
     }
   }
-
-  checkDateRange();
 </script>
 
 <template>
