@@ -46,7 +46,7 @@
   );
 
   const hidden: Ref<boolean> = ref(
-    observation.hidden !== undefined ? observation.hidden : factory.hidden
+    observation.hidden !== undefined ? observation.hidden : false
   );
 
   const scheduler: Ref<Event> = ref(
@@ -294,12 +294,7 @@
         <div class="info-box relative">
           <!-- if editable with checkbox-->
           <div
-            v-if="
-              observation.type !== 'question-observation' &&
-              observation.type !== 'lime-survey-observation' &&
-              observation.type !== 'external-observation' &&
-              editable
-            "
+            v-if="factory.hidden"
             class="inline flex items-center"
           >
             <span v-if="hidden" class="ml-1 inline">
