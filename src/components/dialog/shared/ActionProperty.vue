@@ -4,12 +4,17 @@
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../../models/InputModels';
   import PropertyInputs from './ProprtyInputs.vue';
+  import { Context } from '../../../models/ContextModel';
 
   const { t } = useI18n();
 
   const props = defineProps({
     action: {
       type: Object as PropType<Action>,
+      required: true,
+    },
+    context: {
+      type: Object as PropType<Context>,
       required: true,
     },
     actionFactories: {
@@ -34,6 +39,14 @@
     );
   }
 
+  function getActionTitle(actionType?: string) {
+    return (
+      props.actionFactories.find(
+        (a: ComponentFactory) => a.componentId === actionType
+      )?.title || t('intervention.placeholder.noDescription')
+    );
+  }
+
   function getActionProperties(action: Action): any {
     const properties: Property<any>[] | undefined = props.actionFactories
       .find((factory: ComponentFactory) => factory.componentId === action.type)
@@ -48,8 +61,7 @@
   );
 
   function getActionPropsParsed(actionProps: Property<any>[]): any {
-    const properties: any = Property.toJson(actionProps);
-    return properties;
+    return Property.toJson(actionProps);
   }
 
   function updateProperty(prop: Property<any>, i: number) {
@@ -71,7 +83,7 @@
   <div class="action-property-input grid grid-cols-5 gap-4">
     <div class="col-span-5">
       <h6 class="color-primary font-bold">
-        {{ $t('intervention.dialog.label.pushNotification') }}
+        {{ $t(getActionTitle(actionObj.type)) }}
       </h6>
       <div>{{ $t(getActionDescription(actionObj.type)) }}</div>
     </div>
@@ -80,6 +92,7 @@
       <PropertyInputs
         :editable="editable"
         :property-list="actionProperties"
+        :context="context"
         @on-property-change="updateProperty($event.value, $event.index)"
       />
     </div>

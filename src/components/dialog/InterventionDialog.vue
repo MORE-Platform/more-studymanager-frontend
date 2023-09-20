@@ -476,6 +476,10 @@
               <PropertyInputs
                 :editable="editable"
                 :property-list="triggerProperties"
+                :context="{
+                  studyId: studyStore.studyId,
+                  groupId: studyGroupId,
+                }"
                 @on-property-change="updateProperty($event)"
                 @on-error="propertyError($event)"
                 @on-check-errors="checkPropertyErrors($event)"
@@ -538,6 +542,10 @@
               <ActionProperty
                 :action-factories="actionFactories as ComponentFactory[]"
                 :action="action"
+                :context="{
+                  studyId: studyStore.studyId,
+                  groupId: studyGroupId,
+                }"
                 :editable="editable"
                 @on-action-prop-change="updateActionProps($event, index)"
               />

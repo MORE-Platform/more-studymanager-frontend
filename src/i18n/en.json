@@ -605,6 +605,16 @@
         "pushNotification": {
           "title": "Push Notification Action",
           "description": "Sends a push notification to all matching participants based on the trigger."
+        },
+        "triggerObservation": {
+          "title": "Trigger Observation",
+          "description": "Trigger a selected observation",
+          "properties": {
+            "observation": {
+              "name": "Observation",
+              "description": "Select an existing observation (currently simple questions and lime surveys are supported)"
+            }
+          }
         }
       }
     },
