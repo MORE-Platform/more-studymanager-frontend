@@ -118,6 +118,22 @@
   }
 
   function save(props: any) {
+
+    if ((JSON.stringify(scheduler.value) === '{}') && noSchedule.value) {
+      if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
+        scheduler.value = {
+          dtstart: new Date(studyStore.study.plannedStart).toISOString(),
+          dtend: new Date(studyStore.study.plannedEnd).toISOString(),
+        };
+      } else {
+        scheduler.value = {
+          dtstart: new Date().toISOString(),
+          dtend: new Date().toISOString(),
+        };
+      }
+    }
+    console.log(scheduler.value);
+
     const returnObservation = {
       observationId: observation.observationId,
       title: title.value,
