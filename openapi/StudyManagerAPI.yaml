@@ -1423,6 +1423,9 @@ components:
           readOnly: true
         hidden:
           type: boolean
+        noSchedule:
+          type: boolean
+          default: false
 
     EndpointToken:
       type: object

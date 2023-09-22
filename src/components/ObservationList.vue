@@ -228,6 +228,7 @@
             created: item.created,
             modified: item.modified,
             hidden: item.hidden,
+            noSchedule: item.noSchedule,
           };
         });
       })

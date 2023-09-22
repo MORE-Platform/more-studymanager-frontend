@@ -36,6 +36,7 @@
     studyStore.study.status === StudyStatus.Paused;
 
   const title = ref(observation.title);
+  const noSchedule = ref(observation.noSchedule);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
@@ -127,6 +128,7 @@
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
+      noSchedule: noSchedule.value,
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
@@ -146,7 +148,7 @@
         value: t('observation.error.addTitle'),
       });
     }
-    if (JSON.stringify(scheduler.value) === '{}') {
+    if (JSON.stringify(scheduler.value) === '{}' && !noSchedule.value) {
       errors.value.push({
         label: 'scheduler',
         value: t('observation.error.addSchedulerMsg'),
@@ -215,8 +217,14 @@
           ></InputText>
         </div>
       </div>
-
+      <div
+        class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
+      >
+        <label for="noSchedule">{{ $t('observation.props.noSchedule') }}</label>
+        <Checkbox v-model="noSchedule" :binary="true" />
+      </div>
       <SchedulerInfoBlock
+        v-if="!noSchedule"
         :scheduler="scheduler"
         :editable="editable"
         :error="

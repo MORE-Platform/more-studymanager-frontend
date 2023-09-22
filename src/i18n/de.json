@@ -373,7 +373,8 @@
       "hidden": {
         "true": "Versteckt",
         "false": "Nicht versteckt"
-      }
+      },
+      "noSchedule": "Keine Planzeit"
     },
     "observationList": {
       "title": "Datenerhebung",
