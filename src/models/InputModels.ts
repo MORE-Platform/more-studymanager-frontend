@@ -33,6 +33,8 @@ export abstract class Property<T> {
         return CronProperty.fromJson(value);
       case 'DATACHECKQUERY':
         return DataCheckProperty.fromJson(value);
+      case 'OBSERVATION':
+        return ObservationProperty.fromJson(value);
       default:
         throw new Error('cannot case property');
     }
@@ -311,7 +313,7 @@ export class BooleanProperty extends Property<boolean> {
     super(defaultValue, description, id, immutable, name, required);
   }
 
-  getType(): 'Integer' | 'Boolean' | 'String' | 'Boolean' | 'Double' {
+  getType(): 'Integer' | 'String' | 'Boolean' | 'Double' {
     return 'Boolean';
   }
 
@@ -326,6 +328,42 @@ export class BooleanProperty extends Property<boolean> {
   }
   static fromJson(json: any): BooleanProperty {
     return new BooleanProperty(
+      json.defaultValue,
+      json.description,
+      json.id,
+      json.immutable,
+      json.name,
+      json.required
+    );
+  }
+}
+
+export interface ObservationPropertyValue {
+  factory: string;
+  id: number;
+}
+
+export class ObservationProperty extends Property<ObservationPropertyValue> {
+  constructor(
+    defaultValue: ObservationPropertyValue,
+    description: string,
+    id: string,
+    immutable: boolean,
+    name: string,
+    required: boolean
+  ) {
+    super(defaultValue, description, id, immutable, name, required);
+  }
+
+  getType(): 'Integer' | 'Object' | 'Array' | 'String' | 'Boolean' | 'Double' {
+    return 'Object';
+  }
+
+  validate(): string | undefined {
+    return undefined;
+  }
+  static fromJson(json: any): ObservationProperty {
+    return new ObservationProperty(
       json.defaultValue,
       json.description,
       json.id,

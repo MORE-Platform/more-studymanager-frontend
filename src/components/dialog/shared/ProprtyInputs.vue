@@ -5,6 +5,7 @@
     CronProperty,
     DataCheckProperty,
     IntegerProperty,
+    ObservationProperty,
     Property,
     StringListProperty,
     StringProperty,
@@ -21,10 +22,16 @@
   import CronSchedulerConfiguration from '../../forms/CronSchedulerConfiguration.vue';
   import InterventionTriggerConditions from '../../forms/InterventionTriggerConditions.vue';
   import BooleanPropertyInput from './BooleanPropertyInput.vue';
+  import ObservationPropertyInput from './ObservationPropertyInput.vue';
+  import { Context } from '../../../models/ContextModel';
 
   defineProps({
     propertyList: {
       type: Array as PropType<Property<any>[]>,
+      required: true,
+    },
+    context: {
+      type: Object as PropType<Context>,
       required: true,
     },
     editable: {
@@ -92,6 +99,17 @@
         :property="property"
         :editable="editable"
         @on-boolean-change="
+          emit('onPropertyChange', { value: $event, index: index })
+        "
+      />
+
+      <ObservationPropertyInput
+        v-if="property instanceof ObservationProperty"
+        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :property="property"
+        :context="context"
+        :editable="editable"
+        @on-input-change="
           emit('onPropertyChange', { value: $event, index: index })
         "
       />

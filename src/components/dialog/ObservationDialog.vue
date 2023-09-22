@@ -263,6 +263,10 @@
             <PropertyInputs
               :editable="editable"
               :property-list="properties"
+              :context="{
+                studyId: studyStore.studyId,
+                groupId: studyGroupId,
+              }"
               @on-property-change="updateProperty($event)"
             />
           </div>
@@ -293,10 +297,7 @@
 
         <div class="info-box relative">
           <!-- if editable with checkbox-->
-          <div
-            v-if="factory.hidden"
-            class="inline flex items-center"
-          >
+          <div v-if="factory.hidden" class="inline flex items-center">
             <span v-if="hidden" class="ml-1 inline">
               {{ $t('observation.props.hidden.true') }}
             </span>
@@ -314,23 +315,9 @@
 
           <!-- if not editable or fixed value -->
           <div v-else class="icon-box eye preview inline flex items-center">
-            <!-- if fixed visible -->
-            <div
-              v-if="
-                observation.type === 'question-observation' ||
-                observation.type === 'lime-survey-observation'
-              "
-              class="flex items-center"
-            >
-              <span class="ml-1 inline">
-                {{ $t('observation.props.hidden.false') }}
-              </span>
-              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
-              <span class="pi pi-eye color-approved" />
-            </div>
             <!-- if fixed not visible -->
             <div
-              v-else-if="observation.type === 'external-observation'"
+              v-if="observation.type === 'external-observation'"
               class="flex items-center"
             >
               <span class="ml-1 inline">

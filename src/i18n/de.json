@@ -608,6 +608,15 @@
         "pushNotification": {
           "title": "Push-Benachrichtigung Aktion",
           "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition."
+        },"triggerObservation": {
+          "title": "Beobachtung auslösen",
+          "description": "Starte eine Beobachtung aktiv",
+          "properties": {
+            "observation": {
+              "name": "Beobachtung",
+              "description": "Wähle eine Beobachtung aus (zur Zeit sind nur einfache Fragen und Lime Surveys erlaubt)"
+            }
+          }
         }
       }
     },
