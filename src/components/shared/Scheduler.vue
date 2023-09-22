@@ -427,13 +427,13 @@
   }
 
   function hasDateRangeError() {
-    const e1 = checkStartDateError(start.value)
-    const e2 =checkEndDateError(end.value);
+    const e1 = checkStartDateError(start.value);
+    const e2 = checkEndDateError(end.value);
     return e1 || e2;
   }
 
   function save() {
-    if(hasDateRangeError()) {
+    if (hasDateRangeError()) {
       return;
     }
 
