@@ -1,6 +1,6 @@
 # build stage
 FROM node:lts-alpine as build-stage
-RUN apk add openjdk8-jre
+RUN apk add openjdk11-jre-headless
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
