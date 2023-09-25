@@ -118,8 +118,7 @@
   }
 
   function save(props: any) {
-
-    if ((JSON.stringify(scheduler.value) === '{}') && noSchedule.value) {
+    if (JSON.stringify(scheduler.value) === '{}' && noSchedule.value) {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
           dtstart: new Date(studyStore.study.plannedStart).toISOString(),
