@@ -1235,7 +1235,7 @@ components:
     Visibility:
       type: object
       properties:
-        changable:
+        changeable:
           type: boolean
         hiddenByDefault:
           type: boolean

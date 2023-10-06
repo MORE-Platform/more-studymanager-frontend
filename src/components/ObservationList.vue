@@ -387,6 +387,7 @@
       :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
+      :component-factory="factories"
       class="table-title-width"
       @onselect="openEditObservation($event)"
       @onaction="execute($event)"
