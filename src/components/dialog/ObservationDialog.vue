@@ -9,7 +9,6 @@
     Event,
     ValidationReport,
     StudyStatus,
-    ComponentFactory,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import Scheduler from '../shared/Scheduler.vue';
