@@ -47,7 +47,9 @@
   );
 
   const hidden: Ref<boolean> = ref(
-    observation.hidden !== undefined ? observation.hidden : false
+    observation.hidden !== undefined
+      ? observation.hidden
+      : factory.visibility.hiddenByDefault
   );
 
   const scheduler: Ref<Event> = ref(
@@ -320,7 +322,7 @@
 
         <div class="info-box relative">
           <!-- if editable with checkbox-->
-          <div v-if="factory.hidden" class="inline flex items-center">
+          <div v-if="editable" class="inline flex items-center">
             <span v-if="hidden" class="ml-1 inline">
               {{ $t('observation.props.hidden.true') }}
             </span>
@@ -330,40 +332,37 @@
             <span class="pi pi-info-circle color-primary ml-1 mr-4"></span>
 
             <Checkbox
+              v-if="factory.visibility.changeable"
               v-model="hidden"
               :binary="true"
               class="icon-checkbox show-icon icon-box eye mr-2 inline"
             />
-          </div>
-
-          <!-- if not editable or fixed value -->
-          <div v-else class="icon-box eye preview inline flex items-center">
-            <!-- if fixed not visible -->
-            <div
-              v-if="observation.type === 'external-observation'"
-              class="flex items-center"
-            >
-              <span class="ml-1 inline">
-                {{ $t('observation.props.hidden.true') }}
-              </span>
-              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
-              <span class="pi pi-eye-slash color-important" />
-            </div>
-            <!-- if not fixed and not editable -->
-            <div v-else-if="!editable" class="flex items-center">
-              <span class="ml-1 inline">{{
-                $t(`observation.props.hidden.${observation.hidden}`)
-              }}</span>
-              <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+            <div v-else class="icon-box eye inline">
               <span
                 class="pi mr-0.5"
                 :class="
-                  observation.hidden
+                  hidden
                     ? 'pi-eye-slash color-important'
                     : 'pi-eye color-approved'
                 "
               />
             </div>
+          </div>
+
+          <!-- if not editable -->
+          <div v-else class="icon-box eye preview inline flex items-center">
+            <span class="ml-1 inline">{{
+              $t(`observation.props.hidden.${hidden}`)
+            }}</span>
+            <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+            <span
+              class="pi mr-0.5"
+              :class="
+                observation.hidden
+                  ? 'pi-eye-slash color-important'
+                  : 'pi-eye color-approved'
+              "
+            />
           </div>
 
           <div class="inline">

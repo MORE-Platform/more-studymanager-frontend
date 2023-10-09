@@ -24,7 +24,11 @@
   import dayjs from 'dayjs';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { StudyRole, StudyStatus } from '../../generated-sources/openapi';
+  import {
+    ComponentFactory,
+    StudyRole,
+    StudyStatus,
+  } from '../../generated-sources/openapi';
   import Checkbox from 'primevue/checkbox';
 
   const props = defineProps({
@@ -111,6 +115,10 @@
     },
     rowEndIcon: {
       type: String,
+      default: undefined,
+    },
+    componentFactory: {
+      type: Array as PropType<Array<ComponentFactory>>,
       default: undefined,
     },
   });
@@ -403,6 +411,11 @@
   function getMoreTableChoiceValues(array: MoreTableChoiceOptions) {
     return array.values;
   }
+
+  function getObservationVisibility(type?: string) {
+    return props.componentFactory?.find((f) => f.componentId === type)
+      ?.visibility;
+  }
 </script>
 
 <template>
@@ -643,11 +656,7 @@
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <Checkbox
-              v-if="
-                data['type'] !== 'question-observation' &&
-                data['type'] !== 'lime-survey-observation' &&
-                data['type'] !== 'external-observation'
-              "
+              v-if="getObservationVisibility(data['type'])?.changeable"
               v-model="data[field]"
               :binary="true"
               class="icon-checkbox show-icon"

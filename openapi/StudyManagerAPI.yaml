@@ -1229,6 +1229,16 @@ components:
           type: boolean
         hidden:
           type: boolean
+        visibility:
+          $ref: '#/components/schemas/Visibility'
+
+    Visibility:
+      type: object
+      properties:
+        changeable:
+          type: boolean
+        hiddenByDefault:
+          type: boolean
 
     ValidationReport:
       type: object
