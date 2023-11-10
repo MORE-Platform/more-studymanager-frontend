@@ -706,10 +706,19 @@
 
   "scheduler": {
     "singular": "Scheduler",
-    "dialogTitle": "Manage schedule",
+    "type": {
+      "Event": "Absolut Event",
+      "RelativeEvent": "Relative Event"
+    },
+    "dialogTitle": "Manage absolute schedule",
+    "relativeDialogTitle": "Manage relative schedule",
     "frequency": {
+      "minute": "minute",
+      "hour": "hour",
       "hours": "hour(s)",
+      "day": "day",
       "days": "day(s)",
+      "week": "week",
       "weeks": "week(s)",
       "months": "month(s)",
       "years": "year(s)",
@@ -781,13 +790,18 @@
       "after":  "After",
       "on": "On",
       "every":  "Every",
-      "openScheduler":  "Open scheduler",
+      "openScheduler":  "Add absolute schedule",
+      "editScheduler": "Edit absolute schedule",
+      "openRelativeScheduler": "Add relative Schedule",
+      "editRelativeScheduler": "Edit relative Schdule",
       "removeScheduler":  "Remove scheduler",
       "frequency":  "Frequency",
       "repetitionEnd": "Repetition ends",
       "repeat": "Repeat",
       "date": "Date",
       "timeframe": "Timeframe",
+      "days": "Days",
+      "time": "Time",
       "selection":{
         "specificDay": "On a specific day",
         "allDaysInWeek": "All days in week",
@@ -838,6 +852,44 @@
       "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
       "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
       "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
+    },
+    "dialog": {
+      "repeatEvent": "Repeat event",
+      "singleEventTitle": "Single observation event",
+      "repeatEventTitle": "Repeat observation event",
+      "repeatEventDescription": "The event above will be repeated after the runtime of the current event has finished.",
+      "repeatEvery": "Repeat every",
+      "endAfter": "End after",
+      "relativeSchedule": {
+        "dialogTitle":"Manage relative schedule",
+        "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
+        "startValue": "Starts on",
+        "endValue": "Ends on",
+        "placeholder": {
+          "dtstartOffset": "Enter offset in day(s)",
+          "dtstartTime": "Enter start time",
+          "dtendOffset": "Enter offset in day(s)",
+          "dtendTime": "Enter end time",
+          "enterNumber": "Enter number"
+        },
+        "error": {
+          "dtstart":{
+            "addOffset": "Fill in the offset of the relative start period."
+          },
+          "dtend": {
+            "addOffset": "Fill in the offset of the relative end period."
+          },
+          "rrrule": {
+            "frequency": "Fill in the repetition rate.",
+            "endAfter": "Fill in the offset to the end date.",
+            "ends": "Ends",
+            "endsAfter": "days after individual study start.",
+            "repeated": "Repeated",
+            "times": "times",
+            "notValid": "Values entered are not valid"
+          }
+        }
+      }
     }
   },
 

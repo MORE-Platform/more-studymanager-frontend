@@ -708,10 +708,18 @@
 
   "scheduler": {
     "singular": "Planer",
-    "dialogTitle": "Zeitplan verwalten",
+    "type":{
+      "Event": "Absoluter Zeitplan",
+      "RelativeEvent": "Relativer Zeitplan"
+    },
+    "dialogTitle": "Absoluten Zeitplan verwalten",
+    "relativeDialogTitle": "Relativen Zeitplan verwalten",
     "frequency": {
+      "minute": "Minute",
+      "hour": "Stunde",
       "hours": "Stunde(n)",
       "days": "Tag(e)",
+      "week": "Woche",
       "weeks": "Woche(n)",
       "months": "Monat(e)",
       "years": "Jahr(e)",
@@ -783,7 +791,10 @@
       "after":  "Nach",
       "on": "Am",
       "every":  "Jede(s)",
-      "openScheduler":  "Zeitplaner öffnen",
+      "openScheduler":  "Absoluten Zeitplaner hinzufügen",
+      "editScheduler": "Absoluten Zeitplaner bearbeiten",
+      "openRelativeScheduler": "Relativen Zeitplaner hinzfügen",
+      "editRelativeScheduler": "Relativen Zeitplaner bearbeiten",
       "removeScheduler":  "Zeitplaner entfernen",
       "frequency":  "Frequenz",
       "repetitionEnd": "Wiederholungsende",
@@ -839,6 +850,44 @@
       "startDateNotWithinRange": "Das Startdatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
       "endDateNotWithinRange": "Das Enddatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
       "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
+    },
+    "dialog": {
+      "repeatEvent": "Event wiederholen",
+      "singleEventTitle": "Einzelnes Datenerhebungs-Event",
+      "repeatEventTitle": "Datenerhebungs-Event wiederholen",
+      "repeatEventDescription": "Das oben gezeigte Event wird wiederholt, sobald die aktuelle abgeschlossen ist.",
+      "repeatEvery": "Wiederholen: Jede",
+      "endAfter": "Ende nach",
+      "relativeSchedule": {
+        "dialogTitle":"Relativen Zeitplan verwalten",
+        "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+        "startValue": "Startet am",
+        "endValue": "Endet am",
+        "placeholder": {
+          "dtstartOffset": "Offset in Tage(n)",
+          "dtstartTime": "Strat Zeit",
+          "dtendOffset": "Offset in Tage(n)",
+          "dtendTime": "End Zeit",
+          "enterNumber": "Nummer eingeben"
+        },
+        "error": {
+          "dtstart":{
+            "addOffset": "Befülle den Offset des relativen Startzeitraum."
+          },
+          "dtend": {
+            "addOffset": "Befülle den Offset des relativen Endzeitraum."
+          },
+          "rrrule": {
+            "frequency": "Fülle die Widerholungsrate ein.",
+            "endAfter": "Fulle den Offset zum Enddatum ein.",
+            "ends": "Endet",
+            "endsAfter": "Tage nach dem individuellen Studienstart.",
+            "repeated": "Wiederholung",
+            "times": "Mal",
+            "notValid": "Die eingegebenen Werte sind ungültig."
+          }
+        }
+      }
     }
   },
 

@@ -6,12 +6,13 @@
   import Dropdown from 'primevue/dropdown';
   import {
     Observation,
-    Event,
     ValidationReport,
     StudyStatus,
+    ObservationSchedule,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import Scheduler from '../shared/Scheduler.vue';
+  import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
@@ -52,9 +53,10 @@
       : factory.visibility.hiddenByDefault
   );
 
-  const scheduler: Ref<Event> = ref(
+  const scheduler: Ref<ObservationSchedule> = ref(
     observation.schedule ? observation.schedule : {}
   );
+
   const studyGroupId = ref(observation.studyGroupId);
 
   const jsonError = ref();
@@ -67,13 +69,17 @@
     return undefined;
   }
 
-  function openScheduler() {
-    dialog.open(Scheduler, {
+  function openScheduler(schedulerType: string) {
+    dialog.open(schedulerType === 'relative' ? RelativeScheduler : Scheduler, {
       data: {
         scheduler: scheduler.value,
+        schedulerType: scheduler.value.type,
       },
       props: {
-        header: t('scheduler.dialogTitle'),
+        header:
+          schedulerType === 'relative'
+            ? t('scheduler.relativeDialogTitle')
+            : t('scheduler.dialogTitle'),
         style: {
           width: '50vw',
         },
@@ -91,7 +97,6 @@
       },
     });
   }
-
   function validate() {
     let parsedProps: any;
     try {
@@ -133,7 +138,6 @@
         };
       }
     }
-    console.log(scheduler.value);
 
     const returnObservation = {
       observationId: observation.observationId,
@@ -241,7 +245,7 @@
         <Checkbox v-model="noSchedule" :binary="true" />
       </div>
       <SchedulerInfoBlock
-        v-if="!noSchedule"
+        v-if="!noSchedule && scheduler.type === 'Event'"
         :scheduler="scheduler"
         :editable="editable"
         :error="
@@ -250,7 +254,7 @@
           ''
         "
         class="mb-2"
-        @open-dialog="openScheduler"
+        @open-dialog="openScheduler($event)"
         @remove-scheduler="removeScheduler"
       />
 

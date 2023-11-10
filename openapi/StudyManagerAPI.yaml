@@ -1422,7 +1422,16 @@ components:
           type: object
           additionalProperties: true
         schedule:
-          $ref: './Event.yaml/#/components/schemas/Event'
+          oneOf:
+            - $ref: './Event.yaml/#/components/schemas/Event'
+            - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
+          discriminator:
+            propertyName: type
+            # mapping:
+            #   event:
+            #     $ref: './Event.yaml/#/components/schemas/Event'
+            #   relativeEvent:
+            #     $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
         created:
           type: string
           format: date-time
@@ -1514,7 +1523,11 @@ components:
         purpose:
           type: string
         schedule:
-          $ref: './Event.yaml/#/components/schemas/Event'
+          oneOf:
+            - $ref: './Event.yaml/#/components/schemas/Event'
+            - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
+          discriminator:
+            propertyName: type
         trigger:
           $ref: '#/components/schemas/Trigger'
         actions:

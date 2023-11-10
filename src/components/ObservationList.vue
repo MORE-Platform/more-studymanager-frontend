@@ -116,6 +116,7 @@
       columnWidth: '3vw',
       editable: true,
     },
+    /*
     {
       field: 'schedule.dtstart',
       header: t('global.labels.start'),
@@ -129,7 +130,7 @@
       type: MoreTableFieldType.nestedDatetime,
       columnWidth: '3vw',
       sortable: true,
-    },
+    }, */
   ];
 
   const tableActions: MoreTableAction[] = [
@@ -367,7 +368,6 @@
       openObservationDialog(dialogTitle, observation);
     }
   }
-
   listObservations();
 </script>
 

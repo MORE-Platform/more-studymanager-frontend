@@ -1,14 +1,18 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import { Event, Frequency } from '../../generated-sources/openapi';
+  import {
+    Frequency,
+    ObservationSchedule,
+    Event
+  } from '../../generated-sources/openapi';
   import dayjs from 'dayjs';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
   const { t } = useI18n();
 
-  defineProps({
+  const props = defineProps({
     scheduler: {
-      type: Object as PropType<Event>,
+      type: Object as PropType<ObservationSchedule>,
       required: true,
     },
     error: {
@@ -21,8 +25,10 @@
     },
   });
 
+  const scheduleEvent: Event = props.scheduler as Event;
+
   const emit = defineEmits<{
-    (e: 'openDialog'): void;
+    (e: 'openDialog', schedulerType: string): void;
     (e: 'removeScheduler'): void;
   }>();
 
@@ -106,6 +112,9 @@
     :class="editable ? '' : 'scheduler-not-editable pb-4'"
   >
     <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
+    <div v-if="scheduler.type">
+      {{ $t(`scheduler.type.${scheduler.type}`) }}
+    </div>
     <div
       class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
     >
@@ -268,11 +277,28 @@
       </div>
       <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
         <Button
+          v-if="scheduler.type !== 'RelativeEvent'"
           class="justify-center"
           type="button"
           :disabeld="!editable"
-          @click="emit('openDialog')"
-          >{{ $t('scheduler.labels.openScheduler') }}</Button
+          @click="emit('openDialog', 'absolute')"
+          >{{
+            scheduler.type
+              ? $t('scheduler.labels.editScheduler')
+              : $t('scheduler.labels.openScheduler')
+          }}</Button
+        >
+        <Button
+          v-if="scheduler.type !== 'Event'"
+          class="justify-center"
+          type="button"
+          :disabled="!editable"
+          @click="emit('openDialog', 'relative')"
+          >{{
+            scheduler.type
+              ? $t('scheduler.labels.editRelativeScheduler')
+              : $t('scheduler.labels.openRelativeScheduler')
+          }}</Button
         >
         <Button
           v-if="scheduler.dtstart"
