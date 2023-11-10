@@ -1,16 +1,9 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import {
-    Frequency,
-    ObservationSchedule,
-    Event
-  } from '../../generated-sources/openapi';
-  import dayjs from 'dayjs';
+  import { ObservationSchedule } from '../../generated-sources/openapi';
   import Button from 'primevue/button';
-  import { useI18n } from 'vue-i18n';
-  const { t } = useI18n();
 
-  const props = defineProps({
+  defineProps({
     scheduler: {
       type: Object as PropType<ObservationSchedule>,
       required: true,
@@ -25,13 +18,11 @@
     },
   });
 
-  const scheduleEvent: Event = props.scheduler as Event;
-
   const emit = defineEmits<{
     (e: 'openDialog', schedulerType: string): void;
     (e: 'removeScheduler'): void;
   }>();
-
+  /*
   function getFrequencyLabel(frequency: Frequency) {
     switch (frequency) {
       case Frequency.Hourly:
@@ -104,6 +95,7 @@
         return t('scheduler.bySetPosLabel.last');
     }
   }
+  */
 </script>
 
 <template>
@@ -122,20 +114,25 @@
         class="scheduler-info col-span-5"
         :class="editable ? '' : 'border-disabled  col-span-7 mt-2'"
       >
-        <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div
+          v-if="scheduler.type === 'Event' && scheduler.dtstart"
+          class="grid grid-cols-2 gap-x-4 gap-y-1"
+        >
           <div v-if="scheduler.dtstart === scheduler.dtend" class="mt-2">
             <div>
               <span class="mr-1 font-bold"
                 >{{ $t('scheduler.labels.date') }}:</span
               >
-              {{ dayjs(scheduler.dtstart).format('DD/MM/YYYY') }}
+              <span>
+                <!--{{ dayjs(scheduler.dtstart).format('DD/MM/YYYY') }}-->
+              </span>
             </div>
             <div>
               <span class="font-bold">{{
                 $t('scheduler.labels.timeframe')
               }}</span>
-              {{ dayjs(scheduler.dtstart).format('HH:mm') }} -
-              {{ dayjs(scheduler.dtend).format('HH:mm') }}
+              <!--{{ dayjs(scheduler.dtstart).format('HH:mm') }} -
+              {{ dayjs(scheduler.dtend).format('HH:mm') }} -->
             </div>
           </div>
           <div v-else class="mt-2">
@@ -144,14 +141,15 @@
             </div>
             <span class="font-medium">{{ $t('global.labels.start') }}: </span>
             <span>
-              {{ dayjs(scheduler.dtstart).format('DD/MM/YYYY, HH:mm') }}</span
-            >
+              <!--{{ dayjs(scheduler.dtstart).format('DD/MM/YYYY, HH:mm') }}-->
+            </span>
             <div>
               <span class="font-medium">{{ $t('global.labels.end') }}: </span
-              >{{ dayjs(scheduler.dtend).format('DD/MM/YYYY, HH:mm') }}
+              ><!--{{ dayjs(scheduler.dtend).format('DD/MM/YYYY, HH:mm') }}-->
             </div>
           </div>
 
+          <!--
           <div
             v-if="scheduler.rrule && scheduler.rrule.freq"
             class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1"
@@ -262,8 +260,13 @@
             <span class="font-medium"
               >{{ $t('scheduler.labels.repetitionEnd') }}: </span
             >{{ $t('scheduler.labels.on') }}
-            {{ dayjs(scheduler.rrule.until).format('DD/MM/YYYY, HH:mm') }}
+            {{ dayjs(scheduler?.rrule.until).format('DD/MM/YYYY, HH:mm') }}
           </div>
+          -->
+          <div class="error">new formatting coming in ticket MORE-2-12</div>
+        </div>
+        <div v-else-if="scheduler.type === 'RelativeEvent'">
+          <span class="error">new formatting coming in ticket MORE-2-12</span>
         </div>
         <div v-else class="text-gray-400">
           <div v-if="error" class="error mb-4">

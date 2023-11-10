@@ -865,6 +865,12 @@
         "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
         "startValue": "Starts on",
         "endValue": "Ends on",
+        "rrrule": {
+          "ends": "Ends",
+          "endsAfter": "days after individual study start.",
+          "repeated": "Repeated",
+          "times": "times"
+        },
         "placeholder": {
           "dtstartOffset": "Enter offset in day(s)",
           "dtstartTime": "Enter start time",
@@ -882,10 +888,6 @@
           "rrrule": {
             "frequency": "Fill in the repetition rate.",
             "endAfter": "Fill in the offset to the end date.",
-            "ends": "Ends",
-            "endsAfter": "days after individual study start.",
-            "repeated": "Repeated",
-            "times": "times",
             "notValid": "Values entered are not valid"
           }
         }

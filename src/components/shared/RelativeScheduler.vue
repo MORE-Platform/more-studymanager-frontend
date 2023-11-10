@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {inject, PropType, ref, Ref} from 'vue';
+  import { inject, ref, Ref } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
@@ -47,9 +47,27 @@ import {inject, PropType, ref, Ref} from 'vue';
     },
   } as RelativeEvent);
 
+  const startTime: Ref<Date> = ref(new Date());
+  const endTime: Ref<Date> = ref(new Date());
+
+  if (schedule.dtstart && schedule.dtstart.time) {
+    startTime.value.setHours(parseInt(schedule.dtstart.time?.substring(0, 2)));
+    startTime.value.setMinutes(
+      parseInt(schedule.dtstart.time?.substring(3, 5))
+    );
+  } else {
+    startTime.value.setHours(10, 30);
+  }
+  if (schedule.dtend && schedule.dtend.time) {
+    endTime.value.setHours(parseInt(schedule.dtend.time?.substring(0, 2)));
+    endTime.value.setMinutes(parseInt(schedule.dtend.time?.substring(3, 5)));
+  } else {
+    endTime.value.setHours(18, 30);
+  }
+
   returnSchedule.value.dtstart.time = returnSchedule.value.dtstart.time
     ? returnSchedule.value.dtstart.time
-    : '10:10'
+    : '10:10';
   returnSchedule.value.dtend.time = returnSchedule.value.dtend.time
     ? returnSchedule.value.dtend.time
     : '18:00';
@@ -112,6 +130,9 @@ import {inject, PropType, ref, Ref} from 'vue';
     return item?.value;
   }
 
+  const frequencyXTimes: Ref<string> = ref('');
+  const totalDays: Ref<string | undefined> = ref();
+
   function checkErrors() {
     errors.value = [];
     if (
@@ -151,11 +172,14 @@ import {inject, PropType, ref, Ref} from 'vue';
           value: t('schedule.relativeSchedule.error.rrrule.endAfter'),
         });
       }
+      if (parseInt(frequencyXTimes.value) <= 0) {
+        errors.value.push({
+          label: 'frequencyXTimes',
+          value: 'Repetition Value is not valid',
+        });
+      }
     }
   }
-
-  const frequencyXTimes: Ref<string> = ref('');
-  const totalDays: Ref<string | undefined> = ref();
 
   function calculatedRepeat() {
     if (repeatChecked.value) {
@@ -217,10 +241,10 @@ import {inject, PropType, ref, Ref} from 'vue';
   }
 
   function save() {
-    returnSchedule.value.dtstart.time = returnSchedule.value.dtstart.time
+    returnSchedule.value.dtstart.time = startTime.value
       ?.toString()
       .substring(16, 21);
-    returnSchedule.value.dtend.time = returnSchedule.value.dtend.time
+    returnSchedule.value.dtend.time = endTime.value
       ?.toString()
       .substring(16, 21);
 
@@ -289,7 +313,7 @@ import {inject, PropType, ref, Ref} from 'vue';
         </div>
         <div class="col-span-3">
           <Calendar
-            v-model="returnSchedule.dtstart.time as string"
+            v-model="startTime"
             time-only
             hour-format="24"
             :placeholder="
@@ -321,7 +345,7 @@ import {inject, PropType, ref, Ref} from 'vue';
         </div>
         <div class="col-span-3">
           <Calendar
-            v-model="returnSchedule.dtend.time"
+            v-model="endTime"
             time-only
             hour-format="24"
             :placeholder="
@@ -379,7 +403,9 @@ import {inject, PropType, ref, Ref} from 'vue';
         <div class="col-span-2">
           <div v-if="frequencyXTimes">
             <span v-if="parseInt(frequencyXTimes) <= 0" class="error">
-              {{ $t('scheduler.dialog.relativeSchedule.rrrule.notValid') }}
+              {{
+                $t('scheduler.dialog.relativeSchedule.error.rrrule.notValid')
+              }}
             </span>
             <span v-else>
               {{
@@ -408,6 +434,7 @@ import {inject, PropType, ref, Ref} from 'vue';
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
+            class="z-10"
             @blur="calculatedRepeat()"
           />
           <Dropdown
@@ -415,7 +442,7 @@ import {inject, PropType, ref, Ref} from 'vue';
             :options="repetitionUnit"
             :option-label="'label'"
             :option-value="'value'"
-            class="col-span-3 ml-4"
+            class="z-10 col-span-3 ml-4"
             @change="calculatedRepeat()"
           />
         </div>

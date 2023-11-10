@@ -863,6 +863,10 @@
         "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
         "startValue": "Startet am",
         "endValue": "Endet am",
+        "ends": "Endet",
+        "endsAfter": "Tage nach dem individuellen Studienstart.",
+        "repeated": "Wiederholung",
+        "times": "Mal",
         "placeholder": {
           "dtstartOffset": "Offset in Tage(n)",
           "dtstartTime": "Strat Zeit",
@@ -880,10 +884,6 @@
           "rrrule": {
             "frequency": "Fülle die Widerholungsrate ein.",
             "endAfter": "Fulle den Offset zum Enddatum ein.",
-            "ends": "Endet",
-            "endsAfter": "Tage nach dem individuellen Studienstart.",
-            "repeated": "Wiederholung",
-            "times": "Mal",
             "notValid": "Die eingegebenen Werte sind ungültig."
           }
         }

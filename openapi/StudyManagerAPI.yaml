@@ -1277,6 +1277,8 @@ components:
           type: string
         consentInfo:
           type: string
+        duration:
+          $ref: '#/components/schemas/StudyDuration'
         finishText:
           type: string
         status:
@@ -1354,6 +1356,8 @@ components:
           type: string
         purpose:
           type: string
+        duration:
+          $ref: '#/components/schemas/StudyDuration'
         numberOfParticipants:
           type: integer
           readOnly: true
@@ -1365,7 +1369,18 @@ components:
           type: string
           format: date-time
           readOnly: true
-
+    StudyDuration:
+      type: object
+      properties:
+        value:
+          type: integer
+        unit:
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
     Participant:
       type: object
       properties:

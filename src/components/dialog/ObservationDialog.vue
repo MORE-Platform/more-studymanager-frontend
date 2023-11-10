@@ -245,7 +245,7 @@
         <Checkbox v-model="noSchedule" :binary="true" />
       </div>
       <SchedulerInfoBlock
-        v-if="!noSchedule && scheduler.type === 'Event'"
+        v-if="!noSchedule"
         :scheduler="scheduler"
         :editable="editable"
         :error="
@@ -384,7 +384,7 @@
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : undefined"
+          :type="editable ? 'submit' : 'button'"
           :disabled="!editable"
           @click="checkRequiredFields()"
           >{{ $t('global.labels.save') }}</Button
