@@ -84,7 +84,14 @@
       "purpose": "Purpose",
       "status": "Status",
       "roles": "Role(s)",
-      "plannedStart": "Planned start",
+      "duration":{
+        "title":"Study duration",
+        "unit": {
+          "HOUR": "hours",
+          "DAY": "days",
+          "MINUTE": "minutes"
+        }
+      },
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
       "actualEnd": "Actual end",
@@ -141,6 +148,8 @@
     },
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
+      "addDurationValue": "Please enter a duration value.",
+      "addDurationUnit": "Please add a duration unit.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
@@ -149,6 +158,7 @@
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
+      "durationInput": "Please provide the duration of the study",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
       "participantInfoInput": "Please provide information for your studies participants. This description will be visible on the participant's app.",
       "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
@@ -173,6 +183,7 @@
       },
       "label": {
         "studyTitle": "Study title",
+        "durationExample": "Study Duration Example",
         "studyStart": "Study start",
         "studyEnd": "Study end",
         "contactInfo": "Contact information",
@@ -192,6 +203,8 @@
       },
       "description": {
         "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
+        "durationExample": "Study Start; 01.07.2023 - Study End: 31.12.2023 (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose.",
         "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",

@@ -3,11 +3,17 @@
   import InputText from 'primevue/inputtext';
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
+  import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
-  import { Study } from '../../generated-sources/openapi';
+  import {
+    Study,
+    Duration,
+    DurationUnitEnum,
+  } from '../../generated-sources/openapi';
   import { dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
+  import Dropdown from 'primevue/dropdown';
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -20,10 +26,43 @@
     plannedStart: undefined,
     plannedEnd: undefined,
     consentInfo: study.consentInfo,
+    duration: {
+      value: study.duration?.value,
+      unit: study.duration?.unit,
+    },
     participantInfo: study.participantInfo,
     contact: undefined,
     finishText: study.finishText,
   }) as Ref<Study>;
+
+  const studyDuration: Ref<Duration> = ref({
+    value:
+      study.duration && study.duration.value
+        ? study.duration?.value
+        : undefined,
+    unit:
+      study.duration && study.duration.unit ? study.duration?.unit : undefined,
+  });
+
+  const durationUnitOptions = [
+    {
+      label: 'Nothing selected',
+      value: undefined,
+      //active: true,
+    },
+    {
+      label: 'Minutes',
+      value: DurationUnitEnum.Minute,
+    },
+    {
+      label: 'Hours',
+      value: DurationUnitEnum.Hour,
+    },
+    {
+      label: 'Days',
+      value: DurationUnitEnum.Day,
+    },
+  ];
 
   const start = ref(
     study
@@ -60,6 +99,7 @@
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
     returnStudy.value.plannedEnd = dateToDateString(end.value);
+    returnStudy.value.duration = studyDuration.value;
 
     returnStudy.value.contact = {
       institute: contactInstitute.value,
@@ -78,6 +118,18 @@
     if (!returnStudy.value.title) {
       errors.value.push({ label: 'title', value: t('study.error.addTitle') });
     }
+    if (!studyDuration.value.value || !studyDuration.value.unit) {
+      errors.value.push({
+        label: 'durationValue',
+        value: t('study.error.addDurationValue'),
+      });
+    }
+    /*
+    if (studyDuration.value.value && typeof( studyDuration.value.unit) === "null") {
+      errors.value.push({ label: 'durationUnit', value: t('study.error.addDurationUnit') });
+    }
+    */
+
     if (!returnStudy.value.consentInfo) {
       errors.value.push({
         label: 'consentInfo',
@@ -178,6 +230,48 @@
           :min-date="start"
           style="width: 100%"
         />
+      </div>
+      <div class="ol-start-0 col-span-6">
+        <h5 :class="getError('durationValue') ? '' : 'mb-2'">
+          {{ $t('study.props.duration.title') }}
+        </h5>
+        <div v-if="getError('durationValue')" class="error col-span-8 mb-2">
+          {{ getError('durationValue') }}
+        </div>
+        <div v-if="getError('durationUnit')" class="error col-span-8 mb-2">
+          {{ getError('durationUnit') }}
+        </div>
+        <div class="mb-2">{{ $t('study.dialog.description.duration') }}</div>
+        <div class="examples mb-1.5">
+          <div class="color-primary font-medium">
+            {{ $t('study.dialog.label.durationExample') }}
+          </div>
+          <div class="mt-0.5">
+            {{ $t('study.dialog.description.durationExample') }}
+          </div>
+        </div>
+        <div class="grid grid-cols-6 items-center gap-4">
+          <InputNumber
+            v-model="studyDuration.value"
+            class="col-span-4"
+            :name="'duration'"
+            :placeholder="$t('study.placeholder.durationInput')"
+            :auto-resize="true"
+            style="width: 100%"
+            @input="checkRequiredFields"
+          ></InputNumber>
+          <Dropdown
+            v-model="studyDuration.unit"
+            class="col-span-2"
+            :options="durationUnitOptions"
+            :name="'duration'"
+            option-label="label"
+            option-value="value"
+            :placeholder="$t('study.placeholder.durationInput')"
+            style="width: 100%"
+            @change="checkRequiredFields"
+          />
+        </div>
       </div>
       <div class="col-start-0 col-span-6">
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
@@ -313,12 +407,12 @@
         </div>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
-        <Button class="btn-gray" @click="cancel()">{{
-          $t('global.labels.cancel')
-        }}</Button>
-        <Button type="submit" @click="checkRequiredFields()">{{
-          $t('global.labels.save')
-        }}</Button>
+        <Button class="btn-gray" @click="cancel()"
+          >{{ $t('global.labels.cancel') }}
+        </Button>
+        <Button type="submit" @click="checkRequiredFields()"
+          >{{ $t('global.labels.save') }}
+        </Button>
       </div>
     </form>
   </div>
@@ -340,8 +434,15 @@
       margin-left: 10px;
     }
   }
+
   h5 {
     font-size: 18px;
     font-weight: bold;
+  }
+
+  .examples {
+    padding: 0.5rem;
+    border-radius: 6px;
+    background-color: var(--gray-100);
   }
 </style>

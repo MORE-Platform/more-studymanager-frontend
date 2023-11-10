@@ -22,9 +22,10 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: process.env.VITE_LOCAL_BACKEND
+        target: 'http://localhost:8080/api',
+        /*target: process.env.VITE_LOCAL_BACKEND
           ? 'http://localhost:8080/api'
-          : 'https://studymanager.platform-test.more.redlink.io/api',
+          : 'https://studymanager.platform-test.more.redlink.io/api',*/
         changeOrigin: true,
         secure: false,
         rewrite: (path) => {
