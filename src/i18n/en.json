@@ -712,14 +712,40 @@
     },
     "dialogTitle": "Manage absolute schedule",
     "relativeDialogTitle": "Manage relative schedule",
+    "preview": {
+      "title": {
+        "individualEvent": "Individual Event",
+        "repeatEvent": "Repeat Event",
+        "startsOn": "Starts on",
+        "endsOn": "Ends on",
+        "timeframe": "Timeframe",
+        "every": "Every",
+        "ends": "Ends",
+        "on": "on",
+        "in": "in",
+        "selectedDays": "Selected days"
+      },
+      "unit": {
+        "MINUTE": "Minute",
+        "PL-MINUTE": "minute(s)",
+        "HOUR": "Hour",
+        "PL-HOUR": "hour(s)",
+        "DAY": "Day",
+        "PL-DAY": "day(s)",
+        "DAILY": "day(s)",
+        "WEEKLY": "week(s)"
+      }
+    },
     "frequency": {
       "minute": "minute",
+      "minutes": "minute(s)",
       "hour": "hour",
       "hours": "hour(s)",
       "day": "day",
       "days": "day(s)",
       "week": "week",
       "weeks": "week(s)",
+      "month": "month",
       "months": "month(s)",
       "years": "year(s)",
       "labels": {
@@ -749,6 +775,15 @@
         "friday": "FR",
         "saturday": "SA",
         "sunday": "SU"
+      },
+      "props": {
+        "MO": "Mo",
+        "TU": "Tue",
+        "WE": "We",
+        "TH": "Thur",
+        "FR": "Fr",
+        "SA": "Sa",
+        "SO": "So"
       }
     },
     "months":{
@@ -854,12 +889,16 @@
       "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
     },
     "dialog": {
+      "description": "An absolute Schedule includes absolute date times. A relativ schedule collects data based on participant login and individual study starts.",
       "repeatEvent": "Repeat event",
       "singleEventTitle": "Single observation event",
       "repeatEventTitle": "Repeat observation event",
       "repeatEventDescription": "The event above will be repeated after the runtime of the current event has finished.",
       "repeatEvery": "Repeat every",
       "endAfter": "End after",
+      "absoluteSchedule": {
+        "description": "An absolute Schedule includes absolute date times. Observations can be timed by absolute dates and timeframes."
+      },
       "relativeSchedule": {
         "dialogTitle":"Manage relative schedule",
         "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",

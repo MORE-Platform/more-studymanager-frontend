@@ -119,7 +119,9 @@
     },
   ];
 
-  const repeatChecked: Ref<boolean> = ref(false);
+  const repeatChecked: Ref<boolean> = ref(
+    schedule.rrrule?.frequency ? true : false
+  );
 
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
 
