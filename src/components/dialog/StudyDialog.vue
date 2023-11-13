@@ -51,15 +51,15 @@
       //active: true,
     },
     {
-      label: 'Minutes',
+      label: t('study.props.duration.unit.MINUTE'),
       value: DurationUnitEnum.Minute,
     },
     {
-      label: 'Hours',
+      label: t('study.props.duration.unit.HOUR'),
       value: DurationUnitEnum.Hour,
     },
     {
-      label: 'Days',
+      label: t('study.props.duration.unit.DAY'),
       value: DurationUnitEnum.Day,
     },
   ];
@@ -107,8 +107,9 @@
       email: contactEmail.value,
       phoneNumber: contactPhoneNumber.value,
     };
-
-    dialogRef.value.close(returnStudy.value);
+    if (!errors.value.length){
+      dialogRef.value.close(returnStudy.value);
+    }
   }
 
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
@@ -118,18 +119,12 @@
     if (!returnStudy.value.title) {
       errors.value.push({ label: 'title', value: t('study.error.addTitle') });
     }
-    if (!studyDuration.value.value || !studyDuration.value.unit) {
+    if ((!studyDuration.value.value && studyDuration.value.unit) || (studyDuration.value.value && !studyDuration.value.unit)) {
       errors.value.push({
-        label: 'durationValue',
-        value: t('study.error.addDurationValue'),
+        label: 'duration',
+        value: t('study.error.addDuration'),
       });
     }
-    /*
-    if (studyDuration.value.value && typeof( studyDuration.value.unit) === "null") {
-      errors.value.push({ label: 'durationUnit', value: t('study.error.addDurationUnit') });
-    }
-    */
-
     if (!returnStudy.value.consentInfo) {
       errors.value.push({
         label: 'consentInfo',
@@ -157,6 +152,12 @@
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
       });
+    }
+
+
+    if ((!studyDuration.value.value && studyDuration.value.unit) || (studyDuration.value.value && !studyDuration.value.unit)){
+      console.log("Left or right missing")
+      console.log("---------")
     }
   }
 
@@ -232,14 +233,11 @@
         />
       </div>
       <div class="ol-start-0 col-span-6">
-        <h5 :class="getError('durationValue') ? '' : 'mb-2'">
+        <h5 :class="getError('duration') ? '' : 'mb-2'">
           {{ $t('study.props.duration.title') }}
         </h5>
-        <div v-if="getError('durationValue')" class="error col-span-8 mb-2">
-          {{ getError('durationValue') }}
-        </div>
-        <div v-if="getError('durationUnit')" class="error col-span-8 mb-2">
-          {{ getError('durationUnit') }}
+        <div v-if="getError('duration')" class="error col-span-8 mb-2">
+          {{ getError('duration') }}
         </div>
         <div class="mb-2">{{ $t('study.dialog.description.duration') }}</div>
         <div class="examples mb-1.5">

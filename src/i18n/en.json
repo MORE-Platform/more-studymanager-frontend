@@ -92,6 +92,7 @@
           "MINUTE": "minutes"
         }
       },
+      "plannedStart": "Planned Start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
       "actualEnd": "Actual end",
@@ -148,8 +149,7 @@
     },
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
-      "addDurationValue": "Please enter a duration value.",
-      "addDurationUnit": "Please add a duration unit.",
+      "addDuration": "Please enter both a duration and a unit.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",

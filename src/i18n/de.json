@@ -84,6 +84,14 @@
       "purpose": "Zielsetzung",
       "status": "Status",
       "roles": "Rolle(n)",
+      "duration":{
+        "title":"Studiendauer",
+        "unit": {
+          "HOUR": "Stunden",
+          "DAY": "Tage",
+          "MINUTE": "Minuten"
+        }
+      },
       "plannedStart": "Geplanter Start",
       "actualStart": "Aktueller Start",
       "plannedEnd": "Geplantes Ende",
@@ -142,6 +150,7 @@
     },
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addDuration": "Bitte fügen Sie einen Wert und eine Einhait im Feld hinzu.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
@@ -151,6 +160,7 @@
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
       "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
+      "durationInput": "Bitte geben Sie eine Studiendauer ein.",
       "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
       "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
       "selectLanguage": "Sprache auswählen",
@@ -174,6 +184,7 @@
       },
       "label": {
         "studyTitle": "Studientitel",
+        "durationExample": "Beispiel der Studiendauer",
         "studyStart": "Studienstart",
         "studyEnd": "Studienende",
         "contactInfo": "Kontaktinformationen",
@@ -193,6 +204,8 @@
       },
       "description": {
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+        "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet",
+        "durationExample": "Studienbeginn; 01.07.2023 - Studienende: 31.12.2023 (5 Monate) - Studiendauer: 4 Wochen\nDie aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten.",
         "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
