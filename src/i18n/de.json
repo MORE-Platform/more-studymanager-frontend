@@ -34,7 +34,8 @@
       "to": "zu",
       "message": "Nachricht",
       "option": "Option",
-      "data": "Daten"
+      "data": "Daten",
+      "scheduleType": "Zeitplan-Typ"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -852,6 +853,8 @@
       "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
     },
     "dialog": {
+      "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+      "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
       "repeatEvent": "Event wiederholen",
       "singleEventTitle": "Einzelnes Datenerhebungs-Event",
       "repeatEventTitle": "Datenerhebungs-Event wiederholen",
@@ -860,14 +863,15 @@
       "endAfter": "Ende nach",
       "relativeSchedule": {
         "dialogTitle":"Relativen Zeitplan verwalten",
-        "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
-        "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
         "startValue": "Startet am",
         "endValue": "Endet am",
-        "ends": "Endet",
-        "endsAfter": "Tage nach dem individuellen Studienstart.",
-        "repeated": "Wiederholung",
-        "times": "Mal",
+        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
+        "rrule": {
+          "ends": "Endet",
+          "endsAfter": "Tage nach dem individuellen Studienstart.",
+          "repeated": "Wiederholung",
+          "times": "Mal"
+        },
         "placeholder": {
           "dtstartOffset": "Offset in Tage(n)",
           "dtstartTime": "Strat Zeit",
