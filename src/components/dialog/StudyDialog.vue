@@ -153,12 +153,6 @@
         value: t('study.error.addContactEmail'),
       });
     }
-
-
-    if ((!studyDuration.value.value && studyDuration.value.unit) || (studyDuration.value.value && !studyDuration.value.unit)){
-      console.log("Left or right missing")
-      console.log("---------")
-    }
   }
 
   function getError(label: string): string | null | undefined {
