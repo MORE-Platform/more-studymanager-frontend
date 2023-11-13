@@ -890,6 +890,7 @@
     },
     "dialog": {
       "description": "An absolute Schedule includes absolute date times. A relativ schedule collects data based on participant login and individual study starts.",
+      "noSetScheduleDesc": "If there is no schedule set, the whole schedule time will be set als default time as absolute Schedule.",
       "repeatEvent": "Repeat event",
       "singleEventTitle": "Single observation event",
       "repeatEventTitle": "Repeat observation event",

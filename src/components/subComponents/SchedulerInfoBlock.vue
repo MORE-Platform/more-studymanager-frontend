@@ -39,7 +39,7 @@
       case 'RelativeEvent':
         return t('scheduler.dialog.relativeSchedule.description');
       default:
-        return t('scheduler.dialog..description');
+        return t('scheduler.dialog.description');
     }
   }
 
@@ -128,8 +128,6 @@
               return string;
             }
             case 'repetitionEnd': {
-              console.log('repetiton end');
-              console.log(schedule.rrule);
               const repetitionCount =
                 schedule.rrule?.byday &&
                 schedule.rrule.count &&
@@ -147,7 +145,6 @@
         break;
       case 'RelativeEvent': {
         const schedule = props.scheduler as RelativeEvent;
-        console.log(schedule);
         switch (prop) {
           case 'every':
             return schedule.rrrule?.frequency
@@ -178,6 +175,12 @@
   >
     <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
     <div class="col-span-8 mb-3">{{ getSchedulerDescription() }}</div>
+    <div
+      v-if="JSON.stringify(scheduler) === '{}'"
+      class="schedule-preview col-span-8 mb-2 px-6 py-4 italic"
+    >
+      {{ $t('scheduler.dialog.noSetScheduleDesc') }}
+    </div>
     <h6
       v-if="scheduler.type"
       class="color-primary col-span-8 mt-1 mb-1 font-medium"

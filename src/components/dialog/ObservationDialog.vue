@@ -37,7 +37,6 @@
     studyStore.study.status === StudyStatus.Paused;
 
   const title = ref(observation.title);
-  const noSchedule = ref(observation.noSchedule);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
@@ -55,6 +54,10 @@
 
   const scheduler: Ref<ObservationSchedule> = ref(
     observation.schedule ? observation.schedule : {}
+  );
+
+  const noSchedule: Ref<boolean> = ref(
+    observation.schedule?.dtstart ? true : false
   );
 
   const studyGroupId = ref(observation.studyGroupId);
@@ -125,12 +128,15 @@
   }
 
   function save(props: any) {
-    if (JSON.stringify(scheduler.value) === '{}' && noSchedule.value) {
+    console.log(JSON.stringify(scheduler.value) === '{}');
+    if (JSON.stringify(scheduler.value) === '{}') {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
+          type: 'Event',
           dtstart: new Date(studyStore.study.plannedStart).toISOString(),
           dtend: new Date(studyStore.study.plannedEnd).toISOString(),
         };
+        noSchedule.value = false;
       } else {
         scheduler.value = {
           dtstart: new Date().toISOString(),
@@ -149,10 +155,11 @@
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
-      noSchedule: noSchedule.value,
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
+      console.log('save-----------');
+      console.log(scheduler.value);
       dialogRef.value.close(returnObservation);
     }
   }
@@ -168,13 +175,6 @@
         label: 'title',
         value: t('observation.error.addTitle'),
       });
-    }
-    if (JSON.stringify(scheduler.value) === '{}' && !noSchedule.value) {
-      errors.value.push({
-        label: 'scheduler',
-        value: t('observation.error.addSchedulerMsg'),
-      });
-      schedulerError.value = true;
     }
     if (!participantInfo.value) {
       errors.value.push({
@@ -237,12 +237,6 @@
             :disabled="!editable"
           ></InputText>
         </div>
-      </div>
-      <div
-        class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
-      >
-        <label for="noSchedule">{{ $t('observation.props.noSchedule') }}</label>
-        <Checkbox v-model="noSchedule" :binary="true" />
       </div>
       <SchedulerInfoBlock
         v-if="!noSchedule"

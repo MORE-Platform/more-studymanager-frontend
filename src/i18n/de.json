@@ -861,6 +861,7 @@
       "relativeSchedule": {
         "dialogTitle":"Relativen Zeitplan verwalten",
         "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+        "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
         "startValue": "Startet am",
         "endValue": "Endet am",
         "ends": "Endet",
