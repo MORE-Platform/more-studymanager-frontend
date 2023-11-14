@@ -6,12 +6,13 @@
   import Dropdown from 'primevue/dropdown';
   import {
     Observation,
-    Event,
     ValidationReport,
     StudyStatus,
+    ObservationSchedule,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import Scheduler from '../shared/Scheduler.vue';
+  import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
@@ -36,7 +37,6 @@
     studyStore.study.status === StudyStatus.Paused;
 
   const title = ref(observation.title);
-  const noSchedule = ref(observation.noSchedule);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
@@ -52,9 +52,14 @@
       : factory.visibility.hiddenByDefault
   );
 
-  const scheduler: Ref<Event> = ref(
+  const scheduler: Ref<ObservationSchedule> = ref(
     observation.schedule ? observation.schedule : {}
   );
+
+  const noSchedule: Ref<boolean> = ref(
+    observation.schedule?.dtstart ? true : false
+  );
+
   const studyGroupId = ref(observation.studyGroupId);
 
   const jsonError = ref();
@@ -67,13 +72,17 @@
     return undefined;
   }
 
-  function openScheduler() {
-    dialog.open(Scheduler, {
+  function openScheduler(schedulerType: string) {
+    dialog.open(schedulerType === 'relative' ? RelativeScheduler : Scheduler, {
       data: {
         scheduler: scheduler.value,
+        schedulerType: scheduler.value.type,
       },
       props: {
-        header: t('scheduler.dialogTitle'),
+        header:
+          schedulerType === 'relative'
+            ? t('scheduler.relativeDialogTitle')
+            : t('scheduler.dialogTitle'),
         style: {
           width: '50vw',
         },
@@ -91,7 +100,6 @@
       },
     });
   }
-
   function validate() {
     let parsedProps: any;
     try {
@@ -120,12 +128,14 @@
   }
 
   function save(props: any) {
-    if (JSON.stringify(scheduler.value) === '{}' && noSchedule.value) {
+    if (JSON.stringify(scheduler.value) === '{}') {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
+          type: 'Event',
           dtstart: new Date(studyStore.study.plannedStart).toISOString(),
           dtend: new Date(studyStore.study.plannedEnd).toISOString(),
         };
+        noSchedule.value = false;
       } else {
         scheduler.value = {
           dtstart: new Date().toISOString(),
@@ -133,7 +143,6 @@
         };
       }
     }
-    console.log(scheduler.value);
 
     const returnObservation = {
       observationId: observation.observationId,
@@ -145,7 +154,6 @@
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
-      noSchedule: noSchedule.value,
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
@@ -164,13 +172,6 @@
         label: 'title',
         value: t('observation.error.addTitle'),
       });
-    }
-    if (JSON.stringify(scheduler.value) === '{}' && !noSchedule.value) {
-      errors.value.push({
-        label: 'scheduler',
-        value: t('observation.error.addSchedulerMsg'),
-      });
-      schedulerError.value = true;
     }
     if (!participantInfo.value) {
       errors.value.push({
@@ -234,14 +235,7 @@
           ></InputText>
         </div>
       </div>
-      <div
-        class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
-      >
-        <label for="noSchedule">{{ $t('observation.props.noSchedule') }}</label>
-        <Checkbox v-model="noSchedule" :binary="true" />
-      </div>
       <SchedulerInfoBlock
-        v-if="!noSchedule"
         :scheduler="scheduler"
         :editable="editable"
         :error="
@@ -250,7 +244,7 @@
           ''
         "
         class="mb-2"
-        @open-dialog="openScheduler"
+        @open-dialog="openScheduler($event)"
         @remove-scheduler="removeScheduler"
       />
 
@@ -380,7 +374,7 @@
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : undefined"
+          :type="editable ? 'submit' : 'button'"
           :disabled="!editable"
           @click="checkRequiredFields()"
           >{{ $t('global.labels.save') }}</Button
