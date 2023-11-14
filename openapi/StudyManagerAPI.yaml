@@ -989,14 +989,14 @@ paths:
                   format: binary
 
       responses:
-         '201':
-           description: import was successful
-           content:
-             application/json:
-               schema:
-                 $ref: '#/components/schemas/Study'
-         '400':
-           description: bad request
+        '201':
+          description: import was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
+        '400':
+          description: bad request
 
   /studies/{studyId}/export/study:
     parameters:
@@ -1369,12 +1369,11 @@ components:
           type: string
           format: date-time
           readOnly: true
-
     StudyDuration:
       type: object
       properties:
         value:
-          type: number
+          type: integer
         unit:
           type: string
           description: unit of time

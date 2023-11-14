@@ -60,4 +60,3 @@ components:
         rrrule:
           $ref: '#/components/schemas/RelativeRecurrenceRule'
           description: How to repeat the event
-
