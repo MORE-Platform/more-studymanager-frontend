@@ -207,12 +207,17 @@
           rEndAfter.value.value,
           rEndAfter.value.unit
         );
+        const rFrequencyMin = valueToMinutes(
+          rFrequency.value.value,
+          rFrequency.value.unit
+        );
 
         const eventDuration: number =
           rDtendOffsetMin - rDtstartOffsetMin + 1440;
+        const repeatEventWithOffset: number = eventDuration + rFrequencyMin;
         const endOfIndividualStudy: number = rDtstartOffsetMin + rEndAfterMin;
         const totalFrequency: number =
-          (endOfIndividualStudy - rDtendOffsetMin) / eventDuration;
+          (endOfIndividualStudy - rDtendOffsetMin) / repeatEventWithOffset;
         frequencyXTimes.value =
           totalFrequency % 1 !== 0
             ? Math.round(totalFrequency) + 1
