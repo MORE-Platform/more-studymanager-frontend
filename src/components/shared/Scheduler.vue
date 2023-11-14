@@ -458,6 +458,7 @@
     if (!calendarInputErrors.value.start && !calendarInputErrors.value.end) {
       try {
         const returnEvent: Event = {
+          type: 'Event',
           dtstart: s.toISOString(),
           dtend: e.toISOString(),
           rrule: undefined,

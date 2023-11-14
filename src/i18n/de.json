@@ -34,7 +34,8 @@
       "to": "zu",
       "message": "Nachricht",
       "option": "Option",
-      "data": "Daten"
+      "data": "Daten",
+      "scheduleType": "Zeitplan-Typ"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -708,10 +709,44 @@
 
   "scheduler": {
     "singular": "Planer",
-    "dialogTitle": "Zeitplan verwalten",
+    "type":{
+      "Event": "Absoluter Zeitplan",
+      "RelativeEvent": "Relativer Zeitplan"
+    },
+    "dialogTitle": "Absoluten Zeitplan verwalten",
+    "relativeDialogTitle": "Relativen Zeitplan verwalten",
+    "preview": {
+      "title": {
+        "individualEvent": "Individuelles Event",
+        "repeatEvent": "Event wiederholen",
+        "startsOn": "Startet am",
+        "endsOn": "Endet am",
+        "timeframe": "Timeframe",
+        "every": "Jeden",
+        "ends": "Endet",
+        "on": "am",
+        "in": "in",
+        "selectedDays": "Ausgewählte Tages"
+      },
+      "unit": {
+        "MINUTE": "Minute",
+        "PL-MINUTE": "minute(s)",
+        "HOUR": "Hour",
+        "PL-HOUR": "hour(s)",
+        "DAY": "Day",
+        "PL-DAY": "day(s)",
+        "DAILY": "day(s)",
+        "WEEKLY": "week(s)",
+        "date": "Date",
+        "time": "Time"
+      }
+    },
     "frequency": {
+      "minute": "Minute",
+      "hour": "Stunde",
       "hours": "Stunde(n)",
       "days": "Tag(e)",
+      "week": "Woche",
       "weeks": "Woche(n)",
       "months": "Monat(e)",
       "years": "Jahr(e)",
@@ -783,7 +818,10 @@
       "after":  "Nach",
       "on": "Am",
       "every":  "Jede(s)",
-      "openScheduler":  "Zeitplaner öffnen",
+      "openScheduler":  "Absoluten Zeitplaner hinzufügen",
+      "editScheduler": "Absoluten Zeitplaner bearbeiten",
+      "openRelativeScheduler": "Relativen Zeitplaner hinzfügen",
+      "editRelativeScheduler": "Relativen Zeitplaner bearbeiten",
       "removeScheduler":  "Zeitplaner entfernen",
       "frequency":  "Frequenz",
       "repetitionEnd": "Wiederholungsende",
@@ -839,6 +877,49 @@
       "startDateNotWithinRange": "Das Startdatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
       "endDateNotWithinRange": "Das Enddatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
       "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
+    },
+    "dialog": {
+      "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+      "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
+      "repeatEvent": "Event wiederholen",
+      "singleEventTitle": "Einzelnes Datenerhebungs-Event",
+      "repeatEventTitle": "Datenerhebungs-Event wiederholen",
+      "repeatEventDescription": "Das oben gezeigte Event wird wiederholt, sobald die aktuelle abgeschlossen ist.",
+      "repeatEvery": "Wiederholen: Jede",
+      "endAfter": "Ende nach",
+      "dayExplanation": "Der Begriff 'Tag' zeigt an, wie der Start einer individuellen Studie eines Teilnehmers mit dem entsprechenden Tageswert verknüpft ist. Beispiel: (Ein Teilnehmer meldet sich am 1.12.2023 an, der Studienstart ist auf Tag 2 festgelegt. Das bedeutet, dass die Studie am 2.12.2023 beginnt.)",
+      "relativeSchedule": {
+        "dialogTitle":"Relativen Zeitplan verwalten",
+        "startValue": "Startet am",
+        "endValue": "Endet am",
+        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
+        "rrule": {
+          "ends": "Endet",
+          "endsAfter": "Tage nach dem individuellen Studienstart.",
+          "repeated": "Wiederholung",
+          "times": "Mal"
+        },
+        "placeholder": {
+          "dtstartOffset": "Offset in Tage(n)",
+          "dtstartTime": "Strat Zeit",
+          "dtendOffset": "Offset in Tage(n)",
+          "dtendTime": "End Zeit",
+          "enterNumber": "Nummer eingeben"
+        },
+        "error": {
+          "dtstart":{
+            "addOffset": "Befülle den Offset des relativen Startzeitraum."
+          },
+          "dtend": {
+            "addOffset": "Befülle den Offset des relativen Endzeitraum."
+          },
+          "rrrule": {
+            "frequency": "Fülle die Widerholungsrate ein.",
+            "endAfter": "Fulle den Offset zum Enddatum ein.",
+            "notValid": "Die eingegebenen Werte sind ungültig."
+          }
+        }
+      }
     }
   },
 
@@ -874,3 +955,4 @@
   "title": "Titel",
   "message": "Nachricht"
 }
+
