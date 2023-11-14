@@ -236,8 +236,8 @@
             scheduleType: item.schedule?.type
               ? item.schedule?.type
               : 'no type selected',
-            scheduleStart: getScheduleDate(item.schedule, 'dtend'),
-            scheduleEnd: getScheduleDate(item.schedule, 'dtstart'),
+            scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
+            scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
             modified: item.modified,
             hidden: item.hidden,
@@ -288,8 +288,7 @@
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                }, ${schedule.dtend.time
-              } `
+                }, ${schedule.dtend.time} `
               : undefined;
           default:
             return undefined;
@@ -297,7 +296,7 @@
       }
     }
 
-    return 'schedule comes soon';
+    return '';
   }
 
   function execute(action: any) {
