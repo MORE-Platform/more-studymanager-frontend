@@ -235,7 +235,7 @@
             schedule: item.schedule,
             scheduleType: item.schedule?.type
               ? item.schedule?.type
-              : 'no type selected',
+              : '',
             scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
             scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
