@@ -715,6 +715,32 @@
     },
     "dialogTitle": "Absoluten Zeitplan verwalten",
     "relativeDialogTitle": "Relativen Zeitplan verwalten",
+    "preview": {
+      "title": {
+        "individualEvent": "Individuelles Event",
+        "repeatEvent": "Event wiederholen",
+        "startsOn": "Startet am",
+        "endsOn": "Endet am",
+        "timeframe": "Timeframe",
+        "every": "Jeden",
+        "ends": "Endet",
+        "on": "am",
+        "in": "in",
+        "selectedDays": "Ausgewählte Tages"
+      },
+      "unit": {
+        "MINUTE": "Minute",
+        "PL-MINUTE": "minute(s)",
+        "HOUR": "Hour",
+        "PL-HOUR": "hour(s)",
+        "DAY": "Day",
+        "PL-DAY": "day(s)",
+        "DAILY": "day(s)",
+        "WEEKLY": "week(s)",
+        "date": "Date",
+        "time": "Time"
+      }
+    },
     "frequency": {
       "minute": "Minute",
       "hour": "Stunde",

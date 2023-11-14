@@ -734,7 +734,9 @@
         "DAY": "Day",
         "PL-DAY": "day(s)",
         "DAILY": "day(s)",
-        "WEEKLY": "week(s)"
+        "WEEKLY": "week(s)",
+        "date": "Date",
+        "time": "Time"
       }
     },
     "frequency": {
