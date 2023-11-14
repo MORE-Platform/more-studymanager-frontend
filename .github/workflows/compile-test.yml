@@ -3,11 +3,6 @@ name: Test, Build and Publish
 on:
   push:
   workflow_dispatch:
-    # Map workflow outputs to job outputs
-    outputs:
-      build-image:
-        description: "Vue build image"
-        value: ${{ jobs.test.outputs.build-image }}
 
 env:
   REGISTRY: ghcr.io
@@ -17,9 +12,6 @@ jobs:
   test:
     name: "Run Tests"
     runs-on: ubuntu-latest
-    # Map the job outputs to step outputs
-    outputs:
-      build-image: steps.build
     steps:
       - name: Checkout commit
         uses: actions/checkout@v3
