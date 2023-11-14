@@ -282,13 +282,14 @@
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
-                )} ${schedule.dtstart.offset.value} `
+                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
               : undefined;
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                } `
+                }, ${schedule.dtend.time
+              } `
               : undefined;
           default:
             return undefined;
