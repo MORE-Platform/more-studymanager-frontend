@@ -233,9 +233,7 @@
             typeLabel: getObservationTypeString(item.type as string),
             properties: item.properties,
             schedule: item.schedule,
-            scheduleType: item.schedule?.type
-              ? item.schedule?.type
-              : '',
+            scheduleType: item.schedule?.type ? item.schedule?.type : '',
             scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
             scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
