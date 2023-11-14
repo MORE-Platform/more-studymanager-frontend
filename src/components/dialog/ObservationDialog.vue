@@ -239,7 +239,6 @@
         </div>
       </div>
       <SchedulerInfoBlock
-        v-if="!noSchedule"
         :scheduler="scheduler"
         :editable="editable"
         :error="

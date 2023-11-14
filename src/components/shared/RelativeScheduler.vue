@@ -100,6 +100,17 @@
     unit: DurationUnitEnum.Day,
   } as Duration);
 
+  const repeatChecked: Ref<boolean> = ref(
+    schedule.rrrule?.frequency ? true : false
+  );
+
+  const frequencyXTimes: Ref<number | undefined> = ref();
+  const totalDays: Ref<number | undefined> = ref();
+
+  if (schedule.rrrule?.frequency && schedule.rrrule?.endAfter) {
+    calculatedRepeat();
+  }
+
   const repetitionUnit = [
     {
       label: t('scheduler.frequency.minute'),
@@ -119,10 +130,6 @@
     },
   ];
 
-  const repeatChecked: Ref<boolean> = ref(
-    schedule.rrrule?.frequency ? true : false
-  );
-
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
 
   function getError(label: string): string | null | undefined {
@@ -131,9 +138,6 @@
     );
     return item?.value;
   }
-
-  const frequencyXTimes: Ref<string> = ref('');
-  const totalDays: Ref<string | undefined> = ref();
 
   function checkErrors() {
     errors.value = [];
@@ -174,7 +178,7 @@
           value: t('schedule.relativeSchedule.error.rrrule.endAfter'),
         });
       }
-      if (parseInt(frequencyXTimes.value) <= 0) {
+      if (frequencyXTimes.value && frequencyXTimes.value <= 0) {
         errors.value.push({
           label: 'frequencyXTimes',
           value: 'Repetition Value is not valid',
@@ -214,8 +218,12 @@
         const endOfIndividualStudy: number = rDtstartOffsetMin + rEndAfterMin;
         const totalFrequency: number =
           (endOfIndividualStudy - rDtendOffsetMin) / eventDuration;
-        frequencyXTimes.value = totalFrequency.toFixed(1);
-        totalDays.value = (endOfIndividualStudy / 1440).toFixed(1);
+        console.log(totalFrequency % 1);
+        frequencyXTimes.value =
+          totalFrequency % 1 !== 0
+            ? Math.round(totalFrequency) + 1
+            : Math.round(totalFrequency);
+        totalDays.value = Math.round(endOfIndividualStudy / 1440);
       }
     }
   }
@@ -292,10 +300,10 @@
 
       <div class="col-span-6 grid grid-cols-6 items-center border-b-2">
         <div class="bt-2 col-span-2 col-start-2 border-l-2 pl-4 pb-2">
-          {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
+          {{ $t('scheduler.preview.unit.date') }}
         </div>
         <div class="col-span-3 ml-2">
-          {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
+          {{ $t('scheduler.preview.unit.time') }}
         </div>
       </div>
 
@@ -404,7 +412,7 @@
         </div>
         <div class="col-span-2">
           <div v-if="frequencyXTimes">
-            <span v-if="parseInt(frequencyXTimes) <= 0" class="error">
+            <span v-if="frequencyXTimes && frequencyXTimes <= 0" class="error">
               {{
                 $t('scheduler.dialog.relativeSchedule.error.rrrule.notValid')
               }}
@@ -468,7 +476,7 @@
       </div>
     </div>
 
-    <div class="pos-bottom grid w-full grid-cols-6">
+    <div class="grid w-full grid-cols-6">
       <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
         <Button class="btn-gray" @click="cancel()">{{
           $t('global.labels.cancel')

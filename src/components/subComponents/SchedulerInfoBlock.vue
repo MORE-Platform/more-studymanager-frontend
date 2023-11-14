@@ -106,7 +106,7 @@
                 case Frequency.Monthly:
                   return t('scheduler.frequency.month');
                 default:
-                  return undefined;
+                  return '';
               }
             }
             case 'weekdays': {
@@ -151,15 +151,15 @@
               ? `${schedule.rrrule.frequency.value} ${t(
                   `scheduler.preview.unit.PL-${schedule.rrrule.frequency.unit}`
                 )}`
-              : undefined;
+              : '';
           case 'repetitionEnd':
             return schedule.rrrule?.endAfter
               ? `${t(`scheduler.preview.title.on`)} ${t(
                   `scheduler.preview.unit.${schedule.rrrule.endAfter.unit}`
                 )} ${schedule.rrrule.endAfter.value} `
-              : undefined;
+              : '';
           default:
-            return undefined;
+            return '';
         }
       }
       default:
@@ -191,16 +191,23 @@
     <div
       v-if="scheduler.type"
       class="schedule-preview col-span-8 grid grid-cols-4 px-6 py-4"
+      :class="
+        scheduler.dtstart && getRepetitionValue('every') === ''
+          ? 'grid-cols-2'
+          : 'grid-cols-4'
+      "
     >
       <div
-        class="text-bold grid items-start"
+        class="text-bold col-span-2 grid items-start"
         :class="
-          scheduler.dtstart && getRepetitionValue('every')
+          scheduler.dtstart && getRepetitionValue('every') === ''
             ? 'col-span-2 grid-cols-2 border-r-2'
-            : 'col-span-4'
+            : 'gird-cols-2 col-span-2 border-r-2'
         "
       >
-        <div class="color-primary col-span-2 border-b-2 py-3 pr-3 font-bold">
+        <div
+          class="color-primary col-span-2 items-center border-b-2 py-3 pr-3 font-bold"
+        >
           {{ $t('scheduler.preview.title.individualEvent') }}
         </div>
         <div class="col-span-1 py-2 font-medium">
@@ -215,9 +222,17 @@
         <div class="col-span-1 py-2">
           {{ getDateValues('dtend') }}
         </div>
+        <div
+          v-if="getRepetitionValue('weekdays')"
+          class="col-span-2 py-2"
+          style="height: 37px"
+        />
       </div>
 
-      <div v-if="getRepetitionValue('every')" class="text-bold col-span-2 grid">
+      <div
+        v-if="getRepetitionValue('every') !== ''"
+        class="text-bold col-span-2 grid"
+      >
         <div class="color-primary col-span-2 border-b-2 py-3 pl-3 font-bold">
           {{ $t('scheduler.preview.title.repeatEvent') }}
         </div>
