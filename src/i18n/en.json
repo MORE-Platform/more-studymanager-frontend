@@ -34,7 +34,8 @@
       "to": "to",
       "message": "Message",
       "option": "Option",
-      "data": "Data"
+      "data": "Data",
+      "scheduleType": "Schedule Type"
     },
     "placeholder": {
       "entireStudy": "Entire study",
@@ -84,7 +85,8 @@
       "purpose": "Purpose",
       "status": "Status",
       "roles": "Role(s)",
-      "plannedStart": "Planned start",
+      "duration":"Study duration",
+      "plannedStart": "Planned Start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
       "actualEnd": "Actual end",
@@ -141,6 +143,7 @@
     },
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
+      "addDuration": "Please enter both a duration and a unit.",
       "addConsentInfo": "The consent information is required. Please enter a description.",
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
@@ -149,6 +152,7 @@
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
+      "durationInput": "Please provide the duration of the study",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
       "participantInfoInput": "Please provide information for your studies participants. This description will be visible on the participant's app.",
       "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
@@ -173,6 +177,7 @@
       },
       "label": {
         "studyTitle": "Study title",
+        "durationExample": "Study Duration Example",
         "studyStart": "Study start",
         "studyEnd": "Study end",
         "contactInfo": "Contact information",
@@ -192,6 +197,8 @@
       },
       "description": {
         "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
+        "durationExample": "Study Start; 01.07.2023 - Study End: 31.12.2023 (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose.",
         "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",
@@ -706,11 +713,48 @@
 
   "scheduler": {
     "singular": "Scheduler",
-    "dialogTitle": "Manage schedule",
+    "type": {
+      "Event": "Absolut Event",
+      "RelativeEvent": "Relative Event"
+    },
+    "dialogTitle": "Manage absolute schedule",
+    "relativeDialogTitle": "Manage relative schedule",
+    "preview": {
+      "title": {
+        "individualEvent": "Individual Event",
+        "repeatEvent": "Repeat Event",
+        "startsOn": "Starts on",
+        "endsOn": "Ends on",
+        "timeframe": "Timeframe",
+        "every": "Every",
+        "ends": "Ends",
+        "on": "on",
+        "in": "in",
+        "selectedDays": "Selected days"
+      },
+      "unit": {
+        "MINUTE": "Minute",
+        "PL-MINUTE": "minute(s)",
+        "HOUR": "Hour",
+        "PL-HOUR": "hour(s)",
+        "DAY": "Day",
+        "PL-DAY": "day(s)",
+        "DAILY": "day(s)",
+        "WEEKLY": "week(s)",
+        "date": "Date",
+        "time": "Time"
+      }
+    },
     "frequency": {
+      "minute": "minute",
+      "minutes": "minute(s)",
+      "hour": "hour",
       "hours": "hour(s)",
+      "day": "day",
       "days": "day(s)",
+      "week": "week",
       "weeks": "week(s)",
+      "month": "month",
       "months": "month(s)",
       "years": "year(s)",
       "labels": {
@@ -740,6 +784,15 @@
         "friday": "FR",
         "saturday": "SA",
         "sunday": "SU"
+      },
+      "props": {
+        "MO": "Mo",
+        "TU": "Tue",
+        "WE": "We",
+        "TH": "Thur",
+        "FR": "Fr",
+        "SA": "Sa",
+        "SO": "So"
       }
     },
     "months":{
@@ -781,13 +834,18 @@
       "after":  "After",
       "on": "On",
       "every":  "Every",
-      "openScheduler":  "Open scheduler",
+      "openScheduler":  "Add absolute schedule",
+      "editScheduler": "Edit absolute schedule",
+      "openRelativeScheduler": "Add relative Schedule",
+      "editRelativeScheduler": "Edit relative Schdule",
       "removeScheduler":  "Remove scheduler",
       "frequency":  "Frequency",
       "repetitionEnd": "Repetition ends",
       "repeat": "Repeat",
       "date": "Date",
       "timeframe": "Timeframe",
+      "days": "Days",
+      "time": "Time",
       "selection":{
         "specificDay": "On a specific day",
         "allDaysInWeek": "All days in week",
@@ -838,6 +896,53 @@
       "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
       "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
       "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
+    },
+    "dialog": {
+      "description": "An absolute Schedule includes absolute date times. A relativ schedule collects data based on participant login and individual study starts.",
+      "noSetScheduleDesc": "If there is no schedule set, the whole schedule time will be set als default time as absolute Schedule.",
+      "repeatEvent": "Repeat event",
+      "singleEventTitle": "Single observation event",
+      "repeatEventTitle": "Repeat observation event",
+      "repeatEventDescription": "The event above will be repeated after the runtime of the current event has finished.",
+      "repeatEvery": "Repeat every",
+      "endAfter": "End after",
+      "absoluteSchedule": {
+        "description": "An absolute Schedule includes absolute date times. Observations can be timed by absolute dates and timeframes."
+      },
+      "relativeSchedule": {
+        "dialogTitle":"Manage relative schedule",
+        "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
+        "startValue": "Starts on",
+        "endValue": "Ends on",
+        "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
+        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on 1.12.2023, study start is set to Day 2. They start on 2.12.2023.)",
+        "rrrule": {
+          "ends": "Ends",
+          "endsAfter": "days after individual study start.",
+          "repeated": "Repeated",
+          "times": "times"
+        },
+        "placeholder": {
+          "dtstartOffset": "Enter offset in day(s)",
+          "dtstartTime": "Enter start time",
+          "dtendOffset": "Enter offset in day(s)",
+          "dtendTime": "Enter end time",
+          "enterNumber": "Enter number"
+        },
+        "error": {
+          "dtstart":{
+            "addOffset": "Fill in the offset of the relative start period."
+          },
+          "dtend": {
+            "addOffset": "Fill in the offset of the relative end period."
+          },
+          "rrrule": {
+            "frequency": "Fill in the repetition rate.",
+            "endAfter": "Fill in the offset to the end date.",
+            "notValid": "Values entered are not valid"
+          }
+        }
+      }
     }
   },
 

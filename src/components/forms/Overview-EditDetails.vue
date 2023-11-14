@@ -95,7 +95,7 @@
   <div class="overview-edit-details" :class="styleModifier">
     <div class="mb-8 flex justify-start">
       <div
-        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 2xl:grid-cols-5"
+        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 pr-3 2xl:grid-cols-5"
         :style="
           props.userRoles.find((r) => r === StudyRole.Admin)
             ? 'width:89%;'
@@ -121,6 +121,15 @@
           <span class="font-bold">{{ $t('study.props.actualEnd') }}: </span>
           <span v-if="study.end">{{
             dayjs(study.end).format('DD/MM/YYYY')
+          }}</span
+          ><span v-else>-</span>
+        </div>
+        <div>
+          <span class="font-bold">{{ $t('study.props.duration') }}: </span>
+          <span v-if="study.duration?.value && study.duration.unit">{{
+            `${study.duration.value} ${t(
+              `scheduler.preview.unit.${study.duration.unit}`
+            )}`
           }}</span
           ><span v-else>-</span>
         </div>
