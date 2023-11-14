@@ -187,6 +187,9 @@
     >
       {{ $t(`scheduler.type.${scheduler.type}`) }}
     </h6>
+    <div v-if="scheduler.type === 'RelativeEvent'" class="col-span-8 mb-3">
+      {{ $t(`scheduler.dialog.relativeSchedule.dayExplanation`) }}
+    </div>
 
     <div
       v-if="scheduler.type"

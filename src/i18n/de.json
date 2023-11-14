@@ -887,6 +887,7 @@
       "repeatEventDescription": "Das oben gezeigte Event wird wiederholt, sobald die aktuelle abgeschlossen ist.",
       "repeatEvery": "Wiederholen: Jede",
       "endAfter": "Ende nach",
+      "dayExplanation": "Der Begriff 'Tag' zeigt an, wie der Start einer individuellen Studie eines Teilnehmers mit dem entsprechenden Tageswert verknüpft ist. Beispiel: (Ein Teilnehmer meldet sich am 1.12.2023 an, der Studienstart ist auf Tag 2 festgelegt. Das bedeutet, dass die Studie am 2.12.2023 beginnt.)",
       "relativeSchedule": {
         "dialogTitle":"Relativen Zeitplan verwalten",
         "startValue": "Startet am",
@@ -954,3 +955,4 @@
   "title": "Titel",
   "message": "Nachricht"
 }
+

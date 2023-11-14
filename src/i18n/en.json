@@ -909,6 +909,7 @@
         "startValue": "Starts on",
         "endValue": "Ends on",
         "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
+        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on 1.12.2023, study start is set to Day 2. They start on 2.12.2023.)",
         "rrrule": {
           "ends": "Ends",
           "endsAfter": "days after individual study start.",

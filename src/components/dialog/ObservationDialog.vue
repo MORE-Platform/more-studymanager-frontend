@@ -128,7 +128,6 @@
   }
 
   function save(props: any) {
-    console.log(JSON.stringify(scheduler.value) === '{}');
     if (JSON.stringify(scheduler.value) === '{}') {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
@@ -158,8 +157,6 @@
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
-      console.log('save-----------');
-      console.log(scheduler.value);
       dialogRef.value.close(returnObservation);
     }
   }
