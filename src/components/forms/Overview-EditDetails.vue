@@ -125,12 +125,10 @@
           ><span v-else>-</span>
         </div>
         <div>
-          <span class="font-bold"
-            >{{ $t('study.props.duration.title') }}:
-          </span>
+          <span class="font-bold">{{ $t('study.props.duration') }}: </span>
           <span v-if="study.duration?.value && study.duration.unit">{{
             `${study.duration.value} ${t(
-              `study.props.duration.unit.${study.duration.unit}`
+              `scheduler.preview.unit.${study.duration.unit}`
             )}`
           }}</span
           ><span v-else>-</span>

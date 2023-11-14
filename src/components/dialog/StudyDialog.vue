@@ -51,15 +51,15 @@
       //active: true,
     },
     {
-      label: t('study.props.duration.unit.MINUTE'),
+      label: t('scheduler.preview.unit.MINUTE'),
       value: DurationUnitEnum.Minute,
     },
     {
-      label: t('study.props.duration.unit.HOUR'),
+      label: t('scheduler.preview.unit.HOUR'),
       value: DurationUnitEnum.Hour,
     },
     {
-      label: t('study.props.duration.unit.DAY'),
+      label: t('scheduler.preview.unit.DAY'),
       value: DurationUnitEnum.Day,
     },
   ];
@@ -107,7 +107,7 @@
       email: contactEmail.value,
       phoneNumber: contactPhoneNumber.value,
     };
-    if (!errors.value.length){
+    if (!errors.value.length) {
       dialogRef.value.close(returnStudy.value);
     }
   }
@@ -119,7 +119,10 @@
     if (!returnStudy.value.title) {
       errors.value.push({ label: 'title', value: t('study.error.addTitle') });
     }
-    if ((!studyDuration.value.value && studyDuration.value.unit) || (studyDuration.value.value && !studyDuration.value.unit)) {
+    if (
+      (!studyDuration.value.value && studyDuration.value.unit) ||
+      (studyDuration.value.value && !studyDuration.value.unit)
+    ) {
       errors.value.push({
         label: 'duration',
         value: t('study.error.addDuration'),
@@ -228,7 +231,7 @@
       </div>
       <div class="ol-start-0 col-span-6">
         <h5 :class="getError('duration') ? '' : 'mb-2'">
-          {{ $t('study.props.duration.title') }}
+          {{ $t('study.props.duration') }}
         </h5>
         <div v-if="getError('duration')" class="error col-span-8 mb-2">
           {{ getError('duration') }}
