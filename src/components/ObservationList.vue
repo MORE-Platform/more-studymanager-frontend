@@ -4,9 +4,12 @@
   import {
     ComponentFactory,
     Observation,
+    ObservationSchedule,
     StudyGroup,
     StudyRole,
     StudyStatus,
+    Event,
+    RelativeEvent,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -27,6 +30,7 @@
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import dayjs from 'dayjs';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -116,21 +120,24 @@
       columnWidth: '3vw',
       editable: true,
     },
-    /*
     {
-      field: 'schedule.dtstart',
-      header: t('global.labels.start'),
-      type: MoreTableFieldType.nestedDatetime,
+      field: 'scheduleType',
+      header: t('global.labels.scheduleType'),
       columnWidth: '3vw',
       sortable: true,
     },
     {
-      field: 'schedule.dtend',
-      header: t('global.labels.end'),
-      type: MoreTableFieldType.nestedDatetime,
+      field: 'scheduleStart',
+      header: t('global.labels.start'),
       columnWidth: '3vw',
       sortable: true,
-    }, */
+    },
+    {
+      field: 'scheduleEnd',
+      header: t('global.labels.end'),
+      columnWidth: '3vw',
+      sortable: true,
+    },
   ];
 
   const tableActions: MoreTableAction[] = [
@@ -226,6 +233,11 @@
             typeLabel: getObservationTypeString(item.type as string),
             properties: item.properties,
             schedule: item.schedule,
+            scheduleType: item.schedule?.type
+              ? item.schedule?.type
+              : '',
+            scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
+            scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
             modified: item.modified,
             hidden: item.hidden,
@@ -236,6 +248,55 @@
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations')
       );
+  }
+
+  function getScheduleDate(
+    scheduler: ObservationSchedule | undefined,
+    prop: string
+  ) {
+    switch (scheduler?.type) {
+      case 'Event': {
+        const schedule = scheduler as Event;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart
+              ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtstart
+                ).format('HH:mm')}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend
+              ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtstart
+                ).format('HH:mm')}`
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+      case 'RelativeEvent': {
+        const schedule = scheduler as RelativeEvent;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart.offset?.value &&
+              schedule.dtstart.offset?.unit
+              ? `${t(
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
+                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
+              ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
+                  schedule.dtend.offset.value
+                }, ${schedule.dtend.time} `
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+    }
+
+    return '';
   }
 
   function execute(action: any) {

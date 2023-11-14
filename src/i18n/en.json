@@ -34,7 +34,8 @@
       "to": "to",
       "message": "Message",
       "option": "Option",
-      "data": "Data"
+      "data": "Data",
+      "scheduleType": "Schedule Type"
     },
     "placeholder": {
       "entireStudy": "Entire study",
@@ -907,6 +908,7 @@
         "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
         "startValue": "Starts on",
         "endValue": "Ends on",
+        "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
         "rrrule": {
           "ends": "Ends",
           "endsAfter": "days after individual study start.",
