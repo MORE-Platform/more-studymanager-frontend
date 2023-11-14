@@ -99,8 +99,7 @@
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
     returnStudy.value.plannedEnd = dateToDateString(end.value);
-    if (studyDuration.value.value && studyDuration.value.unit)
-    {
+    if (studyDuration.value.value && studyDuration.value.unit) {
       returnStudy.value.duration = studyDuration.value;
     } else {
       returnStudy.value.duration = undefined;
