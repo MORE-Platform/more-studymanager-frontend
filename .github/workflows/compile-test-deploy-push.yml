@@ -4,7 +4,7 @@ on:
 
 jobs:
   call-another-reusable:
-    uses: ./compile-test.yml
+    uses: ./.github/workflows/compile-test.yml
 
   build-and-push-image:
     name: Build and Push Docker Image
