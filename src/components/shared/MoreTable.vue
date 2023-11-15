@@ -711,7 +711,11 @@
             v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
           >
             <span
-              v-if="column.type === MoreTableFieldType.string || !column.type"
+              v-if="
+                column.type === MoreTableFieldType.string ||
+                MoreTableFieldType.number ||
+                !column.type
+              "
               :class="
                 'table-value table-value-' +
                 field +

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { PropType, Ref, ref } from 'vue';
+  import { PropType } from 'vue';
   import {
     MoreStudyGroupTableMap,
     MoreTableAction,
@@ -13,7 +13,6 @@
     StudyGroup,
     StudyRole,
     StudyStatus,
-    Duration,
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
@@ -160,10 +159,9 @@
   function executeAction(
     action: MoreTableRowActionResult<MoreStudyGroupTableMap>
   ) {
-    let r = action.row;
-    if (r) {
-      r = studyGropuMapToStudyGroup(action.row);
-    }
+    const r = action.row
+      ? studyGroupStore.toStudyGroup(action.row)
+      : action.row;
 
     switch (action.id) {
       case 'delete':
@@ -175,62 +173,28 @@
     }
   }
   function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap) {
-    studyGroupStore.updateStudyGroup(studyGropuMapToStudyGroup(studyGroupMap));
-  }
-
-  const studyGroupList: Ref<MoreStudyGroupTableMap[]> = ref([]);
-
-  function studyGroupListMap(): void {
-    studyGroupList.value = studyGroupStore.studyGroups.map(
-      (item: StudyGroup) => {
-        return {
-          studyId: item.studyId,
-          studyGroupId: item.studyGroupId,
-          title: item.title,
-          purpose: item.purpose,
-          durationValue: item.duration?.value,
-          durationUnit: item.duration?.unit,
-          numberOfParticipants: item.numberOfParticipants,
-          created: item.created,
-          modified: item.modified,
-        } as MoreStudyGroupTableMap;
-      }
+    studyGroupStore.updateStudyGroup(
+      studyGroupStore.toStudyGroup(studyGroupMap)
     );
   }
-
-  function studyGropuMapToStudyGroup(row: MoreStudyGroupTableMap): StudyGroup {
-    let d: Duration | undefined = undefined;
-
-    if (row.durationValue && row.durationUnit) {
-      d = {
-        value: row.durationValue,
-        unit: row.durationUnit,
-      } as Duration;
-    }
-
-    return {
-      studyId: row.studyId,
-      studyGroupId: row.studyGroupId,
-      title: row.title,
-      purpose: row.purpose,
-      duration: d,
-      numberOfParticipants: row.numberOfParticipants,
-      created: row.created,
-      modiefied: row.modified,
-    } as StudyGroup;
-  }
-
-  studyGroupListMap();
 </script>
 
 <template>
   <div>
+    <div
+      v-for="(group, index) in studyGroupStore.studyGroupMap"
+      :key="index"
+      class="my-3"
+    >
+      {{ group }}<br />
+      {{ group.durationUnit }}, {{ group.durationValue }}
+    </div>
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyGroup.plural')"
       :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
-      :rows="studyGroupList"
+      :rows="studyGroupStore.studyGroupMap"
       :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"
