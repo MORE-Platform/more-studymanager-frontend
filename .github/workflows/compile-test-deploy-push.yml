@@ -1,9 +1,14 @@
 name: Build and Push Image
 on:
+  push:
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository_owner }}/more-study-manager-frontend
+
 jobs:
-  call-another-reusable:
+  compile-test:
     uses: ./.github/workflows/compile-test.yml
 
   build-and-push-image:
@@ -11,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     if: (github.ref_type == 'branch' && github.ref_name == 'main') || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs:
-      - test
+      - compile-test
     permissions:
       contents: read
       packages: write
