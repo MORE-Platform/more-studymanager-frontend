@@ -253,7 +253,8 @@
       "placeholder": {
         "title": "Set a title",
         "purpose": "Describe the purpose of the group.",
-        "emptyGroupList": "Add groups to your study to use group functionalities"
+        "emptyGroupList": "Add groups to your study to use group functionalities",
+        "duration": "Set the study duration"
       },
       "action": {
         "create": "Create group"

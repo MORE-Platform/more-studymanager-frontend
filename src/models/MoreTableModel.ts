@@ -173,3 +173,11 @@ export interface MoreInterventionTableMap {
   cronTime?: string;
   cronRepetition?: string;
 }
+
+export interface MoreStudyGroupTableMap {
+  groupId: ...
+}
+
+export interface MoreStudyGroupTableMap {
+  groupId: ...
+}

@@ -1,23 +1,21 @@
 <script setup lang="ts">
-  import { PropType } from 'vue';
-  import {
-    MoreTableAction,
-    MoreTableColumn,
-    MoreTableRowActionResult,
-  } from '../models/MoreTableModel';
-  import {
-    StudyGroup,
-    StudyRole,
-    StudyStatus,
-  } from '../generated-sources/openapi';
-  import MoreTable from './shared/MoreTable.vue';
-  import ConfirmDialog from 'primevue/confirmdialog';
-  import { useStudyGroupStore } from '../stores/studyGroupStore';
-  import { useI18n } from 'vue-i18n';
-  import { useDialog } from 'primevue/usedialog';
-  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+import {PropType, Ref, ref} from 'vue';
+import {
+  MoreStudyGroupTableMap,
+  MoreTableAction,
+  MoreTableColumn,
+  MoreTableFieldType,
+  MoreTableRowActionResult,
+} from '../models/MoreTableModel';
+import {Observation, StudyGroup, StudyRole, StudyStatus,} from '../generated-sources/openapi';
+import MoreTable from './shared/MoreTable.vue';
+import ConfirmDialog from 'primevue/confirmdialog';
+import {useStudyGroupStore} from '../stores/studyGroupStore';
+import {useI18n} from 'vue-i18n';
+import {useDialog} from 'primevue/usedialog';
+import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
-  const studyGroupStore = useStudyGroupStore();
+const studyGroupStore = useStudyGroupStore();
   const dialog = useDialog();
   const { t } = useI18n();
 
@@ -49,9 +47,17 @@
     {
       field: 'purpose',
       header: t('study.props.purpose'),
-      editable: true,
+      editable: true, //Not sure, where do we actually take the group time from?
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
-      columnWidth: '32vw',
+      columnWidth: '27vw',
+    },
+    {
+      field: 'duration.unit',
+      header: t('study.props.duration.title'),
+      type: MoreTableFieldType.nested,
+      editable: true,
+      placeholder: t('studyGroup.groupList.placeholder.duration'),
+      columnWidth: '5vw',
     },
   ];
   const rowActions: MoreTableAction[] = [
@@ -130,6 +136,17 @@
   function changeValueInPlace(studyGroup: StudyGroup) {
     studyGroupStore.updateStudyGroup(studyGroup);
   }
+
+  const studyGroupList: Ref<MoreStudyGroupTableMap[]> = ref([]);
+
+  function studyGroupListMap() : MoreStudyGroupTableMap[] {
+    return studyGroupStore.studyGroups.map((item: StudyGroup) => {
+      studyGroupId: item.studyGroupId,
+      durationUnit: item.duration.unit ? item.duration.unit : undefined,
+    }
+  }
+
+
 </script>
 
 <template>
