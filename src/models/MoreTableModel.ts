@@ -102,6 +102,7 @@ export interface MoreTableActionConfirmDialog {
 
 export enum MoreTableFieldType {
   string,
+  number,
   choice,
   calendar,
   multiselect,
@@ -175,9 +176,13 @@ export interface MoreInterventionTableMap {
 }
 
 export interface MoreStudyGroupTableMap {
-  groupId: ...
-}
-
-export interface MoreStudyGroupTableMap {
-  groupId: ...
+  studyId?: number;
+  studyGroupId?: number;
+  title?: string;
+  purpose?: string;
+  durationValue?: number;
+  durationUnit?: string;
+  numberOfParticipants?: number;
+  created?: string;
+  modified?: string;
 }

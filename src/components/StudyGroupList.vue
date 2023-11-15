@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import {PropType, Ref, ref} from 'vue';
-import {
-  MoreStudyGroupTableMap,
-  MoreTableAction,
-  MoreTableColumn,
-  MoreTableFieldType,
-  MoreTableRowActionResult,
-} from '../models/MoreTableModel';
-import {Observation, StudyGroup, StudyRole, StudyStatus,} from '../generated-sources/openapi';
-import MoreTable from './shared/MoreTable.vue';
-import ConfirmDialog from 'primevue/confirmdialog';
-import {useStudyGroupStore} from '../stores/studyGroupStore';
-import {useI18n} from 'vue-i18n';
-import {useDialog} from 'primevue/usedialog';
-import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import { PropType, Ref, ref } from 'vue';
+  import {
+    MoreStudyGroupTableMap,
+    MoreTableAction,
+    MoreTableChoice,
+    MoreTableColumn,
+    MoreTableFieldType,
+    MoreTableRowActionResult,
+  } from '../models/MoreTableModel';
+  import {
+    DurationUnitEnum,
+    StudyGroup,
+    StudyRole,
+    StudyStatus,
+    Duration,
+  } from '../generated-sources/openapi';
+  import MoreTable from './shared/MoreTable.vue';
+  import ConfirmDialog from 'primevue/confirmdialog';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useI18n } from 'vue-i18n';
+  import { useDialog } from 'primevue/usedialog';
+  import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
 
-const studyGroupStore = useStudyGroupStore();
+  const studyGroupStore = useStudyGroupStore();
   const dialog = useDialog();
   const { t } = useI18n();
 
@@ -34,6 +41,25 @@ const studyGroupStore = useStudyGroupStore();
     },
   });
 
+  const durationUnitOptions: MoreTableChoice[] = [
+    {
+      label: 'Nothing selected',
+      value: null,
+    },
+    {
+      label: t('study.props.duration.unit.MINUTE'),
+      value: DurationUnitEnum.Minute,
+    },
+    {
+      label: t('study.props.duration.unit.HOUR'),
+      value: DurationUnitEnum.Hour,
+    },
+    {
+      label: t('study.props.duration.unit.DAY'),
+      value: DurationUnitEnum.Day,
+    },
+  ];
+
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: t('global.labels.id'), sortable: true },
@@ -49,15 +75,23 @@ const studyGroupStore = useStudyGroupStore();
       header: t('study.props.purpose'),
       editable: true, //Not sure, where do we actually take the group time from?
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
-      columnWidth: '27vw',
+      columnWidth: '20vw',
     },
     {
-      field: 'duration.unit',
+      field: 'durationValue',
       header: t('study.props.duration.title'),
-      type: MoreTableFieldType.nested,
+      type: MoreTableFieldType.number,
       editable: true,
       placeholder: t('studyGroup.groupList.placeholder.duration'),
       columnWidth: '5vw',
+    },
+    {
+      field: 'durationUnit',
+      header: t(''),
+      type: MoreTableFieldType.choice,
+      editable: { values: durationUnitOptions },
+      placeholder: t('studyGroup.groupList.placeholder.duration'),
+      columnWidth: '1vw',
     },
   ];
   const rowActions: MoreTableAction[] = [
@@ -123,30 +157,70 @@ const studyGroupStore = useStudyGroupStore();
     );
   }
 
-  function executeAction(action: MoreTableRowActionResult<StudyGroup>) {
+  function executeAction(
+    action: MoreTableRowActionResult<MoreStudyGroupTableMap>
+  ) {
+    let r = action.row;
+    if (r) {
+      r = studyGropuMapToStudyGroup(action.row);
+    }
+
     switch (action.id) {
       case 'delete':
-        return studyGroupStore.deleteStudyGroup(action.row);
+        return studyGroupStore.deleteStudyGroup(r);
       case 'create':
         return studyGroupStore.createStudyGroup(props.studyId);
       default:
         console.error('no handler for action', action);
     }
   }
-  function changeValueInPlace(studyGroup: StudyGroup) {
-    studyGroupStore.updateStudyGroup(studyGroup);
+  function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap) {
+    studyGroupStore.updateStudyGroup(studyGropuMapToStudyGroup(studyGroupMap));
   }
 
   const studyGroupList: Ref<MoreStudyGroupTableMap[]> = ref([]);
 
-  function studyGroupListMap() : MoreStudyGroupTableMap[] {
-    return studyGroupStore.studyGroups.map((item: StudyGroup) => {
-      studyGroupId: item.studyGroupId,
-      durationUnit: item.duration.unit ? item.duration.unit : undefined,
-    }
+  function studyGroupListMap(): void {
+    studyGroupList.value = studyGroupStore.studyGroups.map(
+      (item: StudyGroup) => {
+        return {
+          studyId: item.studyId,
+          studyGroupId: item.studyGroupId,
+          title: item.title,
+          purpose: item.purpose,
+          durationValue: item.duration?.value,
+          durationUnit: item.duration?.unit,
+          numberOfParticipants: item.numberOfParticipants,
+          created: item.created,
+          modified: item.modified,
+        } as MoreStudyGroupTableMap;
+      }
+    );
   }
 
+  function studyGropuMapToStudyGroup(row: MoreStudyGroupTableMap): StudyGroup {
+    let d: Duration | undefined = undefined;
 
+    if (row.durationValue && row.durationUnit) {
+      d = {
+        value: row.durationValue,
+        unit: row.durationUnit,
+      } as Duration;
+    }
+
+    return {
+      studyId: row.studyId,
+      studyGroupId: row.studyGroupId,
+      title: row.title,
+      purpose: row.purpose,
+      duration: d,
+      numberOfParticipants: row.numberOfParticipants,
+      created: row.created,
+      modiefied: row.modified,
+    } as StudyGroup;
+  }
+
+  studyGroupListMap();
 </script>
 
 <template>
@@ -156,7 +230,7 @@ const studyGroupStore = useStudyGroupStore();
       :title="$t('studyGroup.plural')"
       :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
-      :rows="studyGroupStore.studyGroups"
+      :rows="studyGroupList"
       :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"

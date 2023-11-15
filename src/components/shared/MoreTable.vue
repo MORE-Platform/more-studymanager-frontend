@@ -16,6 +16,7 @@
   import SplitButton from 'primevue/splitbutton';
   import Menu from 'primevue/menu';
   import InputText from 'primevue/inputtext';
+  import InputNumber from 'primevue/inputnumber';
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
@@ -610,6 +611,12 @@
             v-model="data[field]"
             style="width: 100%"
             autofocus
+          />
+          <InputNumber
+            v-if="column.type === MoreTableFieldType.number"
+            v-model="data[field]"
+            style="width: 100%"
+            :placeholder="column.placeholder"
           />
           <Calendar
             v-if="column.type === MoreTableFieldType.calendar"

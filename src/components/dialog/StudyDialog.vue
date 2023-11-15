@@ -107,7 +107,7 @@
       email: contactEmail.value,
       phoneNumber: contactPhoneNumber.value,
     };
-    if (!errors.value.length){
+    if (!errors.value.length) {
       dialogRef.value.close(returnStudy.value);
     }
   }
@@ -119,7 +119,10 @@
     if (!returnStudy.value.title) {
       errors.value.push({ label: 'title', value: t('study.error.addTitle') });
     }
-    if ((!studyDuration.value.value && studyDuration.value.unit) || (studyDuration.value.value && !studyDuration.value.unit)) {
+    if (
+      (!studyDuration.value.value && studyDuration.value.unit) ||
+      (studyDuration.value.value && !studyDuration.value.unit)
+    ) {
       errors.value.push({
         label: 'duration',
         value: t('study.error.addDuration'),
