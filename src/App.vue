@@ -5,16 +5,16 @@
  * Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
  * Foerderung der wissenschaftlichen Forschung).
  * Licensed under the Elastic License 2.0.
- */
+ */ 
 <script setup lang="ts">
-  import Footer from './components/shared/Footer.vue';
-  import Header from './components/shared/Header.vue';
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
+import Footer from './components/shared/Footer.vue';
+import Header from './components/shared/Header.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-  router.beforeEach((to) => {
-    document.title = (to.meta?.title as string) + ' (More)' ?? 'More';
-  });
+router.beforeEach((to) => {
+  document.title = (to.meta?.title as string) + ' (More)' ?? 'More';
+});
 </script>
 
 <template>
@@ -26,8 +26,8 @@
 </template>
 
 <style scoped lang="postcss">
-  main {
-    min-height: 85vh;
-    margin-bottom: 5.5rem;
-  }
+main {
+  min-height: 85vh;
+  margin-bottom: 5.5rem;
+}
 </style>
