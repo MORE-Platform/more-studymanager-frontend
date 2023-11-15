@@ -1,8 +1,14 @@
-name: Test, Build and Publish
+name: Compile tests
 
 on:
-  push:
-  workflow_dispatch:
+  workflow_call:
+    outputs:
+      buildImage:
+        description: "build image for frontend project"
+        value: ${{ jobs.test.outputs.build }}
+      licenses:
+        description: "list of generated licenses"
+        value: ${{ jobs.test.otuputs.license }}
 
 env:
   REGISTRY: ghcr.io
@@ -12,6 +18,9 @@ jobs:
   test:
     name: "Run Tests"
     runs-on: ubuntu-latest
+    outputs:
+      build: ${{ steps.build }}
+      license: ${{ steps.license }}
     steps:
       - name: Checkout commit
         uses: actions/checkout@v3
@@ -54,7 +63,8 @@ jobs:
           name: 3rd Party Licenses
           path: "target/THIRD_PARTY.txt"
 
-      - name: Check licenses
+      - id: license
+        name: Check licenses
         run: npm run license:check
 
       #      - name: Run tests
@@ -67,8 +77,8 @@ jobs:
       #          name: Test Results
       #          path: "target/testResults.xml"
 
-      - name: Run build
-        id: build
+      - id: build
+        name: Run build
         run: npm run package
 
   event_file:
