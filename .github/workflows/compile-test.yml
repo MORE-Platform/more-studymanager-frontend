@@ -1,6 +1,7 @@
 name: Compile and publish tests
 
 on:
+  push:
   workflow_call:
 
 env:
