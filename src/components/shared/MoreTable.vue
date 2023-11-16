@@ -1,3 +1,8 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
   import {
@@ -75,7 +80,7 @@
     editable: {
       type: Function,
       // eslint-disable-next-line
-    default: (data:any) => true
+      default: (data: any) => true,
     },
     editableAccess: {
       type: Boolean,
