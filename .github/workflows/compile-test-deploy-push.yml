@@ -1,6 +1,5 @@
 name: Build and Push Image
 on:
-  push:
   workflow_dispatch:
 
 env:
@@ -14,7 +13,6 @@ jobs:
   build-and-push-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: (github.ref_type == 'branch' && github.ref_name == 'main') || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs:
       - compile-test
     permissions:
