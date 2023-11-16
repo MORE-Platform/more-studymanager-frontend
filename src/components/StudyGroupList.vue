@@ -181,14 +181,6 @@
 
 <template>
   <div>
-    <div
-      v-for="(group, index) in studyGroupStore.studyGroupMap"
-      :key="index"
-      class="my-3"
-    >
-      {{ group }}<br />
-      {{ group.durationUnit }}, {{ group.durationValue }}
-    </div>
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyGroup.plural')"

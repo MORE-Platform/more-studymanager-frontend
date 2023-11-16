@@ -713,7 +713,7 @@
             <span
               v-if="
                 column.type === MoreTableFieldType.string ||
-                MoreTableFieldType.number ||
+                column.type === MoreTableFieldType.number ||
                 !column.type
               "
               :class="

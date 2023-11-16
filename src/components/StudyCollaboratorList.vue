@@ -331,6 +331,7 @@
 
 <template>
   <div class="collaborator-list">
+    >
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyCollaborator.collaboratorList.title')"
