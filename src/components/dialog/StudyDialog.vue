@@ -1,3 +1,8 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject, onUpdated, ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
@@ -51,15 +56,15 @@
       //active: true,
     },
     {
-      label: t('study.props.duration.unit.MINUTE'),
+      label: t('scheduler.preview.unit.MINUTE'),
       value: DurationUnitEnum.Minute,
     },
     {
-      label: t('study.props.duration.unit.HOUR'),
+      label: t('scheduler.preview.unit.HOUR'),
       value: DurationUnitEnum.Hour,
     },
     {
-      label: t('study.props.duration.unit.DAY'),
+      label: t('scheduler.preview.unit.DAY'),
       value: DurationUnitEnum.Day,
     },
   ];
@@ -99,7 +104,11 @@
   function save() {
     returnStudy.value.plannedStart = dateToDateString(start.value);
     returnStudy.value.plannedEnd = dateToDateString(end.value);
-    returnStudy.value.duration = studyDuration.value;
+    if (studyDuration.value.value && studyDuration.value.unit) {
+      returnStudy.value.duration = studyDuration.value;
+    } else {
+      returnStudy.value.duration = undefined;
+    }
 
     returnStudy.value.contact = {
       institute: contactInstitute.value,
@@ -231,7 +240,7 @@
       </div>
       <div class="ol-start-0 col-span-6">
         <h5 :class="getError('duration') ? '' : 'mb-2'">
-          {{ $t('study.props.duration.title') }}
+          {{ $t('study.props.duration') }}
         </h5>
         <div v-if="getError('duration')" class="error col-span-8 mb-2">
           {{ getError('duration') }}

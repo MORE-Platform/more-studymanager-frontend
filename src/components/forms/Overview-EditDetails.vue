@@ -1,3 +1,8 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType } from 'vue';
   import {
@@ -125,12 +130,10 @@
           ><span v-else>-</span>
         </div>
         <div>
-          <span class="font-bold"
-            >{{ $t('study.props.duration.title') }}:
-          </span>
+          <span class="font-bold">{{ $t('study.props.duration') }}: </span>
           <span v-if="study.duration?.value && study.duration.unit">{{
             `${study.duration.value} ${t(
-              `study.props.duration.unit.${study.duration.unit}`
+              `scheduler.preview.unit.${study.duration.unit}`
             )}`
           }}</span
           ><span v-else>-</span>

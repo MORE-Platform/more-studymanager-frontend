@@ -1,12 +1,11 @@
-name: Test, Build and Publish
-
-on:
-  push:
-  workflow_dispatch:
+name: Test, Build and Push Docker Image
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/more-study-manager-frontend
+
+on:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -54,26 +53,27 @@ jobs:
           name: 3rd Party Licenses
           path: "target/THIRD_PARTY.txt"
 
-      - name: Check licenses
+      - id: license
+        name: Check licenses
         run: npm run license:check
 
-#      - name: Run tests
-#        run: npm run test:unit:once
-#
-#      - name: Upload Test Results
-#        if: always()
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: Test Results
-#          path: "target/testResults.xml"
+      #      - name: Run tests
+      #        run: npm run test:unit:once
+      #
+      #      - name: Upload Test Results
+      #        if: always()
+      #        uses: actions/upload-artifact@v3
+      #        with:
+      #          name: Test Results
+      #          path: "target/testResults.xml"
 
-      - name: Run build
+      - id: build
+        name: Run build
         run: npm run package
 
   build-and-push-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: (github.ref_type == 'branch' && github.ref_name == 'main') || (github.ref_type == 'tag' && startsWith(github.ref_name, 'v'))
     needs:
       - test
     permissions:
@@ -97,7 +97,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,value=latest
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -109,7 +109,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-
 
   event_file:
     name: "Event File"

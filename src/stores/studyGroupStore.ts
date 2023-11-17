@@ -1,3 +1,12 @@
+/*
+ Copyright LBI-DHP and/or licensed to LBI-DHP under one or more
+ contributor license agreements (LBI-DHP: Ludwig Boltzmann Institute
+ for Digital Health and Prevention -- A research institute of the
+ Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
+ Foerderung der wissenschaftlichen Forschung).
+ Licensed under the Elastic License 2.0.
+ */
+import { ref, Ref } from 'vue';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { Duration, StudyGroup } from '../generated-sources/openapi';
@@ -76,9 +85,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
           studyGroup.studyGroupId as number,
           studyGroup
         )
-        .then(() => {
-          return studyGroups.value.splice(position, 1, studyGroup);
-        })
+        .then(() => studyGroups.value.splice(position, 1, studyGroup))
         .catch((e: AxiosError) =>
           handleIndividualError(e, 'cannot update study group')
         );

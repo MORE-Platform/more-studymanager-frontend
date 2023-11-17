@@ -85,14 +85,7 @@
       "purpose": "Purpose",
       "status": "Status",
       "roles": "Role(s)",
-      "duration":{
-        "title":"Study duration",
-        "unit": {
-          "HOUR": "hours",
-          "DAY": "days",
-          "MINUTE": "minutes"
-        }
-      },
+      "duration":"Study duration",
       "plannedStart": "Planned Start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
