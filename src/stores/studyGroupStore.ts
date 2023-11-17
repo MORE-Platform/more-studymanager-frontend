@@ -6,13 +6,14 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { StudyGroup } from '../generated-sources/openapi';
+import { Duration, StudyGroup } from '../generated-sources/openapi';
 import { useStudyGroupsApi } from '../composable/useApi';
 import i18n from '../i18n/i18n';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { AxiosError } from 'axios';
+import { MoreStudyGroupTableMap } from '../models/MoreTableModel';
 
 export const useStudyGroupStore = defineStore('studyGroup', () => {
   const { studyGroupsApi } = useStudyGroupsApi();
@@ -89,11 +90,56 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
         );
     }
   }
+
+  function toStudyGroupMap() {
+    return studyGroups.value.map((item: StudyGroup) => {
+      return {
+        studyId: item.studyId,
+        studyGroupId: item.studyGroupId,
+        title: item.title,
+        purpose: item.purpose,
+        durationValue: item.duration?.value,
+        durationUnit: item.duration?.unit,
+        numberOfParticipants: item.numberOfParticipants,
+        created: item.created,
+        modified: item.modified,
+      } as MoreStudyGroupTableMap;
+    });
+  }
+
+  function toStudyGroup(row: MoreStudyGroupTableMap): StudyGroup {
+    let d: Duration | undefined = undefined;
+
+    if (row.durationValue && row.durationUnit) {
+      d = {
+        value: row.durationValue,
+        unit: row.durationUnit,
+      } as Duration;
+    }
+
+    return {
+      studyId: row.studyId,
+      studyGroupId: row.studyGroupId,
+      title: row.title,
+      purpose: row.purpose,
+      duration: d,
+      numberOfParticipants: row.numberOfParticipants,
+      created: row.created,
+      modiefied: row.modified,
+    } as StudyGroup;
+  }
+
+  const studyGroupMap: ComputedRef<Array<MoreStudyGroupTableMap>> = computed(
+    () => toStudyGroupMap()
+  );
+
   return {
     studyGroups,
+    studyGroupMap,
     getStudyGroups,
     createStudyGroup,
     deleteStudyGroup,
     updateStudyGroup,
+    toStudyGroup,
   };
 });
