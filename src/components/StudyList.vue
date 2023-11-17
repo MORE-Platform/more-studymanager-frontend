@@ -166,6 +166,16 @@ Licensed under the Elastic License 2.0. */
       visible: (data) =>
         data.userRoles.some((r: any) => [StudyRole.Admin].includes(r)),
     },
+    {
+      id: 'exportCalendar',
+      label: t('study.studyList.labels.exportStudyCalendar'),
+      icon: 'pi pi-calendar',
+      tooltip: t('study.studyList.labels.exportStudyCalendar'),
+      visible: (data) =>
+        data.userRoles.some((r: any) =>
+          [StudyRole.Admin, StudyRole.Operator].includes(r)
+        ),
+    },
   ];
 
   const rowEndActions: MoreTableAction[] = [
@@ -206,6 +216,8 @@ Licensed under the Elastic License 2.0. */
         return onExportStudyConfig(action.row.studyId as number);
       case 'exportData':
         return onExportStudyData(action.row.studyId as number);
+      case 'exportCalendar':
+        return onExportStudyCalendar(action.row.studyId as number);
       case 'copyId':
         return onCopyId(action.row.studyId, action.row.title);
       case 'goToStudy':
@@ -259,6 +271,10 @@ Licensed under the Elastic License 2.0. */
 
   function onExportStudyData(studyId: number) {
     studyStore.exportStudyData(studyId);
+  }
+
+  function onExportStudyCalendar(studyId: number) {
+    studyStore.exportStudyCalendar(studyId);
   }
 
   function onImportStudy(action: MoreTableActionResult) {

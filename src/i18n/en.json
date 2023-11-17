@@ -214,7 +214,8 @@
       "emptyListMsg": "No studies yet",
       "labels": {
         "exportStudyConfig": "Export study config",
-        "exportStudyData": "Export study data"
+        "exportStudyData": "Export study data",
+        "exportStudyCalendar": "Export study calendar"
       },
       "action": {
         "addStudy": "Add new study",
