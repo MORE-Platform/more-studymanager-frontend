@@ -62,7 +62,7 @@ Licensed under the Elastic License 2.0. */
           case 'dtend':
             return schedule.dtend
               ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart
+                  schedule.dtend
                 ).format('HH:mm')}`
               : undefined;
           default:
@@ -77,13 +77,13 @@ Licensed under the Elastic License 2.0. */
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
-                )} ${schedule.dtstart.offset.value} `
+                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
               : undefined;
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                } `
+                }, ${schedule.dtend.time} `
               : undefined;
           default:
             return undefined;
