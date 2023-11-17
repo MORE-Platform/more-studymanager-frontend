@@ -6,7 +6,6 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { ref, Ref } from 'vue';
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { Duration, StudyGroup } from '../generated-sources/openapi';
