@@ -83,7 +83,7 @@
   const rEndAfter: Ref<Duration> = ref({
     value: schedule.rrrule?.endAfter?.value
       ? schedule.rrrule?.endAfter?.value
-      : 3,
+      : 4,
     unit: schedule.rrrule?.endAfter?.unit
       ? schedule.rrrule?.endAfter?.unit
       : DurationUnitEnum.Day,
