@@ -83,7 +83,7 @@
   const rEndAfter: Ref<Duration> = ref({
     value: schedule.rrrule?.endAfter?.value
       ? schedule.rrrule?.endAfter?.value
-      : 2,
+      : 3,
     unit: schedule.rrrule?.endAfter?.unit
       ? schedule.rrrule?.endAfter?.unit
       : DurationUnitEnum.Day,
@@ -214,10 +214,16 @@
 
         const eventDuration: number =
           rDtendOffsetMin - rDtstartOffsetMin + 1440;
-        const repeatEventWithOffset: number = eventDuration + rFrequencyMin;
-        const endOfIndividualStudy: number = rDtstartOffsetMin + rEndAfterMin;
-        const totalFrequency: number =
-          (endOfIndividualStudy - rDtendOffsetMin) / repeatEventWithOffset;
+        const repeatEventWithOffset: number =
+          eventDuration + rFrequencyMin - 1440;
+        const endOfIndividualStudy: number =
+          rDtstartOffsetMin + rEndAfterMin - 1440;
+        let totalFrequency = 0;
+
+        if((rDtendOffsetMin + rFrequencyMin) < endOfIndividualStudy) {
+          totalFrequency = (endOfIndividualStudy - rDtendOffsetMin - (rFrequencyMin - 1440)) /
+          repeatEventWithOffset;
+        }
         frequencyXTimes.value =
           totalFrequency % 1 !== 0
             ? Math.round(totalFrequency) + 1
