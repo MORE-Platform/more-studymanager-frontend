@@ -220,9 +220,10 @@
           rDtstartOffsetMin + rEndAfterMin - 1440;
         let totalFrequency = 0;
 
-        if((rDtendOffsetMin + rFrequencyMin) < endOfIndividualStudy) {
-          totalFrequency = (endOfIndividualStudy - rDtendOffsetMin - (rFrequencyMin - 1440)) /
-          repeatEventWithOffset;
+        if (rDtendOffsetMin + rFrequencyMin < endOfIndividualStudy) {
+          totalFrequency =
+            (endOfIndividualStudy - rDtendOffsetMin - (rFrequencyMin - 1440)) /
+            repeatEventWithOffset;
         }
         frequencyXTimes.value =
           totalFrequency % 1 !== 0
