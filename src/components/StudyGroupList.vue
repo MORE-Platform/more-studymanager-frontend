@@ -51,15 +51,15 @@ Licensed under the Elastic License 2.0. */
       value: null,
     },
     {
-      label: t('study.props.duration.unit.MINUTE'),
+      label: t('scheduler.preview.unit.MINUTE'),
       value: DurationUnitEnum.Minute,
     },
     {
-      label: t('study.props.duration.unit.HOUR'),
+      label: t('scheduler.preview.unit.HOUR'),
       value: DurationUnitEnum.Hour,
     },
     {
-      label: t('study.props.duration.unit.DAY'),
+      label: t('scheduler.preview.unit.DAY'),
       value: DurationUnitEnum.Day,
     },
   ];
@@ -83,7 +83,7 @@ Licensed under the Elastic License 2.0. */
     },
     {
       field: 'durationValue',
-      header: t('study.props.duration.title'),
+      header: t('study.props.duration'),
       type: MoreTableFieldType.number,
       editable: true,
       placeholder: t('studyGroup.groupList.placeholder.duration'),
