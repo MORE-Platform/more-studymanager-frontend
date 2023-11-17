@@ -86,7 +86,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.duration'),
       type: MoreTableFieldType.number,
       editable: true,
-      placeholder: t('studyGroup.groupList.placeholder.duration'),
+      placeholder: t('studyGroup.groupList.placeholder.durationValue'),
       columnWidth: '5vw',
     },
     {
@@ -94,7 +94,7 @@ Licensed under the Elastic License 2.0. */
       header: t(''),
       type: MoreTableFieldType.choice,
       editable: { values: durationUnitOptions },
-      placeholder: t('studyGroup.groupList.placeholder.duration'),
+      placeholder: t('studyGroup.groupList.placeholder.durationUnit'),
       columnWidth: '1vw',
     },
   ];

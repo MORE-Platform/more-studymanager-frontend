@@ -247,7 +247,9 @@
         "title": "Set a title",
         "purpose": "Describe the purpose of the group.",
         "emptyGroupList": "Add groups to your study to use group functionalities",
-        "duration": "Set the study duration"
+        "duration": "Set the individual study duration",
+        "durationUnit": "Individual study duration unit",
+        "durationValue": "Ind. study duration value"
       },
       "action": {
         "create": "Create group"

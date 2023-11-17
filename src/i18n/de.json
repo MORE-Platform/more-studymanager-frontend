@@ -247,7 +247,10 @@
       "placeholder": {
         "title": "Stellen Sie einen Titel bereit",
         "purpose": "Beschreiben Sie die Zielsetzung für diese Gruppe",
-        "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet."
+        "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet.",
+        "duration": "Gib die Studiendauer ein",
+        "durationUnit": "Einheit der Studiendauer",
+        "durationValue": "Wert der Studiendauer"
       },
       "action": {
         "create": "Studiengruppe erstellen"
