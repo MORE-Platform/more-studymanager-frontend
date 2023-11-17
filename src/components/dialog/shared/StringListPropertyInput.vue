@@ -1,3 +1,8 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { StringListProperty } from '../../../models/InputModels';
   import { PropType, watch } from 'vue';
@@ -42,24 +47,29 @@
     </h6>
     <div>{{ $t(props.property.description) }}</div>
     <!-- eslint-disable -->
-    <div v-if="editable" class="w-full flex gap-1 flex-col">
+    <div v-if="editable" class="flex w-full flex-col gap-1">
       <InputText
         v-for="index in property.maxSize"
         class="w-full"
         :class="!editable && property.value?.[index - 1] ? 'w-fit' : 'hidden'"
         :key="index"
         :value="property.value?.[index - 1]"
-        @keyup="update($event, index-1)"
+        @keyup="update($event, index - 1)"
         type="text"
         :disabled="!editable"
         :placeholder="t('global.labels.option') + ' ' + index"
         style="display: block"
       />
     </div>
-    <div v-else-if="!editable" class="flex flex-row space-around">
+    <div v-else-if="!editable" class="space-around flex flex-row">
       <div v-for="index in property.maxSize" class="flex items-center">
-        <span>{{property.value?.[index-1]}}</span>
-        <span v-if="property.value?.[index] && index !== property.maxSize" class="pi pi-circle-fill px-2" style="font-size: 5px;"> </span>
+        <span>{{ property.value?.[index - 1] }}</span>
+        <span
+          v-if="property.value?.[index] && index !== property.maxSize"
+          class="pi pi-circle-fill px-2"
+          style="font-size: 5px"
+        >
+        </span>
       </div>
     </div>
     <!-- eslint-enable -->
