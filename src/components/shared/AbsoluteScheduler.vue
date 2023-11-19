@@ -204,8 +204,6 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="scheduler relative">
-    <div>{{ calendarStart }}</div>
-    <div>{{ calendarEnd }}</div>
     <div class="grid grid-cols-6 items-center gap-4">
       <div class="header-info col-span-6 mb-4">
         <h6>{{ $t('scheduler.labels.event.setDates') }}</h6>

@@ -213,9 +213,6 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
-    <div class="my-10">
-      {{ scheduler }}
-    </div>
     <div class="mb-4" :class="editable ? '' : 'pb-4'">
       <h5 class="mb-1">{{ $t(factory.title) }}</h5>
       <!-- eslint-disable vue/no-v-html -->
