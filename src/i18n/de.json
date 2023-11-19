@@ -929,6 +929,12 @@
           }
         }
       }
+    },
+    "warningsAndErrors": {
+      "endWasChangedWithStartValue": "End Wert wurde mit dem Start Wert geändert.",
+      "rruleFreqIsEmpty": "Bitte legen Sie die Häufigkeit für Ihre Wiederholung fest.",
+      "rruleWeeklyIsMissingByDay": "Bitte legen Sie die Wochentage für Ihre Wiederholung fest.",
+      "rruleEndIsEmpty": "Bitte legen Sie einen Endpunkt für Ihren Wiederholungszeitraum fest."
     }
   },
 
