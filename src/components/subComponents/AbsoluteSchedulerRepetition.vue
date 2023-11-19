@@ -152,21 +152,6 @@
     rruleEndOptionValue.value = 'onDay';
   }
 
-  /*
-  if (
-    returnRrule.value &&
-    returnRrule.value?.count &&
-    returnRrule.value?.byday?.length
-  ) {
-    returnRrule.value.count =
-      returnRrule.value.count / returnRrule.value.byday.length || 1;
-  }
-
-  if (returnRrule.value.count || returnRrule.value.until) {
-    repeatEndOption.value = returnRrule.value.count ? 'after' : 'onDate';
-    setRepetitionEnd(repeatEndOption.value);
-  }*/
-
   function setRruleCountLabel(rruleFreq: string | undefined) {
     if (rruleFreq) {
       rruleCountLabel.value = rruleFrequencyOptions.find(
