@@ -26,7 +26,7 @@ Licensed under the Elastic License 2.0. */
   import PropertyInputs from './shared/ProprtyInputs.vue';
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
-  import AbsoluteScheduler from '../shared/AbsoluteScheduler.vue';
+  import AbsoluteScheduler from '../shared/Scheduler.vue';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();

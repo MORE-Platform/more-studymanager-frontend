@@ -76,7 +76,7 @@
     }
     if (
       typeof returnRrule.value.until === 'undefined' &&
-      typeof returnRrule.value.count === 'undefined'
+      typeof previewCount.value === 'undefined'
     ) {
       rruleErrors.value.push({
         label: 'rruleEndIsEmpty',
