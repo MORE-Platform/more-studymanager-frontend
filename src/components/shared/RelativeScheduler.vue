@@ -195,10 +195,6 @@
         rFrequency.value.value &&
         rEndAfter.value.value
       ) {
-        const rDtendOffsetMin = valueToMinutes(
-          rDtendOffset.value.value,
-          rDtendOffset.value.unit
-        );
         const rDtstartOffsetMin = valueToMinutes(
           rDtstartOffset.value.value,
           rDtstartOffset.value.unit
@@ -212,23 +208,14 @@
           rFrequency.value.unit
         );
 
-        const eventDuration: number =
-          rDtendOffsetMin - rDtstartOffsetMin + 1440;
-        const repeatEventWithOffset: number =
-          eventDuration + rFrequencyMin - 1440;
         const endOfIndividualStudy: number =
           rDtstartOffsetMin + rEndAfterMin - 1440;
-        let totalFrequency = 0;
+        const totalFrequency = rEndAfterMin / rFrequencyMin;
 
-        if (rDtendOffsetMin + rFrequencyMin < endOfIndividualStudy) {
-          totalFrequency =
-            (endOfIndividualStudy - rDtendOffsetMin - (rFrequencyMin - 1440)) /
-            repeatEventWithOffset;
-        }
         frequencyXTimes.value =
           totalFrequency % 1 !== 0
-            ? Math.round(totalFrequency) + 1
-            : Math.round(totalFrequency);
+            ? totalFrequency - (totalFrequency % 1) + 1
+            : totalFrequency - (totalFrequency % 1);
         totalDays.value = Math.round(endOfIndividualStudy / 1440);
       }
     }
