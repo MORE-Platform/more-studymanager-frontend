@@ -946,6 +946,12 @@
           }
         }
       }
+    },
+    "warningsAndErrors": {
+      "endWasChangedWithStartValue": "End value was changed with start value.",
+      "rruleFreqIsEmpty": "Please set the frequency for your repetition.",
+      "rruleWeeklyIsMissingByDay": "Please set the weekdays for your repetition.",
+      "rruleEndIsEmpty": "Please set and end point for your repetition period."
     }
   },
 

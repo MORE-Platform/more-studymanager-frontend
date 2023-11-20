@@ -16,7 +16,6 @@ Licensed under the Elastic License 2.0. */
     ObservationSchedule,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import Scheduler from '../shared/Scheduler.vue';
   import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
   import { useComponentsApi } from '../../composable/useApi';
@@ -27,6 +26,7 @@ Licensed under the Elastic License 2.0. */
   import PropertyInputs from './shared/ProprtyInputs.vue';
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
+  import AbsoluteScheduler from '../shared/Scheduler.vue';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -78,32 +78,35 @@ Licensed under the Elastic License 2.0. */
   }
 
   function openScheduler(schedulerType: string) {
-    dialog.open(schedulerType === 'relative' ? RelativeScheduler : Scheduler, {
-      data: {
-        scheduler: scheduler.value,
-        schedulerType: scheduler.value.type,
-      },
-      props: {
-        header:
-          schedulerType === 'relative'
-            ? t('scheduler.relativeDialogTitle')
-            : t('scheduler.dialogTitle'),
-        style: {
-          width: '50vw',
+    dialog.open(
+      schedulerType === 'relative' ? RelativeScheduler : AbsoluteScheduler,
+      {
+        data: {
+          scheduler: scheduler.value,
+          schedulerType: scheduler.value.type,
         },
-        breakpoints: {
-          '960px': '75vw',
-          '640px': '90vw',
+        props: {
+          header:
+            schedulerType === 'relative'
+              ? t('scheduler.relativeDialogTitle')
+              : t('scheduler.dialogTitle'),
+          style: {
+            width: '50vw',
+          },
+          breakpoints: {
+            '960px': '75vw',
+            '640px': '90vw',
+          },
+          modal: true,
+          draggable: false,
         },
-        modal: true,
-        draggable: false,
-      },
-      onClose: (options) => {
-        if (options?.data) {
-          scheduler.value = options.data;
-        }
-      },
-    });
+        onClose: (options) => {
+          if (options?.data) {
+            scheduler.value = options.data;
+          }
+        },
+      }
+    );
   }
   function validate() {
     let parsedProps: any;
