@@ -48,7 +48,7 @@
       ? returnRrule.value.count / returnRrule.value.byday.length
       : returnRrule.value.count
       ? returnRrule.value.count
-      : 1
+      : undefined
   );
 
   const rruleEventCheckbox: Ref<boolean> = ref(props.rruleChecked);
@@ -100,13 +100,11 @@
     {
       label: t('scheduler.labels.event.repetitionEnd.studyEnd'),
       value: 'onDate',
-      active: false,
       unit: 'onDate',
     },
     {
       label: t('scheduler.labels.event.repetitionEnd.after'),
       value: 'after',
-      active: false,
       unit: 'after',
     },
   ];
@@ -146,10 +144,10 @@
 
   const rruleEndOptionValue: Ref<string> = ref('never');
 
-  if (typeof returnRrule.value.count !== 'undefined') {
+  if (typeof returnRrule.value.count === 'number') {
     rruleEndOptionValue.value = 'after';
-  } else if (typeof returnRrule.value.until !== 'undefined') {
-    rruleEndOptionValue.value = 'onDay';
+  } else if (typeof returnRrule.value.until === 'string') {
+    rruleEndOptionValue.value = 'onDate';
   }
 
   function setRruleCountLabel(rruleFreq: string | undefined) {
@@ -165,7 +163,9 @@
       case 'onDate':
         {
           returnRrule.value.count = undefined;
-          returnRrule.value.until = studyStore.study.plannedEnd as string;
+          const endDate = new Date(studyStore.study.plannedEnd as string);
+          endDate.setHours(0, 0, 0);
+          returnRrule.value.until = endDate.toISOString();
         }
         break;
       case 'after':
@@ -182,15 +182,28 @@
   }
 
   watch(previewCount, () => {
-    if (previewCount.value && returnRrule.value.byday?.length) {
-      returnRrule.value.count =
-        previewCount.value * returnRrule.value.byday.length;
+    if (previewCount.value && rruleEndOptionValue.value === 'after') {
+      if (returnRrule.value.byday?.length) {
+        returnRrule.value.count =
+          previewCount.value * returnRrule.value.byday.length;
+      } else {
+        returnRrule.value.count = previewCount.value;
+      }
     }
   });
 
-  function onChangeRrule() {
+  function onChangeRrule(type?: string) {
     checkErrors();
     emit('onRruleError', rruleErrors.value);
+
+    if (
+      type === 'byday' &&
+      previewCount.value &&
+      returnRrule.value.byday?.length
+    ) {
+      returnRrule.value.count =
+        previewCount.value * returnRrule.value.byday.length;
+    }
 
     if (!rruleErrors.value.length) {
       emit('onRruleChange', returnRrule.value);
@@ -251,7 +264,7 @@
             option-value="value"
             class="col-span-5 col-start-2 w-full"
             :multiple="true"
-            @change="onChangeRrule()"
+            @change="onChangeRrule('byday')"
           />
           <div
             v-if="getError('rruleWeeklyIsMissingByDay')"
@@ -287,7 +300,8 @@
               <InputNumber
                 v-model="previewCount"
                 :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
-                @change="onChangeRrule()"
+                @input="onChangeRrule()"
+                @blur="onChangeRrule()"
               />
               <span class="ml-2">{{ rruleCountLabel }}</span>
             </div>
