@@ -43,7 +43,6 @@ Licensed under the Elastic License 2.0. */
 
   watch(calendarEnd, async (newValue, oldValue) => {
     if (!calendarEndChangedWithStart.value) {
-      console.error('enter calendarEnd Watcher validate Date');
       validateDate('calendarEnd', newValue, oldValue);
     }
   });
@@ -54,12 +53,12 @@ Licensed under the Elastic License 2.0. */
     typeof scheduler.dtend !== 'undefined'
   ) {
     if (
-      scheduler.dtstart.getHours() === '00' &&
-      scheduler.dtstart.getMinutes() === '00' &&
-      scheduler.dtstart.getSeconds() === '00' &&
-      scheduler.dtend.getHours() === '23' &&
-      scheduler.dtend.getMinutes() === '59' &&
-      scheduler.dtend.getSeconds() === '59'
+      new Date(scheduler.dtstart).getHours() === 0 &&
+      new Date(scheduler.dtstart).getMinutes() === 0 &&
+      new Date(scheduler.dtstart).getSeconds() === 0 &&
+      new Date(scheduler.dtend).getHours() === 23 &&
+      new Date(scheduler.dtend).getMinutes() === 59 &&
+      new Date(scheduler.dtend).getSeconds() === 59
     ) {
       entireDayCheckbox.value = true;
     }
@@ -79,13 +78,11 @@ Licensed under the Elastic License 2.0. */
       calendarEnd.value
     ) {
       setTimeout(() => {
-        const oldEndDate = calendarEnd.value;
+        const hours = calendarEnd.value.getHours();
+        const minutes = calendarEnd.value.getMinutes();
+        const seconds = calendarEnd.value.getSeconds();
         calendarEnd.value.setTime(calendarStart.value.getTime());
-        calendarEnd.value.setHours(
-          oldEndDate.getHours(),
-          oldEndDate.getMinutes(),
-          oldEndDate.getSeconds()
-        );
+        calendarEnd.value.setHours(hours, minutes, seconds);
       }, 60);
     }
   }
