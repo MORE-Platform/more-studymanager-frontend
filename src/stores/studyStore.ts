@@ -160,7 +160,7 @@ export const useStudyStore = defineStore('study', () => {
 
   async function exportStudyCalendar(studyId: number): Promise<void> {
     await window.open(
-      `https://data.platform-test.more.redlink.io/api/v1/calendar/studies/${studyId}/calendar.ics`
+      `api/v1/studies/${studyId}/calendar.ics`
     );
   }
 
