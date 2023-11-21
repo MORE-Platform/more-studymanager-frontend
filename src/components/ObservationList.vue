@@ -238,7 +238,9 @@ Licensed under the Elastic License 2.0. */
             typeLabel: getObservationTypeString(item.type as string),
             properties: item.properties,
             schedule: item.schedule,
-            scheduleType: item.schedule?.type ? item.schedule?.type : '',
+            scheduleType: item.schedule?.type
+              ? t(`scheduler.type.${item.schedule?.type}`)
+              : '',
             scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
             scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
@@ -270,7 +272,7 @@ Licensed under the Elastic License 2.0. */
           case 'dtend':
             return schedule.dtend
               ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart
+                  schedule.dtend
                 ).format('HH:mm')}`
               : undefined;
           default:
