@@ -158,6 +158,10 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
+  async function exportStudyCalendar(studyId: number): Promise<void> {
+    await window.open(`api/v1/studies/${studyId}/calendar.ics`);
+  }
+
   function downloadJSON(filename: string, file: File): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
@@ -196,6 +200,7 @@ export const useStudyStore = defineStore('study', () => {
     importStudy,
     exportStudyConfig,
     exportStudyData,
+    exportStudyCalendar,
     studyUserRoles,
     studyStatus,
     studyId,
