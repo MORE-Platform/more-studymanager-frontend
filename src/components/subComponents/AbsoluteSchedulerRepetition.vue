@@ -75,8 +75,8 @@
       });
     }
     if (
-      typeof returnRrule.value.until === 'undefined' &&
-      typeof previewCount.value === 'undefined'
+      typeof returnRrule.value.until !== 'string' &&
+      typeof previewCount.value !== 'number'
     ) {
       rruleErrors.value.push({
         label: 'rruleEndIsEmpty',
@@ -163,6 +163,8 @@
       case 'onDate':
         {
           returnRrule.value.count = undefined;
+          previewCount.value = undefined;
+
           const endDate = new Date(studyStore.study.plannedEnd as string);
           endDate.setHours(0, 0, 0);
           returnRrule.value.until = endDate.toISOString();
@@ -171,11 +173,16 @@
       case 'after':
         {
           returnRrule.value.until = undefined;
+          if (returnRrule.value.freq === Frequency.Daily) {
+            returnRrule.value.byday = undefined;
+          }
         }
         break;
       case 'never': {
         returnRrule.value.count = undefined;
+        previewCount.value = undefined;
         returnRrule.value.until = undefined;
+        returnRrule.value.byday = undefined;
       }
     }
     onChangeRrule();
@@ -208,6 +215,16 @@
     if (!rruleErrors.value.length) {
       emit('onRruleChange', returnRrule.value);
     }
+
+    if (type === 'count' && !previewCount.value) {
+      returnRrule.value.count = undefined;
+    }
+
+    if (returnRrule.value.freq === Frequency.Daily && returnRrule.value.byday) {
+      returnRrule.value.byday = undefined;
+    }
+
+    checkErrors();
   }
 </script>
 
@@ -300,8 +317,8 @@
               <InputNumber
                 v-model="previewCount"
                 :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
-                @input="onChangeRrule()"
-                @blur="onChangeRrule()"
+                @input="onChangeRrule('count')"
+                @blur="onChangeRrule('count')"
               />
               <span class="ml-2">{{ rruleCountLabel }}</span>
             </div>
