@@ -96,20 +96,12 @@ Licensed under the Elastic License 2.0. */
     StudyRole.Operator,
   ];
 
-  const hostLocation = location.host;
+  const webcalUrl = `webcal://${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
+  const calenderUrl = `${location.origin}/api/v1/studies/${props.study.studyId}/calendar.ics`;
 
   const showMessage: Ref<boolean> = ref(false);
   const alertMessage: Ref<string> = ref('');
 
-  function copyIcalLink() {
-    const studyUrl = `${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
-    navigator.clipboard.writeText(studyUrl);
-    showMessage.value = true;
-    alertMessage.value = t('study.ical.copyMsg', {
-      studyId: props.study.studyId,
-      title: props.study.title,
-    });
-  }
 </script>
 
 <template>
@@ -178,15 +170,8 @@ Licensed under the Elastic License 2.0. */
       <h5>{{ $t('study.ical.title') }}</h5>
       <div class="flex items-center">
         <div class="mr-4 inline">
-          {{ `${hostLocation}/api/v1/studies/${study.studyId}/calendar.ics` }}
+          <a :href="webcalUrl">{{calenderUrl}}</a>
         </div>
-        <button
-          type="button"
-          class="p-button p-button-sm btn-gray p-button-gray inline"
-          @click="copyIcalLink"
-        >
-          {{ $t('study.ical.copyTitle') }}
-        </button>
       </div>
     </div>
 
