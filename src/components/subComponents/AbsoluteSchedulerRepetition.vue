@@ -243,7 +243,7 @@
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="emit('onRruleCheckboxChange', true)"
+            @change="emit('onRruleCheckboxChange', rruleEventCheckbox)"
           />
         </div>
 
