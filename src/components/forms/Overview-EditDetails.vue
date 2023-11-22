@@ -101,7 +101,6 @@ Licensed under the Elastic License 2.0. */
 
   const showMessage: Ref<boolean> = ref(false);
   const alertMessage: Ref<string> = ref('');
-
 </script>
 
 <template>
@@ -170,7 +169,7 @@ Licensed under the Elastic License 2.0. */
       <h5>{{ $t('study.ical.title') }}</h5>
       <div class="flex items-center">
         <div class="mr-4 inline">
-          <a :href="webcalUrl">{{calenderUrl}}</a>
+          <a :href="webcalUrl">{{ calenderUrl }}</a>
         </div>
       </div>
     </div>
