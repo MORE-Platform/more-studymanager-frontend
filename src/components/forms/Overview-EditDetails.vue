@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { PropType } from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import {
     Study,
     StudyRole,
@@ -18,6 +18,7 @@ Licensed under the Elastic License 2.0. */
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
+  import AlertMsg from '../shared/AlertMsg.vue';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -94,6 +95,21 @@ Licensed under the Elastic License 2.0. */
     StudyRole.Admin,
     StudyRole.Operator,
   ];
+
+  const hostLocation = location.host;
+
+  const showMessage: Ref<boolean> = ref(false);
+  const alertMessage: Ref<string> = ref('');
+
+  function copyIcalLink() {
+    const studyUrl = `${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
+    navigator.clipboard.writeText(studyUrl);
+    showMessage.value = true;
+    alertMessage.value = t('study.ical.copyMsg', {
+      studyId: props.study.studyId,
+      title: props.study.title,
+    });
+  }
 </script>
 
 <template>
@@ -155,6 +171,22 @@ Licensed under the Elastic License 2.0. */
           @click="openEditDialog()"
           ><span>{{ $t('global.labels.edit') }}</span></Button
         >
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <h5>{{ $t('study.ical.title') }}</h5>
+      <div class="flex items-center">
+        <div class="mr-4 inline">
+          {{ `${hostLocation}/api/v1/studies/${study.studyId}/calendar.ics` }}
+        </div>
+        <button
+          type="button"
+          class="p-button p-button-sm btn-gray p-button-gray inline"
+          @click="copyIcalLink"
+        >
+          {{ $t('study.ical.copyTitle') }}
+        </button>
       </div>
     </div>
 
@@ -240,6 +272,14 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
   <DynamicDialog />
+  <AlertMsg
+    :show-msg="showMessage"
+    :message="alertMessage"
+    type="msg"
+    severity-type="success"
+    style-modifier="msgPosition"
+    @on-msg-change="showMessage = false"
+  />
 </template>
 
 <style scoped lang="postcss">

@@ -96,6 +96,11 @@
       "studyGroup":  "Studiengruppe",
       "finishText": "Information nach Studienabschluss"
     },
+    "ical": {
+      "copyMsg": "Link für das Kallender Abbonement ('{title} (Id: {studyId})') wurde kopiert.",
+      "title": "Kalender link für Abbonnements",
+      "copyTitle": "Link kopieren"
+    },
     "roles": {
       "admin": "Studien-Administrator",
       "operator": "Studien-Operator",

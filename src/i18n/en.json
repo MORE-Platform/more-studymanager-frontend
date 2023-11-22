@@ -96,6 +96,11 @@
       "studyGroup":  "Study group",
       "finishText": "Study end message"
     },
+    "ical": {
+      "copyMsg": "Link for ICalendar subscription ('{title} (Id: {studyId})') was copied to clipboard.",
+      "title": "Calendar Link for subscription",
+      "copyTitle": "Copy Link"
+    },
     "roles": {
       "admin": "Study Administrator",
       "operator": "Study Operator",
