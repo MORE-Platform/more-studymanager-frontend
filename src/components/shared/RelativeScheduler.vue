@@ -5,6 +5,7 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
+  import { ZTimeToOffsetTime } from '../../utils/dateUtils';
   import {
     RelativeEvent,
     RelativeRecurrenceRule,
@@ -51,16 +52,20 @@
   const endTime: Ref<Date> = ref(new Date());
 
   if (schedule.dtstart && schedule.dtstart.time) {
-    startTime.value.setHours(parseInt(schedule.dtstart.time?.substring(0, 2)));
-    startTime.value.setMinutes(
-      parseInt(schedule.dtstart.time?.substring(3, 5))
+    startTime.value.setHours(
+      parseInt(schedule.dtstart.time?.substring(0, 2)),
+      parseInt(schedule.dtstart.time?.substring(3, 5), 0)
     );
+    startTime.value = ZTimeToOffsetTime(startTime.value);
   } else {
     startTime.value.setHours(10, 30);
   }
   if (schedule.dtend && schedule.dtend.time) {
-    endTime.value.setHours(parseInt(schedule.dtend.time?.substring(0, 2)));
-    endTime.value.setMinutes(parseInt(schedule.dtend.time?.substring(3, 5)));
+    endTime.value.setHours(
+      parseInt(schedule.dtend.time?.substring(0, 2)),
+      parseInt(schedule.dtend.time?.substring(3, 5), 0)
+    );
+    endTime.value = ZTimeToOffsetTime(endTime.value);
   } else {
     endTime.value.setHours(18, 30);
   }
@@ -245,11 +250,11 @@
 
   function save() {
     returnSchedule.value.dtstart.time = startTime.value
-      ?.toString()
-      .substring(16, 21);
+      ?.toISOString()
+      .substring(11, 16);
     returnSchedule.value.dtend.time = endTime.value
-      ?.toString()
-      .substring(16, 21);
+      ?.toISOString()
+      .substring(11, 16);
 
     returnSchedule.value.dtstart.offset = rDtstartOffset.value;
     returnSchedule.value.dtend.offset = rDtendOffset.value;
