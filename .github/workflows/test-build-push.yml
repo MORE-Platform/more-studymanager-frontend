@@ -77,7 +77,7 @@ jobs:
   build-and-push-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: ((github.ref_type == 'branch' && github.ref_name == 'main') || (github.event.inputs.dockerTag != ''))
+    if: github.ref_name == 'main' || github.event.inputs.dockerTag != ''
     needs:
       - test
     permissions:
