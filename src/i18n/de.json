@@ -744,15 +744,15 @@
       },
       "unit": {
         "MINUTE": "Minute",
-        "PL-MINUTE": "minute(s)",
-        "HOUR": "Hour",
-        "PL-HOUR": "hour(s)",
-        "DAY": "Day",
-        "PL-DAY": "day(s)",
-        "DAILY": "day(s)",
-        "WEEKLY": "week(s)",
-        "date": "Date",
-        "time": "Time"
+        "PL-MINUTE": "Minuten",
+        "HOUR": "Stunde",
+        "PL-HOUR": "Stunden",
+        "DAY": "Tag",
+        "PL-DAY": "Tage",
+        "DAILY": "täglich",
+        "WEEKLY": "Wochen",
+        "date": "Datum",
+        "time": "Zeit"
       }
     },
     "frequency": {
@@ -760,6 +760,7 @@
       "hour": "Stunde",
       "hours": "Stunde(n)",
       "days": "Tag(e)",
+      "day": "Tag",
       "week": "Woche",
       "weeks": "Woche(n)",
       "months": "Monat(e)",
@@ -907,7 +908,7 @@
         "startValue": "Startet am",
         "endValue": "Endet am",
         "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
-        "rrule": {
+        "rrrule": {
           "ends": "Endet",
           "endsAfter": "Tage nach dem individuellen Studienstart.",
           "repeated": "Wiederholung",
