@@ -1,9 +1,12 @@
-name: Compile and publish tests
+name: Test, Build and Publish
 
 on:
   push:
-  workflow_call:
   workflow_dispatch:
+    inputs:
+      dockerTag:
+        description: If set, docker img is built and tagged accordingly
+        required: false
 
 env:
   REGISTRY: ghcr.io
@@ -55,8 +58,7 @@ jobs:
           name: 3rd Party Licenses
           path: "target/THIRD_PARTY.txt"
 
-      - id: license
-        name: Check licenses
+      - name: Check licenses
         run: npm run license:check
 
       #      - name: Run tests
@@ -69,9 +71,52 @@ jobs:
       #          name: Test Results
       #          path: "target/testResults.xml"
 
-      - id: build
-        name: Run build
+      - name: Run build
         run: npm run package
+
+  build-and-push-image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    if: (github.ref_type == 'branch' && github.ref_name == 'main') || (github.event.inputs.dockerTag != ''))
+    needs:
+      - test
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Export docker tag
+        run: export TAG=${{github.event.inputs.dockerTag}}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4.6.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{env.TAG:=latest}}
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@2eb1c1961a95fc15694676618e422e8ba1d63825
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
 
   event_file:
     name: "Event File"
