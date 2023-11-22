@@ -58,35 +58,34 @@
 
   function checkErrors() {
     rruleErrors.value = [];
+    if (rruleEventCheckbox.value) {
+      if (typeof returnRrule.value.freq === 'undefined') {
+        rruleErrors.value.push({
+          label: 'freqIsEmpty',
+          value: t('scheduler.warningsAndErrors.rruleFreqIsEmpty'),
+        });
+      }
+      if (
+        returnRrule.value.freq === Frequency.Weekly &&
+        !returnRrule.value.byday?.length
+      ) {
+        rruleErrors.value.push({
+          label: 'rruleWeeklyIsMissingByDay',
+          value: t('scheduler.warningsAndErrors.rruleWeeklyIsMissingByDay'),
+        });
+      }
+      if (
+        typeof returnRrule.value.until !== 'string' &&
+        typeof previewCount.value !== 'number'
+      ) {
+        rruleErrors.value.push({
+          label: 'rruleEndIsEmpty',
+          value: t('scheduler.warningsAndErrors.rruleEndIsEmpty'),
+        });
+      }
+    }
 
-    if (typeof returnRrule.value.freq === 'undefined') {
-      rruleErrors.value.push({
-        label: 'freqIsEmpty',
-        value: t('scheduler.warningsAndErrors.rruleFreqIsEmpty'),
-      });
-    }
-    if (
-      returnRrule.value.freq === Frequency.Weekly &&
-      !returnRrule.value.byday?.length
-    ) {
-      rruleErrors.value.push({
-        label: 'rruleWeeklyIsMissingByDay',
-        value: t('scheduler.warningsAndErrors.rruleWeeklyIsMissingByDay'),
-      });
-    }
-    if (
-      typeof returnRrule.value.until === 'undefined' &&
-      typeof previewCount.value === 'undefined'
-    ) {
-      rruleErrors.value.push({
-        label: 'rruleEndIsEmpty',
-        value: t('scheduler.warningsAndErrors.rruleEndIsEmpty'),
-      });
-    }
-
-    if (rruleErrors.value.length) {
-      emit('onRruleError', rruleErrors.value);
-    }
+    emit('onRruleError', rruleErrors.value);
   }
 
   function getError(label: string): string | null | undefined {
@@ -158,11 +157,18 @@
     }
   }
 
+  function toggleRruleCheckbox() {
+    checkErrors();
+    emit('onRruleCheckboxChange', rruleEventCheckbox.value);
+  }
+
   function setRepetitionEnd(type: string | undefined) {
     switch (type) {
       case 'onDate':
         {
           returnRrule.value.count = undefined;
+          previewCount.value = undefined;
+
           const endDate = new Date(studyStore.study.plannedEnd as string);
           endDate.setHours(0, 0, 0);
           returnRrule.value.until = endDate.toISOString();
@@ -171,11 +177,16 @@
       case 'after':
         {
           returnRrule.value.until = undefined;
+          if (returnRrule.value.freq === Frequency.Daily) {
+            returnRrule.value.byday = undefined;
+          }
         }
         break;
       case 'never': {
         returnRrule.value.count = undefined;
+        previewCount.value = undefined;
         returnRrule.value.until = undefined;
+        returnRrule.value.byday = undefined;
       }
     }
     onChangeRrule();
@@ -193,9 +204,6 @@
   });
 
   function onChangeRrule(type?: string) {
-    checkErrors();
-    emit('onRruleError', rruleErrors.value);
-
     if (
       type === 'byday' &&
       previewCount.value &&
@@ -208,6 +216,18 @@
     if (!rruleErrors.value.length) {
       emit('onRruleChange', returnRrule.value);
     }
+
+    if (type === 'count' && !previewCount.value) {
+      returnRrule.value.count = undefined;
+    }
+
+    if (returnRrule.value.freq === Frequency.Daily && returnRrule.value.byday) {
+      returnRrule.value.byday = undefined;
+    }
+
+    checkErrors();
+    emit('onRruleError', rruleErrors.value);
+    emit('onRruleChange', returnRrule.value);
   }
 </script>
 
@@ -226,7 +246,7 @@
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="emit('onRruleCheckboxChange', true)"
+            @change="toggleRruleCheckbox()"
           />
         </div>
 
@@ -300,8 +320,8 @@
               <InputNumber
                 v-model="previewCount"
                 :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
-                @input="onChangeRrule()"
-                @blur="onChangeRrule()"
+                @input="onChangeRrule('count')"
+                @blur="onChangeRrule('count')"
               />
               <span class="ml-2">{{ rruleCountLabel }}</span>
             </div>

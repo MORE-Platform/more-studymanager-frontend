@@ -85,6 +85,10 @@ Licensed under the Elastic License 2.0. */
         calendarEnd.value.setHours(hours, minutes, seconds);
       }, 60);
     }
+    if (!singleDayEventCheckbox.value) {
+      rruleErrors.value = [];
+      hasRruleValue.value = false;
+    }
   }
 
   function onChangeEntireDayCheckbox() {
