@@ -30,3 +30,25 @@ export function dateTimeStringToDate(dateTimeString: string): Date | undefined {
     return undefined;
   }
 }
+
+export function ZTimeToOffsetTime(date: Date): Date {
+  const offset = date.getTimezoneOffset() / 60;
+  const newTime = date;
+  newTime.setHours(date.getHours() - offset);
+  return newTime;
+}
+
+export function ZTimeStringToOffsetTimeString(
+  time: string | undefined
+): string | undefined {
+  let newTime = time ? new Date() : undefined;
+  if (newTime && time) {
+    newTime.setHours(
+      parseInt(time.substring(0, 2)),
+      parseInt(time?.substring(3, 5), 0)
+    );
+    newTime = ZTimeToOffsetTime(newTime);
+    return newTime.toString().substring(16, 21);
+  }
+  return undefined;
+}

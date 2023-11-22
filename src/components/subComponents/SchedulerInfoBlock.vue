@@ -14,6 +14,7 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
   import dayjs from 'dayjs';
+  import { ZTimeStringToOffsetTimeString } from '../../utils/dateUtils';
 
   const { t } = useI18n();
 
@@ -53,12 +54,13 @@ Licensed under the Elastic License 2.0. */
       case 'Event': {
         const schedule = props.scheduler as Event;
         switch (prop) {
-          case 'dtstart':
+          case 'dtstart': {
             return schedule.dtstart
               ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
                   schedule.dtstart
                 ).format('HH:mm')}`
               : undefined;
+          }
           case 'dtend':
             return schedule.dtend
               ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
@@ -72,18 +74,21 @@ Licensed under the Elastic License 2.0. */
       case 'RelativeEvent': {
         const schedule = props.scheduler as RelativeEvent;
         switch (prop) {
-          case 'dtstart':
+          case 'dtstart': {
             return schedule.dtstart.offset?.value &&
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
-                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
+                )} ${
+                  schedule.dtstart.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtstart.time)}`
               : undefined;
+          }
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                }, ${schedule.dtend.time} `
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtend.time)} `
               : undefined;
           default:
             return undefined;
@@ -133,17 +138,23 @@ Licensed under the Elastic License 2.0. */
               return string;
             }
             case 'repetitionEnd': {
-              const repetitionCount =
-                schedule.rrule?.byday &&
-                schedule.rrule.count &&
-                schedule.rrule.byday.length
-                  ? schedule.rrule.count / schedule.rrule.byday.length
-                  : schedule.rrule?.count;
-              return schedule.rrule?.count
-                ? `${t('scheduler.preview.title.in')} ${repetitionCount} ${t(
-                    `scheduler.preview.unit.${schedule.rrule.freq}`
-                  )}`
-                : undefined;
+              if (schedule.rrule?.until) {
+                return `${t('scheduler.preview.title.on')} ${dayjs(
+                  schedule.rrule.until
+                ).format('DD/MM/YYYY')}`;
+              } else {
+                const repetitionCount =
+                  schedule.rrule?.byday &&
+                  schedule.rrule.count &&
+                  schedule.rrule.byday.length
+                    ? schedule.rrule.count / schedule.rrule.byday.length
+                    : schedule.rrule?.count;
+                return schedule.rrule?.count
+                  ? `${t('scheduler.preview.title.in')} ${repetitionCount} ${t(
+                      `scheduler.preview.unit.${schedule.rrule.freq}`
+                    )}`
+                  : undefined;
+              }
             }
           }
         }

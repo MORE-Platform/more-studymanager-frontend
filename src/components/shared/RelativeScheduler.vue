@@ -5,6 +5,7 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
+  import { ZTimeToOffsetTime } from '../../utils/dateUtils';
   import {
     RelativeEvent,
     RelativeRecurrenceRule,
@@ -51,16 +52,20 @@
   const endTime: Ref<Date> = ref(new Date());
 
   if (schedule.dtstart && schedule.dtstart.time) {
-    startTime.value.setHours(parseInt(schedule.dtstart.time?.substring(0, 2)));
-    startTime.value.setMinutes(
-      parseInt(schedule.dtstart.time?.substring(3, 5))
+    startTime.value.setHours(
+      parseInt(schedule.dtstart.time?.substring(0, 2)),
+      parseInt(schedule.dtstart.time?.substring(3, 5), 0)
     );
+    startTime.value = ZTimeToOffsetTime(startTime.value);
   } else {
     startTime.value.setHours(10, 30);
   }
   if (schedule.dtend && schedule.dtend.time) {
-    endTime.value.setHours(parseInt(schedule.dtend.time?.substring(0, 2)));
-    endTime.value.setMinutes(parseInt(schedule.dtend.time?.substring(3, 5)));
+    endTime.value.setHours(
+      parseInt(schedule.dtend.time?.substring(0, 2)),
+      parseInt(schedule.dtend.time?.substring(3, 5), 0)
+    );
+    endTime.value = ZTimeToOffsetTime(endTime.value);
   } else {
     endTime.value.setHours(18, 30);
   }
@@ -245,11 +250,11 @@
 
   function save() {
     returnSchedule.value.dtstart.time = startTime.value
-      ?.toString()
-      .substring(16, 21);
+      ?.toISOString()
+      .substring(11, 16);
     returnSchedule.value.dtend.time = endTime.value
-      ?.toString()
-      .substring(16, 21);
+      ?.toISOString()
+      .substring(11, 16);
 
     returnSchedule.value.dtstart.offset = rDtstartOffset.value;
     returnSchedule.value.dtend.offset = rDtendOffset.value;
@@ -305,14 +310,15 @@
           {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
         </div>
         <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+          <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtstartOffset.value"
+            class="ml-2"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
             @blur="calculatedRepeat()"
           />
-          <span class="ml-2">{{ $t('scheduler.frequency.days') }}</span>
         </div>
         <div class="col-span-3">
           <Calendar
@@ -337,14 +343,15 @@
           {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
         </div>
         <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+          <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtendOffset.value"
+            class="ml-2"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
             @blur="calculatedRepeat()"
           />
-          <span class="ml-2">{{ $t('scheduler.frequency.days') }}</span>
         </div>
         <div class="col-span-3">
           <Calendar

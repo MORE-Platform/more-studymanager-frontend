@@ -96,6 +96,11 @@
       "studyGroup":  "Study group",
       "finishText": "Study end message"
     },
+    "ical": {
+      "copyMsg": "Link for ICalendar subscription ('{title} (Id: {studyId})') was copied to clipboard.",
+      "title": "Calendar Link for subscription",
+      "copyTitle": "Copy Link"
+    },
     "roles": {
       "admin": "Study Administrator",
       "operator": "Study Operator",
@@ -214,7 +219,8 @@
       "emptyListMsg": "No studies yet",
       "labels": {
         "exportStudyConfig": "Export study config",
-        "exportStudyData": "Export study data"
+        "exportStudyData": "Export study data",
+        "exportStudyCalendar": "Export study calendar"
       },
       "action": {
         "addStudy": "Add new study",
@@ -946,6 +952,12 @@
           }
         }
       }
+    },
+    "warningsAndErrors": {
+      "endWasChangedWithStartValue": "End value was changed with start value.",
+      "rruleFreqIsEmpty": "Please set the frequency for your repetition.",
+      "rruleWeeklyIsMissingByDay": "Please set the weekdays for your repetition.",
+      "rruleEndIsEmpty": "Please set and end point for your repetition period."
     }
   },
 
