@@ -48,7 +48,7 @@
     },
   } as RelativeEvent);
 
-  const startTime: Ref<Date> =  ref(new Date());
+  const startTime: Ref<Date> =  ref(new Date());   /////We are here
   const endTime: Ref<Date> = ref(new Date());
 
   if (schedule.dtstart && schedule.dtstart.time) {
