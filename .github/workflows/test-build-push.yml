@@ -11,7 +11,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/more-study-manager-frontend
-  TAG: ${{github.event.inputs.dockerTag}}
 
 jobs:
   test:
@@ -95,6 +94,8 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Export tag variable
+        run: export TAG=${{github.event.inputs.dockerTag}}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
@@ -102,7 +103,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{env.TAG:=latest}}
+            type=raw,value=${{TAG:=latest}}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
