@@ -30,3 +30,10 @@ export function dateTimeStringToDate(dateTimeString: string): Date | undefined {
     return undefined;
   }
 }
+
+export function ZTimeToOffsetTime(date: Date): Date {
+  const offset = date.getTimezoneOffset() / 60;
+  const newTime = date;
+  newTime.setHours(date.getHours() + offset);
+  return newTime;
+}
