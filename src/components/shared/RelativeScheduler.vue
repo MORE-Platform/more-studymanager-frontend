@@ -305,14 +305,15 @@
           {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
         </div>
         <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+          <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtstartOffset.value"
+            class="ml-2"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
             @blur="calculatedRepeat()"
           />
-          <span class="ml-2">{{ $t('scheduler.frequency.days') }}</span>
         </div>
         <div class="col-span-3">
           <Calendar
@@ -337,14 +338,15 @@
           {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
         </div>
         <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+          <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtendOffset.value"
+            class="ml-2"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
             @blur="calculatedRepeat()"
           />
-          <span class="ml-2">{{ $t('scheduler.frequency.days') }}</span>
         </div>
         <div class="col-span-3">
           <Calendar
