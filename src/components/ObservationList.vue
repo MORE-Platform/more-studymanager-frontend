@@ -36,6 +36,7 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import dayjs from 'dayjs';
+  import { ZTimeStringToOffsetTimeString } from '../utils/dateUtils';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -285,13 +286,15 @@ Licensed under the Elastic License 2.0. */
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
-                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
+                )} ${
+                  schedule.dtstart.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtstart.time)}`
               : undefined;
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                }, ${schedule.dtend.time} `
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtend.time)} `
               : undefined;
           default:
             return undefined;

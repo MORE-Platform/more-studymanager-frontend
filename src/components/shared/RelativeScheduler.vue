@@ -48,23 +48,24 @@
     },
   } as RelativeEvent);
 
-  const startTime: Ref<Date> =  ref(new Date());   /////We are here
+  const startTime: Ref<Date> = ref(new Date());
   const endTime: Ref<Date> = ref(new Date());
 
   if (schedule.dtstart && schedule.dtstart.time) {
-    startTime.value.setHours(parseInt(schedule.dtstart.time?.substring(0, 2)));
-    startTime.value.setMinutes(
-      parseInt(schedule.dtstart.time?.substring(3, 5))
+    startTime.value.setHours(
+      parseInt(schedule.dtstart.time?.substring(0, 2)),
+      parseInt(schedule.dtstart.time?.substring(3, 5), 0)
     );
-
-    console.log(ZTimeToOffsetTime(startTime.value))
-
+    startTime.value = ZTimeToOffsetTime(startTime.value);
   } else {
     startTime.value.setHours(10, 30);
   }
   if (schedule.dtend && schedule.dtend.time) {
-    endTime.value.setHours(parseInt(schedule.dtend.time?.substring(0, 2)));
-    endTime.value.setMinutes(parseInt(schedule.dtend.time?.substring(3, 5)));
+    endTime.value.setHours(
+      parseInt(schedule.dtend.time?.substring(0, 2)),
+      parseInt(schedule.dtend.time?.substring(3, 5), 0)
+    );
+    endTime.value = ZTimeToOffsetTime(endTime.value);
   } else {
     endTime.value.setHours(18, 30);
   }
@@ -247,12 +248,12 @@
     dialogRef.value.close();
   }
 
-  function save() {                                       //try toIso here
-    returnSchedule.value.dtstart.time = startTime.value.toISOString()
-      ?.toString()
+  function save() {
+    returnSchedule.value.dtstart.time = startTime.value
+      ?.toISOString()
       .substring(11, 16);
-    returnSchedule.value.dtend.time = endTime.value.toISOString()
-      ?.toString()
+    returnSchedule.value.dtend.time = endTime.value
+      ?.toISOString()
       .substring(11, 16);
 
     returnSchedule.value.dtstart.offset = rDtstartOffset.value;
