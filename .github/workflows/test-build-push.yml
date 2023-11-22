@@ -11,7 +11,6 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/more-study-manager-frontend
-  TAG: ${{github.event.inputs.dockerTag}}
 
 jobs:
   test:
@@ -78,7 +77,7 @@ jobs:
   build-and-push-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: (github.ref_type == 'branch' && github.ref_name == 'main') || (github.event.inputs.dockerTag != ''))
+    if: github.ref_name == 'main' || github.event.inputs.dockerTag != ''
     needs:
       - test
     permissions:
@@ -102,7 +101,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,value=${{env.TAG:=latest}}
+            type=raw,value=${{github.event.inputs.dockerTag || 'latest'}}
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
