@@ -58,35 +58,34 @@
 
   function checkErrors() {
     rruleErrors.value = [];
+    if (rruleEventCheckbox.value) {
+      if (typeof returnRrule.value.freq === 'undefined') {
+        rruleErrors.value.push({
+          label: 'freqIsEmpty',
+          value: t('scheduler.warningsAndErrors.rruleFreqIsEmpty'),
+        });
+      }
+      if (
+        returnRrule.value.freq === Frequency.Weekly &&
+        !returnRrule.value.byday?.length
+      ) {
+        rruleErrors.value.push({
+          label: 'rruleWeeklyIsMissingByDay',
+          value: t('scheduler.warningsAndErrors.rruleWeeklyIsMissingByDay'),
+        });
+      }
+      if (
+        typeof returnRrule.value.until !== 'string' &&
+        typeof previewCount.value !== 'number'
+      ) {
+        rruleErrors.value.push({
+          label: 'rruleEndIsEmpty',
+          value: t('scheduler.warningsAndErrors.rruleEndIsEmpty'),
+        });
+      }
+    }
 
-    if (typeof returnRrule.value.freq === 'undefined') {
-      rruleErrors.value.push({
-        label: 'freqIsEmpty',
-        value: t('scheduler.warningsAndErrors.rruleFreqIsEmpty'),
-      });
-    }
-    if (
-      returnRrule.value.freq === Frequency.Weekly &&
-      !returnRrule.value.byday?.length
-    ) {
-      rruleErrors.value.push({
-        label: 'rruleWeeklyIsMissingByDay',
-        value: t('scheduler.warningsAndErrors.rruleWeeklyIsMissingByDay'),
-      });
-    }
-    if (
-      typeof returnRrule.value.until !== 'string' &&
-      typeof previewCount.value !== 'number'
-    ) {
-      rruleErrors.value.push({
-        label: 'rruleEndIsEmpty',
-        value: t('scheduler.warningsAndErrors.rruleEndIsEmpty'),
-      });
-    }
-
-    if (rruleErrors.value.length) {
-      emit('onRruleError', rruleErrors.value);
-    }
+    emit('onRruleError', rruleErrors.value);
   }
 
   function getError(label: string): string | null | undefined {
@@ -158,6 +157,11 @@
     }
   }
 
+  function toggleRruleCheckbox() {
+    checkErrors();
+    emit('onRruleCheckboxChange', rruleEventCheckbox.value);
+  }
+
   function setRepetitionEnd(type: string | undefined) {
     switch (type) {
       case 'onDate':
@@ -200,9 +204,6 @@
   });
 
   function onChangeRrule(type?: string) {
-    checkErrors();
-    emit('onRruleError', rruleErrors.value);
-
     if (
       type === 'byday' &&
       previewCount.value &&
@@ -225,6 +226,8 @@
     }
 
     checkErrors();
+    emit('onRruleError', rruleErrors.value);
+    emit('onRruleChange', returnRrule.value);
   }
 </script>
 
@@ -243,7 +246,7 @@
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="emit('onRruleCheckboxChange', rruleEventCheckbox)"
+            @change="toggleRruleCheckbox()"
           />
         </div>
 
