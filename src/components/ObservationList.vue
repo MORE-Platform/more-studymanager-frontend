@@ -255,9 +255,7 @@ Licensed under the Elastic License 2.0. */
             modified: item.modified,
             hidden: item.hidden,
             noSchedule: item.noSchedule,
-            hasRepetition: getScheduleHasRepetition(item.schedule)
-              ? '<span>test</span>'
-              : '',
+            hasRepetition: getScheduleHasRepetition(item.schedule),
           };
         });
       })
