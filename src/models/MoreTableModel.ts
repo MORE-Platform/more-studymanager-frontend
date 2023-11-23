@@ -121,6 +121,7 @@ export enum MoreTableFieldType {
   showIcon,
   nested,
   nestedDatetime,
+  binaryIcon,
 }
 
 export enum FileUploadModeType {

@@ -789,6 +789,13 @@ Licensed under the Elastic License 2.0. */
               />
               <span v-else class="pi pi-eye color-approved" />
             </span>
+            <span
+              v-if="column.type === MoreTableFieldType.binaryIcon"
+              class="icon-box eye"
+            >
+              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-else class="pi pi-times color-important" />
+            </span>
           </div>
         </template>
       </Column>
