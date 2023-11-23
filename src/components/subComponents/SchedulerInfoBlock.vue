@@ -124,7 +124,7 @@ Licensed under the Elastic License 2.0. */
 
               schedule.rrule?.byday
                 ? schedule.rrule?.byday.forEach((item, index) => {
-                    string = string + item;
+                    string = string + t(`scheduler.weekday.props.${item}`);
 
                     if (
                       schedule.rrule?.byday &&

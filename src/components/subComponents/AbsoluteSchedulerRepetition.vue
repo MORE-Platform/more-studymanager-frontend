@@ -1,10 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
-  import {
-    Frequency,
-    Weekday,
-    RecurrenceRule,
-  } from '../../generated-sources/openapi';
+  import { Frequency, RecurrenceRule } from '../../generated-sources/openapi';
   import { PropType, ref, Ref, watch } from 'vue';
   import Checkbox from 'primevue/checkbox';
   import InputNumber from 'primevue/inputnumber';
@@ -124,13 +120,34 @@
   ];
 
   const rruleWeekdayOptions = [
-    { label: t('scheduler.weekday.short.monday'), value: Weekday.Mo },
-    { label: t('scheduler.weekday.short.tuesday'), value: Weekday.Tu },
-    { label: t('scheduler.weekday.short.wednesday'), value: Weekday.We },
-    { label: t('scheduler.weekday.short.thursday'), value: Weekday.Th },
-    { label: t('scheduler.weekday.short.friday'), value: Weekday.Fr },
-    { label: t('scheduler.weekday.short.saturday'), value: Weekday.Sa },
-    { label: t('scheduler.weekday.short.sunday'), value: Weekday.Su },
+    {
+      label: t('scheduler.weekday.short.monday'),
+      value: t('scheduler.weekday.short.monday'),
+    },
+    {
+      label: t('scheduler.weekday.short.tuesday'),
+      value: t('scheduler.weekday.short.tuesday'),
+    },
+    {
+      label: t('scheduler.weekday.short.wednesday'),
+      value: t('scheduler.weekday.short.wednesday'),
+    },
+    {
+      label: t('scheduler.weekday.short.thursday'),
+      value: t('scheduler.weekday.short.thursday'),
+    },
+    {
+      label: t('scheduler.weekday.short.friday'),
+      value: t('scheduler.weekday.short.friday'),
+    },
+    {
+      label: t('scheduler.weekday.short.saturday'),
+      value: t('scheduler.weekday.short.saturday'),
+    },
+    {
+      label: t('scheduler.weekday.short.sunday'),
+      value: t('scheduler.weekday.short.sunday'),
+    },
   ];
 
   const rruleCountLabel: Ref<string | undefined> = ref(
