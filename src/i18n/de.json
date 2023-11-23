@@ -792,6 +792,15 @@
         "friday": "FR",
         "saturday": "SA",
         "sunday": "SO"
+      },
+      "props": {
+        "MO": "Mo",
+        "TU": "Di",
+        "WE": "Mi",
+        "TH": "Do",
+        "FR": "Fr",
+        "SA": "Sa",
+        "SO": "So"
       }
     },
     "months":{
@@ -857,7 +866,7 @@
         "setDatesDesc": "Mit Start- und Endzeit können Sie eine Zeitspanne für eine Datenerhebung an einem Tag festlegen. Die Datenerhebung kann auch ganztags gesetzt werden. Durch die Angaben von Wiederholdungen könenn Sie eine Serie von Datenerhebungen definieren. Alternativ dazu können Sie einen gesamten Zeitraum definieren.",
         "repeat": "Wiederhole die oben definierte Zeitspanne",
         "repeatDesc": "Um die gesetzte Zeitspanne zu wiederholen, können Sie dies bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird.",
-        "oneDayObservation": "Einmalige Datenerhebung",
+        "oneDayObservation": "Mehrfache Datenerhebung",
         "repetitionEnd": {
           "studyEnd": "Bis Studienende",
           "after": "Nach"
@@ -903,11 +912,16 @@
       "repeatEvery": "Wiederholen: Jede",
       "endAfter": "Ende nach",
       "dayExplanation": "Der Begriff 'Tag' zeigt an, wie der Start einer individuellen Studie eines Teilnehmers mit dem entsprechenden Tageswert verknüpft ist. Beispiel: (Ein Teilnehmer meldet sich am 1.12.2023 an, der Studienstart ist auf Tag 2 festgelegt. Das bedeutet, dass die Studie am 2.12.2023 beginnt.)",
+      "absoluteSchedule": {
+        "description": "Eine absolute Zeitplanung umfasst absolute Datum und Zeit Angaben. Beobachtungen können durch absolute Daten und Zeitfenster zeitlich festgelegt werden."
+      },
       "relativeSchedule": {
         "dialogTitle":"Relativen Zeitplan verwalten",
+        "description": "Ein relativer Zeitplan richtet sich nach der tatsächlichen Anmeldezeit jedes Teilnehmers. Sie können jederzeit zwischen Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
         "startValue": "Startet am",
         "endValue": "Endet am",
         "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
+        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein Teilnehmer meldet sich am 1.12.2023 an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am 2.12.2023.)",
         "rrrule": {
           "ends": "Endet",
           "endsAfter": "Tage nach dem individuellen Studienstart.",
