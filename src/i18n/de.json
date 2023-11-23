@@ -903,7 +903,7 @@
       "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
     },
     "dialog": {
-      "description": "Ein relativer Zeitplan wird durch die tatsächliche Anmeldezeit jedes Teilnehmers bestimmt. Sie können jederzeit zwischen dem Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+      "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
       "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
       "repeatEvent": "Event wiederholen",
       "singleEventTitle": "Einzelnes Datenerhebungs-Event",
@@ -917,7 +917,7 @@
       },
       "relativeSchedule": {
         "dialogTitle":"Relativen Zeitplan verwalten",
-        "description": "Ein relativer Zeitplan richtet sich nach der tatsächlichen Anmeldezeit jedes Teilnehmers. Sie können jederzeit zwischen Beginn und Ende der Studie starten, und die festgelegte Dauer umfasst ihren aktiven Beteiligungszeitraum.",
+        "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
         "startValue": "Startet am",
         "endValue": "Endet am",
         "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",

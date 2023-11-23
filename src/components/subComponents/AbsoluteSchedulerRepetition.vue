@@ -150,10 +150,6 @@
     },
   ];
 
-  /*
-
-  * */
-
   const rruleCountLabel: Ref<string | undefined> = ref(
     returnRrule.value && returnRrule.value.freq
       ? rruleFrequencyOptions.find(
