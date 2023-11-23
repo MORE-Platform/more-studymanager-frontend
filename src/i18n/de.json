@@ -114,7 +114,7 @@
       "changeMsg": {
         "toActive":{
           "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
-          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen.",
+          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen. Ist der geplante Start nach dem heutigen Datum, wird dieser mit der Statusänderung auf das aktuelle Startdatum gesetzt.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
         },
         "toPaused":{

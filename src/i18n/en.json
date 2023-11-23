@@ -114,7 +114,7 @@
       "changeMsg": {
         "toActive":{
           "intro": "You are about to change your study status to 'ACTIVE'.",
-          "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participate in the research.",
+          "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participate in the research. If the planned start date is after today's date, it will be set to the actual start date with this status change.",
           "confirm": "This study status change cannot be reversed, but there is the possibility to pause the study to make changes to your settings. Are you sure you want to set your Study Status to 'ACTIVE'?"
         },
         "toPaused":{

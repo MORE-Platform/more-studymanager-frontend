@@ -8,13 +8,13 @@ Licensed under the Elastic License 2.0. */
   import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
+    Event,
     Observation,
     ObservationSchedule,
+    RelativeEvent,
     StudyGroup,
     StudyRole,
     StudyStatus,
-    Event,
-    RelativeEvent,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -144,6 +144,13 @@ Licensed under the Elastic License 2.0. */
       columnWidth: '3vw',
       sortable: true,
     },
+    {
+      field: 'hasRepetition',
+      header: t('scheduler.labels.repeat'),
+      type: MoreTableFieldType.binaryIcon,
+      columnWidth: '2vw',
+      sortable: true,
+    },
   ];
 
   const tableActions: MoreTableAction[] = [
@@ -248,12 +255,31 @@ Licensed under the Elastic License 2.0. */
             modified: item.modified,
             hidden: item.hidden,
             noSchedule: item.noSchedule,
+            hasRepetition: getScheduleHasRepetition(item.schedule),
           };
         });
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations')
       );
+  }
+
+  function getScheduleHasRepetition(
+    schedule: ObservationSchedule | undefined
+  ): boolean {
+    if (schedule) {
+      switch (schedule.type) {
+        case 'Event': {
+          const s = schedule as Event;
+          return !!s.rrule;
+        }
+        case 'RelativeEvent': {
+          const s = schedule as RelativeEvent;
+          return !!s.rrrule;
+        }
+      }
+    }
+    return false;
   }
 
   function getScheduleDate(
