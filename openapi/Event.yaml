@@ -9,6 +9,9 @@ components:
     Event:
       type: object
       properties:
+        type:
+          type: string
+          default: Event
         dtstart:
           type: string
           format: date-time

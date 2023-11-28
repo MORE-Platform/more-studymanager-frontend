@@ -48,18 +48,45 @@ export const useStudyStore = defineStore('study', () => {
 
   async function updateStudyStatus(status: StudyStatus) {
     if (study.value.studyId) {
-      await studiesApi
-        .setStatus(study.value.studyId, { status })
-        .then(() => {
-          study.value.status = status;
-        })
-        .catch((e: AxiosError) => {
-          alert('Could not update study status');
-          handleIndividualError(
-            e,
-            'Could not update study status' + study.value.studyId
-          );
-        });
+      if (
+        status === 'active' &&
+        !study.value.start &&
+        study.value.plannedStart &&
+        new Date(study.value.plannedStart) > new Date()
+      ) {
+        study.value.plannedStart = new Date().toISOString();
+        study.value.status = status;
+        await studiesApi
+          .updateStudy(study.value.studyId, study.value)
+          .then(() => {
+            studiesApi
+              .setStatus(study.value.studyId as number, { status })
+              .then(() => {
+                study.value.status = status;
+                study.value.start = new Date().toISOString();
+              });
+          })
+          .catch((e: AxiosError) => {
+            alert('Could not update study status');
+            handleIndividualError(
+              e,
+              'Could not update study status' + study.value.studyId
+            );
+          });
+      } else {
+        await studiesApi
+          .setStatus(study.value.studyId, { status })
+          .then(() => {
+            study.value.status = status;
+          })
+          .catch((e: AxiosError) => {
+            alert('Could not update study status');
+            handleIndividualError(
+              e,
+              'Could not update study status' + study.value.studyId
+            );
+          });
+      }
     }
   }
 
@@ -158,6 +185,10 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
+  async function exportStudyCalendar(studyId: number): Promise<void> {
+    await window.open(`api/v1/studies/${studyId}/calendar.ics`);
+  }
+
   function downloadJSON(filename: string, file: File): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
@@ -196,6 +227,7 @@ export const useStudyStore = defineStore('study', () => {
     importStudy,
     exportStudyConfig,
     exportStudyData,
+    exportStudyCalendar,
     studyUserRoles,
     studyStatus,
     studyId,

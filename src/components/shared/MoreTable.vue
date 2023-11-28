@@ -21,6 +21,7 @@ Licensed under the Elastic License 2.0. */
   import SplitButton from 'primevue/splitbutton';
   import Menu from 'primevue/menu';
   import InputText from 'primevue/inputtext';
+  import InputNumber from 'primevue/inputnumber';
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
@@ -616,6 +617,12 @@ Licensed under the Elastic License 2.0. */
             style="width: 100%"
             autofocus
           />
+          <InputNumber
+            v-if="column.type === MoreTableFieldType.number"
+            v-model="data[field]"
+            style="width: 100%"
+            :placeholder="column.placeholder"
+          />
           <Calendar
             v-if="column.type === MoreTableFieldType.calendar"
             v-model="data['__internalValue_' + field]"
@@ -709,7 +716,11 @@ Licensed under the Elastic License 2.0. */
             v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
           >
             <span
-              v-if="column.type === MoreTableFieldType.string || !column.type"
+              v-if="
+                column.type === MoreTableFieldType.string ||
+                column.type === MoreTableFieldType.number ||
+                !column.type
+              "
               :class="
                 'table-value table-value-' +
                 field +
@@ -777,6 +788,13 @@ Licensed under the Elastic License 2.0. */
                 class="pi pi-eye-slash color-important"
               />
               <span v-else class="pi pi-eye color-approved" />
+            </span>
+            <span
+              v-if="column.type === MoreTableFieldType.binaryIcon"
+              class="icon-box eye"
+            >
+              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-else class="pi pi-times color-important" />
             </span>
           </div>
         </template>

@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { PropType } from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import {
     Study,
     StudyRole,
@@ -18,6 +18,7 @@ Licensed under the Elastic License 2.0. */
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
+  import AlertMsg from '../shared/AlertMsg.vue';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -94,13 +95,19 @@ Licensed under the Elastic License 2.0. */
     StudyRole.Admin,
     StudyRole.Operator,
   ];
+
+  const webcalUrl = `webcal://${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
+  const calenderUrl = `${location.origin}/api/v1/studies/${props.study.studyId}/calendar.ics`;
+
+  const showMessage: Ref<boolean> = ref(false);
+  const alertMessage: Ref<string> = ref('');
 </script>
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
     <div class="mb-8 flex justify-start">
       <div
-        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 2xl:grid-cols-5"
+        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 pr-3 2xl:grid-cols-5"
         :style="
           props.userRoles.find((r) => r === StudyRole.Admin)
             ? 'width:89%;'
@@ -129,6 +136,15 @@ Licensed under the Elastic License 2.0. */
           }}</span
           ><span v-else>-</span>
         </div>
+        <div>
+          <span class="font-bold">{{ $t('study.props.duration') }}: </span>
+          <span v-if="study.duration?.value && study.duration.unit">{{
+            `${study.duration.value} ${t(
+              `scheduler.preview.unit.${study.duration.unit}`
+            )}`
+          }}</span
+          ><span v-else>-</span>
+        </div>
       </div>
       <div class="flex justify-items-end">
         <StudyStatusChange
@@ -146,6 +162,15 @@ Licensed under the Elastic License 2.0. */
           @click="openEditDialog()"
           ><span>{{ $t('global.labels.edit') }}</span></Button
         >
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <h5>{{ $t('study.ical.title') }}</h5>
+      <div class="flex items-center">
+        <div class="mr-4 inline">
+          <a :href="webcalUrl">{{ calenderUrl }}</a>
+        </div>
       </div>
     </div>
 
@@ -231,6 +256,14 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
   <DynamicDialog />
+  <AlertMsg
+    :show-msg="showMessage"
+    :message="alertMessage"
+    type="msg"
+    severity-type="success"
+    style-modifier="msgPosition"
+    @on-msg-change="showMessage = false"
+  />
 </template>
 
 <style scoped lang="postcss">

@@ -5,15 +5,22 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import { Event, Frequency } from '../../generated-sources/openapi';
-  import dayjs from 'dayjs';
+  import {
+    ObservationSchedule,
+    RelativeEvent,
+    Event,
+    Frequency,
+  } from '../../generated-sources/openapi';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
+  import dayjs from 'dayjs';
+  import { ZTimeStringToOffsetTimeString } from '../../utils/dateUtils';
+
   const { t } = useI18n();
 
-  defineProps({
+  const props = defineProps({
     scheduler: {
-      type: Object as PropType<Event>,
+      type: Object as PropType<ObservationSchedule>,
       required: true,
     },
     error: {
@@ -27,80 +34,152 @@ Licensed under the Elastic License 2.0. */
   });
 
   const emit = defineEmits<{
-    (e: 'openDialog'): void;
+    (e: 'openDialog', schedulerType: string): void;
     (e: 'removeScheduler'): void;
   }>();
 
-  function getFrequencyLabel(frequency: Frequency) {
-    switch (frequency) {
-      case Frequency.Hourly:
-        return t('scheduler.frequency.hours');
-      case Frequency.Daily:
-        return t('scheduler.frequency.days');
-      case Frequency.Weekly:
-        return t('scheduler.frequency.weeks');
-      case Frequency.Monthly:
-        return t('scheduler.frequency.months');
-      case Frequency.Yearly:
-        return t('scheduler.frequency.years');
-    }
-  }
-
-  function getByMonthDayLabel(monthDay: number) {
-    if (monthDay > 3 && monthDay < 21) return 'th';
-    switch (monthDay % 10) {
-      case 1:
-        return t('scheduler.byMonthDayLabel.first');
-      case 2:
-        return t('scheduler.byMonthDayLabel.second');
-      case 3:
-        return t('scheduler.byMonthDayLabel.third');
+  function getSchedulerDescription() {
+    switch (props.scheduler.type) {
+      case 'Event':
+        return t('scheduler.dialog.absoluteSchedule.description');
+      case 'RelativeEvent':
+        return t('scheduler.dialog.relativeSchedule.description');
       default:
-        return t('scheduler.byMonthDayLabel.fourth');
+        return t('scheduler.dialog.description');
     }
   }
 
-  function getMonthLabel(month: number) {
-    switch (month) {
-      case 1:
-        return t('scheduler.months.january');
-      case 2:
-        return t('scheduler.months.february');
-      case 3:
-        return t('scheduler.months.march');
-      case 4:
-        return t('scheduler.months.april');
-      case 5:
-        return t('scheduler.months.mai');
-      case 6:
-        return t('scheduler.months.june');
-      case 7:
-        return t('scheduler.months.july');
-      case 8:
-        return t('scheduler.months.august');
-      case 9:
-        return t('scheduler.months.september');
-      case 10:
-        return t('scheduler.months.october');
-      case 11:
-        return t('scheduler.months.november');
-      case 12:
-        return t('scheduler.months.december');
+  function getDateValues(prop: string) {
+    switch (props.scheduler.type) {
+      case 'Event': {
+        const schedule = props.scheduler as Event;
+        switch (prop) {
+          case 'dtstart': {
+            return schedule.dtstart
+              ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtstart
+                ).format('HH:mm')}`
+              : undefined;
+          }
+          case 'dtend':
+            return schedule.dtend
+              ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtend
+                ).format('HH:mm')}`
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+      case 'RelativeEvent': {
+        const schedule = props.scheduler as RelativeEvent;
+        switch (prop) {
+          case 'dtstart': {
+            return schedule.dtstart.offset?.value &&
+              schedule.dtstart.offset?.unit
+              ? `${t(
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
+                )} ${
+                  schedule.dtstart.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtstart.time)}`
+              : undefined;
+          }
+          case 'dtend':
+            return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
+              ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
+                  schedule.dtend.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtend.time)} `
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+      default:
+        return undefined;
     }
   }
 
-  function getByStepPosLabel(setPos: number) {
-    switch (setPos) {
-      case 1:
-        return t('scheduler.bySetPosLabel.first');
-      case 2:
-        return t('scheduler.bySetPosLabel.second');
-      case 3:
-        return t('scheduler.bySetPosLabel.third');
-      case 4:
-        return t('scheduler.bySetPosLabel.fourth');
-      case -1:
-        return t('scheduler.bySetPosLabel.last');
+  function getRepetitionValue(prop: string) {
+    switch (props.scheduler.type) {
+      case 'Event':
+        {
+          const schedule = props.scheduler as Event;
+          switch (prop) {
+            case 'every': {
+              switch (schedule.rrule?.freq) {
+                case Frequency.Hourly:
+                  return t('scheduler.frequency.hour');
+                case Frequency.Daily:
+                  return t('scheduler.frequency.day');
+                case Frequency.Weekly:
+                  return t('scheduler.frequency.week');
+                case Frequency.Monthly:
+                  return t('scheduler.frequency.month');
+                default:
+                  return '';
+              }
+            }
+            case 'weekdays': {
+              let string = '';
+
+              schedule.rrule?.byday
+                ? schedule.rrule?.byday.forEach((item, index) => {
+                    string = string + t(`scheduler.weekday.props.${item}`);
+
+                    if (
+                      schedule.rrule?.byday &&
+                      index < schedule.rrule.byday.length - 1
+                    ) {
+                      string = string + ', ';
+                    }
+                  })
+                : (string = '');
+
+              return string;
+            }
+            case 'repetitionEnd': {
+              if (schedule.rrule?.until) {
+                return `${t('scheduler.preview.title.on')} ${dayjs(
+                  schedule.rrule.until
+                ).format('DD/MM/YYYY')}`;
+              } else {
+                const repetitionCount =
+                  schedule.rrule?.byday &&
+                  schedule.rrule.count &&
+                  schedule.rrule.byday.length
+                    ? schedule.rrule.count / schedule.rrule.byday.length
+                    : schedule.rrule?.count;
+                return schedule.rrule?.count
+                  ? `${t('scheduler.preview.title.in')} ${repetitionCount} ${t(
+                      `scheduler.preview.unit.${schedule.rrule.freq}`
+                    )}`
+                  : undefined;
+              }
+            }
+          }
+        }
+        break;
+      case 'RelativeEvent': {
+        const schedule = props.scheduler as RelativeEvent;
+        switch (prop) {
+          case 'every':
+            return schedule.rrrule?.frequency
+              ? `${schedule.rrrule.frequency.value} ${t(
+                  `scheduler.preview.unit.PL-${schedule.rrrule.frequency.unit}`
+                )}`
+              : '';
+          case 'repetitionEnd':
+            return schedule.rrrule?.endAfter
+              ? `${t(`scheduler.preview.title.on`)} ${t(
+                  `scheduler.preview.unit.${schedule.rrrule.endAfter.unit}`
+                )} ${schedule.rrrule.endAfter.value} `
+              : '';
+          default:
+            return '';
+        }
+      }
+      default:
+        return undefined;
     }
   }
 </script>
@@ -111,185 +190,137 @@ Licensed under the Elastic License 2.0. */
     :class="editable ? '' : 'scheduler-not-editable pb-4'"
   >
     <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
+    <div class="col-span-8 mb-3">{{ getSchedulerDescription() }}</div>
     <div
-      class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
+      v-if="JSON.stringify(scheduler) === '{}'"
+      class="schedule-preview col-span-8 mb-2 px-6 py-4 italic"
+    >
+      {{ $t('scheduler.dialog.noSetScheduleDesc') }}
+    </div>
+    <h6
+      v-if="scheduler.type"
+      class="color-primary col-span-8 mt-1 mb-1 font-medium"
+    >
+      {{ $t(`scheduler.type.${scheduler.type}`) }}
+    </h6>
+    <div v-if="scheduler.type === 'RelativeEvent'" class="col-span-8 mb-3">
+      {{ $t(`scheduler.dialog.relativeSchedule.dayExplanation`) }}
+    </div>
+
+    <div
+      v-if="scheduler.type"
+      class="schedule-preview col-span-8 grid grid-cols-4 px-6 py-4"
+      :class="
+        scheduler.dtstart && getRepetitionValue('every') === ''
+          ? 'grid-cols-2'
+          : 'grid-cols-4'
+      "
     >
       <div
-        class="scheduler-info col-span-5"
-        :class="editable ? '' : 'border-disabled  col-span-7 mt-2'"
+        class="text-bold col-span-2 grid items-start"
+        :class="
+          scheduler.dtstart && getRepetitionValue('every') === ''
+            ? 'col-span-2 grid-cols-2 border-r-2'
+            : 'gird-cols-2 col-span-2 border-r-2'
+        "
       >
-        <div v-if="scheduler.dtstart" class="grid grid-cols-2 gap-x-4 gap-y-1">
-          <div v-if="scheduler.dtstart === scheduler.dtend" class="mt-2">
-            <div>
-              <span class="mr-1 font-bold"
-                >{{ $t('scheduler.labels.date') }}:</span
-              >
-              {{ dayjs(scheduler.dtstart).format('DD/MM/YYYY') }}
-            </div>
-            <div>
-              <span class="font-bold">{{
-                $t('scheduler.labels.timeframe')
-              }}</span>
-              {{ dayjs(scheduler.dtstart).format('HH:mm') }} -
-              {{ dayjs(scheduler.dtend).format('HH:mm') }}
-            </div>
-          </div>
-          <div v-else class="mt-2">
-            <div class="mb-0.5 font-bold">
-              {{ $t('scheduler.labels.timeframe') }}
-            </div>
-            <span class="font-medium">{{ $t('global.labels.start') }}: </span>
-            <span>
-              {{ dayjs(scheduler.dtstart).format('DD/MM/YYYY, HH:mm') }}</span
-            >
-            <div>
-              <span class="font-medium">{{ $t('global.labels.end') }}: </span
-              >{{ dayjs(scheduler.dtend).format('DD/MM/YYYY, HH:mm') }}
-            </div>
-          </div>
-
-          <div
-            v-if="scheduler.rrule && scheduler.rrule.freq"
-            class="col-span-2 grid grid-cols-2 gap-x-4 gap-y-1"
-          >
-            <div class="col-span-2 mt-3 font-bold">
-              {{ $t('scheduler.labels.repeat') }}
-            </div>
-            <div>
-              <span class="font-medium"
-                >{{ $t('scheduler.labels.frequency') }}:
-              </span>
-              {{ scheduler.rrule.freq }}
-            </div>
-            <div v-if="scheduler?.rrule?.interval">
-              For {{ scheduler.rrule.interval }}
-              {{ getFrequencyLabel(scheduler.rrule.freq) }}
-            </div>
-            <div
-              v-if="
-                scheduler.rrule.bymonthday &&
-                scheduler.rrule.freq === Frequency.Monthly
-              "
-              class="col-span-1 col-start-2"
-            >
-              Every {{ scheduler.rrule.bymonthday
-              }}{{ getByMonthDayLabel(scheduler.rrule.bymonthday) }}
-            </div>
-
-            <div
-              v-if="
-                scheduler.rrule.bysetpos &&
-                scheduler.rrule.freq === Frequency.Monthly
-              "
-              class="col-span-1 col-start-2"
-            >
-              Every {{ getByStepPosLabel(scheduler.rrule.bysetpos) }}
-              <span
-                v-for="(day, index) in scheduler.rrule.byday"
-                :key="index"
-                class="day mr-2"
-                >{{ day }}</span
-              >
-            </div>
-
-            <div
-              v-if="scheduler.rrule.freq === Frequency.Yearly"
-              class="col-span-1 col-start-2"
-            >
-              {{ $t('scheduler.labels.every') }}
-              <span v-if="scheduler.rrule.bymonthday"
-                >{{ scheduler.rrule.bymonthday
-                }}{{ getByMonthDayLabel(scheduler.rrule.bymonthday) }}</span
-              >
-              <span v-if="scheduler.rrule.byday"
-                ><span
-                  v-for="(day, index) in scheduler.rrule.byday"
-                  :key="index"
-                  class="day"
-                  >{{ day }}</span
-                >
-                in
-              </span>
-              <span v-if="scheduler.rrule.bymonth">
-                {{ getMonthLabel(scheduler.rrule.bymonth) }}
-              </span>
-            </div>
-          </div>
-          <div
-            v-if="
-              scheduler.rrule &&
-              scheduler.rrule.byday?.length &&
-              !scheduler.rrule.bysetpos
-            "
-            class="col-span-2"
-          >
-            <span class="font-medium"
-              >{{ $t('scheduler.labels.selection.daysSelected') }}:
-            </span>
-            <span
-              v-for="(day, index) in scheduler.rrule.byday"
-              :key="index"
-              class="day mr-1"
-            >
-              {{ day }}
-            </span>
-          </div>
-
-          <div
-            v-if="scheduler.rrule && scheduler.rrule.count"
-            class="col-span-2"
-          >
-            <span class="font-medium"
-              >{{ $t('scheduler.labels.repetitionEnd') }}:</span
-            >
-            <span class="mx-1">{{ $t('scheduler.labels.after') }}</span>
-            <span v-if="scheduler.rrule?.byday?.length">
-              {{ scheduler.rrule.count / scheduler.rrule.byday.length }}</span
-            >
-            <span v-else> {{ scheduler.rrule.count }}</span>
-            <span v-if="scheduler.rrule.freq" class="ml-1">
-              {{ getFrequencyLabel(scheduler.rrule.freq) }}
-            </span>
-          </div>
-          <div
-            v-if="scheduler.rrule && scheduler.rrule.until"
-            class="col-span-2"
-          >
-            <span class="font-medium"
-              >{{ $t('scheduler.labels.repetitionEnd') }}: </span
-            >{{ $t('scheduler.labels.on') }}
-            {{ dayjs(scheduler.rrule.until).format('DD/MM/YYYY, HH:mm') }}
-          </div>
+        <div
+          class="color-primary col-span-2 items-center border-b-2 py-3 pr-3 font-bold"
+        >
+          {{ $t('scheduler.preview.title.individualEvent') }}
         </div>
-        <div v-else class="text-gray-400">
-          <div v-if="error" class="error mb-4">
-            {{ error }}
-          </div>
+        <div class="col-span-1 py-2 font-medium">
+          {{ $t('scheduler.preview.title.startsOn') }}
+        </div>
+        <div class="col-span-1 py-2">
+          {{ getDateValues('dtstart') }}
+        </div>
+        <div class="col-span-1 py-2 font-medium">
+          {{ $t('scheduler.preview.title.endsOn') }}
+        </div>
+        <div class="col-span-1 py-2">
+          {{ getDateValues('dtend') }}
+        </div>
+        <div
+          v-if="getRepetitionValue('weekdays')"
+          class="col-span-2 py-2"
+          style="height: 37px"
+        />
+      </div>
 
-          <span v-else>{{
-            $t('observation.placeholder.emptySchedulerMsg')
-          }}</span>
+      <div
+        v-if="getRepetitionValue('every') !== ''"
+        class="text-bold col-span-2 grid"
+      >
+        <div class="color-primary col-span-2 border-b-2 py-3 pl-3 font-bold">
+          {{ $t('scheduler.preview.title.repeatEvent') }}
+        </div>
+        <div class="col-span-1 py-2 pl-3 font-medium">
+          {{ $t('scheduler.preview.title.every') }}
+        </div>
+        <div class="col-span-1 py-2">
+          {{ getRepetitionValue('every') }}
+        </div>
+
+        <div
+          v-if="getRepetitionValue('weekdays')"
+          class="col-span-1 py-2 pl-3 font-medium"
+        >
+          {{ $t('scheduler.preview.title.selectedDays') }}
+        </div>
+        <div v-if="getRepetitionValue('weekdays')" class="col-span-1 py-2">
+          {{ getRepetitionValue('weekdays') }}
+        </div>
+
+        <div class="col-span-1 py-2 pl-3 font-medium">
+          {{ $t('scheduler.preview.title.ends') }}
+        </div>
+        <div class="col-span-1 py-2">
+          {{ getRepetitionValue('repetitionEnd') }}
         </div>
       </div>
-      <div v-if="editable" class="col-span-2 grid grid-cols-1 gap-1">
-        <Button
-          class="justify-center"
-          type="button"
-          :disabeld="!editable"
-          @click="emit('openDialog')"
-          >{{ $t('scheduler.labels.openScheduler') }}</Button
-        >
-        <Button
-          v-if="scheduler.dtstart"
-          class="justify-center"
-          type="button"
-          :disabled="!editable"
-          @click="emit('removeScheduler')"
-          >{{ $t('scheduler.labels.removeScheduler') }}</Button
-        >
-      </div>
+    </div>
+    <div v-if="editable" class="col-span-8 mt-2 flex justify-end gap-1">
+      <Button
+        v-if="scheduler.type !== 'RelativeEvent'"
+        class="justify-center"
+        type="button"
+        :disabeld="!editable"
+        @click="emit('openDialog', 'absolute')"
+        >{{
+          scheduler.type
+            ? $t('scheduler.labels.editScheduler')
+            : $t('scheduler.labels.openScheduler')
+        }}</Button
+      >
+      <Button
+        v-if="scheduler.type !== 'Event'"
+        class="p-button justify-center"
+        type="button"
+        :disabled="!editable"
+        @click="emit('openDialog', 'relative')"
+        >{{
+          scheduler.type
+            ? $t('scheduler.labels.editRelativeScheduler')
+            : $t('scheduler.labels.openRelativeScheduler')
+        }}</Button
+      >
+      <Button
+        v-if="scheduler.dtstart"
+        class="p-button btn-important justify-center"
+        type="button"
+        :disabled="!editable"
+        @click="emit('removeScheduler')"
+        >{{ $t('scheduler.labels.removeScheduler') }}</Button
+      >
     </div>
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+  .schedule-preview {
+    border: 1px solid var(--surface-50);
+    border-radius: 6px;
+    background-color: var(--surface-50);
+  }
+</style>

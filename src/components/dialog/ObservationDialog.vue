@@ -11,12 +11,12 @@ Licensed under the Elastic License 2.0. */
   import Dropdown from 'primevue/dropdown';
   import {
     Observation,
-    Event,
     ValidationReport,
     StudyStatus,
+    ObservationSchedule,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import Scheduler from '../shared/Scheduler.vue';
+  import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
   import { useComponentsApi } from '../../composable/useApi';
   import { useStudyStore } from '../../stores/studyStore';
@@ -26,6 +26,7 @@ Licensed under the Elastic License 2.0. */
   import PropertyInputs from './shared/ProprtyInputs.vue';
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
+  import AbsoluteScheduler from '../shared/Scheduler.vue';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -41,7 +42,6 @@ Licensed under the Elastic License 2.0. */
     studyStore.study.status === StudyStatus.Paused;
 
   const title = ref(observation.title);
-  const noSchedule = ref(observation.noSchedule);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
   // properties = configuration
@@ -57,9 +57,14 @@ Licensed under the Elastic License 2.0. */
       : factory.visibility.hiddenByDefault
   );
 
-  const scheduler: Ref<Event> = ref(
+  const scheduler: Ref<ObservationSchedule> = ref(
     observation.schedule ? observation.schedule : {}
   );
+
+  const noSchedule: Ref<boolean> = ref(
+    observation.schedule?.dtstart ? true : false
+  );
+
   const studyGroupId = ref(observation.studyGroupId);
 
   const jsonError = ref();
@@ -72,31 +77,37 @@ Licensed under the Elastic License 2.0. */
     return undefined;
   }
 
-  function openScheduler() {
-    dialog.open(Scheduler, {
-      data: {
-        scheduler: scheduler.value,
-      },
-      props: {
-        header: t('scheduler.dialogTitle'),
-        style: {
-          width: '50vw',
+  function openScheduler(schedulerType: string) {
+    dialog.open(
+      schedulerType === 'relative' ? RelativeScheduler : AbsoluteScheduler,
+      {
+        data: {
+          scheduler: scheduler.value,
+          schedulerType: scheduler.value.type,
         },
-        breakpoints: {
-          '960px': '75vw',
-          '640px': '90vw',
+        props: {
+          header:
+            schedulerType === 'relative'
+              ? t('scheduler.relativeDialogTitle')
+              : t('scheduler.dialogTitle'),
+          style: {
+            width: '50vw',
+          },
+          breakpoints: {
+            '960px': '75vw',
+            '640px': '90vw',
+          },
+          modal: true,
+          draggable: false,
         },
-        modal: true,
-        draggable: false,
-      },
-      onClose: (options) => {
-        if (options?.data) {
-          scheduler.value = options.data;
-        }
-      },
-    });
+        onClose: (options) => {
+          if (options?.data) {
+            scheduler.value = options.data;
+          }
+        },
+      }
+    );
   }
-
   function validate() {
     let parsedProps: any;
     try {
@@ -125,12 +136,14 @@ Licensed under the Elastic License 2.0. */
   }
 
   function save(props: any) {
-    if (JSON.stringify(scheduler.value) === '{}' && noSchedule.value) {
+    if (JSON.stringify(scheduler.value) === '{}') {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
+          type: 'Event',
           dtstart: new Date(studyStore.study.plannedStart).toISOString(),
           dtend: new Date(studyStore.study.plannedEnd).toISOString(),
         };
+        noSchedule.value = false;
       } else {
         scheduler.value = {
           dtstart: new Date().toISOString(),
@@ -138,7 +151,6 @@ Licensed under the Elastic License 2.0. */
         };
       }
     }
-    console.log(scheduler.value);
 
     const returnObservation = {
       observationId: observation.observationId,
@@ -150,7 +162,6 @@ Licensed under the Elastic License 2.0. */
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
-      noSchedule: noSchedule.value,
     } as Observation;
 
     if (JSON.stringify(scheduler.value) !== '{}') {
@@ -169,13 +180,6 @@ Licensed under the Elastic License 2.0. */
         label: 'title',
         value: t('observation.error.addTitle'),
       });
-    }
-    if (JSON.stringify(scheduler.value) === '{}' && !noSchedule.value) {
-      errors.value.push({
-        label: 'scheduler',
-        value: t('observation.error.addSchedulerMsg'),
-      });
-      schedulerError.value = true;
     }
     if (!participantInfo.value) {
       errors.value.push({
@@ -239,14 +243,7 @@ Licensed under the Elastic License 2.0. */
           ></InputText>
         </div>
       </div>
-      <div
-        class="col-start-0 col-span-8 grid grid-cols-7 items-start justify-start gap-4"
-      >
-        <label for="noSchedule">{{ $t('observation.props.noSchedule') }}</label>
-        <Checkbox v-model="noSchedule" :binary="true" />
-      </div>
       <SchedulerInfoBlock
-        v-if="!noSchedule"
         :scheduler="scheduler"
         :editable="editable"
         :error="
@@ -255,7 +252,7 @@ Licensed under the Elastic License 2.0. */
           ''
         "
         class="mb-2"
-        @open-dialog="openScheduler"
+        @open-dialog="openScheduler($event)"
         @remove-scheduler="removeScheduler"
       />
 
@@ -385,7 +382,7 @@ Licensed under the Elastic License 2.0. */
         </Button>
         <Button
           v-if="editable"
-          :type="editable ? 'submit' : undefined"
+          :type="editable ? 'submit' : 'button'"
           :disabled="!editable"
           @click="checkRequiredFields()"
           >{{ $t('global.labels.save') }}</Button

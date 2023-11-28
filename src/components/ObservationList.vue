@@ -8,7 +8,10 @@ Licensed under the Elastic License 2.0. */
   import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
+    Event,
     Observation,
+    ObservationSchedule,
+    RelativeEvent,
     StudyGroup,
     StudyRole,
     StudyStatus,
@@ -32,6 +35,8 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import dayjs from 'dayjs';
+  import { ZTimeStringToOffsetTimeString } from '../utils/dateUtils';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -122,17 +127,28 @@ Licensed under the Elastic License 2.0. */
       editable: true,
     },
     {
-      field: 'schedule.dtstart',
-      header: t('global.labels.start'),
-      type: MoreTableFieldType.nestedDatetime,
+      field: 'scheduleType',
+      header: t('global.labels.scheduleType'),
       columnWidth: '3vw',
       sortable: true,
     },
     {
-      field: 'schedule.dtend',
-      header: t('global.labels.end'),
-      type: MoreTableFieldType.nestedDatetime,
+      field: 'scheduleStart',
+      header: t('global.labels.start'),
       columnWidth: '3vw',
+      sortable: true,
+    },
+    {
+      field: 'scheduleEnd',
+      header: t('global.labels.end'),
+      columnWidth: '3vw',
+      sortable: true,
+    },
+    {
+      field: 'hasRepetition',
+      header: t('scheduler.labels.repeat'),
+      type: MoreTableFieldType.binaryIcon,
+      columnWidth: '2vw',
       sortable: true,
     },
   ];
@@ -230,16 +246,91 @@ Licensed under the Elastic License 2.0. */
             typeLabel: getObservationTypeString(item.type as string),
             properties: item.properties,
             schedule: item.schedule,
+            scheduleType: item.schedule?.type
+              ? t(`scheduler.type.${item.schedule?.type}`)
+              : '',
+            scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
+            scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
             created: item.created,
             modified: item.modified,
             hidden: item.hidden,
             noSchedule: item.noSchedule,
+            hasRepetition: getScheduleHasRepetition(item.schedule),
           };
         });
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations')
       );
+  }
+
+  function getScheduleHasRepetition(
+    schedule: ObservationSchedule | undefined
+  ): boolean {
+    if (schedule) {
+      switch (schedule.type) {
+        case 'Event': {
+          const s = schedule as Event;
+          return !!s.rrule;
+        }
+        case 'RelativeEvent': {
+          const s = schedule as RelativeEvent;
+          return !!s.rrrule;
+        }
+      }
+    }
+    return false;
+  }
+
+  function getScheduleDate(
+    scheduler: ObservationSchedule | undefined,
+    prop: string
+  ) {
+    switch (scheduler?.type) {
+      case 'Event': {
+        const schedule = scheduler as Event;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart
+              ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtstart
+                ).format('HH:mm')}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend
+              ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
+                  schedule.dtend
+                ).format('HH:mm')}`
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+      case 'RelativeEvent': {
+        const schedule = scheduler as RelativeEvent;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart.offset?.value &&
+              schedule.dtstart.offset?.unit
+              ? `${t(
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
+                )} ${
+                  schedule.dtstart.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtstart.time)}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
+              ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
+                  schedule.dtend.offset.value
+                }, ${ZTimeStringToOffsetTimeString(schedule.dtend.time)} `
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+    }
+
+    return '';
   }
 
   function execute(action: any) {
@@ -372,7 +463,6 @@ Licensed under the Elastic License 2.0. */
       openObservationDialog(dialogTitle, observation);
     }
   }
-
   listObservations();
 </script>
 

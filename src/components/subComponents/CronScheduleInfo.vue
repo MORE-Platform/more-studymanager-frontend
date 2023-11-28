@@ -57,6 +57,12 @@ Licensed under the Elastic License 2.0. */
           </a>
         </div>
       </div>
+      <div class="cron-rel-warning flex items-center gap-5 px-6 py-4 italic">
+        <div>
+          <span class="pi pi-exclamation-triangle warning-icon error" />
+        </div>
+        {{ $t('scheduler.dialog.relativeSchedule.interventionWarning') }}
+      </div>
     </div>
   </div>
 </template>
@@ -102,5 +108,14 @@ Licensed under the Elastic License 2.0. */
       transition: ease-in-out opacity 0.35s;
       opacity: 0;
     }
+  }
+
+  .cron-rel-warning {
+    border: 1px solid var(--surface-50);
+    border-radius: 6px;
+    background-color: var(--surface-50);
+  }
+  .warning-icon {
+    font-size: 30px;
   }
 </style>

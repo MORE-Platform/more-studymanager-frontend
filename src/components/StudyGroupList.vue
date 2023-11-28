@@ -6,11 +6,15 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType } from 'vue';
   import {
+    MoreStudyGroupTableMap,
     MoreTableAction,
+    MoreTableChoice,
     MoreTableColumn,
+    MoreTableFieldType,
     MoreTableRowActionResult,
   } from '../models/MoreTableModel';
   import {
+    DurationUnitEnum,
     StudyGroup,
     StudyRole,
     StudyStatus,
@@ -41,6 +45,25 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
+  const durationUnitOptions: MoreTableChoice[] = [
+    {
+      label: 'Nothing selected',
+      value: null,
+    },
+    {
+      label: t('scheduler.preview.unit.MINUTE'),
+      value: DurationUnitEnum.Minute,
+    },
+    {
+      label: t('scheduler.preview.unit.HOUR'),
+      value: DurationUnitEnum.Hour,
+    },
+    {
+      label: t('scheduler.preview.unit.DAY'),
+      value: DurationUnitEnum.Day,
+    },
+  ];
+
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: t('global.labels.id'), sortable: true },
@@ -54,9 +77,25 @@ Licensed under the Elastic License 2.0. */
     {
       field: 'purpose',
       header: t('study.props.purpose'),
-      editable: true,
+      editable: true, //Not sure, where do we actually take the group time from?
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
-      columnWidth: '32vw',
+      columnWidth: '20vw',
+    },
+    {
+      field: 'durationValue',
+      header: t('study.props.duration'),
+      type: MoreTableFieldType.number,
+      editable: true,
+      placeholder: t('studyGroup.groupList.placeholder.durationValue'),
+      columnWidth: '5vw',
+    },
+    {
+      field: 'durationUnit',
+      header: t(''),
+      type: MoreTableFieldType.choice,
+      editable: { values: durationUnitOptions },
+      placeholder: t('studyGroup.groupList.placeholder.durationUnit'),
+      columnWidth: '1vw',
     },
   ];
   const rowActions: MoreTableAction[] = [
@@ -122,18 +161,26 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function executeAction(action: MoreTableRowActionResult<StudyGroup>) {
+  function executeAction(
+    action: MoreTableRowActionResult<MoreStudyGroupTableMap>
+  ) {
+    const r = action.row
+      ? studyGroupStore.toStudyGroup(action.row)
+      : action.row;
+
     switch (action.id) {
       case 'delete':
-        return studyGroupStore.deleteStudyGroup(action.row);
+        return studyGroupStore.deleteStudyGroup(r);
       case 'create':
         return studyGroupStore.createStudyGroup(props.studyId);
       default:
         console.error('no handler for action', action);
     }
   }
-  function changeValueInPlace(studyGroup: StudyGroup) {
-    studyGroupStore.updateStudyGroup(studyGroup);
+  function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap) {
+    studyGroupStore.updateStudyGroup(
+      studyGroupStore.toStudyGroup(studyGroupMap)
+    );
   }
 </script>
 
@@ -144,7 +191,7 @@ Licensed under the Elastic License 2.0. */
       :title="$t('studyGroup.plural')"
       :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
-      :rows="studyGroupStore.studyGroups"
+      :rows="studyGroupStore.studyGroupMap"
       :editable-access="getEditAccess()"
       :row-actions="rowActions"
       :table-actions="tableActions"
