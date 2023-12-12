@@ -54,7 +54,7 @@
     "@types/node": "18.11.19",
     "@types/starwars-names": "1.6.0",
     "@types/tailwindcss": "3.0.11",
-    "@typescript-eslint/eslint-plugin": "5.50.0",
+    "@typescript-eslint/eslint-plugin": "6.14.0",
     "@typescript-eslint/parser": "5.50.0",
     "@vitejs/plugin-vue": "3.2.0",
     "@vue/eslint-config-prettier": "7.0.0",
