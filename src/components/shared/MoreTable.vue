@@ -385,19 +385,19 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function isEditableWithValues(
-    editable:
-      | boolean
-      | MoreTableChoiceOptions
-      | MoreTableEditableChoiceProperties
-      | ((data?: any) => boolean)
-      | undefined
-  ): MoreTableChoice[] {
-    if (
-      typeof editable !== 'undefined' &&
-      typeof editable !== 'boolean' &&
-      typeof editable !== 'function'
-    ) {
+  function isEditableColumn(editable: any, column: any) {
+    if (typeof editable === 'function') {
+      return editable(column);
+    } else return editable;
+  }
+
+  function isEditableWithValues(column: any): MoreTableChoice[] {
+    let editable = column.editable;
+    if (typeof editable !== 'undefined' && typeof editable !== 'boolean') {
+      if (typeof editable === 'function') {
+        editable = editable(column);
+      }
+
       if (Object.prototype.hasOwnProperty.call(editable, 'values')) {
         const editableWithValues = editable as MoreTableChoiceOptions;
         return editableWithValues.values as MoreTableChoice[];
@@ -413,8 +413,12 @@ Licensed under the Elastic License 2.0. */
     return data[f][p];
   }
 
-  function getMoreTableChoiceValues(array: MoreTableChoiceOptions) {
-    return array.values;
+  function getMoreTableChoiceValues(column: any) {
+    if (typeof column.editable === 'function') {
+      return (column.editable(column) as MoreTableChoiceOptions).values;
+    } else {
+      return (column.editable as MoreTableChoiceOptions).values;
+    }
   }
 
   function getObservationVisibility(type?: string) {
@@ -605,7 +609,10 @@ Licensed under the Elastic License 2.0. */
           column.columnWidth ? 'width: ' + column.columnWidth : undefined
         "
       >
-        <template v-if="column.editable" #editor="{ data, field }">
+        <template
+          v-if="isEditableColumn(column.editable, column)"
+          #editor="{ data, field }"
+        >
           <InputText
             v-if="
               column.type === MoreTableFieldType.string ||
@@ -628,13 +635,16 @@ Licensed under the Elastic License 2.0. */
             v-if="column.type === MoreTableFieldType.choice"
             v-model="data[field]"
             class="w-full"
-            :options="isEditableWithValues(column.editable)"
+            :options="isEditableWithValues(column)"
             option-label="label"
             option-value="value"
             :class="data[field] ? 'dropdown-has-value' : ''"
             :placeholder="
               data[field]
-                ? getLabelForChoiceValue(data[field], getMoreTableChoiceValues(column.editable as MoreTableChoiceOptions))
+                ? getLabelForChoiceValue(
+                    data[field],
+                    getMoreTableChoiceValues(column)
+                  )
                 : column.placeholder
                 ? column.placeholder
                 : $t('global.placeholder.chooseDropdownOptionDefault')
@@ -646,7 +656,7 @@ Licensed under the Elastic License 2.0. */
               column.type === MoreTableFieldType.singleselect
             "
             v-model="data[field]"
-            :options="isEditableWithValues(column.editable)"
+            :options="isEditableWithValues(column)"
             option-label="label"
             :selection-limit="
               column.type === MoreTableFieldType.singleselect ? 1 : undefined
@@ -734,10 +744,7 @@ Licensed under the Elastic License 2.0. */
               {{ $t('study.statusStrings.' + data[field]) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
-              getLabelForChoiceValue(
-                data[field],
-                isEditableWithValues(column.editable)
-              )
+              getLabelForChoiceValue(data[field], isEditableWithValues(column))
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
               {{ dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY') }}
@@ -804,7 +811,7 @@ Licensed under the Elastic License 2.0. */
                 :class="action.id === 'delete' ? 'btn-important' : ''"
                 @click="rowActionHandler(action, slotProps.data)"
               >
-                <span v-if="!action.icon">{{ action.label }}</span>
+                <span v-if="!action.icon">{{ action.label }}1</span>
               </Button>
             </div>
             <Button

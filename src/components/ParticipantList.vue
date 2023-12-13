@@ -92,7 +92,8 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses.value },
+      editable: () =>
+        actionsVisible ? { values: groupStatuses.value } : false,
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.noGroup'),
@@ -100,12 +101,21 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
+  const isRowVisible = (row: any): boolean => {
+    const participant = row as Participant;
+    return (
+      actionsVisible ||
+      (props.statusStatus === StudyStatus.Active &&
+        participant.status === 'new')
+    );
+  };
+
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
-      visible: () => actionsVisible,
+      visible: isRowVisible,
       confirmDeleteDialog: {
         header: t('participants.dialog.header.delete'),
         message: t('participants.dialog.msg.delete'),
@@ -384,7 +394,7 @@ Licensed under the Elastic License 2.0. */
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.isLoading.value"
-      :editable-access="actionsVisible"
+      :editable-access="actionsVisible || statusStatus === StudyStatus.Active"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-65"

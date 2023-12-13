@@ -16,7 +16,12 @@ export interface MoreTableColumn {
     | MoreTableChoiceOptions
     | MoreTableEditableChoiceProperties
     | boolean
-    | ((data?: any) => boolean);
+    | ((
+        data?: any
+      ) =>
+        | MoreTableChoiceOptions
+        | MoreTableEditableChoiceProperties
+        | boolean);
   sortable?: boolean;
   filterable?: boolean | MoreTableFilterOption;
   placeholder?: string;
