@@ -317,6 +317,7 @@
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
+            :min="1"
             @blur="calculatedRepeat()"
           />
         </div>
@@ -350,6 +351,7 @@
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
+            :min="1"
             @blur="calculatedRepeat()"
           />
         </div>
