@@ -325,7 +325,8 @@
       "participantId": "Teilnehmer ID",
       "alias": "Alias",
       "token": "Token",
-      "registrationToken": "Registrierungstoken"
+      "registrationToken": "Registrierungstoken",
+      "individualStart": "Gestartet am"
     },
     "dialog": {
       "header": {
