@@ -98,6 +98,14 @@ Licensed under the Elastic License 2.0. */
       placeholder: t('global.placeholder.noGroup'),
       columnWidth: '15vw',
     },
+    {
+      field: 'start',
+      header: t('participants.props.individualStart'),
+      type: MoreTableFieldType.datetime,
+      sortable: true,
+      placeholder: '-',
+      columnWidth: '10vw',
+    },
   ];
 
   const rowActions: MoreTableAction[] = [
