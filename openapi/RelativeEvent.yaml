@@ -19,6 +19,7 @@ components:
             - MINUTE
             - HOUR
             - DAY
+        
     RelativeDate:
       type: object
       description: A date relative to a specific base date (e.g study start)
@@ -29,6 +30,10 @@ components:
           type: string
           format: time
           description: Follows ISO 8601 format for time
+        timezone:
+          type: string
+          description: Time Zone string for relative event
+
     RelativeRecurrenceRule:
       type: object
       description: A recurrence rule relative to dtstart
