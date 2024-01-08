@@ -754,7 +754,8 @@ Licensed under the Elastic License 2.0. */
               {{ dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY') }}
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
-              <span v-if="data[field] !== '-'">
+              <span v-if="!data[field]"> - </span>
+              <span v-else-if="data[field] && data[field] !== '-'">
                 {{ dayjs(data[field]).format('DD/MM/YYYY, HH:mm') }}
               </span>
               <span v-else>

@@ -1397,6 +1397,10 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
+        start:
+          type: string
+          format: date-time
+          readOnly: true
         created:
           type: string
           format: date-time

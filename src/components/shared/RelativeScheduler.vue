@@ -5,7 +5,6 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import { ZTimeToOffsetTime } from '../../utils/dateUtils';
   import {
     RelativeEvent,
     RelativeRecurrenceRule,
@@ -28,6 +27,7 @@
         unit: schedule.dtstart?.offset?.unit,
       },
       time: schedule.dtstart?.time,
+      timezone: schedule.dtstart?.timezone,
     },
     dtend: {
       offset: {
@@ -35,6 +35,7 @@
         unit: schedule.dtend?.offset?.unit,
       },
       time: schedule.dtend?.time,
+      timezone: schedule.dtend?.timezone,
     },
     rrrule: {
       frequency: {
@@ -56,7 +57,6 @@
       parseInt(schedule.dtstart.time?.substring(0, 2)),
       parseInt(schedule.dtstart.time?.substring(3, 5), 0)
     );
-    startTime.value = ZTimeToOffsetTime(startTime.value);
   } else {
     startTime.value.setHours(10, 30);
   }
@@ -65,14 +65,13 @@
       parseInt(schedule.dtend.time?.substring(0, 2)),
       parseInt(schedule.dtend.time?.substring(3, 5), 0)
     );
-    endTime.value = ZTimeToOffsetTime(endTime.value);
   } else {
     endTime.value.setHours(18, 30);
   }
 
   returnSchedule.value.dtstart.time = returnSchedule.value.dtstart.time
     ? returnSchedule.value.dtstart.time
-    : '10:10';
+    : '10:00';
   returnSchedule.value.dtend.time = returnSchedule.value.dtend.time
     ? returnSchedule.value.dtend.time
     : '18:00';
@@ -250,14 +249,23 @@
 
   function save() {
     returnSchedule.value.dtstart.time = startTime.value
-      ?.toISOString()
-      .substring(11, 16);
+      ?.toTimeString()
+      .substring(0, 5);
     returnSchedule.value.dtend.time = endTime.value
-      ?.toISOString()
-      .substring(11, 16);
+      ?.toTimeString()
+      .substring(0, 5);
 
     returnSchedule.value.dtstart.offset = rDtstartOffset.value;
     returnSchedule.value.dtend.offset = rDtendOffset.value;
+
+    if (typeof returnSchedule.value.dtstart.time !== 'undefined') {
+      returnSchedule.value.dtstart.timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
+    if (typeof returnSchedule.value.dtend.time !== 'undefined') {
+      returnSchedule.value.dtend.timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+    }
 
     if (repeatChecked.value) {
       const rrrule: RelativeRecurrenceRule = {
@@ -317,6 +325,7 @@
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
+            :min="1"
             @blur="calculatedRepeat()"
           />
         </div>
@@ -350,6 +359,7 @@
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
+            :min="1"
             @blur="calculatedRepeat()"
           />
         </div>
