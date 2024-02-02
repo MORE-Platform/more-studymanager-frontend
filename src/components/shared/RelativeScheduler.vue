@@ -13,7 +13,6 @@
   } from '../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import {expectTypeOf} from "vitest";
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -168,24 +167,27 @@
       returnSchedule.value.dtend.offset?.value &&
       returnSchedule.value.dtstart.offset?.value &&
       returnSchedule.value.dtstart.offset?.value >
-      returnSchedule.value.dtend.offset?.value
+        returnSchedule.value.dtend.offset?.value
     ) {
       errors.value.push({
         label: 'dtend',
-        value: t('scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'),
+        value: t(
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+        ),
       });
     }
     if (
       returnSchedule.value.dtstart.time &&
       returnSchedule.value.dtend.time &&
-      (returnSchedule.value.dtstart.offset?.value ==
-        returnSchedule.value.dtend.offset?.value) &&
-      returnSchedule.value.dtstart.time >=
-      returnSchedule.value.dtend.time
+      returnSchedule.value.dtstart.offset?.value ===
+        returnSchedule.value.dtend.offset?.value &&
+      returnSchedule.value.dtstart.time >= returnSchedule.value.dtend.time
     ) {
       errors.value.push({
         label: 'dtend',
-        value: t('scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'),
+        value: t(
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+        ),
       });
     }
     if (repeatChecked.value) {
