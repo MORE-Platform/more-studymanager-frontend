@@ -944,7 +944,8 @@
             "addOffset": "Fill in the offset of the relative start period."
           },
           "dtend": {
-            "addOffset": "Fill in the offset of the relative end period."
+            "addOffset": "Fill in the offset of the relative end period.",
+            "EndBeforeStart": "Please Set the relative start period before the end period"
           },
           "rrrule": {
             "frequency": "Fill in the repetition rate.",
