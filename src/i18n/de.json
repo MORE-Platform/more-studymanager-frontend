@@ -941,7 +941,8 @@
             "addOffset": "Befülle den Offset des relativen Startzeitraum."
           },
           "dtend": {
-            "addOffset": "Befülle den Offset des relativen Endzeitraum."
+            "addOffset": "Befülle den Offset des relativen Endzeitraum.",
+            "EndBeforeStart": "Bitte setzen Sie den relativen Startzeitpunkt vor dem Endzeitpunkt"
           },
           "rrrule": {
             "frequency": "Fülle die Widerholungsrate ein.",

@@ -151,7 +151,7 @@
     ) {
       errors.value.push({
         label: 'dtstart',
-        value: t('schedule.relativeSchedule.error.dtstart.addOffset'),
+        value: t('scheduler.dialog.relativeSchedule.error.dtstart.addOffset'),
       });
     }
     if (
@@ -160,7 +160,34 @@
     ) {
       errors.value.push({
         label: 'dtend',
-        value: t('schedule.relativeSchedule.error.dtend.addOffset'),
+        value: t('scheduler.dialog.relativeSchedule.error.dtend.addOffset'),
+      });
+    }
+    if (
+      returnSchedule.value.dtend.offset?.value &&
+      returnSchedule.value.dtstart.offset?.value &&
+      returnSchedule.value.dtstart.offset?.value >
+        returnSchedule.value.dtend.offset?.value
+    ) {
+      errors.value.push({
+        label: 'dtend',
+        value: t(
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+        ),
+      });
+    }
+    if (
+      returnSchedule.value.dtstart.time &&
+      returnSchedule.value.dtend.time &&
+      returnSchedule.value.dtstart.offset?.value ===
+        returnSchedule.value.dtend.offset?.value &&
+      returnSchedule.value.dtstart.time >= returnSchedule.value.dtend.time
+    ) {
+      errors.value.push({
+        label: 'dtend',
+        value: t(
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+        ),
       });
     }
     if (repeatChecked.value) {
@@ -170,7 +197,7 @@
       ) {
         errors.value.push({
           label: 'rrruleFreq',
-          value: t('schedule.relativeSchedule.error.rrrule.frequency'),
+          value: t('scheduler.dialog.relativeSchedule.error.rrrule.frequency'),
         });
       }
       if (
@@ -179,7 +206,7 @@
       ) {
         errors.value.push({
           label: 'rrruleEndAfter',
-          value: t('schedule.relativeSchedule.error.rrrule.endAfter'),
+          value: t('scheduler.dialog.relativeSchedule.error.rrrule.endAfter'),
         });
       }
       if (frequencyXTimes.value && frequencyXTimes.value <= 0) {
