@@ -75,6 +75,12 @@ Licensed under the Elastic License 2.0. */
       params: { studyId: props.studyId },
       access: [StudyRole.Viewer, StudyRole.Admin],
     },
+    {
+      title: t('studyNavigation.tabs.healthDataInteraction'),
+      name: t('studyNavigation.tabLink.healthDataInteraction'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Viewer, StudyRole.Admin],
+    },
   ] as Tab[];
 
   const studyRoleValues: MoreTableChoice[] = [

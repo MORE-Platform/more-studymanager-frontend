@@ -39,9 +39,9 @@ const uiConfig = await uiConfigApi
     return {
       title: 'Unknown Legacy Backend',
       auth: {
-        server: 'https://auth.more.redlink.io',
-        realm: 'Auth-Client-Test',
-        clientId: 'oauth2-pkce-client',
+        server: 'https://auth.more-health.at',
+        realm: 'MORE-Platform-new',
+        clientId: 'study-manager',
       },
     } as FrontendConfiguration;
   });

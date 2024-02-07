@@ -63,7 +63,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "healthDataInteraction": "Health Data Interaction"
     },
     "tabLink": {
       "overview": "Overview",
@@ -71,7 +72,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "healthDataInteraction": "Health Data Interaction"
     }
   },
 
