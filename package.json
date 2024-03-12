@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "dev:local": "VITE_LOCAL_BACKEND=true vite",
+    "dev:local": "VITE_LOCAL_BACKEND=UNUSED vite",
     "package:quick": "npm run generate:api && vite build",
     "package": "npm run generate:api && vue-tsc --noEmit && vite build",
     "preview": "vite preview",

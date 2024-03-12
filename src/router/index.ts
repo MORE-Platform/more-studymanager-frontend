@@ -19,6 +19,7 @@ import StudyOverview from '../views/StudyOverview.vue';
 import { useStudyStore } from '../stores/studyStore';
 import { useStudyGroupStore } from '../stores/studyGroupStore';
 import Integrations from '../views/Integrations.vue';
+import HealthDataInteraction from '../views/HealthDataInteraction.vue';
 
 const studyResolver = async (to: any, from: any, next: any) => {
   const studyStore = useStudyStore();
@@ -77,6 +78,12 @@ const routes = [
         meta: { title: 'Integrations' },
         name: 'Integrations',
         component: Integrations,
+      },
+      {
+        path: 'healthDataInteraction',
+        meta: { title: 'HealthDataInteraction'},
+        name: 'HealthDataInteraction',
+        component: HealthDataInteraction,
       },
     ],
   },
