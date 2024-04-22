@@ -3,8 +3,7 @@ license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
 Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <div class="integration-example">
@@ -55,14 +54,14 @@ Licensed under the Elastic License 2.0. */
       <code class="mb-4">
         <small>
           curl -X GET
-          <span class="color-primary font-medium">
-          {{ $t('integration.dialog.example.yourDomain') }}
-        </span>
+          <span class="color-primary font-medium">{{
+            $t('integration.dialog.example.yourDomain')
+          }}</span>
           \ <br />
           -H "More-Api-Token:
           <span class="color-primary font-medium">
-          {{ $t('integration.dialog.example.yourToken') }}
-        </span>
+            {{ $t('integration.dialog.example.yourToken') }}
+          </span>
         </small>
       </code>
       <h6 class="mb-1.5 mt-5 font-bold">
@@ -71,8 +70,8 @@ Licensed under the Elastic License 2.0. */
       <code>
         <small>
           curl -X GET
-          https://data.platform-test.more.redlink.io/api/v1/external/participants \
-          <br />
+          https://data.platform-test.more.redlink.io/api/v1/external/participants
+          \ <br />
           -H "More-Api-Token: ef1e9877-7ab1-49b7-bf7e-b35952cfa32c"
         </small>
       </code>
