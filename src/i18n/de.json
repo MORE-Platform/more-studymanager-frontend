@@ -505,8 +505,9 @@
         "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
       },
       "example": {
-        "title": "Beispiel",
-        "connectTitle": "Verbinden Sie sich mit der Daten API via token",
+        "title": "Beispiele",
+        "dataTitle": "Senden Sie Daten an die API via token",
+        "participantsTitle": "Rufen Sie Teilnehmer über API ab via token",
         "filledExample": "Ausgefülltes Beispiel",
         "yourDomain": "DOMÄNE",
         "yourToken": "TOKEN",

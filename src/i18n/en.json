@@ -504,8 +504,9 @@
         "selectObservation": "Please select an existing observation."
       },
       "example": {
-        "title": "Example",
-        "connectTitle": "Connect to API with your token",
+        "title": "Examples",
+        "dataTitle": "Send data to API with your token",
+        "participantsTitle": "Get Participants from API with your token",
         "filledExample": "Filled example",
         "yourDomain": "DOMAIN",
         "yourToken": "TOKEN",
