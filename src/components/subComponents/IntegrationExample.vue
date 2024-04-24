@@ -61,7 +61,8 @@ Licensed under the Elastic License 2.0. */
           -H "More-Api-Token:
           <span class="color-primary font-medium">
             {{ $t('integration.dialog.example.yourToken') }}
-          </span>
+          </span
+          >"
         </small>
       </code>
       <h6 class="mb-1.5 mt-5 font-bold">
