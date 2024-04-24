@@ -60,8 +60,7 @@ Licensed under the Elastic License 2.0. */
           \ <br />
           -H "More-Api-Token:
           <span class="color-primary font-medium">
-            {{ $t('integration.dialog.example.yourToken') }}
-          </span
+            {{ $t('integration.dialog.example.yourToken') }} </span
           >"
         </small>
       </code>
