@@ -18,27 +18,58 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Draft" class="buttons">
     <Button
       type="button"
+      title="Preview"
+      @click="emit('onchange', StudyStatus.Preview)"
+      >{{ $t('study.statusChange.start-preview') }}</Button
+    >
+    <Button
+      type="button"
       title="Start"
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.start') }}</Button
     >
-    <!--icon="pi pi-play"-->
+  </div>
+  <div v-if="status === StudyStatus.Preview" class="buttons">
+    <Button
+      type="button"
+      title="Pause Preview"
+      @click="emit('onchange', StudyStatus.PausedPreview)"
+      >{{ $t('study.statusChange.pause') }}</Button
+    >
+    <Button
+      type="button"
+      title="Complete Preview"
+      @click="emit('onchange', StudyStatus.Draft)"
+      >{{ $t('study.statusChange.complete-preview') }}</Button
+    >
   </div>
   <div v-if="status === StudyStatus.Active" class="buttons">
     <Button
       type="button"
       title="Pause"
       @click="emit('onchange', StudyStatus.Paused)"
-      >{{ $t('global.labels.setPause') }}</Button
+      >{{ $t('study.statusChange.pause') }}</Button
     >
-    <!--icon="pi pi-pause"-->
     <Button
       type="button"
       title="Close"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >
-    <!--icon="pi pi-stop-circle"-->
+  </div>
+  <div v-if="status === StudyStatus.PausedPreview" class="buttons">
+    <Button
+      type="button"
+      title="Resume Preview"
+      @click="emit('onchange', StudyStatus.Preview)"
+      >{{ $t('study.statusChange.resume-preview') }}</Button
+    >
+    <Button
+      type="button"
+      title="Complete Preview"
+      @click="emit('onchange', StudyStatus.Draft)"
+      >{{ $t('study.statusChange.complete-preview') }}</Button
+    >
   </div>
   <div v-if="status === StudyStatus.Paused" class="buttons">
     <Button
@@ -47,14 +78,12 @@ Licensed under the Elastic License 2.0. */
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.resume') }}</Button
     >
-    <!--icon="pi pi-play"-->
     <Button
       type="button"
       title="Close"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >
-    <!-- icon="pi pi-stop-circle"-->
   </div>
 </template>
 

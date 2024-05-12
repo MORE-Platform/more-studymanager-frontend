@@ -111,25 +111,46 @@
       "pause": "Pause",
       "resume": "Resume",
       "complete": "Close",
-      "changeMsg": {
-        "toActive":{
+      "complete-preview": "Complete Preview",
+      "start-preview": "Start Preview",
+      "resume-preview": "Resume Preview",
+      "transition": {
+        "draft-active": {
           "intro": "You are about to change your study status to 'ACTIVE'.",
           "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participate in the research. If the planned start date is after today's date, it will be set to the actual start date with this status change.",
           "confirm": "This study status change cannot be reversed, but there is the possibility to pause the study to make changes to your settings. Are you sure you want to set your Study Status to 'ACTIVE'?"
         },
-        "toPaused":{
+        "active-paused": {
           "intro": "You are about to change your study status to 'PAUSED'.",
           "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the study is set back to 'ACTIVE'.",
           "confirm": "Are you sure you want to set your Study Status to 'PAUSED'?"
         },
-        "pausedToActive": {
+        "paused-active": {
           "warning": "All observations, interventions, schedules and data captures will be available again. The participants will be able to continue their participation on the app.",
           "confirm": "Are you sure you want to set your Study Status to 'ACTIVE'"
         },
-        "toCompleted":{
+        "active-closed": {
           "intro": "You are about to change your study status to 'COMPLETED'.",
           "warning": "Changing your study status to 'COMPLETED' will set all data capture, intervention rules and schedules to finished and no data will be captured anymore. The participants won't be able to participate in a completed study anymore.",
           "confirm": "This study status change cannot be reversed and the study will stay 'COMPLETED'. Are you sure you want to set your study status to 'COMPLETED'?"
+        },
+        "draft-preview": {
+          "intro": "You are about to start a study 'PREVIEW'",
+          "warning": "All data recorded during the preview will be discarded once you complete the preview.",
+          "confirm": "Start Preview"
+        },
+        "preview-paused-preview": {
+          "intro": "You are about to 'PAUSE' your preview",
+          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the preview is resumed."
+        },
+        "paused-preview-preview": {
+          "intro": "You are about to resume your preview",
+          "warning": "All observations, interventions, schedules and data captures will be available again. The participants will be able to continue their participation on the app."
+        },
+        "preview-draft": {
+          "intro": "You are about to end the study 'PREVIEW'",
+          "warning": "All data recorded so far will be deleted, all participants will be re-initialized.",
+          "confirm": "Complete Preview and discard data"
         }
       },
       "dialog": {
@@ -141,10 +162,12 @@
       }
     },
     "statusStrings": {
-      "paused": "paused",
       "active": "active",
+      "closed": "completed",
       "draft": "draft",
-      "closed": "completed"
+      "paused": "paused",
+      "paused-preview": "paused preview",
+      "preview": "preview"
     },
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",

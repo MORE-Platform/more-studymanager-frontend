@@ -1339,6 +1339,8 @@ components:
       type: string
       enum:
         - draft
+        - preview
+        - paused-preview
         - active
         - paused
         - closed
