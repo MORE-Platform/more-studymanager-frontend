@@ -337,6 +337,66 @@ paths:
           description: Cleared
         '409':
           description: removal failed
+  /studies/{studyId}/calendar.ics:
+    get:
+      tags:
+        - calendar
+      description: Get study calendar for study as iCal
+      operationId: getStudyCalendar
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully returned study calendar
+          content:
+            text/calendar:
+              schema:
+                type: string
+        '404':
+          description: Not found
+
+  /studies/{studyId}/timeline:
+    get:
+      tags:
+        - calendar
+      description: Get study timeline for study
+      operationId: getStudyTimeline
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: participant
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
+        - name: studyGroup
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
+        - name: referenceDate
+          in: query
+          description: reference date used to calculate relative schedules
+          schema:
+            type: string
+            format: date-time
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successfully returned study timeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyTimeline'
+        '404':
+          description: Not found
+
 
   /studies/{studyId}/studyGroups:
     post:
@@ -1466,6 +1526,65 @@ components:
         noSchedule:
           type: boolean
           default: false
+
+
+    StudyTimeline:
+      type: object
+      properties:
+        observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationTimelineEvent'
+        interventions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterventionTimelineEvent'
+
+    ObservationTimelineEvent:
+      type: object
+      properties:
+        observationId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        type:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        hidden:
+          type: boolean
+        scheduleType:
+          type: string
+
+    InterventionTimelineEvent:
+      type: object
+      properties:
+        interventionId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        type:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        scheduleType:
+          type: string
 
     EndpointToken:
       type: object

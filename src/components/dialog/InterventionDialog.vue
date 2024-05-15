@@ -22,7 +22,7 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
-  import PropertyInputs from './shared/ProprtyInputs.vue';
+  import PropertyInputs from './shared/PropertyInputs.vue';
 
   import {
     CronProperty,

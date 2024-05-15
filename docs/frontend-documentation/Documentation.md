@@ -94,7 +94,7 @@ The columns array define which properties will be shown in the table and which f
 ![StudyGroup Table](./img/study-groups.png)
 
 ### 4.2 Dialog
-Another batch of important reusable components are the **Dialogs**, which are based on the [Primevue Dynamic Dialog](https://primevue.org/dynamicdialog/) or the [Primevue Confnirmation Dialog](https://primevue.org/confirmdialog/). Their main function is to create/edit an entity or provide further information to actions taken, that are required to be confirmed by the researcher (```./src/components.dialogs```).
+Another batch of important reusable components are the **Dialogs**, which are based on the [Primevue Dynamic Dialog](https://primevue.org/dynamicdialog/) or the [Primevue Confirmation Dialog](https://primevue.org/confirmdialog/). Their main function is to create/edit an entity or provide further information to actions taken, that are required to be confirmed by the researcher (```./src/components.dialogs```).
 
 Note: A dialog takes in the data that has to be displayed or edited (```data: {...}```) and uses the ```toClose()``` event to save/delete/close the item referred to.
 
@@ -123,7 +123,7 @@ dialog.open(StudyDialog, {
 ***Create Study Dialog***
 ![Create Study Dialog](./img/create-study.png)
 
-***Delete StudyGroup Dilaog***
+***Delete StudyGroup Dialog***
 ![Delete StudyGroup Dialog](./img/delete-study-group.png)
 
 ### 4.3 InputProperty Components
@@ -193,7 +193,7 @@ The ```validate(): string | undefined {...}``` function defines how each propert
 ```
 
 #### 4.4.3 Parsing and mapping a property
-To parse a ```Proeprty<T>``` both the specific ```Component Factory``` for an observation, trigger or action and the ```values``` of already existing components (if present) have to be mapped on another. Each Component can have more than one property. The property type is defined inside the ```Component Factory``` which is mapped by id on each property.
+To parse a ```Property<T>``` both the specific ```Component Factory``` for an observation, trigger or action and the ```values``` of already existing components (if present) have to be mapped on another. Each Component can have more than one property. The property type is defined inside the ```Component Factory``` which is mapped by id on each property.
 
 ***TriggerFactory Cron Property (triggerTypeProps)***
 
@@ -217,7 +217,7 @@ const properties: Ref<Property<any>[]> = ref(
 ```
 
 #### 4.4.4 Vue Template
-The parsed Input Property is processed by a specific Input Proeprty Template, that defines how the Property UI should look like. Input Property Templates are saved inside the ```./src/components/dialog/shared``` directory. The ```PropertyInputs.vue``` component collects every existing input property component and runs from the parent given Property Array through them, to render Input Components based on the Property instance types.
+The parsed Input Property is processed by a specific Input Property Template, that defines how the Property UI should look like. Input Property Templates are saved inside the ```./src/components/dialog/shared``` directory. The ```PropertyInputs.vue``` component collects every existing input property component and runs from the parent given Property Array through them, to render Input Components based on the Property instance types.
 
 ##### 4.4.4.1 Emits
 The ```PropertyInput.vue``` component uses two ``emits`` to process the change of data.
@@ -305,7 +305,7 @@ The ```editable``` property tells the input component, if the form section is ed
 </template>
 ```
 
-***Watches the input proeprty and emits changes to the PropertyInput.vue***
+***Watches the input property and emits changes to the PropertyInput.vue***
 ```
   watch(props.property, () => {
     emit('onInputChange', props.property);
