@@ -40,6 +40,7 @@
     "placeholder": {
       "entireStudy": "Entire study",
       "chooseDropdownOptionDefault": "Choose option",
+      "optionsSelected": "options selected",
       "chooseRole": "Choose role",
       "noGroup": "No group"
     },
@@ -64,7 +65,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "timeline": "Timeline"
     },
     "tabLink": {
       "overview": "Overview",
@@ -72,7 +74,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "timeline": "Timeline"
     }
   },
 
@@ -398,6 +401,10 @@
         "warning": "Participants will be randomly assigned to the created study groups. They are evenly seperated to the groups. Reassigning participants will assign all participants randomly to your groups again.",
         "confirm": "Distribution of participants can't be revoked. Are you sure you want to assign the participants to your study groups?"
       }
+    },
+    "placeholder": {
+      "allParticipants": "All participants",
+      "chooseParticipant": "Choose a participant"
     }
   },
 
@@ -680,6 +687,16 @@
     "description": {
       "provideTriggerConfig": "Enter the config for the trigger",
       "provideActionConfig": "Enter the config for the action"
+    }
+  },
+
+  "timeline": {
+    "labels": {
+      "relativeDate": "Relative Date",
+      "studyStart": "Study start",
+      "studyEnd": "Study end",
+      "type": "Type",
+      "chooseType": "Choose type"
     }
   },
 

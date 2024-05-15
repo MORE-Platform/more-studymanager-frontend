@@ -40,6 +40,7 @@
     "placeholder": {
       "entireStudy": "Gesamte Studie",
       "chooseDropdownOptionDefault": "Option auswählen",
+      "optionsSelected": "Optionen ausgewählt",
       "chooseRole": "Rolle(n) auswählen",
       "noGroup": "Keine Gruppe"
     },
@@ -64,7 +65,8 @@
       "participants": "Teilnehmer:innen",
       "observations": "Datenerhebungen",
       "interventions": "Interventionen",
-      "integration": "Integrationen"
+      "integration": "Integrationen",
+      "timeline": "Zeitlinie"
     },
     "tabLink": {
       "overview": "Overview",
@@ -72,7 +74,8 @@
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations"
+      "integration": "Integrations",
+      "timeline": "Timeline"
     }
   },
 
@@ -174,7 +177,7 @@
     },
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
-      "addDuration": "Bitte fügen Sie einen Wert und eine Einhait im Feld hinzu.",
+      "addDuration": "Bitte fügen Sie einen Wert und eine Einheit im Feld hinzu.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
@@ -244,8 +247,9 @@
       "description": "Die unten angeführte Liste zeigt alle Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
       "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
       "labels": {
-        "exportStudyConfig": "Studienconfiguration herunterladen",
-        "exportStudyData": "Studiendaten herunterladen"
+        "exportStudyConfig": "Studienkonfiguration herunterladen",
+        "exportStudyData": "Studiendaten herunterladen",
+        "exportStudyCalendar": "Studienkalender exportieren"
       },
       "action": {
         "addStudy": "Neue Studie hinzufügen",
@@ -399,6 +403,10 @@
         "warning": "Die automatische Zuweisung von Studienteilnehmer:innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Waren Teilnehmer:innen schon Gruppen zugewiesen, werden ALLE Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
         "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer:innen automatisch Studiengruppen zuweisen?"
       }
+    },
+    "placeholder": {
+      "allParticipants": "Alle Teilnehmer:innen",
+      "chooseParticipant": "Teilnehmer:in auswählen"
     }
   },
 
@@ -681,6 +689,16 @@
     "description": {
       "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu.",
       "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
+    }
+  },
+
+  "timeline": {
+    "labels": {
+      "relativeDate": "Relatives Startdatum",
+      "studyStart": "Studienstart",
+      "studyEnd": "Studienende",
+      "type": "Typ",
+      "chooseType": "Typ auswählen"
     }
   },
 

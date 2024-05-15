@@ -70,6 +70,12 @@ Licensed under the Elastic License 2.0. */
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
+      title: t('studyNavigation.tabs.timeline'),
+      name: t('studyNavigation.tabLink.timeline'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Admin, StudyRole.Operator],
+    },
+    {
       title: t('studyNavigation.tabs.data'),
       name: t('studyNavigation.tabLink.data'),
       params: { studyId: props.studyId },

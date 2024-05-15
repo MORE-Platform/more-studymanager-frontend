@@ -8,7 +8,7 @@ Licensed under the Elastic License 2.0. */
   import { Action, ComponentFactory } from '../../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../../models/InputModels';
-  import PropertyInputs from './ProprtyInputs.vue';
+  import PropertyInputs from './PropertyInputs.vue';
   import { Context } from '../../../models/ContextModel';
 
   const { t } = useI18n();
