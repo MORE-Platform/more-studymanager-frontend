@@ -5,9 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
-  // integrationList
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { StudyStatus } from '../generated-sources/openapi';
   import { useStudyStore } from '../stores/studyStore';
   import IntegrationList from '../components/IntegrationList.vue';
 
@@ -25,7 +23,7 @@ Licensed under the Elastic License 2.0. */
     <Suspense>
       <IntegrationList
         :study-id="studyStore.studyId"
-        :actions-visible="studyStore.study.status !== StudyStatus.Closed"
+        :study-status="studyStore.studyStatus"
       />
     </Suspense>
   </div>

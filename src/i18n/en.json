@@ -513,6 +513,7 @@
     "dialog": {
       "header": {
         "delete": "Delete integration",
+        "clone": "Clone integration",
         "create": "Create integration",
         "tokenCopy": "Copy token"
       },

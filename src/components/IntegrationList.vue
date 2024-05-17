@@ -10,8 +10,9 @@ Licensed under the Elastic License 2.0. */
     EndpointToken,
     Observation,
     StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
-  import { ref, Ref } from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { useDialog } from 'primevue/usedialog';
@@ -20,6 +21,7 @@ Licensed under the Elastic License 2.0. */
     MoreIntegrationTableMap,
     MoreTableAction,
     MoreTableFieldType,
+    MoreTableRowActionResult,
   } from '../models/MoreTableModel';
   import { useI18n } from 'vue-i18n';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -37,15 +39,11 @@ Licensed under the Elastic License 2.0. */
   const loader = useLoader();
 
   const props = defineProps({
-    studyId: {
-      type: Number,
-      required: true,
-    },
-    actionsVisible: {
-      type: Boolean,
-      default: false,
-    },
+    studyId: { type: Number, required: true },
+    studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
+
+  const actionsVisible = props.studyStatus !== StudyStatus.Closed;
 
   const observationList: Ref<Observation[]> = ref([]);
   const integrationList: Ref<MoreIntegrationTableMap[]> = ref([]);
@@ -140,10 +138,15 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
+      id: 'clone',
+      label: t('global.labels.clone'),
+      visible: () => actionsVisible,
+    },
+    {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
-      visible: () => props.actionsVisible,
+      visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('integration.dialog.header.delete'),
         message: t('integration.dialog.msg.delete'),
@@ -188,16 +191,21 @@ Licensed under the Elastic License 2.0. */
       id: 'create',
       icon: 'pi pi-plus',
       label: t('integration.integrationList.action.add'),
-      visible: () => props.actionsVisible,
+      visible: () => actionsVisible,
     },
   ];
 
-  function execute(action: any) {
+  function execute(action: MoreTableRowActionResult<any>) {
     switch (action.id) {
       case 'delete':
         return deleteIntegration(action.row);
       case 'create':
         return openIntegrationDialog(t('integration.dialog.header.create'));
+      case 'clone':
+        return createIntegration({
+          observationId: action.row.observationId,
+          tokenLabel: action.row.tokenLabel,
+        } as MoreIntegrationLink);
     }
   }
 
@@ -282,7 +290,7 @@ Licensed under the Elastic License 2.0. */
   function openInfoDialog(token: EndpointToken) {
     dialog.open(CopyTokenDialog, {
       data: {
-        title: token.tokenLabel + ' (Id: ' + token.tokenId + ')',
+        title: `${token.tokenLabel} (Id: ${token.tokenId})`,
         message: t('integration.dialog.msg.createdToken'),
         highlightMsg: token.token,
       },
@@ -297,6 +305,7 @@ Licensed under the Elastic License 2.0. */
         },
         modal: true,
         draggable: false,
+        closeOnEscape: false,
       },
     });
   }
