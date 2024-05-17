@@ -85,7 +85,7 @@
       "purpose": "Zielsetzung",
       "status": "Status",
       "roles": "Rolle(n)",
-      "duration":"Studiendauer",
+      "duration": "Studiendauer",
       "plannedStart": "Geplanter Start",
       "actualStart": "Aktueller Start",
       "plannedEnd": "Geplantes Ende",
@@ -93,7 +93,7 @@
       "participantInfo": "Teilnehmerinformationen",
       "consentInfo": "Berechtigungsinformation",
       "language": "Sprache",
-      "studyGroup":  "Studiengruppe",
+      "studyGroup": "Studiengruppe",
       "finishText": "Information nach Studienabschluss"
     },
     "ical": {
@@ -107,29 +107,52 @@
       "viewer": "Studien-Beobachter"
     },
     "statusChange": {
-      "start": "Start",
-      "pause": "Pause",
+      "start": "Studie Starten",
+      "pause": "Studie Pausieren",
+      "edit": "Studie Bearbeiten",
       "resume": "Fortsetzen",
       "complete": "Abschließen",
-      "changeMsg": {
-        "toActive":{
+      "complete-preview": "Preview Beenden",
+      "start-preview": "Preview Starten",
+      "resume-preview": "Preview Fortsetzen",
+      "pause-preview": "Preview Pausieren",
+      "transition": {
+        "draft-active": {
           "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
           "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen. Ist der geplante Start nach dem heutigen Datum, wird dieser mit der Statusänderung auf das aktuelle Startdatum gesetzt.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
         },
-        "toPaused":{
+        "active-paused": {
           "intro": "Sie sind im Begriff den Studienstatus auf 'PAUSIERT' zu setzen.",
           "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird.",
           "confirm": "Möchten Sie den Studienstatus wirklich auf 'PAUSIERT' setzen?"
         },
-        "pausedToActive": {
+        "paused-active": {
           "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen.",
           "confirm": "Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
         },
-        "toCompleted":{
+        "active-closed": {
           "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
           "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer:innen auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich, neue Daten einzubringen oder weiter teilzunehmen.",
           "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
+        },
+        "draft-preview": {
+          "intro": "Sie sind im Begriff die Studie im Preview-Modus zu starten",
+          "warning": "Alle Daten die während der Preview aufgezeichnet werden, werden beim Beenden der Preview verworfen.",
+          "confirm": "Preview Starten"
+        },
+        "preview-paused-preview": {
+          "intro": "Sie sind im Begriff die Preview zu pausieren",
+          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis die Preview fortgesetzt wird."
+        },
+        "paused-preview-preview": {
+          "intro": "Sie sind im Begriff die Preview fortzusetzten",
+          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen."
+        },
+        "preview-draft": {
+          "intro": "Sie sind im Begriff die Preview zu beenden",
+          "warning": "Alle aufgezeichneten Daten werden beim Beenden verworfen. Die Teilnehmer werden erneut initialisiert.",
+          "confirm": "Preview beenden und Daten verwerfen"
         }
       },
       "dialog": {
@@ -142,10 +165,12 @@
       }
     },
     "statusStrings": {
-      "paused": "Pausiert",
       "active": "Aktiv",
+      "closed": "Beendet",
       "draft": "Entwurf",
-      "closed": "Beendet"
+      "paused": "Pausiert",
+      "paused-preview": "Pausiert (Preview)",
+      "preview": "Preview"
     },
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
@@ -175,7 +200,7 @@
       "finishText": "Geben Sie Informatonen ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird."
     },
     "dialog": {
-      "header":{
+      "header": {
         "edit": "Studie bearbeiten",
         "create": "Studie erstellen",
         "delete": "Studie löschen",
@@ -240,7 +265,7 @@
       },
       "msg": {
         "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
-        },
+      },
       "deleteMsg": {
         "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie.",
         "intro": "Sie sind kurz davor folgende Studiengruppe zu löschen:",
@@ -266,7 +291,7 @@
     }
   },
 
-  "studyCollaborator":{
+  "studyCollaborator": {
     "dialog": {
       "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
       "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
@@ -321,7 +346,7 @@
   "participants": {
     "singular": "Teilnehmer",
     "plural": "Teilnehmer",
-    "props":{
+    "props": {
       "participantId": "Teilnehmer ID",
       "alias": "Alias",
       "token": "Token",
@@ -433,7 +458,6 @@
       "polarVerity": {
         "title": "Polar Verity Sensor",
         "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln."
-
       },
       "external": {
         "title": "Externe Datenerhebung",
@@ -462,9 +486,9 @@
         "description": "Diese Datenerhebung ermöglicht es, Bewegungsdaten über das Smartphone zu sammeln."
       }
     },
-    "error":  {
+    "error": {
       "noValidField": "Fehler im Wert",
-      "addTitle":  "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addTitle": "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addScheduler": "Planer",
       "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein."
@@ -524,7 +548,7 @@
         "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?"
       }
     },
-    "integrationList":{
+    "integrationList": {
       "title": "Externe Datenintegration",
       "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmoduls verlinkt werden. Dieses sammelt und integriert durch diese definierte Daten.",
       "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
@@ -546,7 +570,7 @@
       "action": "Aktion",
       "actions": "Aktionen"
     },
-    "dialog":  {
+    "dialog": {
       "title": "Intervention",
       "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Aktion für Ihre Intervention hinzu.",
       "header": {
@@ -598,13 +622,13 @@
       }
     },
     "factory": {
-      "trigger":{
+      "trigger": {
         "scheduled": {
           "title": "Scheduled Trigger",
           "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler aus.",
           "configProps": {
-              "cronName": "Cron Schedule",
-              "cronDesc":  "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n"
+            "cronName": "Cron Schedule",
+            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n"
           }
         },
         "scheduledDatacheck": {
@@ -626,7 +650,8 @@
         "pushNotification": {
           "title": "Push-Benachrichtigung Aktion",
           "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition."
-        },"triggerObservation": {
+        },
+        "triggerObservation": {
           "title": "Beobachtung auslösen",
           "description": "Starte eine Beobachtung aktiv",
           "properties": {
@@ -638,7 +663,7 @@
         }
       }
     },
-    "error":  {
+    "error": {
       "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
       "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu.",
@@ -687,7 +712,7 @@
       "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
       "asterisk": "Alle Werte (z.B. jede Minute)"
     },
-    "example":{
+    "example": {
       "title": "Cron Scheduler Beispiele",
       "titles": {
         "everyMinute": "Jede Minute",
@@ -716,7 +741,7 @@
     },
     "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
     "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
-    "additionalConfig":  "Zusätzliche Konfiguration",
+    "additionalConfig": "Zusätzliche Konfiguration",
     "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
     "quickStart": "oder verwenden Sie den <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a>, um schnell starten zu können.",
     "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
@@ -725,7 +750,7 @@
 
   "scheduler": {
     "singular": "Planer",
-    "type":{
+    "type": {
       "Event": "Absoluter Zeitplan",
       "RelativeEvent": "Relativer Zeitplan"
     },
@@ -805,7 +830,7 @@
         "SO": "So"
       }
     },
-    "months":{
+    "months": {
       "january": "Jänner",
       "february": "Februar",
       "march": "März",
@@ -813,7 +838,7 @@
       "mai": "Mai",
       "june": "Juni",
       "july": "Juli",
-      "august":  "August",
+      "august": "August",
       "september": "September",
       "october": "Oktober",
       "november": "November",
@@ -826,7 +851,7 @@
         "mai": "Mai",
         "june": "Jun",
         "july": "Jul",
-        "august":  "Aug",
+        "august": "Aug",
         "september": "Sep",
         "october": "Okt",
         "november": "Nov",
@@ -838,23 +863,23 @@
       "second": "zweites",
       "third": "drittes",
       "fourth": "viertes",
-      "last":  "letztes"
+      "last": "letztes"
     },
-    "labels":  {
-      "after":  "Nach",
+    "labels": {
+      "after": "Nach",
       "on": "Am",
-      "every":  "Jede(s)",
-      "openScheduler":  "Absoluten Zeitplaner hinzufügen",
+      "every": "Jede(s)",
+      "openScheduler": "Absoluten Zeitplaner hinzufügen",
       "editScheduler": "Absoluten Zeitplaner bearbeiten",
       "openRelativeScheduler": "Relativen Zeitplaner hinzfügen",
       "editRelativeScheduler": "Relativen Zeitplaner bearbeiten",
-      "removeScheduler":  "Zeitplaner entfernen",
-      "frequency":  "Frequenz",
+      "removeScheduler": "Zeitplaner entfernen",
+      "frequency": "Frequenz",
       "repetitionEnd": "Wiederholungsende",
       "repeat": "Wiederholung",
       "date": "Datum",
       "timeframe": "Zeitraum",
-      "selection":{
+      "selection": {
         "specificDay": "An einem spezifischen Tag",
         "allDaysInWeek": "Alle Tage der Woche",
         "allWeekdays": "Nur Arbeitstage",
@@ -918,7 +943,7 @@
         "description": "Eine absolute Zeitplanung umfasst absolute Datum und Zeit Angaben. Beobachtungen können durch absolute Daten und Zeitfenster zeitlich festgelegt werden."
       },
       "relativeSchedule": {
-        "dialogTitle":"Relativen Zeitplan verwalten",
+        "dialogTitle": "Relativen Zeitplan verwalten",
         "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
         "startValue": "Startet am",
         "endValue": "Endet am",
@@ -938,7 +963,7 @@
           "enterNumber": "Nummer eingeben"
         },
         "error": {
-          "dtstart":{
+          "dtstart": {
             "addOffset": "Befülle den Offset des relativen Startzeitraum."
           },
           "dtend": {
@@ -993,4 +1018,3 @@
   "title": "Titel",
   "message": "Nachricht"
 }
-

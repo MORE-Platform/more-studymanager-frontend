@@ -7,10 +7,13 @@ Licensed under the Elastic License 2.0. */
   import { inject } from 'vue';
   import Button from 'primevue/button';
   import { Study, StudyStatus } from '../../generated-sources/openapi';
+  import { useI18n } from 'vue-i18n';
+  import StudyStatusPill from '../study/StudyStatusPill.vue';
 
+  const { te } = useI18n();
   const dialogRef: any = inject('dialogRef');
-  const study: Study = dialogRef.value.data?.study || {};
-  const changedStatus: string = dialogRef.value.data?.changedStatus || '';
+  const study: Study = dialogRef.value.data.study;
+  const changedStatus: StudyStatus = dialogRef.value.data.changedStatus;
 
   function setStudyStatus() {
     dialogRef.value.close(changedStatus);
@@ -21,17 +24,15 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="dialog">
-    <div class="mb-6">
-      <span v-if="changedStatus === StudyStatus.Active">
-        {{ $t('study.statusChange.changeMsg.toActive.intro') }}
-      </span>
-      <span v-else-if="changedStatus === StudyStatus.Paused">
-        {{ $t('study.statusChange.changeMsg.toPaused.intro') }}
-      </span>
-      <span v-else-if="changedStatus === StudyStatus.Closed">
-        {{ $t('study.statusChange.changeMsg.toCompleted.intro') }}
-      </span>
+  <div
+    v-for="i18nKey in [
+      `study.statusChange.transition.${study.status}-${changedStatus}`,
+    ]"
+    :key="i18nKey"
+    class="dialog"
+  >
+    <div v-if="te(`${i18nKey}.intro`)" class="mb-6">
+      {{ $t(`${i18nKey}.intro`) }}
     </div>
     <h3 class="mb-3 font-medium">
       <span class="text-color"> Id {{ study.studyId }}: </span>
@@ -39,42 +40,19 @@ Licensed under the Elastic License 2.0. */
     </h3>
     <h5 class="mb-7 font-medium">
       {{ $t('study.statusChange.labels.changeTo') }}
-      <span
-        class="status text-color ml-1 mr-1 rounded p-1 text-center uppercase"
-        :class="[
-          [study.status == StudyStatus.Active ? 'active text-green-400' : ''],
-          [
-            study.status === StudyStatus.Paused ||
-            study.status === StudyStatus.Draft
-              ? 'draft text-gray-400'
-              : '',
-          ],
-        ]"
-      >
-        {{ $t('study.statusStrings.' + study.status) }}
-      </span>
+      <StudyStatusPill :status="study.status!" />
       {{ $t('global.labels.to') }}
-      <span
-        class="status text-color mr-1 ml-1 rounded p-1 text-center uppercase"
-        :class="[
-          [changedStatus == StudyStatus.Active ? 'active text-green-400' : ''],
-          [
-            changedStatus === StudyStatus.Paused ||
-            changedStatus === StudyStatus.Draft
-              ? 'draft text-gray-400'
-              : '',
-          ],
-        ]"
-      >
-        {{ $t('study.statusStrings.' + changedStatus) }}
-      </span>
+      <StudyStatusPill :status="changedStatus" />
     </h5>
     <div class="mb-10">
       <h5 class="font-bold">{{ $t('study.props.purpose') }}</h5>
       <div>{{ study.purpose }}</div>
     </div>
     <div class="mb-8 mt-10 px-14">
-      <div class="grid grid-cols-12 place-items-center gap-4">
+      <div
+        v-if="te(i18nKey)"
+        class="grid grid-cols-12 place-items-center gap-4"
+      >
         <div class="col-span-2">
           <svg
             id="exclamation"
@@ -106,37 +84,11 @@ Licensed under the Elastic License 2.0. */
           </svg>
         </div>
         <div class="col-span-10">
-          <div class="mb-2">
-            <span v-if="changedStatus === StudyStatus.Active">
-              <span v-if="study.status === StudyStatus.Draft">
-                {{ $t('study.statusChange.changeMsg.toActive.warning') }}
-              </span>
-              <span v-else class="active">
-                {{ $t('study.statusChange.changeMsg.pausedToActive.warning') }}
-              </span>
-            </span>
-            <span v-else-if="changedStatus === StudyStatus.Paused">
-              {{ $t('study.statusChange.changeMsg.toPaused.warning') }}
-            </span>
-            <span v-else-if="changedStatus === StudyStatus.Closed">
-              {{ $t('study.statusChange.changeMsg.toCompleted.warning') }}
-            </span>
+          <div v-if="te(`${i18nKey}.warning`)" class="mb-2">
+            {{ $t(`${i18nKey}.warning`) }}
           </div>
-          <div class="font-medium text-red-600">
-            <span v-if="changedStatus === StudyStatus.Active">
-              <span v-if="study.status === StudyStatus.Draft">
-                {{ $t('study.statusChange.changeMsg.toActive.confirm') }}
-              </span>
-              <span v-else>
-                {{ $t('study.statusChange.changeMsg.pausedToActive.confirm') }}
-              </span>
-            </span>
-            <span v-else-if="changedStatus === StudyStatus.Paused">
-              {{ $t('study.statusChange.changeMsg.toPaused.confirm') }}
-            </span>
-            <span v-else-if="changedStatus === StudyStatus.Closed">
-              {{ $t('study.statusChange.changeMsg.toCompleted.confirm') }}
-            </span>
+          <div v-if="te(`${i18nKey}.confirm`)" class="font-medium text-red-600">
+            {{ $t(`${i18nKey}.confirm`) }}
           </div>
         </div>
       </div>

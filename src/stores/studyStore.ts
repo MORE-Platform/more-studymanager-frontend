@@ -49,13 +49,18 @@ export const useStudyStore = defineStore('study', () => {
   async function updateStudyStatus(status: StudyStatus) {
     if (study.value.studyId) {
       if (
-        status === 'active' &&
-        !study.value.start &&
-        study.value.plannedStart &&
-        new Date(study.value.plannedStart) > new Date()
+        status === StudyStatus.Active ||
+        status === StudyStatus.Preview ||
+        status === StudyStatus.Draft
       ) {
-        study.value.plannedStart = new Date().toISOString();
-        study.value.status = status;
+        if (
+          status === StudyStatus.Active &&
+          !study.value.start &&
+          study.value.plannedStart &&
+          new Date(study.value.plannedStart) > new Date()
+        ) {
+          study.value.plannedStart = new Date().toISOString();
+        }
         await studiesApi
           .updateStudy(study.value.studyId, study.value)
           .then(() => {
@@ -63,14 +68,28 @@ export const useStudyStore = defineStore('study', () => {
               .setStatus(study.value.studyId as number, { status })
               .then(() => {
                 study.value.status = status;
-                study.value.start = new Date().toISOString();
+                if (
+                  status === StudyStatus.Active ||
+                  status === StudyStatus.Preview
+                ) {
+                  study.value.start = new Date().toISOString();
+                } else if (status === StudyStatus.Draft) {
+                  study.value.start = undefined;
+                }
+              })
+              .catch((e: AxiosError) => {
+                alert('Could not update study status');
+                handleIndividualError(
+                  e,
+                  'Could not update study status' + study.value.studyId
+                );
               });
           })
           .catch((e: AxiosError) => {
-            alert('Could not update study status');
+            alert('Could not update study');
             handleIndividualError(
               e,
-              'Could not update study status' + study.value.studyId
+              'Could not update study' + study.value.studyId
             );
           });
       } else {

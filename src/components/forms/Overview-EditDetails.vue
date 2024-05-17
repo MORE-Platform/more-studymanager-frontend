@@ -39,8 +39,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   function updateStudyStatus(status: StudyStatus) {
-    //emit('onUpdateStudyStatus', status);
-
     dialog.open(ChangeStudyStatusDialog, {
       data: {
         study: props.study,
@@ -84,7 +82,7 @@ Licensed under the Elastic License 2.0. */
         draggable: false,
       },
       onClose: (options) => {
-        if (options) {
+        if (options?.data) {
           updateStudy(options.data as Study);
         }
       },
@@ -105,38 +103,31 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
-    <div class="mb-8 flex justify-start">
-      <div
-        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 pr-3 2xl:grid-cols-5"
-        :style="
-          props.userRoles.find((r) => r === StudyRole.Admin)
-            ? 'width:89%;'
-            : 'width:100%'
-        "
-      >
-        <div>
+    <div class="mb-8 flex justify-between">
+      <div class="grid grid-cols-3 gap-x-6 pr-3 2xl:grid-cols-5">
+        <div class="order-1 grid content-center 2xl:order-1">
           <span class="font-bold">{{ $t('study.props.plannedStart') }}: </span
           >{{ dayjs(study.plannedStart).format('DD/MM/YYYY') }}
         </div>
-        <div>
+        <div class="order-4 grid content-center 2xl:order-2">
           <span class="font-bold">{{ $t('study.props.actualStart') }}: </span>
           <span v-if="study.start">{{
             dayjs(study.start).format('DD/MM/YYYY')
           }}</span
           ><span v-else>-</span>
         </div>
-        <div>
+        <div class="order-2 grid content-center 2xl:order-3">
           <span class="font-bold">{{ $t('study.props.plannedEnd') }}: </span
           >{{ dayjs(study.plannedEnd).format('DD/MM/YYYY') }}
         </div>
-        <div>
+        <div class="order-5 grid content-center 2xl:order-4">
           <span class="font-bold">{{ $t('study.props.actualEnd') }}: </span>
           <span v-if="study.end">{{
             dayjs(study.end).format('DD/MM/YYYY')
           }}</span
           ><span v-else>-</span>
         </div>
-        <div>
+        <div class="order-3 grid content-center 2xl:order-5">
           <span class="font-bold">{{ $t('study.props.duration') }}: </span>
           <span v-if="study.duration?.value && study.duration.unit">{{
             `${study.duration.value} ${t(
@@ -156,11 +147,11 @@ Licensed under the Elastic License 2.0. */
           v-if="props.study.status !== StudyStatus.Closed"
           class="buttons"
           type="button"
-          title="Edit Study Details"
+          :title="$t('study.statusChange.edit')"
           :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
       props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
           @click="openEditDialog()"
-          ><span>{{ $t('global.labels.edit') }}</span></Button
+          ><span>{{ $t('study.statusChange.edit') }}</span></Button
         >
       </div>
     </div>

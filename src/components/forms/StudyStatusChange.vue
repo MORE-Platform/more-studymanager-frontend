@@ -18,43 +18,72 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Draft" class="buttons">
     <Button
       type="button"
-      title="Start"
+      :title="$t('study.statusChange.start-preview')"
+      @click="emit('onchange', StudyStatus.Preview)"
+      >{{ $t('study.statusChange.start-preview') }}</Button
+    >
+    <Button
+      type="button"
+      :title="$t('study.statusChange.start')"
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.start') }}</Button
     >
-    <!--icon="pi pi-play"-->
+  </div>
+  <div v-if="status === StudyStatus.Preview" class="buttons">
+    <Button
+      type="button"
+      :title="$t('study.statusChange.pause-preview')"
+      @click="emit('onchange', StudyStatus.PausedPreview)"
+      >{{ $t('study.statusChange.pause-preview') }}</Button
+    >
+    <Button
+      type="button"
+      :title="$t('study.statusChange.complete-preview')"
+      @click="emit('onchange', StudyStatus.Draft)"
+      >{{ $t('study.statusChange.complete-preview') }}</Button
+    >
   </div>
   <div v-if="status === StudyStatus.Active" class="buttons">
     <Button
       type="button"
-      title="Pause"
+      :title="$t('study.statusChange.pause')"
       @click="emit('onchange', StudyStatus.Paused)"
-      >{{ $t('global.labels.setPause') }}</Button
+      >{{ $t('study.statusChange.pause') }}</Button
     >
-    <!--icon="pi pi-pause"-->
     <Button
       type="button"
-      title="Close"
+      :title="$t('study.statusChange.complete')"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >
-    <!--icon="pi pi-stop-circle"-->
+  </div>
+  <div v-if="status === StudyStatus.PausedPreview" class="buttons">
+    <Button
+      type="button"
+      :title="$t('study.statusChange.resume-preview')"
+      @click="emit('onchange', StudyStatus.Preview)"
+      >{{ $t('study.statusChange.resume-preview') }}</Button
+    >
+    <Button
+      type="button"
+      :title="$t('study.statusChange.complete-preview')"
+      @click="emit('onchange', StudyStatus.Draft)"
+      >{{ $t('study.statusChange.complete-preview') }}</Button
+    >
   </div>
   <div v-if="status === StudyStatus.Paused" class="buttons">
     <Button
       type="button"
-      title="Resume"
+      :title="$t('study.statusChange.resume')"
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.resume') }}</Button
     >
-    <!--icon="pi pi-play"-->
     <Button
       type="button"
-      title="Close"
+      :title="$t('study.statusChange.complete')"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >
-    <!-- icon="pi pi-stop-circle"-->
   </div>
 </template>
 
