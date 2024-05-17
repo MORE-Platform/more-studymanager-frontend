@@ -42,7 +42,7 @@ Licensed under the Elastic License 2.0. */
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timer;
+  let timer: NodeJS.Timeout | number;
 
   function loadData() {
     timer ??= setInterval(function () {

@@ -36,7 +36,7 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
-  let timer: NodeJS.Timer;
+  let timer: NodeJS.Timeout | number;
 
   function loadData() {
     timer ??= setInterval(function () {

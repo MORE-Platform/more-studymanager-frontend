@@ -1,17 +1,14 @@
-const fs = require('fs');
-const postcss = require('postcss');
-const atImport = require('postcss-import');
+import fs from 'fs';
+import postcss from 'postcss';
+import atImport from 'postcss-import';
+import tailwindcssNesting from 'tailwindcss/nesting/index.js';
+import tailwindCss from 'tailwindcss';
 const pcss = fs.readFileSync('./src/style.pcss', 'utf8');
 
 postcss().use(atImport()).process(pcss, {
   from: './src/style.pcss',
 });
 
-module.exports = {
-  plugins: [
-    require('postcss-import'),
-    require('tailwindcss/nesting'),
-    require('tailwindcss'),
-    //require('autoprefixer')
-  ],
+export default {
+  plugins: [atImport, tailwindcssNesting, tailwindCss],
 };
