@@ -18,13 +18,13 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Draft" class="buttons">
     <Button
       type="button"
-      title="Preview"
+      :title="$t('study.statusChange.start-preview')"
       @click="emit('onchange', StudyStatus.Preview)"
       >{{ $t('study.statusChange.start-preview') }}</Button
     >
     <Button
       type="button"
-      title="Start"
+      :title="$t('study.statusChange.start')"
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.start') }}</Button
     >
@@ -32,13 +32,13 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Preview" class="buttons">
     <Button
       type="button"
-      title="Pause Preview"
+      :title="$t('study.statusChange.pause-preview')"
       @click="emit('onchange', StudyStatus.PausedPreview)"
-      >{{ $t('study.statusChange.pause') }}</Button
+      >{{ $t('study.statusChange.pause-preview') }}</Button
     >
     <Button
       type="button"
-      title="Complete Preview"
+      :title="$t('study.statusChange.complete-preview')"
       @click="emit('onchange', StudyStatus.Draft)"
       >{{ $t('study.statusChange.complete-preview') }}</Button
     >
@@ -46,13 +46,13 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Active" class="buttons">
     <Button
       type="button"
-      title="Pause"
+      :title="$t('study.statusChange.pause')"
       @click="emit('onchange', StudyStatus.Paused)"
       >{{ $t('study.statusChange.pause') }}</Button
     >
     <Button
       type="button"
-      title="Close"
+      :title="$t('study.statusChange.complete')"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >
@@ -60,13 +60,13 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.PausedPreview" class="buttons">
     <Button
       type="button"
-      title="Resume Preview"
+      :title="$t('study.statusChange.resume-preview')"
       @click="emit('onchange', StudyStatus.Preview)"
       >{{ $t('study.statusChange.resume-preview') }}</Button
     >
     <Button
       type="button"
-      title="Complete Preview"
+      :title="$t('study.statusChange.complete-preview')"
       @click="emit('onchange', StudyStatus.Draft)"
       >{{ $t('study.statusChange.complete-preview') }}</Button
     >
@@ -74,13 +74,13 @@ Licensed under the Elastic License 2.0. */
   <div v-if="status === StudyStatus.Paused" class="buttons">
     <Button
       type="button"
-      title="Resume"
+      :title="$t('study.statusChange.resume')"
       @click="emit('onchange', StudyStatus.Active)"
       >{{ $t('study.statusChange.resume') }}</Button
     >
     <Button
       type="button"
-      title="Close"
+      :title="$t('study.statusChange.complete')"
       @click="emit('onchange', StudyStatus.Closed)"
       >{{ $t('study.statusChange.complete') }}</Button
     >

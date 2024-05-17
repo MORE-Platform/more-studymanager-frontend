@@ -6,14 +6,14 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { Study } from '../../generated-sources/openapi';
+  import { Study, StudyStatus } from '../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
   import StudyStatusPill from '../study/StudyStatusPill.vue';
 
   const { te } = useI18n();
   const dialogRef: any = inject('dialogRef');
-  const study: Study = dialogRef.value.data?.study || {};
-  const changedStatus: string = dialogRef.value.data?.changedStatus || '';
+  const study: Study = dialogRef.value.data.study;
+  const changedStatus: StudyStatus = dialogRef.value.data.changedStatus;
 
   function setStudyStatus() {
     dialogRef.value.close(changedStatus);
@@ -40,7 +40,7 @@ Licensed under the Elastic License 2.0. */
     </h3>
     <h5 class="mb-7 font-medium">
       {{ $t('study.statusChange.labels.changeTo') }}
-      <StudyStatusPill :status="study.status!!" />
+      <StudyStatusPill :status="study.status!" />
       {{ $t('global.labels.to') }}
       <StudyStatusPill :status="changedStatus" />
     </h5>
@@ -49,7 +49,6 @@ Licensed under the Elastic License 2.0. */
       <div>{{ study.purpose }}</div>
     </div>
     <div class="mb-8 mt-10 px-14">
-      {{ $t(`${i18nKey}`) }}
       <div
         v-if="te(i18nKey)"
         class="grid grid-cols-12 place-items-center gap-4"

@@ -85,7 +85,7 @@
       "purpose": "Purpose",
       "status": "Status",
       "roles": "Role(s)",
-      "duration":"Study duration",
+      "duration": "Study duration",
       "plannedStart": "Planned Start",
       "actualStart": "Actual start",
       "plannedEnd": "Planned end",
@@ -93,7 +93,7 @@
       "participantInfo": "Participant information",
       "consentInfo": "Consent information",
       "language": "Language",
-      "studyGroup":  "Study group",
+      "studyGroup": "Study group",
       "finishText": "Study end message"
     },
     "ical": {
@@ -107,13 +107,15 @@
       "viewer": "Study Viewer"
     },
     "statusChange": {
-      "start": "Start",
-      "pause": "Pause",
+      "start": "Start Study",
+      "pause": "Pause Study",
+      "edit": "Edit Study",
       "resume": "Resume",
       "complete": "Close",
       "complete-preview": "Complete Preview",
       "start-preview": "Start Preview",
       "resume-preview": "Resume Preview",
+      "pause-preview": "Pause Preview",
       "transition": {
         "draft-active": {
           "intro": "You are about to change your study status to 'ACTIVE'.",
@@ -197,7 +199,7 @@
       "finishTextDesc": "The ending information will be displayed in the App after a study was completed. Is no specific ending information set a default message will be displayed."
     },
     "dialog": {
-      "header":{
+      "header": {
         "edit": "Edit study",
         "create": "Create study",
         "delete": "Delete study",
@@ -220,11 +222,11 @@
         "confirm": "Are you sure you want to delete your study?"
       },
       "msg": {
-        "urlCopied": "Link to study '{title} (Id: {studyId})'  was copied to your clipboard." ,
+        "urlCopied": "Link to study '{title} (Id: {studyId})'  was copied to your clipboard.",
         "delete": "A deleted study can't be restored. Are you sure you want to delete your study?"
       },
       "description": {
-        "study":  "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
         "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
         "durationExample": "Study Start; 01.07.2023 - Study End: 31.12.2023 (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
@@ -263,7 +265,7 @@
       },
       "msg": {
         "delete": "Do you really want to delete this study group?"
-        },
+      },
       "deleteMsg": {
         "warning": "A deleted study group can't be restored. All information and settings of the study group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study.",
         "intro": "You are about to delete the following study group:",
@@ -289,7 +291,7 @@
     }
   },
 
-  "studyCollaborator":{
+  "studyCollaborator": {
     "dialog": {
       "addRole": "Please choose at least one role to continue.",
       "addCollaboratorInfo": "will be added to your collaborator list. ",
@@ -344,7 +346,7 @@
   "participants": {
     "singular": "Participant",
     "plural": "Participants",
-    "props":{
+    "props": {
       "participantId": "Participant ID",
       "alias": "Alias",
       "token": "Token",
@@ -484,9 +486,9 @@
         "description": "This observation enables you to collect accelerometer data via the smartphone sensor."
       }
     },
-    "error":  {
+    "error": {
       "noValidField": "Wrong value",
-      "addTitle":  "The observation title is required. Please enter a title.",
+      "addTitle": "The observation title is required. Please enter a title.",
       "addScheduler": "Scheduler",
       "addParticipantInfo": "The participant information describes the purpose of the observation. Please enter a participant information.",
       "addSchedulerMsg": "Please set the scheduler for your observation."
@@ -545,7 +547,7 @@
         "confirm": "Are you sure you want to delete your integration?"
       }
     },
-    "integrationList":{
+    "integrationList": {
       "title": "External integrations",
       "description": "An external integration can be linked to already existing observations to add and collect data from.",
       "emptyListMsg": "Add an manage your external integrations",
@@ -567,7 +569,7 @@
       "action": "Action",
       "actions": "Actions"
     },
-    "dialog":  {
+    "dialog": {
       "title": "Intervention",
       "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue.",
       "header": {
@@ -597,11 +599,11 @@
         "confirm": "Are you sure you want to delete your intervention?"
       },
       "placeholder": {
-      "title": "Enter title",
-      "message": "Enter message",
+        "title": "Enter title",
+        "message": "Enter message",
         "enterValue": "Enter value",
         "enterNumber": "Enter number"
-    }
+      }
     },
     "interventionList": {
       "title": "Interventions",
@@ -619,13 +621,13 @@
       }
     },
     "factory": {
-      "trigger":{
+      "trigger": {
         "scheduled": {
           "title": "Scheduled Trigger",
           "description": "This trigger triggers and action based on a cron trigger.",
           "configProps": {
             "cronName": "Cron Schedule",
-            "cronDesc":  "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Show further info on possible cron values.</a>\n"
+            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Show further info on possible cron values.</a>\n"
           }
         },
         "scheduledDatacheck": {
@@ -660,7 +662,7 @@
         }
       }
     },
-    "error":  {
+    "error": {
       "addTitle": "The intervention title is required. Please add a title for your intervention.",
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
       "addAction": "The intervention needs at least one Trigger. Please add a trigger.",
@@ -709,7 +711,7 @@
       "questionMark": "No specific value (e.g. any day of the week)",
       "asterisk": "All values (e.g. every minute)"
     },
-    "example":{
+    "example": {
       "title": "Cron Scheduler examples",
       "titles": {
         "everyMinute": "Every minute",
@@ -738,7 +740,7 @@
     },
     "formTitle": "Configure your <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Schedule manually</a> ",
     "formTitleDisabled": "Configuration of your Cron Schedule",
-    "additionalConfig":  "Additional configuration",
+    "additionalConfig": "Additional configuration",
     "cronScheduleTip": "Further info on specific cron values",
     "quickStart": "or use <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a> to get quickly started.",
     "quickStartNote": "Seconds and years are handled automatically.",
@@ -829,7 +831,7 @@
         "SO": "So"
       }
     },
-    "months":{
+    "months": {
       "january": "January",
       "february": "February",
       "march": "March",
@@ -837,7 +839,7 @@
       "mai": "Mai",
       "june": "June",
       "july": "July",
-      "august":  "August",
+      "august": "August",
       "september": "September",
       "october": "October",
       "november": "November",
@@ -850,7 +852,7 @@
         "mai": "Mai",
         "june": "Jun",
         "july": "Jul",
-        "august":  "Aug",
+        "august": "Aug",
         "september": "Sep",
         "october": "Oct",
         "november": "Nov",
@@ -862,25 +864,25 @@
       "second": "second",
       "third": "third",
       "fourth": "fourth",
-      "last":  "last"
+      "last": "last"
     },
-    "labels":  {
-      "after":  "After",
+    "labels": {
+      "after": "After",
       "on": "On",
-      "every":  "Every",
-      "openScheduler":  "Add absolute schedule",
+      "every": "Every",
+      "openScheduler": "Add absolute schedule",
       "editScheduler": "Edit absolute schedule",
       "openRelativeScheduler": "Add relative Schedule",
       "editRelativeScheduler": "Edit relative Schdule",
-      "removeScheduler":  "Remove scheduler",
-      "frequency":  "Frequency",
+      "removeScheduler": "Remove scheduler",
+      "frequency": "Frequency",
       "repetitionEnd": "Repetition ends",
       "repeat": "Repeat",
       "date": "Date",
       "timeframe": "Timeframe",
       "days": "Days",
       "time": "Time",
-      "selection":{
+      "selection": {
         "specificDay": "On a specific day",
         "allDaysInWeek": "All days in week",
         "allWeekdays": "All weekdays",
@@ -912,7 +914,6 @@
           }
         }
       }
-
     },
     "placeholder": {
       "chooseMonth": "Choose month",
@@ -944,7 +945,7 @@
         "description": "An absolute Schedule includes absolute date times. Observations can be timed by absolute dates and timeframes."
       },
       "relativeSchedule": {
-        "dialogTitle":"Manage relative schedule",
+        "dialogTitle": "Manage relative schedule",
         "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
         "startValue": "Starts on",
         "endValue": "Ends on",
@@ -964,7 +965,7 @@
           "enterNumber": "Enter number"
         },
         "error": {
-          "dtstart":{
+          "dtstart": {
             "addOffset": "Fill in the offset of the relative start period."
           },
           "dtend": {

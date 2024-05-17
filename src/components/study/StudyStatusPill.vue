@@ -1,7 +1,10 @@
 <script setup lang="ts">
+  import { PropType } from 'vue';
+  import { StudyStatus } from '../../generated-sources/openapi';
+
   defineProps({
     status: {
-      type: String, // as PropType<StudyStatus>,
+      type: String as PropType<StudyStatus>,
       required: true,
     },
   });
