@@ -56,7 +56,8 @@ Licensed under the Elastic License 2.0. */
 
   const actionsVisible =
     props.statusStatus === StudyStatus.Draft ||
-    props.statusStatus === StudyStatus.Paused;
+    props.statusStatus === StudyStatus.Paused ||
+    props.statusStatus === StudyStatus.PausedPreview;
 
   const groupStatuses: Ref<MoreTableChoice[]> = ref(
     props.studyGroups.map(
@@ -161,7 +162,8 @@ Licensed under the Elastic License 2.0. */
       visible: () => {
         return (
           props.statusStatus === StudyStatus.Draft ||
-          props.statusStatus === StudyStatus.Paused
+          props.statusStatus === StudyStatus.Paused ||
+          props.statusStatus === StudyStatus.PausedPreview
         );
       },
 

@@ -55,7 +55,8 @@ Licensed under the Elastic License 2.0. */
 
   const actionsVisible =
     studyStore.study.status === StudyStatus.Draft ||
-    studyStore.study.status === StudyStatus.Paused;
+    studyStore.study.status === StudyStatus.Paused ||
+    studyStore.study.status === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>

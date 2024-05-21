@@ -25,10 +25,7 @@ Licensed under the Elastic License 2.0. */
     <Suspense>
       <IntegrationList
         :study-id="studyStore.studyId"
-        :actions-visible="
-          studyStore.study.status === StudyStatus.Draft ||
-          studyStore.study.status === StudyStatus.Paused
-        "
+        :actions-visible="studyStore.study.status !== StudyStatus.Closed"
       />
     </Suspense>
   </div>
