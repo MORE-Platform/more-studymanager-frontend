@@ -52,7 +52,8 @@ Licensed under the Elastic License 2.0. */
 
   const actionsVisible =
     props.studyStatus === StudyStatus.Draft ||
-    props.studyStatus === StudyStatus.Paused;
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
