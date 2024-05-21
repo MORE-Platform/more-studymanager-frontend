@@ -67,7 +67,6 @@ Licensed under the Elastic License 2.0. */
       :show-toggle-all="false"
       :class="'w-1/4'"
       class="radio"
-      :selection-limit="1"
     />
 
     <div class="buttons mt-1 justify-end text-right">
