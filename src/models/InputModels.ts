@@ -9,7 +9,10 @@
 import cron from 'cron-validate';
 
 export class ValidationError extends Error {
-  constructor(public key: string, msg: string) {
+  constructor(
+    public key: string,
+    msg: string,
+  ) {
     super(msg);
     Object.setPrototypeOf(this, new.target.prototype);
   }
@@ -75,7 +78,7 @@ export abstract class Property<T> {
     id: string,
     immutable: boolean,
     name: string,
-    required: boolean
+    required: boolean,
   ) {
     this.defaultValue = defaultValue;
     this.description = description;
@@ -116,7 +119,7 @@ export class StringProperty extends Property<string> {
     immutable: boolean,
     name: string,
     required: boolean,
-    regex: string
+    regex: string,
   ) {
     super(defaultValue, description, id, immutable, name, required);
     this.regex = regex;
@@ -147,7 +150,7 @@ export class StringProperty extends Property<string> {
       json.immutable,
       json.name,
       json.required,
-      json.regex
+      json.regex,
     );
   }
 }
@@ -162,7 +165,7 @@ export class StringTextProperty extends Property<string> {
     immutable: boolean,
     name: string,
     required: boolean,
-    regex: string
+    regex: string,
   ) {
     super(defaultValue, description, id, immutable, name, required);
     this.regex = regex;
@@ -193,7 +196,7 @@ export class StringTextProperty extends Property<string> {
       json.immutable,
       json.name,
       json.required,
-      json.regex
+      json.regex,
     );
   }
 }
@@ -210,7 +213,7 @@ export class StringListProperty extends Property<string[]> {
     name: string,
     required: boolean,
     minSize: number,
-    maxSize: number
+    maxSize: number,
   ) {
     super(defaultValue, description, id, immutable, name, required);
     this.minSize = minSize;
@@ -226,7 +229,7 @@ export class StringListProperty extends Property<string[]> {
       json.name,
       json.required,
       json.minSize,
-      json.maxSize
+      json.maxSize,
     );
   }
 
@@ -273,7 +276,7 @@ export class IntegerProperty extends Property<number> {
     name: string,
     required: boolean,
     min: number,
-    max: number
+    max: number,
   ) {
     super(defaultValue, description, id, immutable, name, required);
     this.min = min;
@@ -304,7 +307,7 @@ export class IntegerProperty extends Property<number> {
       json.name,
       json.required,
       json.min,
-      json.max
+      json.max,
     );
   }
 }
@@ -316,7 +319,7 @@ export class BooleanProperty extends Property<boolean> {
     id: string,
     immutable: boolean,
     name: string,
-    required: boolean
+    required: boolean,
   ) {
     super(defaultValue, description, id, immutable, name, required);
   }
@@ -341,7 +344,7 @@ export class BooleanProperty extends Property<boolean> {
       json.id,
       json.immutable,
       json.name,
-      json.required
+      json.required,
     );
   }
 }
@@ -358,7 +361,7 @@ export class ObservationProperty extends Property<ObservationPropertyValue> {
     id: string,
     immutable: boolean,
     name: string,
-    required: boolean
+    required: boolean,
   ) {
     super(defaultValue, description, id, immutable, name, required);
   }
@@ -377,7 +380,7 @@ export class ObservationProperty extends Property<ObservationPropertyValue> {
       json.id,
       json.immutable,
       json.name,
-      json.required
+      json.required,
     );
   }
 }
@@ -389,7 +392,7 @@ export class CronProperty extends Property<string> {
     id: string,
     immutable: boolean,
     name: string,
-    required: boolean
+    required: boolean,
   ) {
     super(defaultValue, description, id, immutable, name, required);
   }
@@ -401,7 +404,7 @@ export class CronProperty extends Property<string> {
       json.id,
       json.immutable,
       json.name,
-      json.required
+      json.required,
     );
   }
 
@@ -431,7 +434,7 @@ export class DataCheckProperty extends Property<QueryObject[]> {
     id: string,
     immutable: boolean,
     name: string,
-    required: boolean
+    required: boolean,
   ) {
     super(defaultValue, description, id, immutable, name, required);
   }
@@ -443,7 +446,7 @@ export class DataCheckProperty extends Property<QueryObject[]> {
       json.id,
       json.immutable,
       json.name,
-      json.required
+      json.required,
     );
   }
 
@@ -492,7 +495,7 @@ export class QueryObjectInner {
     operator: string,
     propertyValue: string | number,
     editMode?: boolean,
-    error?: boolean
+    error?: boolean,
   ) {
     this.observationId = observationId;
     this.observationType = observationType;
@@ -511,7 +514,7 @@ export class QueryObjectInner {
       json.operator,
       json.propertyValue,
       json.editMode,
-      json.error
+      json.error,
     );
   }
 }
@@ -522,7 +525,7 @@ export class QueryObject {
 
   constructor(
     nextGroupCondition: string | undefined,
-    queryConditions: QueryObjectInner[]
+    queryConditions: QueryObjectInner[],
   ) {
     this.nextGroupCondition = nextGroupCondition;
     this.parameter = queryConditions;

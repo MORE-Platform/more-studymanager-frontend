@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
   function getActionDescription(actionType?: string) {
     return (
       props.actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
+        (a: ComponentFactory) => a.componentId === actionType,
       )?.description || t('intervention.placeholder.noDescription')
     );
   }
@@ -47,7 +47,7 @@ Licensed under the Elastic License 2.0. */
   function getActionTitle(actionType?: string) {
     return (
       props.actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
+        (a: ComponentFactory) => a.componentId === actionType,
       )?.title || t('intervention.placeholder.noDescription')
     );
   }
@@ -62,7 +62,7 @@ Licensed under the Elastic License 2.0. */
 
   const actionObj: Ref<Action> = ref(props.action);
   const actionProperties: Ref<Property<any>[] | undefined> = ref(
-    getActionProperties(props.action)
+    getActionProperties(props.action),
   );
 
   function getActionPropsParsed(actionProps: Property<any>[]): any {
@@ -76,7 +76,7 @@ Licensed under the Elastic License 2.0. */
     if (actionProperties.value) {
       const returnAction: Ref<Action> = ref(props.action);
       returnAction.value.properties = getActionPropsParsed(
-        actionProperties.value
+        actionProperties.value,
       );
 
       emit('onActionPropChange', returnAction.value);

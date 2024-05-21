@@ -141,11 +141,11 @@ Licensed under the Elastic License 2.0. */
       visible: (data) =>
         (data.status === StudyStatus.Draft &&
           data.userRoles.some((r: any) =>
-            [StudyRole.Admin, StudyRole.Operator].includes(r)
+            [StudyRole.Admin, StudyRole.Operator].includes(r),
           )) ||
         (data.status === StudyStatus.Closed &&
           data.userRoles.some((r: any) =>
-            [StudyRole.Admin, StudyRole.Operator].includes(r)
+            [StudyRole.Admin, StudyRole.Operator].includes(r),
           )),
     },
     {
@@ -155,7 +155,7 @@ Licensed under the Elastic License 2.0. */
       tooltip: t('study.studyList.labels.exportStudyConfig'),
       visible: (data) =>
         data.userRoles.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
+          [StudyRole.Admin, StudyRole.Operator].includes(r),
         ),
     },
     {
@@ -173,7 +173,7 @@ Licensed under the Elastic License 2.0. */
       tooltip: t('study.studyList.labels.exportStudyCalendar'),
       visible: (data) =>
         data.userRoles.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r)
+          [StudyRole.Admin, StudyRole.Operator].includes(r),
         ),
     },
   ];
@@ -301,7 +301,14 @@ Licensed under the Elastic License 2.0. */
       :table-actions="tableActions"
       :editable-access="true"
       :sort-options="{ sortField: 'studyId', sortOrder: -1 }"
-      :editable="(data:Study) => {return data.status === StudyStatus.Draft || data.status === StudyStatus.Paused}"
+      :editable="
+        (data: Study) => {
+          return (
+            data.status === StudyStatus.Draft ||
+            data.status === StudyStatus.Paused
+          );
+        }
+      "
       :edit-access-roles="editAccessRoles"
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"

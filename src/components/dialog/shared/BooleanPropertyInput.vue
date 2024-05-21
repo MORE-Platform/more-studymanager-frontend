@@ -23,8 +23,8 @@ Licensed under the Elastic License 2.0. */
     props.property.value
       ? props.property.value
       : props.property?.defaultValue
-      ? props.property?.defaultValue
-      : false
+        ? props.property?.defaultValue
+        : false,
   );
 
   const emit = defineEmits<{

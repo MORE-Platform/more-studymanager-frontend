@@ -43,8 +43,8 @@
     returnRrule.value.count && returnRrule.value.byday?.length
       ? returnRrule.value.count / returnRrule.value.byday.length
       : returnRrule.value.count
-      ? returnRrule.value.count
-      : undefined
+        ? returnRrule.value.count
+        : undefined,
   );
 
   const rruleEventCheckbox: Ref<boolean> = ref(props.rruleChecked);
@@ -86,7 +86,7 @@
 
   function getError(label: string): string | null | undefined {
     const item = rruleErrors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }
@@ -153,9 +153,9 @@
   const rruleCountLabel: Ref<string | undefined> = ref(
     returnRrule.value && returnRrule.value.freq
       ? rruleFrequencyOptions.find(
-          (f: any) => f.value === returnRrule.value.freq
+          (f: any) => f.value === returnRrule.value.freq,
         )?.unit
-      : ''
+      : '',
   );
 
   const rruleEndOptionValue: Ref<string> = ref('never');
@@ -169,7 +169,7 @@
   function setRruleCountLabel(rruleFreq: string | undefined) {
     if (rruleFreq) {
       rruleCountLabel.value = rruleFrequencyOptions.find(
-        (f: any) => f.value === rruleFreq
+        (f: any) => f.value === rruleFreq,
       )?.unit;
     }
   }

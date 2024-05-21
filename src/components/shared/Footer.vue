@@ -12,7 +12,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <footer class="footer w-full">
-    <div class="content-block my-6 mx-24 flex justify-between">
+    <div class="content-block mx-24 my-6 flex justify-between">
       <div>
         {{ uiConfig.title }}
       </div>
@@ -39,7 +39,8 @@ Licensed under the Elastic License 2.0. */
       content: '';
       height: 100%;
       width: 100%;
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1),
+      box-shadow:
+        0 4px 6px -1px rgb(0 0 0 / 0.1),
         0 2px 4px -2px rgb(0 0 0 / 0.1);
       transform: rotate(180deg);
       position: absolute;

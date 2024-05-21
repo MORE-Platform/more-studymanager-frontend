@@ -24,7 +24,7 @@ Licensed under the Elastic License 2.0. */
     <div
       v-if="
         studyStore.studyUserRoles.some((r: StudyRole) =>
-          accessRoles.includes(r)
+          accessRoles.includes(r),
         )
       "
       class="container rounded-lg bg-white p-10"

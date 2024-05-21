@@ -63,7 +63,7 @@ Licensed under the Elastic License 2.0. */
       ({
         label: item.title,
         value: item.studyGroupId?.toString(),
-      } as MoreTableChoice)
+      }) as MoreTableChoice,
   );
   groupStatuses.push({
     label: t('global.placeholder.entireStudy'),
@@ -82,7 +82,7 @@ Licensed under the Elastic License 2.0. */
       label: t(item.title),
       value: item.componentId,
       description: t(item.description),
-    })
+    }),
   );
 
   const observationColumns: MoreTableColumn[] = [
@@ -226,7 +226,7 @@ Licensed under the Elastic License 2.0. */
   function getObservationTypeString(observationType: string) {
     return t(
       factories.find((item) => item.componentId === observationType)
-        ?.title as string
+        ?.title as string,
     );
   }
 
@@ -260,12 +260,12 @@ Licensed under the Elastic License 2.0. */
         });
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
 
   function getScheduleHasRepetition(
-    schedule: ObservationSchedule | undefined
+    schedule: ObservationSchedule | undefined,
   ): boolean {
     if (schedule) {
       switch (schedule.type) {
@@ -284,7 +284,7 @@ Licensed under the Elastic License 2.0. */
 
   function getScheduleDate(
     scheduler: ObservationSchedule | undefined,
-    prop: string
+    prop: string,
   ) {
     switch (scheduler?.type) {
       case 'Event': {
@@ -293,13 +293,13 @@ Licensed under the Elastic License 2.0. */
           case 'dtstart':
             return schedule.dtstart
               ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart
+                  schedule.dtstart,
                 ).format('HH:mm')}`
               : undefined;
           case 'dtend':
             return schedule.dtend
               ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtend
+                  schedule.dtend,
                 ).format('HH:mm')}`
               : undefined;
           default:
@@ -313,7 +313,7 @@ Licensed under the Elastic License 2.0. */
             return schedule.dtstart.offset?.value &&
               schedule.dtstart.offset?.unit
               ? `${t(
-                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
                 )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
               : undefined;
           case 'dtend':
@@ -343,7 +343,7 @@ Licensed under the Elastic License 2.0. */
         return openObservationDialog(
           t('observation.dialog.header.clone'),
           action.row,
-          'clone'
+          'clone',
         );
       case 'edit':
         return openEditObservation(action.row.observationId);
@@ -355,7 +355,7 @@ Licensed under the Elastic License 2.0. */
   async function updateObservation(observation: Observation) {
     //do change immediately (ux)
     const i = observationList.value.findIndex(
-      (o: Observation) => o.observationId === observation.observationId
+      (o: Observation) => o.observationId === observation.observationId,
     );
     if (i > -1) {
       observationList.value[i] = observation;
@@ -365,14 +365,14 @@ Licensed under the Elastic License 2.0. */
       .updateObservation(
         props.studyId,
         observation.observationId as number,
-        observation
+        observation,
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update opservation " + observation.title
-        )
+          "Couldn't update opservation " + observation.title,
+        ),
       );
   }
 
@@ -380,14 +380,14 @@ Licensed under the Elastic License 2.0. */
     await observationsApi
       .deleteObservation(
         props.studyId,
-        requestObservation.observationId as number
+        requestObservation.observationId as number,
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete observation ' + requestObservation.observationId
-        )
+          'Cannot delete observation ' + requestObservation.observationId,
+        ),
       );
   }
 
@@ -398,7 +398,7 @@ Licensed under the Elastic License 2.0. */
   function openObservationDialog(
     headerText: string,
     observation?: Observation,
-    typeText?: string
+    typeText?: string,
   ) {
     dialog.open(ObservationDialog, {
       data: {
@@ -442,13 +442,13 @@ Licensed under the Elastic License 2.0. */
       .addObservation(props.studyId, newObservation)
       .then(listObservations)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create observation')
+        handleIndividualError(e, 'Cannot create observation'),
       );
   }
 
   function openEditObservation(observationId: number) {
     const observation = observationList.value.find(
-      (o) => o.observationId === observationId
+      (o) => o.observationId === observationId,
     );
     if (observation) {
       let dialogTitle = t('observation.dialog.header.edit');

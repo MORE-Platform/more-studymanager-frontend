@@ -50,7 +50,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
       })
       .then((response) => studyGroups.value.push(response.data))
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot create study group')
+        handleIndividualError(e, 'cannot create study group'),
       );
   }
 
@@ -58,35 +58,35 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
     studyGroupsApi
       .deleteStudyGroup(
         studyGroup.studyId as number,
-        studyGroup.studyGroupId as number
+        studyGroup.studyGroupId as number,
       )
       .then(() => {
         const position = studyGroups.value.findIndex(
           (studyGroupItem) =>
             studyGroupItem.studyGroupId === studyGroup.studyGroupId &&
-            studyGroupItem.studyId === studyGroup.studyId
+            studyGroupItem.studyId === studyGroup.studyId,
         );
         studyGroups.value.splice(position, 1);
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot delete study group')
+        handleIndividualError(e, 'cannot delete study group'),
       );
   }
   async function updateStudyGroup(studyGroup: StudyGroup) {
     const position = studyGroups.value.findIndex(
       (studyGroupsItem) =>
-        studyGroupsItem.studyGroupId === studyGroup.studyGroupId
+        studyGroupsItem.studyGroupId === studyGroup.studyGroupId,
     );
     if (position > -1) {
       await studyGroupsApi
         .updateStudyGroup(
           studyGroup.studyId as number,
           studyGroup.studyGroupId as number,
-          studyGroup
+          studyGroup,
         )
         .then(() => studyGroups.value.splice(position, 1, studyGroup))
         .catch((e: AxiosError) =>
-          handleIndividualError(e, 'cannot update study group')
+          handleIndividualError(e, 'cannot update study group'),
         );
     }
   }
@@ -130,7 +130,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
   }
 
   const studyGroupMap: ComputedRef<Array<MoreStudyGroupTableMap>> = computed(
-    () => toStudyGroupMap()
+    () => toStudyGroupMap(),
   );
 
   return {

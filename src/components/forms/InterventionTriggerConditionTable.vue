@@ -94,7 +94,7 @@ Licensed under the Elastic License 2.0. */
         observationList.value = response.data;
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
   await getObservationList();
@@ -154,12 +154,12 @@ Licensed under the Elastic License 2.0. */
   }>();
 
   function getPropertyOptions(
-    trigger: InterventionTriggerConfig
+    trigger: InterventionTriggerConfig,
   ): ComponentFactoryMeasurementsInner[] {
     if (trigger.observationType) {
       return (
         factories.find(
-          (o: ComponentFactory) => o.componentId === trigger.observationType
+          (o: ComponentFactory) => o.componentId === trigger.observationType,
         )?.measurements || []
       );
     }
@@ -175,10 +175,10 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getOperator(
-    trigger: InterventionTriggerConfig
+    trigger: InterventionTriggerConfig,
   ): ComponentFactoryMeasurementsInner {
     return getPropertyOptions(trigger).find(
-      (item) => item.id === trigger.observationProperty
+      (item) => item.id === trigger.observationProperty,
     ) as ComponentFactoryMeasurementsInner;
   }
 
@@ -195,7 +195,7 @@ Licensed under the Elastic License 2.0. */
   function changeObservationType(trigger: InterventionTriggerConfig) {
     if (trigger.observationId) {
       const observation = findObservationById(
-        trigger.observationId
+        trigger.observationId,
       ) as Observation;
 
       trigger.observationType = observation.type as string;
@@ -216,7 +216,7 @@ Licensed under the Elastic License 2.0. */
   function getObservationTitle(observationId: number): string {
     return (
       observationList.value.find(
-        (item) => (item.observationId as number) === observationId
+        (item) => (item.observationId as number) === observationId,
       )?.title || ''
     );
   }
@@ -224,7 +224,7 @@ Licensed under the Elastic License 2.0. */
   function findObservationById(observationId: number): Observation {
     return (
       observationList.value.find(
-        (o) => (o.observationId as number) === observationId
+        (o) => (o.observationId as number) === observationId,
       ) || {}
     );
   }
@@ -265,11 +265,11 @@ Licensed under the Elastic License 2.0. */
 
     if (
       getPropertyOptions(trigger).find(
-        (item) => item.id === trigger.observationProperty
+        (item) => item.id === trigger.observationProperty,
       )?.type === 'DOUBLE'
     ) {
       returnTrigger.value.propertyValue = Number(
-        returnTrigger.value.propertyValue
+        returnTrigger.value.propertyValue,
       );
     }
     rowOpenError.value = '';

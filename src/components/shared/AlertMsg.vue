@@ -60,8 +60,8 @@ Licensed under the Elastic License 2.0. */
           ? 'success'
           : 'info'
         : severityType === 'error'
-        ? 'error'
-        : 'warn'
+          ? 'error'
+          : 'warn'
     "
     class="message"
     :class="styleModifier"

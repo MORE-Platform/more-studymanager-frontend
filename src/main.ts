@@ -34,7 +34,7 @@ const uiConfig = await uiConfigApi
   .catch((err: AxiosError) => {
     console.warn(
       'Could not retrieve UI-Config from remote server, using default fallback:',
-      err.message
+      err.message,
     );
     return {
       title: 'Unknown Legacy Backend',
@@ -66,7 +66,7 @@ axios.interceptors.request.use(
   },
   (error: any) => {
     return Promise.reject(error);
-  }
+  },
 );
 useErrorHandling().activateGlobalErrorHandlingInterceptor();
 useLoader().activateLoadingInterceptor();

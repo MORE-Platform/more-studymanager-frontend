@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
     },
   });
   const triggerConditionObj: Ref<DataCheckProperty> = ref(
-    props.triggerConditions
+    props.triggerConditions,
   );
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
@@ -131,7 +131,7 @@ Licensed under the Elastic License 2.0. */
   function setEditModeFalse() {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value.forEach((item: QueryObject) =>
-        item.parameter.forEach((param) => (param.editMode = false))
+        item.parameter.forEach((param) => (param.editMode = false)),
       );
       emitTriggerConditions();
     }
@@ -153,7 +153,7 @@ Licensed under the Elastic License 2.0. */
         !validateEditedRow(
           triggerConditionObj.value.value[item.groupIndex].parameter[
             item.rowIndex
-          ]
+          ],
         )
       ) {
         if (
@@ -161,7 +161,7 @@ Licensed under the Elastic License 2.0. */
         ) {
           triggerConditionObj.value.value[item.groupIndex].parameter.splice(
             item.rowIndex,
-            1
+            1,
           );
         } else if (
           triggerConditionObj.value.value[item.groupIndex].parameter.length ===
@@ -239,7 +239,7 @@ Licensed under the Elastic License 2.0. */
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter.splice(
         item.rowIndex,
-        1
+        1,
       );
       triggerConditionObj.value.value.forEach((item, index) => {
         if (!item.parameter.length) {
@@ -289,11 +289,11 @@ Licensed under the Elastic License 2.0. */
         v-if="
           triggerConditionObj.value && triggerConditionObj.value.length === 0
         "
-        class="mt-6 mb-6 w-full text-center"
+        class="mb-6 mt-6 w-full text-center"
       >
         <Button
           type="button"
-          class="p-button mt-6 mb-6"
+          class="p-button mb-6 mt-6"
           @click="addTriggerGroup()"
           ><span class="pi pi-plus mr-2"></span>
           {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
@@ -335,7 +335,7 @@ Licensed under the Elastic License 2.0. */
             triggerConditionObj.value !== null ||
             triggerConditionObj.value !== undefined
           "
-          class="error mt-2 mb-4"
+          class="error mb-4 mt-2"
         >
           {{ $t('intervention.error.emptyTriggerConditions') }}
         </div>

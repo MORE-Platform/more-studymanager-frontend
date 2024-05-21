@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
   const pushNotificationObj: Ref<PushNotificationObject> = ref(
     props.notificationString
       ? JSON.parse(props.notificationString)
-      : { title: null, message: null }
+      : { title: null, message: null },
   );
 
   function updateProperties() {

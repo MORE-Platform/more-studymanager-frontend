@@ -71,7 +71,7 @@ Licensed under the Elastic License 2.0. */
 
   const editAccess: boolean = props.userRoles.some(
     (r: StudyRole) =>
-      editAccessRoles.includes(r) && props.studyStatus !== StudyStatus.Closed
+      editAccessRoles.includes(r) && props.studyStatus !== StudyStatus.Closed,
   );
 
   const collaboratorColumns: MoreTableColumn[] = [
@@ -183,10 +183,10 @@ Licensed under the Elastic License 2.0. */
         valuesCallback: {
           placeholder: t('studyCollaborator.placeholder.addCollaborator'),
           filterPlaceholder: t(
-            'studyCollaborator.placeholder.searchCollaborators'
+            'studyCollaborator.placeholder.searchCollaborators',
           ),
           noResultsPlaceholder: t(
-            'studyCollaborator.placeholder.noResultsFound'
+            'studyCollaborator.placeholder.noResultsFound',
           ),
           callback: (query: string) => {
             return usersApi.findUsers(query).then((response: AxiosResponse) => {
@@ -195,7 +195,7 @@ Licensed under the Elastic License 2.0. */
                   label: u.name,
                   value: u.uid,
                   institution: u.institution,
-                })
+                }),
               );
             });
           },
@@ -205,7 +205,7 @@ Licensed under the Elastic License 2.0. */
   ];
 
   function execute(
-    action: MoreTableRowActionResult<MoreTableCollaboratorItem>
+    action: MoreTableRowActionResult<MoreTableCollaboratorItem>,
   ) {
     switch (action.id) {
       case 'delete':
@@ -230,7 +230,7 @@ Licensed under the Elastic License 2.0. */
         }));
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot list collaborators: ' + props.studyId)
+        handleIndividualError(e, 'Cannot list collaborators: ' + props.studyId),
       );
   }
 
@@ -239,7 +239,7 @@ Licensed under the Elastic License 2.0. */
       .setStudyCollaboratorRoles(
         props.studyId,
         collaborator.uid,
-        collaborator.roles.map((c: MoreTableChoice) => c.value as StudyRole)
+        collaborator.roles.map((c: MoreTableChoice) => c.value as StudyRole),
       )
       .then(listCollaborators);
   }
@@ -272,7 +272,7 @@ Licensed under the Elastic License 2.0. */
   function changeValue(collabListItem: MoreTableCollaboratorItem) {
     const collaborator: Collaborator = {
       roles: collabListItem.roles.map(
-        (v: MoreTableChoice) => v.value as StudyRole
+        (v: MoreTableChoice) => v.value as StudyRole,
       ),
       user: {
         uid: collabListItem.uid,
@@ -282,7 +282,7 @@ Licensed under the Elastic License 2.0. */
       },
     };
     const i = collaboratorsList.value.findIndex(
-      (c) => c.uid === collabListItem.uid
+      (c) => c.uid === collabListItem.uid,
     );
 
     if (i > -1) {
@@ -290,7 +290,7 @@ Licensed under the Elastic License 2.0. */
       collaboratorsApi.setStudyCollaboratorRoles(
         props.studyId,
         collabListItem.uid,
-        collaborator.roles
+        collaborator.roles,
       );
     }
   }
@@ -345,7 +345,11 @@ Licensed under the Elastic License 2.0. */
       :row-actions="rowActions"
       :table-actions="tableActions"
       :editable-access="editAccess"
-      :editable="(data: MoreTableCollaboratorItem) => {return data.uid !== userStore.user?.uid && editAccess}"
+      :editable="
+        (data: MoreTableCollaboratorItem) => {
+          return data.uid !== userStore.user?.uid && editAccess;
+        }
+      "
       :edit-access-roles="editAccessRoles"
       :user-study-roles="props.userRoles"
       empty-message="No collaborators added yet"

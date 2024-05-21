@@ -55,7 +55,7 @@
   if (schedule.dtstart && schedule.dtstart.time) {
     startTime.value.setHours(
       parseInt(schedule.dtstart.time?.substring(0, 2)),
-      parseInt(schedule.dtstart.time?.substring(3, 5), 0)
+      parseInt(schedule.dtstart.time?.substring(3, 5), 0),
     );
   } else {
     startTime.value.setHours(10, 30);
@@ -63,7 +63,7 @@
   if (schedule.dtend && schedule.dtend.time) {
     endTime.value.setHours(
       parseInt(schedule.dtend.time?.substring(0, 2)),
-      parseInt(schedule.dtend.time?.substring(3, 5), 0)
+      parseInt(schedule.dtend.time?.substring(3, 5), 0),
     );
   } else {
     endTime.value.setHours(18, 30);
@@ -105,7 +105,7 @@
   } as Duration);
 
   const repeatChecked: Ref<boolean> = ref(
-    schedule.rrrule?.frequency ? true : false
+    schedule.rrrule?.frequency ? true : false,
   );
 
   const frequencyXTimes: Ref<number | undefined> = ref();
@@ -138,7 +138,7 @@
 
   function getError(label: string): string | null | undefined {
     const item = errors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }
@@ -172,7 +172,7 @@
       errors.value.push({
         label: 'dtend',
         value: t(
-          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart',
         ),
       });
     }
@@ -186,7 +186,7 @@
       errors.value.push({
         label: 'dtend',
         value: t(
-          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart'
+          'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart',
         ),
       });
     }
@@ -228,15 +228,15 @@
       ) {
         const rDtstartOffsetMin = valueToMinutes(
           rDtstartOffset.value.value,
-          rDtstartOffset.value.unit
+          rDtstartOffset.value.unit,
         );
         const rEndAfterMin = valueToMinutes(
           rEndAfter.value.value,
-          rEndAfter.value.unit
+          rEndAfter.value.unit,
         );
         const rFrequencyMin = valueToMinutes(
           rFrequency.value.value,
-          rFrequency.value.unit
+          rFrequency.value.unit,
         );
 
         const endOfIndividualStudy: number =
@@ -254,7 +254,7 @@
 
   function valueToMinutes(
     value: number,
-    unit: DurationUnitEnum | undefined
+    unit: DurationUnitEnum | undefined,
   ): number {
     // day to minutes  -> 1440 minutes
     // hour to minutes -> 60
@@ -332,7 +332,7 @@
       </h6>
 
       <div class="col-span-6 grid grid-cols-6 items-center border-b-2">
-        <div class="bt-2 col-span-2 col-start-2 border-l-2 pl-4 pb-2">
+        <div class="bt-2 col-span-2 col-start-2 border-l-2 pb-2 pl-4">
           {{ $t('scheduler.preview.unit.date') }}
         </div>
         <div class="col-span-3 ml-2">
@@ -344,7 +344,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
         </div>
-        <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+        <div class="col-span-2 border-l-2 pb-3 pl-4 pt-3">
           <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtstartOffset.value"
@@ -369,7 +369,7 @@
       </div>
       <div
         v-if="getError('dtstart')"
-        class="error col-span-5 col-start-2 border-l-2 pl-4 pb-3"
+        class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
       >
         {{ getError('dtstart') }}
       </div>
@@ -378,7 +378,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
         </div>
-        <div class="col-span-2 border-l-2 pl-4 pt-3 pb-3">
+        <div class="col-span-2 border-l-2 pb-3 pl-4 pt-3">
           <span>{{ $t('scheduler.frequency.day') }}</span>
           <InputNumber
             v-model="rDtendOffset.value"
@@ -403,13 +403,13 @@
       </div>
       <div
         v-if="getError('dtend')"
-        class="error col-span-5 col-start-2 border-l-2 pl-4 pb-3"
+        class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
       >
         {{ getError('dtend') }}
       </div>
     </div>
 
-    <h6 class="col-span-6 mt-14 mb-4">
+    <h6 class="col-span-6 mb-4 mt-14">
       {{ $t('scheduler.dialog.repeatEventTitle') }}
     </h6>
     <div class="col-span-6 mb-4">
@@ -430,7 +430,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.repeatEvery') }}
         </div>
-        <div class="col-span-3 flex border-l-2 pl-4 pt-3 pb-3">
+        <div class="col-span-3 flex border-l-2 pb-3 pl-4 pt-3">
           <InputNumber
             v-model="rFrequency.value"
             :placeholder="
@@ -457,9 +457,9 @@
             <span v-else>
               {{
                 `${$t(
-                  'scheduler.dialog.relativeSchedule.rrrule.repeated'
+                  'scheduler.dialog.relativeSchedule.rrrule.repeated',
                 )}: ${frequencyXTimes} ${$t(
-                  'scheduler.dialog.relativeSchedule.rrrule.times'
+                  'scheduler.dialog.relativeSchedule.rrrule.times',
                 )}`
               }}</span
             >
@@ -467,7 +467,7 @@
         </div>
         <div
           v-if="getError('rrruleFreq')"
-          class="error col-span-5 col-start-2 border-l-2 pl-4 pb-3"
+          class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
         >
           {{ getError('rrruleFreq') }}
         </div>
@@ -475,7 +475,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.endAfter') }}
         </div>
-        <div class="col-span-3 flex border-l-2 pl-4 pt-3 pb-3">
+        <div class="col-span-3 flex border-l-2 pb-3 pl-4 pt-3">
           <InputNumber
             v-model="rEndAfter.value"
             :placeholder="
@@ -497,16 +497,16 @@
           <div v-if="totalDays">
             {{
               `${$t(
-                'scheduler.dialog.relativeSchedule.rrrule.ends'
+                'scheduler.dialog.relativeSchedule.rrrule.ends',
               )} ${totalDays} ${$t(
-                'scheduler.dialog.relativeSchedule.rrrule.endsAfter'
+                'scheduler.dialog.relativeSchedule.rrrule.endsAfter',
               )} `
             }}
           </div>
         </div>
         <div
           v-if="getError('rrruleEndAfter')"
-          class="error col-span-5 col-start-2 border-l-2 pl-4 pb-3"
+          class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
         >
           {{ getError('rrruleEndAfter') }}
         </div>

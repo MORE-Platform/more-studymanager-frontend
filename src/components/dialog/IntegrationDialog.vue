@@ -67,7 +67,7 @@ Licensed under the Elastic License 2.0. */
 
   function getError(label: string): string | null | undefined {
     const item = errors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }
