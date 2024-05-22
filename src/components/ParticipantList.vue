@@ -93,7 +93,7 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses.value },
+      editable: { values: groupStatuses.value, editable: actionsVisible },
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.noGroup'),
@@ -394,7 +394,7 @@ Licensed under the Elastic License 2.0. */
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.isLoading.value"
-      :editable-access="actionsVisible"
+      :editable-access="props.statusStatus !== StudyStatus.Closed"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-65"

@@ -39,6 +39,7 @@ export interface MoreTableFilterOption {
 export interface MoreTableChoiceOptions {
   values: MoreTableChoice[];
   placeholder?: string;
+  editable?: boolean;
 }
 export interface MoreTableChoice {
   label: string;
