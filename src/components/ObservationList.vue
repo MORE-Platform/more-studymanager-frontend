@@ -341,7 +341,7 @@ Licensed under the Elastic License 2.0. */
         return openObservationDialog(
           t('observation.dialog.header.clone'),
           action.row,
-          true
+          true,
         );
       case 'edit':
         return openEditObservation(action.row.observationId);
@@ -396,7 +396,7 @@ Licensed under the Elastic License 2.0. */
   function openObservationDialog(
     headerText: string,
     observation?: Observation,
-    clone?: boolean
+    clone?: boolean,
   ) {
     dialog.open(ObservationDialog, {
       data: {
