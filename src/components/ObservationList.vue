@@ -31,7 +31,6 @@ Licensed under the Elastic License 2.0. */
   import { useDialog } from 'primevue/usedialog';
   import ObservationDialog from '../components/dialog/ObservationDialog.vue';
   import useLoader from '../composable/useLoader';
-  import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
@@ -40,7 +39,6 @@ Licensed under the Elastic License 2.0. */
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
-  const studyStore = useStudyStore();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
@@ -54,9 +52,9 @@ Licensed under the Elastic License 2.0. */
   });
 
   const actionsVisible =
-    studyStore.study.status === StudyStatus.Draft ||
-    studyStore.study.status === StudyStatus.Paused ||
-    studyStore.study.status === StudyStatus.PausedPreview;
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
     (item) =>
@@ -343,7 +341,7 @@ Licensed under the Elastic License 2.0. */
         return openObservationDialog(
           t('observation.dialog.header.clone'),
           action.row,
-          'clone',
+          true
         );
       case 'edit':
         return openEditObservation(action.row.observationId);
@@ -398,7 +396,7 @@ Licensed under the Elastic License 2.0. */
   function openObservationDialog(
     headerText: string,
     observation?: Observation,
-    typeText?: string,
+    clone?: boolean
   ) {
     dialog.open(ObservationDialog, {
       data: {
@@ -424,7 +422,7 @@ Licensed under the Elastic License 2.0. */
       onClose: (options) => {
         if (options?.data) {
           if (options.data?.observationId) {
-            if (typeText) {
+            if (clone) {
               createObservation(options.data as Observation);
             } else {
               updateObservation(options.data as Observation);
