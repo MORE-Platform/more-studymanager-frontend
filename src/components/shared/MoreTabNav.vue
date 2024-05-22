@@ -120,11 +120,11 @@ Licensed under the Elastic License 2.0. */
 
   function getDialogMsg(activeTab: Tab) {
     const msg: Ref<string> = ref(
-      activeTab.name + t('studyNavigation.accessDialog.accessInformation')
+      activeTab.name + t('studyNavigation.accessDialog.accessInformation'),
     );
     activeTab.access.forEach((r, index) => {
       const role: MoreTableChoice = studyRoleValues.find(
-        (l) => l.value === r
+        (l) => l.value === r,
       ) as MoreTableChoice;
       if (index > 0 && activeTab.access.length > 1) {
         msg.value = msg.value + ', ';

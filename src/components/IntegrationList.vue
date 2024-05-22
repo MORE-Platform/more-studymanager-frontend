@@ -86,7 +86,7 @@ Licensed under the Elastic License 2.0. */
         observationList.value = response.data;
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
   async function listIntegrations(): Promise<void> {
@@ -115,16 +115,16 @@ Licensed under the Elastic License 2.0. */
                 handleIndividualError(
                   e,
                   'Could not get the integration tokens for: ' +
-                    observation.observationId
+                    observation.observationId,
                 );
               });
-          })
+          }),
         );
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Could not get observation list: ' + props.studyId
+          'Could not get observation list: ' + props.studyId,
         );
       });
   }
@@ -241,7 +241,7 @@ Licensed under the Elastic License 2.0. */
       .deleteToken(
         props.studyId,
         integration.observationId,
-        integration.tokenId
+        integration.tokenId,
       )
       .then(listIntegrations)
       .catch((e: AxiosError) => {
@@ -251,7 +251,7 @@ Licensed under the Elastic License 2.0. */
             integration.tokenId +
             '), Observation Id: (' +
             integration.observationId +
-            ')'
+            ')',
         );
       });
   }
@@ -269,7 +269,7 @@ Licensed under the Elastic License 2.0. */
       .createToken(
         props.studyId,
         integrationCreate.observationId,
-        integrationCreate.tokenLabel
+        integrationCreate.tokenLabel,
       )
       .then((response) => {
         openInfoDialog(response.data);
@@ -282,7 +282,7 @@ Licensed under the Elastic License 2.0. */
             integrationCreate.observationId +
             '(' +
             integrationCreate.tokenLabel +
-            ')'
+            ')',
         );
       });
   }

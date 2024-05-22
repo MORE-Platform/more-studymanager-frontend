@@ -47,7 +47,7 @@ Licensed under the Elastic License 2.0. */
       observation.value = observationList.value.find(
         (o) =>
           props.property?.value?.id === o.observationId &&
-          props.property?.value?.factory === o.type
+          props.property?.value?.factory === o.type,
       );
     });
 
@@ -57,7 +57,7 @@ Licensed under the Elastic License 2.0. */
       observationProperty: {
         factory: string;
         id: number;
-      }
+      },
     ): void;
   }>();
 

@@ -48,21 +48,21 @@ Licensed under the Elastic License 2.0. */
   const properties: Ref<Property<any>[]> = ref(
     factory.properties
       .map((json: any) => Property.fromJson(json))
-      .map((p: Property<any>) => p.setValue(observation.properties?.[p.id]))
+      .map((p: Property<any>) => p.setValue(observation.properties?.[p.id])),
   );
 
   const hidden: Ref<boolean> = ref(
     observation.hidden !== undefined
       ? observation.hidden
-      : factory.visibility.hiddenByDefault
+      : factory.visibility.hiddenByDefault,
   );
 
   const scheduler: Ref<ObservationSchedule> = ref(
-    observation.schedule ? observation.schedule : {}
+    observation.schedule ? observation.schedule : {},
   );
 
   const noSchedule: Ref<boolean> = ref(
-    observation.schedule?.dtstart ? true : false
+    observation.schedule?.dtstart ? true : false,
   );
 
   const studyGroupId = ref(observation.studyGroupId);
@@ -105,7 +105,7 @@ Licensed under the Elastic License 2.0. */
             scheduler.value = options.data;
           }
         },
-      }
+      },
     );
   }
   function validate() {
@@ -116,7 +116,7 @@ Licensed under the Elastic License 2.0. */
         .validateProperties(
           'observation',
           observation.type as string,
-          parsedProps
+          parsedProps,
         )
         .then((response: any) => response.data)
         .then((report: ValidationReport) => {
@@ -191,7 +191,7 @@ Licensed under the Elastic License 2.0. */
 
   function getError(label: string): string | null | undefined {
     const item = errors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }
@@ -246,11 +246,7 @@ Licensed under the Elastic License 2.0. */
       <SchedulerInfoBlock
         :scheduler="scheduler"
         :editable="editable"
-        :error="
-          getError('scheduler') ?
-          getError('scheduler') as string :
-          ''
-        "
+        :error="getError('scheduler') ? (getError('scheduler') as string) : ''"
         class="mb-2"
         @open-dialog="openScheduler($event)"
         @remove-scheduler="removeScheduler"

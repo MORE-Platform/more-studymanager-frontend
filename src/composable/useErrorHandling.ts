@@ -13,13 +13,13 @@ export function useErrorHandling() {
   const loader = useLoader();
   const handleIndividualError = (
     error: AxiosError & { globallyHandled?: boolean },
-    messageKey?: string
+    messageKey?: string,
   ) => {
     if (!error.globallyHandled) {
       console.error(
         error.config?.url
           ? `CALL ERROR HANDLING: ${error.config.url} - ${messageKey}`
-          : `ERROR CONFIG IS UNDEFINED - ${messageKey}`
+          : `ERROR CONFIG IS UNDEFINED - ${messageKey}`,
       );
       loader.reset();
     }
@@ -37,13 +37,13 @@ export function useErrorHandling() {
         ) {
           console.error(
             'GLOBAL ERROR HANDLING: Request was rejected',
-            (error as AxiosError).config?.url
+            (error as AxiosError).config?.url,
           );
           globallyHandled = true;
           loader.reset();
         }
         return Promise.reject({ ...error, globallyHandled });
-      }
+      },
     );
   };
   return {

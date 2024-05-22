@@ -131,7 +131,7 @@ Licensed under the Elastic License 2.0. */
           <span class="font-bold">{{ $t('study.props.duration') }}: </span>
           <span v-if="study.duration?.value && study.duration.unit">{{
             `${study.duration.value} ${t(
-              `scheduler.preview.unit.${study.duration.unit}`
+              `scheduler.preview.unit.${study.duration.unit}`,
             )}`
           }}</span
           ><span v-else>-</span>
@@ -148,8 +148,16 @@ Licensed under the Elastic License 2.0. */
           class="buttons"
           type="button"
           :title="$t('study.statusChange.edit')"
-          :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
-      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
+          :disabled="
+            ((props.userRoles.some((r: StudyRole) =>
+              accessEditDetailsRoles.includes(r),
+            ) &&
+              props.study.status === StudyStatus.Paused) ||
+              (props.userRoles.some((r: StudyRole) =>
+                accessEditDetailsRoles.includes(r),
+              ) &&
+                props.study.status === StudyStatus.Draft)) === false
+          "
           @click="openEditDialog()"
           ><span>{{ $t('study.statusChange.edit') }}</span></Button
         >

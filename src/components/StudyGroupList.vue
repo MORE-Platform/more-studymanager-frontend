@@ -162,7 +162,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function executeAction(
-    action: MoreTableRowActionResult<MoreStudyGroupTableMap>
+    action: MoreTableRowActionResult<MoreStudyGroupTableMap>,
   ) {
     const r = action.row
       ? studyGroupStore.toStudyGroup(action.row)
@@ -179,7 +179,7 @@ Licensed under the Elastic License 2.0. */
   }
   function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap) {
     studyGroupStore.updateStudyGroup(
-      studyGroupStore.toStudyGroup(studyGroupMap)
+      studyGroupStore.toStudyGroup(studyGroupMap),
     );
   }
 </script>

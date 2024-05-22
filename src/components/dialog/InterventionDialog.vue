@@ -52,11 +52,11 @@ Licensed under the Elastic License 2.0. */
   /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
   function getTriggerProperties(tType: string): Property<any>[] | undefined {
     const triggerTypeProps = triggerFactories.find(
-      (item: any) => item.componentId === tType
+      (item: any) => item.componentId === tType,
     ).properties;
 
     const properties: Ref<Property<any>[]> = ref(
-      triggerTypeProps.map((json: any) => Property.fromJson(json))
+      triggerTypeProps.map((json: any) => Property.fromJson(json)),
     );
 
     if (
@@ -66,11 +66,11 @@ Licensed under the Elastic License 2.0. */
       properties.value = properties.value.map((p: Property<any>) =>
         triggerData.properties
           ? p.setValue(triggerData.properties?.[p.id])
-          : p.setValue(p.defaultValue)
+          : p.setValue(p.defaultValue),
       );
     } else {
       properties.value = properties.value.map((p: Property<any>) =>
-        p.setValue(p.defaultValue)
+        p.setValue(p.defaultValue),
       );
     }
 
@@ -87,7 +87,7 @@ Licensed under the Elastic License 2.0. */
   /*gets the trigger description by type value*/
   function getTriggerTypeDescription(triggerType: string): string {
     const trigger = triggerTypesOptions.find(
-      (item: any) => item.value === triggerType
+      (item: any) => item.value === triggerType,
     );
     return trigger.description;
   }
@@ -103,12 +103,12 @@ Licensed under the Elastic License 2.0. */
   const triggerType: Ref<string> = ref(
     dialogRef?.value?.data?.triggerData?.type
       ? dialogRef.value.data.triggerData.type
-      : undefined
+      : undefined,
   );
 
   const actionsArray: Ref<any[]> = ref(actionsData || []);
   const triggerProperties: Ref<Property<any>[] | undefined> = ref(
-    triggerType.value ? getTriggerProperties(triggerType.value) : undefined
+    triggerType.value ? getTriggerProperties(triggerType.value) : undefined,
   );
 
   const removeActions: Ref<number[]> = ref([]);
@@ -138,14 +138,14 @@ Licensed under the Elastic License 2.0. */
           properties: item.defaultProperties,
         });
       },
-    }))
+    })),
   );
 
   function validate(
     component: any,
     componentType: string,
     props: any,
-    i?: number
+    i?: number,
   ) {
     return new Promise((resolve, reject) => {
       let parsedProps: any;
@@ -198,7 +198,7 @@ Licensed under the Elastic License 2.0. */
               : '{}',
             id: -1,
           },
-        ].map((v) => validate(v.component, v.type, v.properties, v.id))
+        ].map((v) => validate(v.component, v.type, v.properties, v.id)),
       )
         .then((response: any) => {
           return response;
@@ -315,7 +315,7 @@ Licensed under the Elastic License 2.0. */
 
   function getError(label: string): string | null | undefined {
     const item = errors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }
@@ -343,18 +343,18 @@ Licensed under the Elastic License 2.0. */
 
   function nameForActionType(actionType?: string) {
     return actionFactories.find(
-      (a: ComponentFactory) => a.componentId === actionType
+      (a: ComponentFactory) => a.componentId === actionType,
     )?.label;
   }
   function setTriggerConfig(tType: string) {
     const cronValue = triggerProperties.value?.find(
-      (item) => item.id === 'cronSchedule'
+      (item) => item.id === 'cronSchedule',
     )?.value;
     triggerProperties.value = getTriggerProperties(tType);
 
     if (cronValue) {
       const cron = triggerProperties.value?.find(
-        (item) => item.id === 'cronSchedule'
+        (item) => item.id === 'cronSchedule',
       ) as Property<CronProperty>;
       cron.value = cronValue;
     }
@@ -579,7 +579,13 @@ Licensed under the Elastic License 2.0. */
           option-value="value"
           :disabled="!editable"
           :class="studyGroupId ? 'dropdown-has-value' : ''"
-          :placeholder="studyGroupId ? getLabelForChoiceValue(studyGroupId as number, groupStates) : groupPlaceholder ? groupPlaceholder as string : $t('global.placeholder.entireStudy')"
+          :placeholder="
+            studyGroupId
+              ? getLabelForChoiceValue(studyGroupId as number, groupStates)
+              : groupPlaceholder
+                ? (groupPlaceholder as string)
+                : $t('global.placeholder.entireStudy')
+          "
         >
           <template #option="optionProps">
             <div class="p-dropdown-car-option">

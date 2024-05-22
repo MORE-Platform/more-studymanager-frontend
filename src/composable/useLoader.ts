@@ -35,7 +35,7 @@ const loader = {
           startTimestampRequest: performance.now(),
         };
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // loader will be shown
@@ -58,7 +58,7 @@ const loader = {
 
         return responseWithDelay;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     axios.interceptors.request.use(
@@ -70,7 +70,7 @@ const loader = {
         loader.disable();
 
         return Promise.reject(error);
-      }
+      },
     );
     axios.interceptors.response.use(
       (response) => {
@@ -80,7 +80,7 @@ const loader = {
       (error) => {
         loader.disable();
         return Promise.reject(error);
-      }
+      },
     );
   },
 };

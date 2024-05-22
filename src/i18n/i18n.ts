@@ -21,13 +21,10 @@ export default createI18n({
   legacy: false,
   globalInjection: true,
   locale: usersLanguage,
-  defaultLanguage: localeEn,
   fallbackLocale,
   availableLocales: [localeEn, localeDe],
   messages: {
     en,
     de,
   },
-  // If you need to specify other options, you can set other options
-  // ...
 });

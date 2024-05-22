@@ -81,7 +81,7 @@ export const useStudyStore = defineStore('study', () => {
                 alert('Could not update study status');
                 handleIndividualError(
                   e,
-                  'Could not update study status' + study.value.studyId
+                  'Could not update study status' + study.value.studyId,
                 );
               });
           })
@@ -89,7 +89,7 @@ export const useStudyStore = defineStore('study', () => {
             alert('Could not update study');
             handleIndividualError(
               e,
-              'Could not update study' + study.value.studyId
+              'Could not update study' + study.value.studyId,
             );
           });
       } else {
@@ -102,7 +102,7 @@ export const useStudyStore = defineStore('study', () => {
             alert('Could not update study status');
             handleIndividualError(
               e,
-              'Could not update study status' + study.value.studyId
+              'Could not update study status' + study.value.studyId,
             );
           });
       }
@@ -117,7 +117,7 @@ export const useStudyStore = defineStore('study', () => {
         studyGroupStore.studyGroups = [];
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot create study')
+        handleIndividualError(e, 'cannot create study'),
       );
   }
 
@@ -127,12 +127,12 @@ export const useStudyStore = defineStore('study', () => {
         .deleteStudy(studyId)
         .then(() => {
           const position = studies.value.findIndex(
-            (studyItem) => studyItem.studyId === studyId
+            (studyItem) => studyItem.studyId === studyId,
           );
           studies.value.splice(position, 1);
         })
         .catch((e: AxiosError) =>
-          handleIndividualError(e, 'cannot delete study')
+          handleIndividualError(e, 'cannot delete study'),
         );
     }
   }
@@ -147,14 +147,14 @@ export const useStudyStore = defineStore('study', () => {
   }
   async function updateStudyInStudies(changedStudy: Study) {
     const i = studies.value.findIndex(
-      (studyItem) => studyItem.studyId === changedStudy.studyId
+      (studyItem) => studyItem.studyId === changedStudy.studyId,
     );
     if (i > -1) {
       await studiesApi
         .updateStudy(changedStudy.studyId as number, changedStudy)
         .then(() => studies.value.splice(i, 1, changedStudy))
         .catch((e: AxiosError) =>
-          handleIndividualError(e, 'cannot update study in studies')
+          handleIndividualError(e, 'cannot update study in studies'),
         );
     }
   }
@@ -172,7 +172,7 @@ export const useStudyStore = defineStore('study', () => {
         }, 100);
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot import study')
+        handleIndividualError(e, 'cannot import study'),
       );
   }
 
@@ -193,13 +193,13 @@ export const useStudyStore = defineStore('study', () => {
       .generateDownloadToken(studyId)
       .then((token) => {
         window.open(
-          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`
+          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`,
         );
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'cannot generate download token to export study data'
+          'cannot generate download token to export study data',
         );
       });
   }
@@ -214,7 +214,7 @@ export const useStudyStore = defineStore('study', () => {
     if (link) {
       link.setAttribute(
         'href',
-        'data:application/json; charset=utf-8,' + encodeURIComponent(fileJSON)
+        'data:application/json; charset=utf-8,' + encodeURIComponent(fileJSON),
       );
       link.setAttribute('download', filename);
       link.style.display = 'hidden';
@@ -229,7 +229,7 @@ export const useStudyStore = defineStore('study', () => {
     ...(study.value.userRoles || []),
   ]);
   const studyStatus: ComputedRef<StudyStatus> = computed(
-    () => study.value.status || StudyStatus.Draft
+    () => study.value.status || StudyStatus.Draft,
   );
   const studyId: ComputedRef<number> = computed(() => study.value.studyId || 0);
 

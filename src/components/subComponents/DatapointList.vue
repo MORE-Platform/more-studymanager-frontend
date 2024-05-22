@@ -42,7 +42,7 @@ Licensed under the Elastic License 2.0. */
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timer;
+  let timer: NodeJS.Timeout | number;
 
   function loadData() {
     timer ??= setInterval(function () {
@@ -60,7 +60,7 @@ Licensed under the Elastic License 2.0. */
         props.studyId,
         size.value,
         observation.value.value,
-        participant.value.value
+        participant.value.value,
       )
       .then((r) => (dataPoints.value = r.data));
   }
@@ -85,7 +85,9 @@ Licensed under the Elastic License 2.0. */
     observationsApi
       .listObservations(props.studyId)
       .then((r) =>
-        r.data.map((r) => ({ name: r.title, value: r.observationId } as Option))
+        r.data.map(
+          (r) => ({ name: r.title, value: r.observationId }) as Option,
+        ),
       )
       .then((options) => (observations.value = [emptyOption, ...options]));
   }
@@ -94,7 +96,9 @@ Licensed under the Elastic License 2.0. */
     participantsApi
       .listParticipants(props.studyId)
       .then((r) =>
-        r.data.map((r) => ({ name: r.alias, value: r.participantId } as Option))
+        r.data.map(
+          (r) => ({ name: r.alias, value: r.participantId }) as Option,
+        ),
       )
       .then((options) => (participants.value = [emptyOption, ...options]));
   }

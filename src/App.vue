@@ -10,7 +10,7 @@ Licensed under the Elastic License 2.0. */
   const router = useRouter();
 
   router.beforeEach((to) => {
-    document.title = (to.meta?.title as string) + ' (More)' ?? 'More';
+    document.title = to.meta?.title ? to.meta.title + ' (More)' : 'More';
   });
 </script>
 

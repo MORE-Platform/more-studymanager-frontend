@@ -30,10 +30,10 @@ Licensed under the Elastic License 2.0. */
   });
 
   const calendarStart: Ref<Date> = ref(
-    new Date(returnSchedule.value.dtstart as string)
+    new Date(returnSchedule.value.dtstart as string),
   );
   const calendarEnd: Ref<Date> = ref(
-    new Date(returnSchedule.value.dtend as string)
+    new Date(returnSchedule.value.dtend as string),
   );
   const calendarEndChangedWithStart: Ref<boolean> = ref(false);
 
@@ -65,10 +65,10 @@ Licensed under the Elastic License 2.0. */
   }
 
   const singleDayEventCheckbox: Ref<boolean> = ref(
-    calendarStart.value.getDay() === calendarEnd.value.getDay() ? true : false
+    calendarStart.value.getDay() === calendarEnd.value.getDay() ? true : false,
   ); // Individual Observation Checkbox
   const hasRruleValue: Ref<boolean> = ref(
-    !returnSchedule.value.rrule ? false : true
+    !returnSchedule.value.rrule ? false : true,
   ); // Repeat Event Checkbox
 
   function onChangeSingleDayEventCheckbox() {
@@ -105,18 +105,18 @@ Licensed under the Elastic License 2.0. */
   const warnings: Ref<Array<MoreTableChoice>> = ref([]);
   function getErrorOrWarning(
     type: string,
-    label: string
+    label: string,
   ): string | null | undefined {
     switch (type) {
       case 'warning': {
         const item = warnings.value.find((el) =>
-          el.label === label ? el.value : ''
+          el.label === label ? el.value : '',
         );
         return item?.value;
       }
       case 'error': {
         const item = errors.value.find((el) =>
-          el.label === label ? el.value : ''
+          el.label === label ? el.value : '',
         );
         return item?.value;
       }
@@ -137,7 +137,7 @@ Licensed under the Elastic License 2.0. */
               calendarStart.value.setHours(
                 oldValue.getHours(),
                 oldValue.getMinutes(),
-                oldValue.getSeconds()
+                oldValue.getSeconds(),
               );
             }
             calendarEndChangedWithStart.value = true;
@@ -149,7 +149,7 @@ Licensed under the Elastic License 2.0. */
             warnings.value.push({
               label: 'endWasChangedWithStartValue',
               value: t(
-                'scheduler.warningsAndErrors.endWasChangedWithStartValue'
+                'scheduler.warningsAndErrors.endWasChangedWithStartValue',
               ),
             });
           } else {
@@ -157,7 +157,7 @@ Licensed under the Elastic License 2.0. */
               calendarStart.value.setHours(
                 oldValue.getHours(),
                 oldValue.getMinutes(),
-                oldValue.getSeconds()
+                oldValue.getSeconds(),
               );
             }
           }
@@ -168,7 +168,7 @@ Licensed under the Elastic License 2.0. */
           calendarEnd.value.setHours(
             oldValue.getHours(),
             oldValue.getMinutes(),
-            oldValue.getSeconds()
+            oldValue.getSeconds(),
           );
         }
       }

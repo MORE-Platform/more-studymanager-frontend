@@ -234,10 +234,10 @@ Licensed under the Elastic License 2.0. */
 
   function cancel(row: any) {
     editingRows.value.splice(
-      editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId])
+      editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId]),
     );
     editMode.value.splice(
-      editMode.value.findIndex((r) => r === row[props.rowId])
+      editMode.value.findIndex((r) => r === row[props.rowId]),
     );
   }
 
@@ -250,11 +250,11 @@ Licensed under the Elastic License 2.0. */
       if (row.userRoles) {
         return (
           (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r)
+            props.editAccessRoles.includes(r),
           ) &&
             row.status === StudyStatus.Draft) ||
           (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r)
+            props.editAccessRoles.includes(r),
           ) &&
             row.status === StudyStatus.Paused)
         );
@@ -350,7 +350,7 @@ Licensed under the Elastic License 2.0. */
 
   function getLabelForMultiSelectValue(
     setValues: any,
-    valueChoices?: MoreTableChoice[]
+    valueChoices?: MoreTableChoice[],
   ) {
     if (valueChoices) {
       const labels: Ref<string[]> = ref([]);
@@ -381,7 +381,7 @@ Licensed under the Elastic License 2.0. */
     if (properties.query && properties.callback) {
       searchActionsMap.value.set(
         properties.index,
-        await properties.callback(properties.query)
+        await properties.callback(properties.query),
       );
     }
   }
@@ -392,7 +392,7 @@ Licensed under the Elastic License 2.0. */
       | MoreTableChoiceOptions
       | MoreTableEditableChoiceProperties
       | ((data?: any) => boolean)
-      | undefined
+      | undefined,
   ): MoreTableChoice[] {
     if (
       typeof editable !== 'undefined' &&
@@ -641,10 +641,15 @@ Licensed under the Elastic License 2.0. */
             :class="data[field] ? 'dropdown-has-value' : ''"
             :placeholder="
               data[field]
-                ? getLabelForChoiceValue(data[field], getMoreTableChoiceValues(column.editable as MoreTableChoiceOptions))
+                ? getLabelForChoiceValue(
+                    data[field],
+                    getMoreTableChoiceValues(
+                      column.editable as MoreTableChoiceOptions,
+                    ),
+                  )
                 : column.placeholder
-                ? column.placeholder
-                : $t('global.placeholder.chooseDropdownOptionDefault')
+                  ? column.placeholder
+                  : $t('global.placeholder.chooseDropdownOptionDefault')
             "
           />
           <MultiSelect
@@ -732,7 +737,7 @@ Licensed under the Elastic License 2.0. */
                 <span
                   v-for="(value, index) in getLabelForMultiSelectValue(
                     data[field],
-                    column.arrayLabels
+                    column.arrayLabels,
                   )"
                   :key="index"
                   class="multiselect-item"
@@ -747,7 +752,7 @@ Licensed under the Elastic License 2.0. */
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(
                 data[field],
-                isEditableWithValues(column.editable)
+                isEditableWithValues(column.editable),
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
@@ -773,7 +778,7 @@ Licensed under the Elastic License 2.0. */
             >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field]
+                  data[field],
                 )"
                 :key="index"
                 class="multiselect-item"

@@ -74,31 +74,31 @@ Licensed under the Elastic License 2.0. */
       ? study.plannedStart
         ? new Date(study.plannedStart)
         : new Date()
-      : new Date()
+      : new Date(),
   );
   const end = ref(
     study
       ? study.plannedEnd
         ? new Date(study.plannedEnd)
         : new Date()
-      : new Date()
+      : new Date(),
   );
 
   const contactInstitute: Ref<string> = ref(
-    study.contact?.institute ? study.contact.institute : ''
+    study.contact?.institute ? study.contact.institute : '',
   );
   const contactPerson: Ref<string> = ref(
     study.contact?.person && study.contact?.person !== 'pending'
       ? study.contact.person
-      : ''
+      : '',
   );
   const contactEmail: Ref<string> = ref(
     study.contact?.email && study.contact?.email !== 'pending'
       ? study.contact.email
-      : ''
+      : '',
   );
   const contactPhoneNumber: Ref<string> = ref(
-    study.contact?.phoneNumber ? study.contact.phoneNumber : ''
+    study.contact?.phoneNumber ? study.contact.phoneNumber : '',
   );
 
   function save() {
@@ -169,7 +169,7 @@ Licensed under the Elastic License 2.0. */
 
   function getError(label: string): string | null | undefined {
     const item = errors.value.find((el) =>
-      el.label === label ? el.value : ''
+      el.label === label ? el.value : '',
     );
     return item?.value;
   }

@@ -65,8 +65,8 @@ Licensed under the Elastic License 2.0. */
         ({
           label: item.title,
           value: item.studyGroupId?.toString(),
-        } as MoreTableChoice)
-    )
+        }) as MoreTableChoice,
+    ),
   );
   groupStatuses.value.push({
     label: t('global.placeholder.noGroup'),
@@ -145,7 +145,7 @@ Licensed under the Elastic License 2.0. */
                     id: 'delete',
                     row: options.data.participant as Participant,
                   },
-                  options.data.withData
+                  options.data.withData,
                 );
               }
             },
@@ -248,7 +248,7 @@ Licensed under the Elastic License 2.0. */
   function distributeGroups(): void {
     // copy participants and shuffle list
     const participantCopy = shuffleArray(
-      participantsList.value.map((p) => JSON.parse(JSON.stringify(p)))
+      participantsList.value.map((p) => JSON.parse(JSON.stringify(p))),
     );
     // set group
     for (let i = 0; i < participantCopy.length; i++) {
@@ -279,13 +279,13 @@ Licensed under the Elastic License 2.0. */
 
   function execute(
     action: MoreTableRowActionResult<Participant> | MoreTableActionResult,
-    withData?: boolean
+    withData?: boolean,
   ) {
     switch (action.id) {
       case 'delete':
         return deleteParticipant(
           (action as MoreTableRowActionResult<Participant>).row,
-          !!withData
+          !!withData,
         );
       case 'create':
         return createParticipant(action as MoreTableActionResult);
@@ -312,33 +312,33 @@ Licensed under the Elastic License 2.0. */
 
   function changeValue(participant: Participant) {
     const i = participantsList.value.findIndex(
-      (v) => v.participantId === participant.participantId
+      (v) => v.participantId === participant.participantId,
     );
     if (i > -1) {
       participantsList.value[i] = participant;
       participantsApi.updateParticipant(
         participant.studyId as number,
         participant.participantId as number,
-        participant
+        participant,
       );
     }
   }
 
   async function deleteParticipant(
     participant: Participant,
-    withData: boolean
+    withData: boolean,
   ) {
     participantsApi
       .deleteParticipant(
         participant.studyId as number,
         participant.participantId as number,
-        withData
+        withData,
       )
       .then(listParticipant);
   }
 
   async function importParticipants(
-    action: MoreTableActionResult
+    action: MoreTableActionResult,
   ): Promise<void> {
     if (action.properties?.files) {
       const file = action.properties?.files[0];

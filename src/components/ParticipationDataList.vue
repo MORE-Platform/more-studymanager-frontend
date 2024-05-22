@@ -36,7 +36,7 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
-  let timer: NodeJS.Timer;
+  let timer: NodeJS.Timeout | number;
 
   function loadData() {
     timer ??= setInterval(function () {
@@ -65,7 +65,7 @@ Licensed under the Elastic License 2.0. */
             observationId: item.observationNamedId?.id || -1,
             observationTitle:
               `${item.observationNamedId?.title} ${getObservationTypeLabel(
-                item.observationType as string
+                item.observationType as string,
               )}` || '-',
             studyGroupTitle:
               item.studyGroupNamedId?.title ||
@@ -73,13 +73,13 @@ Licensed under the Elastic License 2.0. */
             dataReceived: t(
               `global.labels.${
                 item.dataReceived ? 'dataReceived' : 'noDataReceived'
-              }`
+              }`,
             ),
             lastDataReceived: item.lastDataReceived
               ? item.lastDataReceived
               : '-',
           };
-        })
+        }),
       )
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participationDataList');
@@ -91,7 +91,7 @@ Licensed under the Elastic License 2.0. */
 
   function getObservationTypeLabel(observationType: string) {
     const label = factories.find(
-      (item) => item.componentId === observationType
+      (item) => item.componentId === observationType,
     )?.title;
     return label !== undefined ? t(label) : '';
   }

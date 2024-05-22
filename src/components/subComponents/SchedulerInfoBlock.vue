@@ -56,14 +56,14 @@ Licensed under the Elastic License 2.0. */
           case 'dtstart': {
             return schedule.dtstart
               ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart
+                  schedule.dtstart,
                 ).format('HH:mm')}`
               : undefined;
           }
           case 'dtend':
             return schedule.dtend
               ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtend
+                  schedule.dtend,
                 ).format('HH:mm')}`
               : undefined;
           default:
@@ -77,7 +77,7 @@ Licensed under the Elastic License 2.0. */
             return schedule.dtstart.offset?.value &&
               schedule.dtstart.offset?.unit
               ? `${t(
-                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
                 )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
               : undefined;
           }
@@ -137,7 +137,7 @@ Licensed under the Elastic License 2.0. */
             case 'repetitionEnd': {
               if (schedule.rrule?.until) {
                 return `${t('scheduler.preview.title.on')} ${dayjs(
-                  schedule.rrule.until
+                  schedule.rrule.until,
                 ).format('DD/MM/YYYY')}`;
               } else {
                 const repetitionCount =
@@ -148,7 +148,7 @@ Licensed under the Elastic License 2.0. */
                     : schedule.rrule?.count;
                 return schedule.rrule?.count
                   ? `${t('scheduler.preview.title.in')} ${repetitionCount} ${t(
-                      `scheduler.preview.unit.${schedule.rrule.freq}`
+                      `scheduler.preview.unit.${schedule.rrule.freq}`,
                     )}`
                   : undefined;
               }
@@ -162,13 +162,13 @@ Licensed under the Elastic License 2.0. */
           case 'every':
             return schedule.rrrule?.frequency
               ? `${schedule.rrrule.frequency.value} ${t(
-                  `scheduler.preview.unit.PL-${schedule.rrrule.frequency.unit}`
+                  `scheduler.preview.unit.PL-${schedule.rrrule.frequency.unit}`,
                 )}`
               : '';
           case 'repetitionEnd':
             return schedule.rrrule?.endAfter
               ? `${t(`scheduler.preview.title.on`)} ${t(
-                  `scheduler.preview.unit.${schedule.rrrule.endAfter.unit}`
+                  `scheduler.preview.unit.${schedule.rrrule.endAfter.unit}`,
                 )} ${schedule.rrrule.endAfter.value} `
               : '';
           default:
@@ -196,7 +196,7 @@ Licensed under the Elastic License 2.0. */
     </div>
     <h6
       v-if="scheduler.type"
-      class="color-primary col-span-8 mt-1 mb-1 font-medium"
+      class="color-primary col-span-8 mb-1 mt-1 font-medium"
     >
       {{ $t(`scheduler.type.${scheduler.type}`) }}
     </h6>

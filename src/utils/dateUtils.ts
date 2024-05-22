@@ -39,13 +39,13 @@ export function ZTimeToOffsetTime(date: Date): Date {
 }
 
 export function ZTimeStringToOffsetTimeString(
-  time: string | undefined
+  time: string | undefined,
 ): string | undefined {
   let newTime = time ? new Date() : undefined;
   if (newTime && time) {
     newTime.setHours(
       parseInt(time.substring(0, 2)),
-      parseInt(time?.substring(3, 5), 0)
+      parseInt(time?.substring(3, 5), 0),
     );
     newTime = ZTimeToOffsetTime(newTime);
     return newTime.toString().substring(16, 21);

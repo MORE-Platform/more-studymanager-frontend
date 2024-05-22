@@ -60,7 +60,7 @@ Licensed under the Elastic License 2.0. */
       ({
         label: item.title,
         value: item.studyGroupId?.toString(),
-      } as MoreTableChoice)
+      }) as MoreTableChoice,
   );
   groupStatuses.push({ label: 'Entire Study', value: null });
 
@@ -208,7 +208,7 @@ Licensed under the Elastic License 2.0. */
         return openInterventionDialog(
           t('intervention.dialog.header.clone'),
           action.row,
-          true
+          true,
         );
       case 'edit':
         return openEditIntervetion(action.row.interventionId);
@@ -220,7 +220,7 @@ Licensed under the Elastic License 2.0. */
   async function changeValue(intervention: Intervention) {
     //do change immediately (ux)
     const i = interventionList.value.findIndex(
-      (i: Intervention) => i.interventionId === intervention.interventionId
+      (i: Intervention) => i.interventionId === intervention.interventionId,
     );
     if (i > -1) {
       interventionList.value[i] = intervention;
@@ -230,14 +230,14 @@ Licensed under the Elastic License 2.0. */
       .updateIntervention(
         props.studyId,
         intervention.interventionId as number,
-        intervention
+        intervention,
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update intervention " + intervention.title
-        )
+          "Couldn't update intervention " + intervention.title,
+        ),
       );
   }
 
@@ -245,20 +245,20 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .deleteIntervention(
         props.studyId,
-        requestIntervention.interventionId as number
+        requestIntervention.interventionId as number,
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete intervention ' + requestIntervention.interventionId
-        )
+          'Cannot delete intervention ' + requestIntervention.interventionId,
+        ),
       );
   }
 
   async function createIntervention(object: any) {
     const interventionId: Ref<number | undefined> = ref(
-      await addIntervention(object.intervention)
+      await addIntervention(object.intervention),
     );
 
     if (interventionId.value) {
@@ -276,7 +276,7 @@ Licensed under the Elastic License 2.0. */
       .addIntervention(props.studyId, intervention)
       .then((response: AxiosResponse) => response.data.interventionId)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create intervention')
+        handleIndividualError(e, 'Cannot create intervention'),
       );
   }
 
@@ -285,19 +285,19 @@ Licensed under the Elastic License 2.0. */
       .createAction(props.studyId, interventionId, action)
       .then(listInterventions)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create action on: ' + interventionId)
+        handleIndividualError(e, 'Cannot create action on: ' + interventionId),
       );
   }
 
   async function updateAction(
     interventionId: number,
     actionId: number,
-    action: Action
+    action: Action,
   ) {
     await interventionsApi
       .updateAction(props.studyId, interventionId, actionId, action)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot update action: ' + action.actionId)
+        handleIndividualError(e, 'Cannot update action: ' + action.actionId),
       );
   }
 
@@ -305,7 +305,7 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .deleteAction(props.studyId, interventionId, actionId)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot delete action: ' + actionId)
+        handleIndividualError(e, 'Cannot delete action: ' + actionId),
       );
   }
 
@@ -313,7 +313,7 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .updateTrigger(props.studyId, interventionId, trigger)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create trigger on: ' + interventionId)
+        handleIndividualError(e, 'Cannot create trigger on: ' + interventionId),
       );
   }
 
@@ -323,7 +323,7 @@ Licensed under the Elastic License 2.0. */
     if (object.intervention.interventionId) {
       await updateTrigger(
         object.intervention.interventionId,
-        object.trigger
+        object.trigger,
       ).then(() => {
         listInterventions();
       });
@@ -333,7 +333,7 @@ Licensed under the Elastic License 2.0. */
           updateAction(
             object.intervention.interventionId as number,
             action.actionId,
-            action
+            action,
           );
         } else {
           createAction(object.intervention.interventionId as number, action);
@@ -347,7 +347,7 @@ Licensed under the Elastic License 2.0. */
 
   async function updateIntervention(intervention: Intervention) {
     const i = interventionList.value.findIndex(
-      (v) => v.interventionId === intervention.interventionId
+      (v) => v.interventionId === intervention.interventionId,
     );
     if (i > -1) {
       interventionList.value[i] = intervention;
@@ -356,14 +356,14 @@ Licensed under the Elastic License 2.0. */
         .updateIntervention(
           props.studyId,
           intervention.interventionId as number,
-          intervention
+          intervention,
         )
         .then(listInterventions)
         .catch((e: AxiosError) =>
           handleIndividualError(
             e,
-            'Cannot update intervention: ' + intervention.interventionId
-          )
+            'Cannot update intervention: ' + intervention.interventionId,
+          ),
         );
       return i;
     }
@@ -371,7 +371,7 @@ Licensed under the Elastic License 2.0. */
 
   function openEditIntervetion(interventionId: number) {
     const intervention = interventionList.value.find(
-      (i) => i.interventionId === interventionId
+      (i) => i.interventionId === interventionId,
     );
     if (intervention) {
       let dialogTitle = t('intervention.dialog.header.edit');
@@ -388,7 +388,7 @@ Licensed under the Elastic License 2.0. */
   function openInterventionDialog(
     headerText: string,
     intervention?: Intervention,
-    clone?: boolean
+    clone?: boolean,
   ) {
     Promise.all([
       listActions(intervention?.interventionId),
@@ -436,7 +436,7 @@ Licensed under the Elastic License 2.0. */
               }
             },
           });
-        }
+        },
       )
       .catch(console.error);
   }
