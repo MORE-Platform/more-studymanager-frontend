@@ -231,7 +231,7 @@
         "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet",
         "durationExample": "Studienbeginn; 01.07.2023 - Studienende: 31.12.2023 (5 Monate) - Studiendauer: 4 Wochen\nDie aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
-        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten.",
+        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
         "contactData": "Diese Kontaktdaten werden in der App den Teilnehmer:innen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Teilnahme an der Studie gibt."
       },
