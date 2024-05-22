@@ -246,27 +246,27 @@ Licensed under the Elastic License 2.0. */
     cancel(row);
   }
   function isEditable(row: any) {
-    if (props.editableAccess) {
-      if (row.userRoles) {
-        return (
-          (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r),
-          ) &&
-            row.status === StudyStatus.Draft) ||
-          (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r),
-          ) &&
-            row.status === StudyStatus.Paused) ||
-          (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r),
-          ) &&
-            row.status === StudyStatus.PausedPreview)
-        );
-      } else {
-        return props.editable(row);
-      }
-    } else {
+    if (!props.editableAccess) {
       return false;
+    }
+
+    if (row.userRoles) {
+      return (
+        (row.userRoles.some((r: StudyRole) =>
+          props.editAccessRoles.includes(r),
+        ) &&
+          row.status === StudyStatus.Draft) ||
+        (row.userRoles.some((r: StudyRole) =>
+          props.editAccessRoles.includes(r),
+        ) &&
+          row.status === StudyStatus.Paused) ||
+        (row.userRoles.some((r: StudyRole) =>
+          props.editAccessRoles.includes(r),
+        ) &&
+          row.status === StudyStatus.PausedPreview)
+      );
+    } else {
+      return props.editable(row);
     }
   }
 
@@ -390,7 +390,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function isEditableWithValues(
+  function getEditableValues(
     editable:
       | boolean
       | MoreTableChoiceOptions
@@ -410,6 +410,27 @@ Licensed under the Elastic License 2.0. */
     }
 
     return [] as MoreTableChoice[];
+  }
+
+  function isEditableValuesEnabled(
+    editable:
+      | boolean
+      | MoreTableChoiceOptions
+      | MoreTableEditableChoiceProperties
+      | ((data?: any) => boolean)
+      | undefined,
+  ): boolean {
+    if (
+      typeof editable !== 'undefined' &&
+      typeof editable !== 'boolean' &&
+      typeof editable !== 'function'
+    ) {
+      if (Object.prototype.hasOwnProperty.call(editable, 'editable')) {
+        return (editable as MoreTableChoiceOptions).editable ?? false;
+      }
+    }
+
+    return true;
   }
 
   function getNestedField(data: any, field: string) {
@@ -635,34 +656,42 @@ Licensed under the Elastic License 2.0. */
             autocomplete="off"
             date-format="dd/mm/yy"
           />
-          <Dropdown
-            v-if="column.type === MoreTableFieldType.choice"
-            v-model="data[field]"
-            class="w-full"
-            :options="isEditableWithValues(column.editable)"
-            option-label="label"
-            option-value="value"
-            :class="data[field] ? 'dropdown-has-value' : ''"
-            :placeholder="
-              data[field]
-                ? getLabelForChoiceValue(
-                    data[field],
-                    getMoreTableChoiceValues(
-                      column.editable as MoreTableChoiceOptions,
-                    ),
-                  )
-                : column.placeholder
-                  ? column.placeholder
-                  : $t('global.placeholder.chooseDropdownOptionDefault')
-            "
-          />
+          <div v-if="column.type === MoreTableFieldType.choice">
+            <Dropdown
+              v-if="isEditableValuesEnabled(column.editable)"
+              v-model="data[field]"
+              class="w-full"
+              :options="getEditableValues(column.editable)"
+              option-label="label"
+              option-value="value"
+              :class="data[field] ? 'dropdown-has-value' : ''"
+              :placeholder="
+                data[field]
+                  ? getLabelForChoiceValue(
+                      data[field],
+                      getMoreTableChoiceValues(
+                        column.editable as MoreTableChoiceOptions,
+                      ),
+                    )
+                  : column.placeholder
+                    ? column.placeholder
+                    : $t('global.placeholder.chooseDropdownOptionDefault')
+              "
+            />
+            <span v-else>{{
+              getLabelForChoiceValue(
+                data[field],
+                getEditableValues(column.editable),
+              )
+            }}</span>
+          </div>
           <MultiSelect
             v-if="
               column.type === MoreTableFieldType.multiselect ||
               column.type === MoreTableFieldType.singleselect
             "
             v-model="data[field]"
-            :options="isEditableWithValues(column.editable)"
+            :options="getEditableValues(column.editable)"
             option-label="label"
             :selection-limit="
               column.type === MoreTableFieldType.singleselect ? 1 : undefined
@@ -756,7 +785,7 @@ Licensed under the Elastic License 2.0. */
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(
                 data[field],
-                isEditableWithValues(column.editable),
+                getEditableValues(column.editable),
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
