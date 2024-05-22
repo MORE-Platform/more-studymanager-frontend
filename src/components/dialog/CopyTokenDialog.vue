@@ -11,9 +11,9 @@ Licensed under the Elastic License 2.0. */
   import IntegrationExample from '../subComponents/IntegrationExample.vue';
 
   const infoDialogRef: any = inject('dialogRef');
-  const title: string = infoDialogRef?.value?.data?.title;
-  const message: string = infoDialogRef?.value?.data?.message;
-  const token: string = infoDialogRef?.value?.data?.highlightMsg;
+  const title: string = infoDialogRef.value.data.title;
+  const message: string = infoDialogRef.value.data.message;
+  const token: string = infoDialogRef.value.data.highlightMsg;
 
   const { t } = useI18n();
   const showMessage: Ref<boolean> = ref(false);
@@ -32,8 +32,10 @@ Licensed under the Elastic License 2.0. */
   <div class="info-dialog">
     <h5 class="mb-2">{{ title }}</h5>
     <div class="mb-4">{{ message }}</div>
-    <div class="h6 color-primary font-medium">{{ token }}</div>
-    <IntegrationExample />
+    <div class="h6 color-primary cursor-pointer font-medium" @click="copyToken">
+      {{ token }}
+    </div>
+    <IntegrationExample :token="token" />
     <div class="mt-8 flex justify-end">
       <Button type="button" class="btn-gray" @click="closeDialog">{{
         $t('global.labels.close')

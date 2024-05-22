@@ -513,6 +513,7 @@
     "dialog": {
       "header": {
         "delete": "Integration löschen",
+        "clone": "Integration klonen",
         "create": "Integration erstellen",
         "tokenCopy": "Token kopieren"
       },
