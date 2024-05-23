@@ -94,7 +94,8 @@ Licensed under the Elastic License 2.0. */
 
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
-    studyStore.study.status === StudyStatus.Paused;
+    studyStore.study.status === StudyStatus.Paused ||
+    studyStore.study.status === StudyStatus.PausedPreview;
 
   const title = ref(intervention.title);
   const purpose = ref(intervention.purpose);

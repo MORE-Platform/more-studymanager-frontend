@@ -156,7 +156,11 @@ Licensed under the Elastic License 2.0. */
               (props.userRoles.some((r: StudyRole) =>
                 accessEditDetailsRoles.includes(r),
               ) &&
-                props.study.status === StudyStatus.Draft)) === false
+                props.study.status === StudyStatus.Draft) ||
+              (props.userRoles.some((r: StudyRole) =>
+                accessEditDetailsRoles.includes(r),
+              ) &&
+                props.study.status === StudyStatus.PausedPreview)) === false
           "
           @click="openEditDialog()"
           ><span>{{ $t('study.statusChange.edit') }}</span></Button

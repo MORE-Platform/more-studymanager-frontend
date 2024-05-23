@@ -305,7 +305,8 @@ Licensed under the Elastic License 2.0. */
         (data: Study) => {
           return (
             data.status === StudyStatus.Draft ||
-            data.status === StudyStatus.Paused
+            data.status === StudyStatus.Paused ||
+            data.status === StudyStatus.PausedPreview
           );
         }
       "

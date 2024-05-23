@@ -256,7 +256,11 @@ Licensed under the Elastic License 2.0. */
           (row.userRoles.some((r: StudyRole) =>
             props.editAccessRoles.includes(r),
           ) &&
-            row.status === StudyStatus.Paused)
+            row.status === StudyStatus.Paused) ||
+          (row.userRoles.some((r: StudyRole) =>
+            props.editAccessRoles.includes(r),
+          ) &&
+            row.status === StudyStatus.PausedPreview)
         );
       } else {
         return props.editable(row);

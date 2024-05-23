@@ -157,7 +157,9 @@ Licensed under the Elastic License 2.0. */
       (props.userRoles.some((r) => editableRoles.includes(r)) &&
         props.studyStatus === StudyStatus.Draft) ||
       (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Paused)
+        props.studyStatus === StudyStatus.Paused) ||
+      (props.userRoles.some((r) => editableRoles.includes(r)) &&
+        props.studyStatus === StudyStatus.PausedPreview)
     );
   }
 
