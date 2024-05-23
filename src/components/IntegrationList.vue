@@ -43,7 +43,10 @@ Licensed under the Elastic License 2.0. */
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
-  const actionsVisible = props.studyStatus !== StudyStatus.Closed;
+  const actionsVisible =
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
 
   const observationList: Ref<Observation[]> = ref([]);
   const integrationList: Ref<MoreIntegrationTableMap[]> = ref([]);
