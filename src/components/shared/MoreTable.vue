@@ -425,8 +425,12 @@ Licensed under the Elastic License 2.0. */
       typeof editable !== 'boolean' &&
       typeof editable !== 'function'
     ) {
-      if (Object.prototype.hasOwnProperty.call(editable, 'editable')) {
-        return (editable as MoreTableChoiceOptions).editable ?? false;
+      if (
+        Object.prototype.hasOwnProperty.call(editable, 'showValuesForEditing')
+      ) {
+        return (
+          (editable as MoreTableChoiceOptions).showValuesForEditing ?? false
+        );
       }
     }
 
@@ -673,9 +677,8 @@ Licensed under the Elastic License 2.0. */
                         column.editable as MoreTableChoiceOptions,
                       ),
                     )
-                  : column.placeholder
-                    ? column.placeholder
-                    : $t('global.placeholder.chooseDropdownOptionDefault')
+                  : column.placeholder ||
+                    $t('global.placeholder.chooseDropdownOptionDefault')
               "
             />
             <span v-else>{{
