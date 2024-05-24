@@ -93,7 +93,10 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses.value, editable: actionsVisible },
+      editable: {
+        values: groupStatuses.value,
+        showValuesForEditing: actionsVisible,
+      },
       sortable: true,
       filterable: { showFilterMatchModes: false },
       placeholder: t('global.placeholder.noGroup'),
