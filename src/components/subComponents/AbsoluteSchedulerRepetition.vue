@@ -187,7 +187,7 @@
           previewCount.value = undefined;
 
           const endDate = new Date(studyStore.study.plannedEnd as string);
-          endDate.setHours(0, 0, 0);
+          endDate.setHours(23, 59, 59);
           returnRrule.value.until = endDate.toISOString();
         }
         break;
