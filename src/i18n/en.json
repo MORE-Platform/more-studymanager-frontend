@@ -695,8 +695,13 @@
       "relativeDate": "Relative Date",
       "studyStart": "Study start",
       "studyEnd": "Study end",
+      "plannedStart": "Planned Start",
+      "plannedEnd": "Planned end",
+      "study": "Study",
       "type": "Type",
-      "chooseType": "Choose type"
+      "chooseType": "Choose type",
+      "today": "Today",
+      "participantJoined": "Participant joined"
     }
   },
 

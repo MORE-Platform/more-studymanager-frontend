@@ -343,7 +343,7 @@ declare module 'vue-cal' {
     switchView(
       view: ViewEvents,
       date: Date = null,
-      fromViewSelector: boolean = false
+      fromViewSelector: boolean = false,
     );
 
     // The events source of truth.
@@ -362,7 +362,7 @@ declare module 'vue-cal' {
     createEvent(
       dateTime: string | Date,
       duration: number,
-      eventOptions: Events = {}
+      eventOptions: Events = {},
     );
 
     /**

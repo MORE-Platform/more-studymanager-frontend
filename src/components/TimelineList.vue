@@ -95,28 +95,53 @@ Licensed under the Elastic License 2.0. */
         ({
           label: item.title,
           value: item.studyGroupId?.toString(),
-        } as dropdownOption)
-    )
+        }) as dropdownOption,
+    ),
   );
 
   const events = computed(() => {
     return timelineEventsList.value.filter((event: Event) => {
       return (
         filterObservationAndIntervention.value.includes(event.cType) ||
-        event.allDay
+        event.allDay ||
+        event.class === 'participant-joined'
       );
     });
   });
 
   function setupEventsList(rsData: StudyTimeline) {
     timelineEventsList.value = [];
+
     timelineEventsList.value.push({
       start: dateToDateString(new Date(studyStartDate as string)),
       end: dateToDateString(new Date(studyStartDate as string)),
-      title: t('timeline.labels.studyStart'),
+      title: studyStore.study.start
+        ? t('timeline.labels.studyStart')
+        : t('timeline.labels.plannedStart'),
       class: 'study-date',
       allDay: true,
     } as Event);
+
+    if (rsData.studyDuration) {
+      timelineEventsList.value.push({
+        start: new Date(rsData.studyDuration.from as string),
+        end: new Date(rsData.studyDuration.to as string),
+        title: t('timeline.labels.study'),
+        class: 'study-range',
+        allDay: true,
+      } as Event);
+    }
+
+    if (rsData.participantSignup) {
+      timelineEventsList.value.push({
+        start: new Date(rsData.participantSignup as string),
+        end: new Date(
+          new Date(rsData.participantSignup).getTime() + 30 * 60000,
+        ),
+        title: t('timeline.labels.participantJoined'),
+        class: 'participant-joined',
+      } as Event);
+    }
 
     rsData.observations?.forEach((observation: ObservationTimelineEvent) => {
       const event: Event = {
@@ -127,7 +152,7 @@ Licensed under the Elastic License 2.0. */
         cHidden: observation.hidden,
         cScheduleType: t(`scheduler.type.${observation.scheduleType}`),
         cTypeTranslation: t(
-          getTranslationKeyByObservationOrInterventionType(observation.type)
+          getTranslationKeyByObservationOrInterventionType(observation.type),
         ),
         cType: observation.type,
         cPurpose: observation.purpose,
@@ -137,36 +162,36 @@ Licensed under the Elastic License 2.0. */
     rsData.interventions?.forEach((intervention: InterventionTimelineEvent) => {
       const event: Event = {
         start: new Date(intervention.start ?? ''),
-        end: new Date(intervention.end ?? ''),
+        end: new Date(
+          new Date(intervention.start ?? '').getTime() + 30 * 60000,
+        ),
         title: intervention.title,
         class: 'intervention',
-        cScheduleType: t(`scheduler.type.${intervention.scheduleType}`),
         cTypeTranslation: t(
-          getTranslationKeyByObservationOrInterventionType(intervention.type)
+          getTranslationKeyByObservationOrInterventionType(
+            intervention.scheduleType,
+          ),
         ),
-        cType: intervention.type,
+        cType: intervention.scheduleType,
         cPurpose: intervention.purpose,
       };
-      if (!intervention.end) {
-        // Intervention normally do not have an end date, therefore we use the start date + 15 min as an end date, to see the event in the calendar.
-        event.end = new Date(
-          new Date(intervention.start ?? '').getTime() + 15 * 60000
-        );
-      }
+
       timelineEventsList.value.push(event);
     });
 
     timelineEventsList.value.push({
       start: dateToDateString(new Date(studyEndDate as string)),
       end: dateToDateString(new Date(studyEndDate as string)),
-      title: t('timeline.labels.studyEnd'),
+      title: studyStore.study.end
+        ? t('timeline.labels.studyEnd')
+        : t('timeline.labels.plannedEnd'),
       class: 'study-date',
       allDay: true,
     } as Event);
   }
 
   function getTranslationKeyByObservationOrInterventionType(
-    type: string | undefined
+    type: string | undefined,
   ): string {
     for (let i = 0, len = factories.length; i < len; i++) {
       if (factories[i].componentId === type) {
@@ -189,8 +214,8 @@ Licensed under the Elastic License 2.0. */
     if (e.value) {
       filteredParticipants.push(
         ...participantsList.value.filter(
-          (participant) => participant.studyGroupId === parseInt(e.value)
-        )
+          (participant) => participant.studyGroupId === parseInt(e.value),
+        ),
       );
     } else {
       filteredParticipants.push(...participantsList.value);
@@ -202,8 +227,8 @@ Licensed under the Elastic License 2.0. */
           ({
             label: item.alias,
             value: item.participantId?.toString(),
-          } as dropdownOption)
-      )
+          }) as dropdownOption,
+      ),
     );
 
     participantOptions.value = filteredOptions;
@@ -242,7 +267,7 @@ Licensed under the Elastic License 2.0. */
 
   function getStudyGroupIdByParticipantId(id: number): string | undefined {
     const foundParticipant = participantsList.value.find(
-      (participant) => participant.participantId === id
+      (participant) => participant.participantId === id,
     );
 
     return foundParticipant?.studyGroupId?.toString();
@@ -263,13 +288,13 @@ Licensed under the Elastic License 2.0. */
 
     rsData.observations?.forEach((observation: ObservationTimelineEvent) => {
       const existingOption = observationOptions.some(
-        (option: dropdownOption) => option.value === observation.type
+        (option: dropdownOption) => option.value === observation.type,
       );
 
       if (!existingOption) {
         observationOptions.push({
           label: t(
-            getTranslationKeyByObservationOrInterventionType(observation.type)
+            getTranslationKeyByObservationOrInterventionType(observation.type),
           ),
           value: observation.type,
         } as dropdownOption);
@@ -277,15 +302,17 @@ Licensed under the Elastic License 2.0. */
     });
     rsData.interventions?.forEach((intervention: InterventionTimelineEvent) => {
       const existingOption = interventionOptions.some(
-        (option: dropdownOption) => option.value === intervention.type
+        (option: dropdownOption) => option.value === intervention.scheduleType,
       );
 
       if (!existingOption) {
         interventionOptions.push({
           label: t(
-            getTranslationKeyByObservationOrInterventionType(intervention.type)
+            getTranslationKeyByObservationOrInterventionType(
+              intervention.scheduleType,
+            ),
           ),
-          value: intervention.type,
+          value: intervention.scheduleType,
         } as dropdownOption);
       }
     });
@@ -319,7 +346,7 @@ Licensed under the Elastic License 2.0. */
         filterStudyGroup.value,
         filterRelativeStartDate.value,
         studyStartDate,
-        studyEndDate
+        studyEndDate,
       )
       .then((response: AxiosResponse<StudyTimeline>) => {
         setupEventsList(response.data);
@@ -340,8 +367,8 @@ Licensed under the Elastic License 2.0. */
               ({
                 label: item.alias,
                 value: item.participantId?.toString(),
-              } as dropdownOption)
-          )
+              }) as dropdownOption,
+          ),
         );
 
         return response.data;
@@ -426,7 +453,7 @@ Licensed under the Elastic License 2.0. */
           class="ml-1"
           :max-selected-labels="1"
           :selected-items-label="`{0} ${$t(
-            'global.placeholder.optionsSelected'
+            'global.placeholder.optionsSelected',
           )}`"
         ></MultiSelect>
       </div>
@@ -451,19 +478,29 @@ Licensed under the Elastic License 2.0. */
       <div class="vuecal__event-title">
         {{ event.title }}
         <span
-          v-if="!event.allDay"
+          v-if="!event.allDay && event.class !== 'participant-joined'"
           class="pi mr-0.5"
           :class="event.cHidden ? 'pi-eye-slash' : 'pi-eye'"
         >
         </span>
       </div>
-      <div v-if="!event.allDay" class="vuecal__event-time">
-        {{ event.start.formatTime('HH:mm') }} -
-        {{ event.end.formatTime('HH:mm') }}
+      <div
+        v-if="!event.allDay && event.class !== 'participant-joined'"
+        class="vuecal__event-time"
+      >
+        <span>{{ event.start.formatTime('HH:mm') }}</span>
+        <span
+          v-if="!['participant-joined', 'intervention'].includes(event.class)"
+        >
+          - {{ event.end.formatTime('HH:mm') }}</span
+        >
       </div>
     </template>
     <template #today-button>
-      <Button icon="pi pi-calendar"></Button>
+      <Button
+        icon="pi pi-calendar"
+        :title="t('timeline.labels.today')"
+      ></Button>
     </template>
   </VueCal>
 
@@ -478,46 +515,21 @@ Licensed under the Elastic License 2.0. */
         border: 1px solid var(--primary-200);
       }
       &.intervention {
-        background-color: red;
+        background-color: var(--yellow-100);
         border: 1px solid var(--primary-200);
       }
       &.study-date {
         background-color: var(--primary-500);
         color: white;
       }
+      &.study-range {
+        background-color: var(--primary-200);
+        color: white;
+      }
+      &.participant-joined {
+        background-color: var(--red-600);
+        color: white;
+      }
     }
   }
-
-  /*:deep(.vuecal) {
-    !* Green-theme. *!
-    .vuecal__menu,
-    .vuecal__cell-events-count {
-      background-color: var(--primary-color);
-    }
-    .vuecal__title-bar {
-      background-color: var(--primary-100);
-    }
-    .vuecal__cell--today,
-    .vuecal__cell--current {
-      background-color: var(--primary-200);
-    }
-    &:not(.vuecal--day-view) .vuecal__cell--selected {
-      background-color: var(--primary-100--alpha);
-    }
-    .vuecal__cell--selected:before {
-      border-color: var(--primary-200);
-    }
-    !* Cells and buttons get highlighted when an event is dragged over it. *!
-    .vuecal__cell--highlighted:not(.vuecal__cell--has-splits),
-    .vuecal__cell-split--highlighted {
-      background-color: var(--primary-400);
-    }
-    .vuecal__arrow.vuecal__arrow--highlighted,
-    .vuecal__view-btn.vuecal__view-btn--highlighted {
-      background-color: var(--primary-100--alpha);
-    }
-    .vuecal__view-btn {
-      color: white;
-    }
-  }*/
 </style>
