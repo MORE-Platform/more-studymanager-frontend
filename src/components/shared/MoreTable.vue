@@ -252,18 +252,14 @@ Licensed under the Elastic License 2.0. */
 
     if (row.userRoles) {
       return (
-        (row.userRoles.some((r: StudyRole) =>
+        row.userRoles.some((r: StudyRole) =>
           props.editAccessRoles.includes(r),
         ) &&
-          row.status === StudyStatus.Draft) ||
-        (row.userRoles.some((r: StudyRole) =>
-          props.editAccessRoles.includes(r),
-        ) &&
-          row.status === StudyStatus.Paused) ||
-        (row.userRoles.some((r: StudyRole) =>
-          props.editAccessRoles.includes(r),
-        ) &&
-          row.status === StudyStatus.PausedPreview)
+        [
+          StudyStatus.Draft,
+          StudyStatus.Paused,
+          StudyStatus.PausedPreview,
+        ].includes(row.status)
       );
     } else {
       return props.editable(row);
