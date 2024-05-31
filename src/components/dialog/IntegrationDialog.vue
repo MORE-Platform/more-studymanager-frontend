@@ -43,10 +43,7 @@ Licensed under the Elastic License 2.0. */
   const selectedObservation: Ref<MoreTableChoice | null> = ref(null);
   const tokenLabel: Ref<string> = ref('');
 
-  const editable =
-    studyStore.study.status === StudyStatus.Draft ||
-    studyStore.study.status === StudyStatus.Paused ||
-    studyStore.study.status === StudyStatus.PausedPreview;
+  const editable = studyStore.study.status !== StudyStatus.Closed;
 
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
 
