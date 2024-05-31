@@ -789,6 +789,33 @@ paths:
         '404':
           description: not found
 
+    put:
+      tags:
+        - observations
+      description: Update label from observation endpoint token
+      operationId: updateTokenLabel
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationId'
+        - $ref: '#/components/parameters/TokenId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenLabel'
+      responses:
+        '200':
+          description: Token label successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointToken'
+
+        '400':
+          description: could not update observation
+        '404':
+          description: not found
 
     delete:
       tags:

@@ -58,6 +58,7 @@ Licensed under the Elastic License 2.0. */
       field: 'tokenLabel',
       header: t('integration.props.tokenLabel'),
       sortable: true,
+      editable: true,
     },
     {
       field: 'observationId',
@@ -209,6 +210,30 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
+  async function updateIntegration(integration: MoreIntegrationTableMap) {
+    const i = integrationList.value.findIndex(
+      (o: MoreIntegrationTableMap) =>
+        o.observationId === integration.observationId,
+    );
+    if (i > -1) {
+      integrationList.value[i] = integration;
+    }
+
+    await observationsApi
+      .updateTokenLabel(
+        props.studyId,
+        integration.observationId,
+        integration.tokenId,
+        integration.tokenLabel,
+      )
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          `Couldn't update integration ${integration.observationTitle}`,
+        ),
+      );
+  }
+
   async function openIntegrationDialog(headerText: string) {
     dialog.open(IntegrationDialog, {
       data: {
@@ -326,11 +351,12 @@ Licensed under the Elastic License 2.0. */
       :row-actions="rowActions"
       :table-actions="tableActions"
       :loading="loader.isLoading.value"
-      :editable-access="false"
+      :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('integration.integrationList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
       @onaction="execute($event)"
+      @onchange="updateIntegration($event)"
     />
     <DynamicDialog />
   </div>
