@@ -5,10 +5,8 @@
   import Checkbox from 'primevue/checkbox';
   import InputNumber from 'primevue/inputnumber';
   import SelectButton from 'primevue/selectbutton';
-  import { useStudyStore } from '../../stores/studyStore';
   import { MoreTableChoice } from '../../models/MoreTableModel';
 
-  const studyStore = useStudyStore();
   const { t } = useI18n();
 
   const props = defineProps({
@@ -71,7 +69,7 @@
         });
       }
       if (
-        typeof returnRrule.value.until !== 'string' &&
+        rruleEndOptionValue.value === 'after' &&
         typeof previewCount.value !== 'number'
       ) {
         rruleErrors.value.push({
@@ -94,8 +92,8 @@
   const rruleEndOptions = [
     {
       label: t('scheduler.labels.event.repetitionEnd.studyEnd'),
-      value: 'onDate',
-      unit: 'onDate',
+      value: 'never',
+      unit: 'never',
     },
     {
       label: t('scheduler.labels.event.repetitionEnd.after'),
@@ -162,8 +160,6 @@
 
   if (typeof returnRrule.value.count === 'number') {
     rruleEndOptionValue.value = 'after';
-  } else if (typeof returnRrule.value.until === 'string') {
-    rruleEndOptionValue.value = 'onDate';
   }
 
   function setRruleCountLabel(rruleFreq: string | undefined) {
@@ -181,16 +177,6 @@
 
   function setRepetitionEnd(type: string | undefined) {
     switch (type) {
-      case 'onDate':
-        {
-          returnRrule.value.count = undefined;
-          previewCount.value = undefined;
-
-          const endDate = new Date(studyStore.study.plannedEnd as string);
-          endDate.setHours(23, 59, 59);
-          returnRrule.value.until = endDate.toISOString();
-        }
-        break;
       case 'after':
         {
           returnRrule.value.until = undefined;
