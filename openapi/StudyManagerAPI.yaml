@@ -738,7 +738,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenLabel'
+              $ref: '#/components/schemas/EndpointToken'
       responses:
         '201':
           description: Token successfully added
@@ -803,7 +803,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenLabel'
+              $ref: '#/components/schemas/EndpointToken'
       responses:
         '200':
           description: Token label successfully updated
@@ -1626,21 +1626,19 @@ components:
         tokenId:
           $ref: '#/components/schemas/Id'
         tokenLabel:
-          $ref: '#/components/schemas/TokenLabel'
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
         token:
           type: string
+          readOnly: true
       required:
         - tokenId
         - tokenLabel
         - created
         - token
-
-    TokenLabel:
-      type: string
 
     ParticipationData:
       type: object
