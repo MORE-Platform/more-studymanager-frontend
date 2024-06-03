@@ -382,6 +382,10 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
+  function checkEditablePermissions(row: any): boolean {
+    return row.status === 'new';
+  }
+
   listParticipant();
 </script>
 
@@ -398,6 +402,7 @@ Licensed under the Elastic License 2.0. */
       :table-actions="tableActions"
       :loading="loader.isLoading.value"
       :editable-access="props.statusStatus !== StudyStatus.Closed"
+      :editable="checkEditablePermissions"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-65"
