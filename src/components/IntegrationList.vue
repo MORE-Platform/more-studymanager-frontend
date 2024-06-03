@@ -224,7 +224,12 @@ Licensed under the Elastic License 2.0. */
         props.studyId,
         integration.observationId,
         integration.tokenId,
-        integration.tokenLabel,
+        {
+          tokenId: integration.tokenId,
+          tokenLabel: integration.tokenLabel,
+          created: integration.created,
+          token: '',
+        } as EndpointToken,
       )
       .catch((e: AxiosError) =>
         handleIndividualError(
@@ -291,11 +296,12 @@ Licensed under the Elastic License 2.0. */
 
   async function createIntegration(integrationCreate: MoreIntegrationLink) {
     await observationsApi
-      .createToken(
-        props.studyId,
-        integrationCreate.observationId,
-        integrationCreate.tokenLabel,
-      )
+      .createToken(props.studyId, integrationCreate.observationId, {
+        tokenId: 0,
+        tokenLabel: integrationCreate.tokenLabel,
+        created: '',
+        token: '',
+      } as EndpointToken)
       .then((response) => {
         openInfoDialog(response.data);
         listIntegrations();
