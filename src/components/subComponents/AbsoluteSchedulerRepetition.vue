@@ -206,7 +206,7 @@
     }
   });
 
-  function onChangeRrule(type?: string) {
+  function onChangeRrule(type?: string, eventValue?: any) {
     if (
       type === 'byday' &&
       previewCount.value &&
@@ -220,8 +220,11 @@
       emit('onRruleChange', returnRrule.value);
     }
 
-    if (type === 'count' && !previewCount.value) {
-      returnRrule.value.count = undefined;
+    if (type === 'count') {
+      previewCount.value = eventValue;
+      if (!previewCount.value) {
+        returnRrule.value.count = undefined;
+      }
     }
 
     if (returnRrule.value.freq === Frequency.Daily && returnRrule.value.byday) {
@@ -323,8 +326,7 @@
               <InputNumber
                 v-model="previewCount"
                 :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
-                @input="onChangeRrule('count')"
-                @blur="onChangeRrule('count')"
+                @input="onChangeRrule('count', $event.value)"
               />
               <span class="ml-2">{{ rruleCountLabel }}</span>
             </div>

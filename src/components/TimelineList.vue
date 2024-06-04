@@ -478,7 +478,10 @@ Licensed under the Elastic License 2.0. */
       <div class="vuecal__event-title">
         {{ event.title }}
         <span
-          v-if="!event.allDay && event.class !== 'participant-joined'"
+          v-if="
+            !event.allDay &&
+            !['participant-joined', 'intervention'].includes(event.class)
+          "
           class="pi mr-0.5"
           :class="event.cHidden ? 'pi-eye-slash' : 'pi-eye'"
         >
@@ -508,28 +511,26 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  .vuecal >>> {
-    .vuecal__event {
-      &.observation {
-        background-color: var(--green-100);
-        border: 1px solid var(--primary-200);
-      }
-      &.intervention {
-        background-color: var(--yellow-100);
-        border: 1px solid var(--primary-200);
-      }
-      &.study-date {
-        background-color: var(--primary-500);
-        color: white;
-      }
-      &.study-range {
-        background-color: var(--primary-200);
-        color: white;
-      }
-      &.participant-joined {
-        background-color: var(--red-600);
-        color: white;
-      }
+  .vuecal :deep(.vuecal__event) {
+    &.observation {
+      background-color: var(--green-100);
+      border: 1px solid var(--primary-200);
+    }
+    &.intervention {
+      background-color: var(--yellow-100);
+      border: 1px solid var(--primary-200);
+    }
+    &.study-date {
+      background-color: var(--primary-500);
+      color: white;
+    }
+    &.study-range {
+      background-color: var(--primary-200);
+      color: white;
+    }
+    &.participant-joined {
+      background-color: var(--red-600);
+      color: white;
     }
   }
 </style>

@@ -13,6 +13,7 @@ import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
+import { dateToDateString } from '../utils/dateUtils';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
@@ -72,7 +73,7 @@ export const useStudyStore = defineStore('study', () => {
                   status === StudyStatus.Active ||
                   status === StudyStatus.Preview
                 ) {
-                  study.value.start = new Date().toISOString();
+                  study.value.start = dateToDateString(new Date());
                 } else if (status === StudyStatus.Draft) {
                   study.value.start = undefined;
                 }

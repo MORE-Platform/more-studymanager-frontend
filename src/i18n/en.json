@@ -692,7 +692,7 @@
 
   "timeline": {
     "labels": {
-      "relativeDate": "Relative Date",
+      "relativeDate": "Relative study start date",
       "studyStart": "Study start",
       "studyEnd": "Study end",
       "plannedStart": "Planned Start",

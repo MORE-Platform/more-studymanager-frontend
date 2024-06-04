@@ -150,7 +150,7 @@ Licensed under the Elastic License 2.0. */
                   ? `${t('scheduler.preview.title.in')} ${repetitionCount} ${t(
                       `scheduler.preview.unit.${schedule.rrule.freq}`,
                     )}`
-                  : undefined;
+                  : t('scheduler.labels.event.repetitionEnd.studyEnd');
               }
             }
           }
