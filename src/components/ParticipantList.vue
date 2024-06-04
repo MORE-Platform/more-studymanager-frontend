@@ -383,7 +383,10 @@ Licensed under the Elastic License 2.0. */
   }
 
   function checkEditablePermissions(row: any): boolean {
-    if (props.statusStatus === StudyStatus.Active) {
+    if (
+      props.statusStatus === StudyStatus.Active ||
+      props.statusStatus === StudyStatus.Preview
+    ) {
       return row.status === 'new';
     }
     return props.statusStatus !== StudyStatus.Closed;
