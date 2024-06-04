@@ -1283,7 +1283,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FrontendConfiguration'
-
+  /config/buildInfo:
+    get:
+      tags:
+        - configuration
+      description: retrieve the build info
+      operationId: getBuildInfo
+      responses:
+        200:
+          description: the build-info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildInfo'
 
 components:
   schemas:
@@ -1980,6 +1992,22 @@ components:
       required:
         - auth
       readOnly: true
+    BuildInfo:
+      type: object
+      properties:
+        version:
+          type: string
+          default: '0.0.0'
+        date:
+          type: string
+          format: date-time
+        branch:
+          type: string
+        rev:
+          type: string
+      required:
+        - version
+        - date
 
   parameters:
     StudyId:
