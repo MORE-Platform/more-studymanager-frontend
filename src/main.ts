@@ -32,10 +32,7 @@ const buildInfo = await uiConfigApi
   .getBuildInfo()
   .then((r) => r.data)
   .catch((err: AxiosError) => {
-    console.warn(
-      'Could not retrieve UI-Config from remote server, using default fallback:',
-      err.message,
-    );
+    console.info('Could not retrieve Build-Info from the backend', err.message);
     return {
       version: '0.0.0',
       date: new Date(0).toISOString(),
