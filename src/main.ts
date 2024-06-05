@@ -24,9 +24,33 @@ import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
 import { useUiConfigApi } from './composable/useApi';
-import { FrontendConfiguration } from './generated-sources/openapi';
+import { BuildInfo, FrontendConfiguration } from './generated-sources/openapi';
 
 const { uiConfigApi } = useUiConfigApi();
+
+const buildInfo = await uiConfigApi
+  .getBuildInfo()
+  .then((r) => r.data)
+  .catch((err: AxiosError) => {
+    console.info('Could not retrieve Build-Info from the backend', err.message);
+    return {
+      version: '0.0.0',
+      date: new Date(0).toISOString(),
+      branch: undefined,
+      rev: undefined,
+    } as BuildInfo;
+  })
+  .then((backend) => {
+    return {
+      frontend: {
+        version: __APP_VERSION__,
+        date: new Date(__BUILD_DATE__).toISOString(),
+        branch: __BUILD_BRANCH__,
+        rev: __BUILD_REVISION__,
+      } as BuildInfo,
+      backend,
+    };
+  });
 
 const uiConfig = await uiConfigApi
   .getFrontendConfig()
@@ -73,6 +97,7 @@ useLoader().activateLoadingInterceptor();
 const pinia = createPinia();
 
 const app = createApp(App);
+app.provide('buildInfo', buildInfo);
 app.provide('uiConfig', uiConfig);
 app.provide('authService', authService);
 
