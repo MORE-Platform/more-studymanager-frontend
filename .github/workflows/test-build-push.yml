@@ -73,6 +73,9 @@ jobs:
 
       - name: Run build
         run: npm run package
+        env:
+          VITE_GIT_BRANCH: '${{ github.ref_name }}'
+          VITE_GIT_REVISION: '${{ github.sha }}'
 
   build-and-push-image:
     name: Build and Push Docker Image
