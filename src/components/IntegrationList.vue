@@ -211,14 +211,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   async function updateIntegration(integration: MoreIntegrationTableMap) {
-    const i = integrationList.value.findIndex(
-      (o: MoreIntegrationTableMap) =>
-        o.observationId === integration.observationId,
-    );
-    if (i > -1) {
-      integrationList.value[i] = integration;
-    }
-
     await observationsApi
       .updateTokenLabel(
         props.studyId,
@@ -231,6 +223,7 @@ Licensed under the Elastic License 2.0. */
           token: '',
         } as EndpointToken,
       )
+      .then(listIntegrations)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
