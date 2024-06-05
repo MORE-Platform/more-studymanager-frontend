@@ -4,45 +4,16 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref } from 'vue';
-  import {
-    BuildInfo,
-    FrontendConfiguration,
-  } from '../../generated-sources/openapi';
-  import OverlayPanel from 'primevue/overlaypanel';
+  import { inject } from 'vue';
+  import { FrontendConfiguration } from '../../generated-sources/openapi';
 
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
-  const buildInfo = inject('buildInfo') as {
-    frontend: BuildInfo;
-    backend: BuildInfo;
-  };
-  const buildInfoPanel = ref();
 </script>
 
 <template>
   <footer class="footer w-full">
     <div class="content-block mx-24 my-6 flex justify-between">
       <div>
-        <OverlayPanel ref="buildInfoPanel">
-          <div class="w-25rem flex flex-col gap-3">
-            <div
-              v-for="(info, tier) in buildInfo"
-              :key="tier"
-              class="build-info"
-            >
-              <div class="build-info_tier">{{ tier }}:</div>
-              <div class="build-info">
-                <span class="build-info_git">
-                  {{ info.branch || '' }}@{{ info.rev || '?' }}
-                </span>
-                <span class="build-info_date">
-                  ({{ new Date(info.date).toISOString() }})
-                </span>
-              </div>
-            </div>
-          </div>
-        </OverlayPanel>
-        <i class="pi pi-info-circle link" @click="buildInfoPanel.toggle"></i>
         {{ uiConfig.title }}
       </div>
       <a
@@ -80,16 +51,6 @@ Licensed under the Elastic License 2.0. */
     .link {
       position: relative;
       z-index: 100;
-    }
-  }
-
-  .p-overlaypanel-content {
-    .build-info_tier {
-      text-transform: capitalize;
-      font-weight: bold;
-    }
-    .build-info_git {
-      font-family: monospace;
     }
   }
 </style>
