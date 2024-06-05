@@ -383,7 +383,13 @@ Licensed under the Elastic License 2.0. */
   }
 
   function checkEditablePermissions(row: any): boolean {
-    return row.status === 'new';
+    if (
+      props.statusStatus === StudyStatus.Active ||
+      props.statusStatus === StudyStatus.Preview
+    ) {
+      return row.status === 'new';
+    }
+    return props.statusStatus !== StudyStatus.Closed;
   }
 
   listParticipant();
