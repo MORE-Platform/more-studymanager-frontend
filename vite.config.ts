@@ -8,6 +8,12 @@ export default defineConfig({
     //TODO maybe remove on cleanup session
     target: 'esnext',
   },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __BUILD_BRANCH__: JSON.stringify(process.env.VITE_GIT_BRANCH),
+    __BUILD_REVISION__: JSON.stringify(process.env.VITE_GIT_REVISION),
+  },
   server: {
     port: 3000,
     proxy: {
