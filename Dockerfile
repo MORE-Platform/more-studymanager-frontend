@@ -3,8 +3,10 @@ FROM node:lts-alpine as build-stage
 RUN apk add openjdk11-jre-headless
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
+ARG VITE_GIT_BRANCH
+ARG VITE_GIT_REVISION
 RUN npm run package:quick
 
 # production stage
