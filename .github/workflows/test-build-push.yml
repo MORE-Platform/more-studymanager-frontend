@@ -119,6 +119,13 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VITE_GIT_BRANCH
+            VITE_GIT_REVISION
+        env:
+          VITE_GIT_BRANCH: '${{ github.ref_name }}'
+          VITE_GIT_REVISION: '${{ github.sha }}'
+
 
 
   event_file:
