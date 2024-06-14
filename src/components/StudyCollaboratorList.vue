@@ -59,7 +59,7 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
-  const roleList = [
+  const roleList: MoreTableChoice[] = [
     { label: t('study.roles.admin'), value: StudyRole.Admin },
     { label: t('study.roles.operator'), value: StudyRole.Operator },
     { label: t('study.roles.viewer'), value: StudyRole.Viewer },
