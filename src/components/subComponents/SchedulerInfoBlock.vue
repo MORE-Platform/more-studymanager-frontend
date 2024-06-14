@@ -14,6 +14,8 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
   import dayjs from 'dayjs';
+  import { isObjectEmpty } from '../../utils/commonUtils';
+  import { ScheduleType } from '../../models/Scheduler';
 
   const { t } = useI18n();
 
@@ -39,9 +41,9 @@ Licensed under the Elastic License 2.0. */
 
   function getSchedulerDescription() {
     switch (props.scheduler.type) {
-      case 'Event':
+      case ScheduleType.Event:
         return t('scheduler.dialog.absoluteSchedule.description');
-      case 'RelativeEvent':
+      case ScheduleType.RelativeEvent:
         return t('scheduler.dialog.relativeSchedule.description');
       default:
         return t('scheduler.dialog.description');
@@ -50,7 +52,7 @@ Licensed under the Elastic License 2.0. */
 
   function getDateValues(prop: string) {
     switch (props.scheduler.type) {
-      case 'Event': {
+      case ScheduleType.Event: {
         const schedule = props.scheduler as Event;
         switch (prop) {
           case 'dtstart': {
@@ -70,7 +72,7 @@ Licensed under the Elastic License 2.0. */
             return undefined;
         }
       }
-      case 'RelativeEvent': {
+      case ScheduleType.RelativeEvent: {
         const schedule = props.scheduler as RelativeEvent;
         switch (prop) {
           case 'dtstart': {
@@ -98,7 +100,7 @@ Licensed under the Elastic License 2.0. */
 
   function getRepetitionValue(prop: string) {
     switch (props.scheduler.type) {
-      case 'Event':
+      case ScheduleType.Event:
         {
           const schedule = props.scheduler as Event;
           switch (prop) {
@@ -121,13 +123,13 @@ Licensed under the Elastic License 2.0. */
 
               schedule.rrule?.byday
                 ? schedule.rrule?.byday.forEach((item, index) => {
-                    string = string + t(`scheduler.weekday.props.${item}`);
+                    string += t(`scheduler.weekday.props.${item}`);
 
                     if (
                       schedule.rrule?.byday &&
                       index < schedule.rrule.byday.length - 1
                     ) {
-                      string = string + ', ';
+                      string += ', ';
                     }
                   })
                 : (string = '');
@@ -156,7 +158,7 @@ Licensed under the Elastic License 2.0. */
           }
         }
         break;
-      case 'RelativeEvent': {
+      case ScheduleType.RelativeEvent: {
         const schedule = props.scheduler as RelativeEvent;
         switch (prop) {
           case 'every':
@@ -184,23 +186,23 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div
     class="col-start-0 col-span-8 grid grid-cols-8"
-    :class="editable ? '' : 'scheduler-not-editable pb-4'"
+    :class="{ 'scheduler-not-editable pb-4': !editable }"
   >
     <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
     <div class="col-span-8 mb-3">{{ getSchedulerDescription() }}</div>
     <div
-      v-if="JSON.stringify(scheduler) === '{}'"
+      v-if="isObjectEmpty(scheduler)"
       class="schedule-preview col-span-8 mb-2 px-6 py-4 italic"
     >
       {{ $t('scheduler.dialog.noSetScheduleDesc') }}
     </div>
-    <h6
-      v-if="scheduler.type"
-      class="color-primary col-span-8 mb-1 mt-1 font-medium"
-    >
+    <h6 v-if="scheduler.type" class="color-primary col-span-8 my-1 font-medium">
       {{ $t(`scheduler.type.${scheduler.type}`) }}
     </h6>
-    <div v-if="scheduler.type === 'RelativeEvent'" class="col-span-8 mb-3">
+    <div
+      v-if="scheduler.type === ScheduleType.RelativeEvent"
+      class="col-span-8 mb-3"
+    >
       {{ $t(`scheduler.dialog.relativeSchedule.dayExplanation`) }}
     </div>
 
@@ -279,7 +281,7 @@ Licensed under the Elastic License 2.0. */
     </div>
     <div v-if="editable" class="col-span-8 mt-2 flex justify-end gap-1">
       <Button
-        v-if="scheduler.type !== 'RelativeEvent'"
+        v-if="scheduler.type !== ScheduleType.RelativeEvent"
         class="justify-center"
         type="button"
         :disabeld="!editable"
@@ -291,7 +293,7 @@ Licensed under the Elastic License 2.0. */
         }}</Button
       >
       <Button
-        v-if="scheduler.type !== 'Event'"
+        v-if="scheduler.type !== ScheduleType.Event"
         class="p-button justify-center"
         type="button"
         :disabled="!editable"

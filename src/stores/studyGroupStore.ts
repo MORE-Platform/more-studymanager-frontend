@@ -37,7 +37,6 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
     let count = studyGroups.value.length;
     while (title === undefined) {
       count += 1;
-      // @ts-ignore
       const _title = `${i18n.global.t('study.props.studyGroup')} ${count}`;
       if (!studyGroups.value.find((g) => g.title === _title)) {
         title = _title;
@@ -92,17 +91,17 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
   }
 
   function toStudyGroupMap() {
-    return studyGroups.value.map((item: StudyGroup) => {
+    return studyGroups.value.map((studyGroup: StudyGroup) => {
       return {
-        studyId: item.studyId,
-        studyGroupId: item.studyGroupId,
-        title: item.title,
-        purpose: item.purpose,
-        durationValue: item.duration?.value,
-        durationUnit: item.duration?.unit,
-        numberOfParticipants: item.numberOfParticipants,
-        created: item.created,
-        modified: item.modified,
+        studyId: studyGroup.studyId,
+        studyGroupId: studyGroup.studyGroupId,
+        title: studyGroup.title,
+        purpose: studyGroup.purpose,
+        durationValue: studyGroup.duration?.value,
+        durationUnit: studyGroup.duration?.unit,
+        numberOfParticipants: studyGroup.numberOfParticipants,
+        created: studyGroup.created,
+        modified: studyGroup.modified,
       } as MoreStudyGroupTableMap;
     });
   }

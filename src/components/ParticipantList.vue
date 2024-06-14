@@ -59,16 +59,14 @@ Licensed under the Elastic License 2.0. */
     props.statusStatus === StudyStatus.Paused ||
     props.statusStatus === StudyStatus.PausedPreview;
 
-  const groupStatuses: Ref<MoreTableChoice[]> = ref(
-    props.studyGroups.map(
-      (item) =>
-        ({
-          label: item.title,
-          value: item.studyGroupId?.toString(),
-        }) as MoreTableChoice,
-    ),
+  const groupStatuses: MoreTableChoice[] = props.studyGroups.map(
+    (studyGroup) =>
+      ({
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
+      }) as MoreTableChoice,
   );
-  groupStatuses.value.push({
+  groupStatuses.push({
     label: t('global.placeholder.noGroup'),
     value: null,
   });
@@ -94,7 +92,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
       editable: {
-        values: groupStatuses.value,
+        values: groupStatuses,
         showValuesForEditing: actionsVisible,
       },
       sortable: true,
@@ -222,7 +220,7 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  function openDistrubuteDialog(): void {
+  function openDistributeDialog(): void {
     dialog.open(DistributeParticipantsDialog, {
       data: {
         studyGroups: props.studyGroups,
@@ -293,7 +291,7 @@ Licensed under the Elastic License 2.0. */
       case 'create':
         return createParticipant(action as MoreTableActionResult);
       case 'distribute':
-        return openDistrubuteDialog();
+        return openDistributeDialog();
       case 'import':
         return importParticipants(action);
       case 'export':
@@ -421,11 +419,6 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  .table-value-status-new {
-    display: block;
-    margin: 0.063rem 0.188rem 0 0;
-    position: relative;
-  }
   :deep(.width-65 .title) {
     width: 65%;
   }

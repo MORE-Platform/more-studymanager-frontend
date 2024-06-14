@@ -6,8 +6,6 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-export interface CronScheduleChoice {
-  label: string;
-  value: string;
-  placeholder: string;
+export function isObjectEmpty(obj: Record<string, any>): boolean {
+  return !obj || Object.keys(obj).length === 0;
 }

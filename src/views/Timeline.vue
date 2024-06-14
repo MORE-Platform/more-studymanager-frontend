@@ -37,5 +37,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>

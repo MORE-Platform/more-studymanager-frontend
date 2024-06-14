@@ -65,8 +65,7 @@ Licensed under the Elastic License 2.0. */
       option-label="label"
       :placeholder="placeholder"
       :show-toggle-all="false"
-      :class="'w-1/4'"
-      class="radio"
+      class="radio w-1/4"
       :selection-limit="1"
     />
 
@@ -74,17 +73,9 @@ Licensed under the Elastic License 2.0. */
       <Button class="btn-gray" @click="cancel()">{{
         $t('global.labels.cancel')
       }}</Button>
-      <Button @click="save()">{{ $t('global.labels.save') }}</Button>
+      <Button class="!ml-2" @click="save()">{{
+        $t('global.labels.save')
+      }}</Button>
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .buttons button:first-of-type {
-    margin-right: 10px;
-  }
-
-  :deep(.p-checkbox .p-checkbox-box) {
-    border-radius: 50% !important;
-  }
-</style>

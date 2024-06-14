@@ -276,7 +276,7 @@ Licensed under the Elastic License 2.0. */
     return rows.map((row: any) => {
       props.columns.forEach((column) => {
         if (column.type === MoreTableFieldType.calendar) {
-          row['__internalValue_' + column.field] = column.field
+          row[`__internalValue_${column.field}`] = column.field
             ? new Date(row[column.field])
             : undefined;
         }
@@ -353,16 +353,16 @@ Licensed under the Elastic License 2.0. */
     valueChoices?: MoreTableChoice[],
   ) {
     if (valueChoices) {
-      const labels: Ref<string[]> = ref([]);
+      const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
         const valueLabel = valueChoices.find((vc) => vc.value === v);
         if (valueLabel) {
-          labels.value.push(valueLabel.label);
+          labels.push(valueLabel.label);
         }
       });
-      return labels.value;
+      return labels;
     } else {
-      return setValues.map((v: MoreTableChoice) => v.label);
+      return setValues.map((c: MoreTableChoice) => c.label);
     }
   }
 
@@ -444,7 +444,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getObservationVisibility(type?: string) {
-    return props.componentFactory?.find((f) => f.componentId === type)
+    return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
   }
 </script>
@@ -664,7 +664,7 @@ Licensed under the Elastic License 2.0. */
               :options="getEditableValues(column.editable)"
               option-label="label"
               option-value="value"
-              :class="data[field] ? 'dropdown-has-value' : ''"
+              :class="{ 'dropdown-has-value': data[field] }"
               :placeholder="
                 data[field]
                   ? getLabelForChoiceValue(
@@ -758,12 +758,7 @@ Licensed under the Elastic License 2.0. */
                 column.type === MoreTableFieldType.number ||
                 !column.type
               "
-              :class="
-                'table-value table-value-' +
-                field +
-                '-' +
-                toClassName(data[field])
-              "
+              :class="`table-value table-value-${field}-${toClassName(data[field])}`"
             >
               <span v-if="column.arrayLabels">
                 <span
@@ -857,7 +852,7 @@ Licensed under the Elastic License 2.0. */
                     ? true
                     : isVisible(action, slotProps.data) === false
                 "
-                :class="action.id === 'delete' ? 'btn-important' : ''"
+                :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
@@ -889,7 +884,7 @@ Licensed under the Elastic License 2.0. */
                     ? true
                     : isVisible(action, slotProps.data) === false
                 "
-                :class="action.id === 'delete' ? 'btn-important' : ''"
+                :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>

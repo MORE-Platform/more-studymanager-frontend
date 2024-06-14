@@ -29,8 +29,8 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="info-dialog">
-    <h5 class="mb-2">{{ title }}</h5>
+  <div class="text-base">
+    <h5 class="text-large mb-2 font-bold">{{ title }}</h5>
     <div class="mb-4">{{ message }}</div>
     <div class="h6 color-primary cursor-pointer font-medium" @click="copyToken">
       {{ token }}
@@ -41,7 +41,7 @@ Licensed under the Elastic License 2.0. */
         $t('global.labels.close')
       }}</Button>
 
-      <Button type="button" class="p-button ml-2" @click="copyToken">{{
+      <Button type="button" class="p-button !ml-2" @click="copyToken">{{
         $t('integration.dialog.label.copyToken')
       }}</Button>
     </div>
@@ -52,26 +52,13 @@ Licensed under the Elastic License 2.0. */
     :message="t('integration.dialog.label.copySuccess')"
     type="msg"
     severity-type="success"
-    style-modifier="msgPosition"
+    style-modifier="msg-position"
     @on-msg-change="showMessage = false"
   />
 </template>
 
 <style scoped lang="postcss">
-  .info-dialog {
-    font-size: 1rem;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  .ml-2 {
-    margin-left: 0.5rem;
-  }
-  .p-message {
+  .msg-position {
     height: fit-content;
-  }
-  .msgPosition {
-    bottom: 0;
   }
 </style>

@@ -20,11 +20,7 @@ Licensed under the Elastic License 2.0. */
   });
 
   const booleanChecked: Ref<boolean> = ref(
-    props.property.value
-      ? props.property.value
-      : props.property?.defaultValue
-        ? props.property?.defaultValue
-        : false,
+    props.property.value ?? props.property.defaultValue ?? false,
   );
 
   const emit = defineEmits<{
@@ -47,7 +43,7 @@ Licensed under the Elastic License 2.0. */
       <Checkbox
         v-model="booleanChecked"
         :label="property.name"
-        class="mr-2 inline"
+        class="mr-2"
         :binary="true"
         @change="emit('onBooleanChange', booleanChecked)"
       />

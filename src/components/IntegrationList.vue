@@ -45,7 +45,7 @@ Licensed under the Elastic License 2.0. */
 
   const actionsVisible = props.studyStatus !== StudyStatus.Closed;
 
-  const observationList: Ref<Observation[]> = ref([]);
+  let observationList: Observation[] = [];
   const integrationList: Ref<MoreIntegrationTableMap[]> = ref([]);
 
   const integrationListColumns = [
@@ -84,7 +84,7 @@ Licensed under the Elastic License 2.0. */
     await observationsApi
       .listObservations(props.studyId)
       .then((response: AxiosResponse) => {
-        observationList.value = response.data;
+        observationList = response.data;
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot list observations'),
@@ -115,8 +115,7 @@ Licensed under the Elastic License 2.0. */
               .catch((e: AxiosError) => {
                 handleIndividualError(
                   e,
-                  'Could not get the integration tokens for: ' +
-                    observation.observationId,
+                  `Could not get the integration tokens for: ${observation.observationId}`,
                 );
               });
           }),
@@ -125,7 +124,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Could not get observation list: ' + props.studyId,
+          `Could not get observation list: ${props.studyId}`,
         );
       });
   }
@@ -158,8 +157,7 @@ Licensed under the Elastic License 2.0. */
               warningMsg: t('integration.dialog.deleteMsg.warning'),
               confirmMsg: t('integration.dialog.deleteMsg.confirm'),
               row: row,
-              elTitle:
-                row.tokenLabel + ' (Observation: ' + row.observationTitle + ')',
+              elTitle: `${row.tokenLabel} (Observation: ${row.observationTitle})`,
               elInfoDesc: row.token,
             },
             props: {
@@ -270,11 +268,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Cannot delete integration: TokenId (' +
-            integration.tokenId +
-            '), Observation Id: (' +
-            integration.observationId +
-            ')',
+          `Cannot delete integration: TokenId (${integration.tokenId}), Observation Id: (${integration.observationId})`,
         );
       });
   }
@@ -302,11 +296,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Cannot create integration for ObservationId ' +
-            integrationCreate.observationId +
-            '(' +
-            integrationCreate.tokenLabel +
-            ')',
+          `Cannot create integration for ObservationId ${integrationCreate.observationId} (${integrationCreate.tokenLabel})`,
         );
       });
   }

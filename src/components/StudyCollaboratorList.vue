@@ -35,6 +35,9 @@ Licensed under the Elastic License 2.0. */
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
   const userStore = useUserStore();
+  const { collaboratorsApi } = useCollaboratorsApi();
+  const { usersApi } = useUsersApi();
+
   userStore.getUser();
 
   const props = defineProps({
@@ -61,9 +64,6 @@ Licensed under the Elastic License 2.0. */
     { label: t('study.roles.operator'), value: StudyRole.Operator },
     { label: t('study.roles.viewer'), value: StudyRole.Viewer },
   ];
-
-  const { collaboratorsApi } = useCollaboratorsApi();
-  const { usersApi } = useUsersApi();
 
   const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
@@ -161,10 +161,10 @@ Licensed under the Elastic License 2.0. */
   function getRolesString(roles: Array<MoreTableChoice>): string {
     let rolesString = '';
     roles.forEach((item, index) => {
-      rolesString = rolesString + item.label;
+      rolesString += item.label;
 
       if (index < roles.length - 1) {
-        rolesString = rolesString + ', ';
+        rolesString += ', ';
       }
     });
 
@@ -221,16 +221,16 @@ Licensed under the Elastic License 2.0. */
     await collaboratorsApi
       .listStudyCollaborators(props.studyId)
       .then((response: AxiosResponse) => {
-        collaboratorsList.value = response.data.map((item: Collaborator) => ({
-          uid: item.user.uid,
-          name: item.user.name,
-          institution: item.user.institution,
-          email: item.user.email,
-          roles: getRoleChoices(item.roles),
+        collaboratorsList.value = response.data.map((c: Collaborator) => ({
+          uid: c.user.uid,
+          name: c.user.name,
+          institution: c.user.institution,
+          email: c.user.email,
+          roles: getRoleChoices(c.roles),
         }));
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot list collaborators: ' + props.studyId),
+        handleIndividualError(e, `Cannot list collaborators: ${props.studyId}`),
       );
   }
 
@@ -272,7 +272,7 @@ Licensed under the Elastic License 2.0. */
   function changeValue(collabListItem: MoreTableCollaboratorItem) {
     const collaborator: Collaborator = {
       roles: collabListItem.roles.map(
-        (v: MoreTableChoice) => v.value as StudyRole,
+        (c: MoreTableChoice) => c.value as StudyRole,
       ),
       user: {
         uid: collabListItem.uid,
@@ -335,7 +335,7 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="collaborator-list">
+  <div class="collaborator-list mt-20">
     <MoreTable
       row-id="studyGroupId"
       :title="$t('studyCollaborator.collaboratorList.title')"
@@ -364,9 +364,6 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  :deep(.action .dropdown-search .p-dropdown-trigger-icon:before) {
-    color: white;
-  }
   :deep(.action .dropdown-search .p-dropdown-trigger) {
     display: none;
   }

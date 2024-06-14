@@ -27,6 +27,8 @@ Licensed under the Elastic License 2.0. */
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
   import AbsoluteScheduler from '../shared/Scheduler.vue';
+  import { isObjectEmpty } from '../../utils/commonUtils';
+  import { ScheduleType } from '../../models/Scheduler';
 
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
@@ -62,15 +64,14 @@ Licensed under the Elastic License 2.0. */
     observation.schedule ? observation.schedule : {},
   );
 
-  const noSchedule: Ref<boolean> = ref(
-    observation.schedule?.dtstart ? true : false,
-  );
-
   const studyGroupId = ref(observation.studyGroupId);
 
   const jsonError = ref();
 
-  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  function getLabelForChoiceValue(
+    value: any,
+    values: MoreTableChoice[],
+  ): string | undefined {
     if (value) {
       const v = value.toString();
       return values.find((s: any) => s.value === v)?.label;
@@ -131,20 +132,18 @@ Licensed under the Elastic License 2.0. */
           }
         });
     } catch (e: any) {
-      jsonError.value =
-        t('observation.error.noValidField') + " '" + e.key + "': " + e.message;
+      jsonError.value = `${t('observation.error.noValidField')} '${e.key}': ${e.message}`;
     }
   }
 
   function save(props: any) {
-    if (JSON.stringify(scheduler.value) === '{}') {
+    if (isObjectEmpty(scheduler.value)) {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
-          type: 'Event',
+          type: ScheduleType.Event,
           dtstart: new Date(studyStore.study.plannedStart).toISOString(),
           dtend: new Date(studyStore.study.plannedEnd).toISOString(),
         };
-        noSchedule.value = false;
       } else {
         scheduler.value = {
           dtstart: new Date().toISOString(),
@@ -165,25 +164,23 @@ Licensed under the Elastic License 2.0. */
       hidden: hidden.value,
     } as Observation;
 
-    if (JSON.stringify(scheduler.value) !== '{}') {
+    if (!isObjectEmpty(scheduler.value)) {
       dialogRef.value.close(returnObservation);
     }
   }
 
-  const errors: Ref<Array<MoreTableChoice>> = ref([]);
-  const schedulerError: Ref<boolean> = ref(false);
+  let errors: MoreTableChoice[] = [];
 
   function checkRequiredFields() {
-    errors.value = [];
-    schedulerError.value = false;
+    errors = [];
     if (!title.value) {
-      errors.value.push({
+      errors.push({
         label: 'title',
         value: t('observation.error.addTitle'),
       });
     }
     if (!participantInfo.value) {
-      errors.value.push({
+      errors.push({
         label: 'participantInfo',
         value: t('observation.error.addParticipantInfo'),
       });
@@ -191,10 +188,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getError(label: string): string | null | undefined {
-    const item = errors.value.find((el) =>
-      el.label === label ? el.value : '',
-    );
-    return item?.value;
+    return errors.find((el) => el.label === label)?.value;
   }
 
   function cancel() {
@@ -213,8 +207,8 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
-    <div class="mb-4" :class="editable ? '' : 'pb-4'">
+  <div class="dialog" :class="{ 'dialog-disabled': !editable }">
+    <div class="mb-4" :class="{ 'pb-4': !editable }">
       <h5 class="mb-1">{{ $t(factory.title) }}</h5>
       <!-- eslint-disable vue/no-v-html -->
       <h6 v-if="factory.description" v-html="$t(factory.description)"></h6>
@@ -225,20 +219,19 @@ Licensed under the Elastic License 2.0. */
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-      <div class="col-start-0 col-span-8" :class="editable ? '' : 'pb-4'">
+      <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
         <h5 class="mb-1">
           {{ $t('observation.dialog.label.observationTitle') }}*
         </h5>
         <div v-if="getError('title')" class="error mb-4">
           {{ getError('title') }}
         </div>
-        <div class="col-start-0 col-span-8" :class="editable ? '' : 'pb-4'">
+        <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
           <InputText
             v-model="title"
             type="text"
             required
             :placeholder="$t('study.placeholder.titleInput')"
-            style="width: 100%"
             class="w-full"
             :disabled="!editable"
           ></InputText>
@@ -257,9 +250,9 @@ Licensed under the Elastic License 2.0. */
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
+          class="w-full"
           :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
-          style="width: 100%"
           :disabled="!editable"
         ></Textarea>
       </div>
@@ -272,10 +265,10 @@ Licensed under the Elastic License 2.0. */
         </div>
         <Textarea
           v-model="participantInfo"
+          class="w-full"
           required
           :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
-          style="width: 100%"
           :disabled="!editable"
         ></Textarea>
       </div>
@@ -297,10 +290,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div
-        class="col-start-0 col-span-8 flex items-center justify-between"
-        :class="[studyGroupId ? 'groupIdValue' : '']"
-      >
+      <div class="col-start-0 col-span-8 flex items-center justify-between">
         <div>
           <h5 v-if="!editable" class="pb-2 font-bold">
             {{ $t('study.props.studyGroup') }}
@@ -311,7 +301,7 @@ Licensed under the Elastic License 2.0. */
             option-label="label"
             option-value="value"
             :disabled="!editable"
-            :class="studyGroupId ? 'dropdown-has-value' : ''"
+            :class="{ 'dropdown-has-value': studyGroupId }"
             :placeholder="
               getLabelForChoiceValue(studyGroupId, groupStates) ||
               $t('global.placeholder.entireStudy')
@@ -319,7 +309,7 @@ Licensed under the Elastic License 2.0. */
           />
         </div>
 
-        <div class="info-box relative">
+        <div class="info-box relative cursor-pointer py-2.5">
           <!-- if editable with checkbox-->
           <div v-if="editable" class="inline flex items-center">
             <span v-if="hidden" class="ml-1 inline">
@@ -365,7 +355,9 @@ Licensed under the Elastic License 2.0. */
           </div>
 
           <div class="inline">
-            <div class="info-box-hidden">
+            <div
+              class="info-box-hidden pointer-events-none absolute bottom-full right-0 bg-white p-5 text-center opacity-0"
+            >
               {{ $t('observation.dialog.msg.hiddenInfo') }}
             </div>
           </div>
@@ -394,7 +386,7 @@ Licensed under the Elastic License 2.0. */
   @import '../../styles/components/eye-checkbox.pcss';
   .dialog {
     :deep(.dropdown-has-value .p-dropdown-label) {
-      color: var(--text-color) !important;
+      color: var(--text-color);
     }
 
     .day {
@@ -405,26 +397,11 @@ Licensed under the Elastic License 2.0. */
         content: '';
       }
     }
-    .groupIdValue {
-      color: var(--text-color);
-    }
 
     .info-box {
-      z-index: 100;
-      padding: 10px 0;
-      cursor: pointer;
-
       &-hidden {
-        position: absolute;
-        bottom: 100%;
-        right: 0;
         width: 20vw;
-        text-align: center;
-        background-color: white;
         border: 1px solid var(--bluegray-200);
-        padding: 20px;
-        opacity: 0;
-        pointer-events: none;
         transition: ease-in-out opacity 0.25s;
         box-shadow: 1px 1px 5px var(--bluegray-200);
       }

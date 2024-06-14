@@ -61,7 +61,7 @@ Licensed under the Elastic License 2.0. */
       <StringPropertyInput
         v-if="property instanceof StringProperty"
         :property="property"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -72,7 +72,7 @@ Licensed under the Elastic License 2.0. */
         v-if="property instanceof StringTextProperty"
         :property="property"
         :editable="editable"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
         "
@@ -81,7 +81,7 @@ Licensed under the Elastic License 2.0. */
       <IntegerPropertyInput
         v-if="property instanceof IntegerProperty"
         :property="property"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         :editable="editable"
         @on-input-change="
           emit('onPropertyChange', { value: $event.value, index: index })
@@ -90,7 +90,7 @@ Licensed under the Elastic License 2.0. */
 
       <StringListPropertyInput
         v-if="property instanceof StringListProperty"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         :property="property"
         :editable="editable"
         @on-input-change="
@@ -100,7 +100,7 @@ Licensed under the Elastic License 2.0. */
 
       <BooleanPropertyInput
         v-if="property instanceof BooleanProperty"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         :property="property"
         :editable="editable"
         @on-boolean-change="
@@ -110,7 +110,7 @@ Licensed under the Elastic License 2.0. */
 
       <ObservationPropertyInput
         v-if="property instanceof ObservationProperty"
-        :class="index < propertyList.length - 1 ? 'mb-4' : ''"
+        :class="{ 'mb-4': index < propertyList.length - 1 }"
         :property="property"
         :context="context"
         :editable="editable"
@@ -121,7 +121,7 @@ Licensed under the Elastic License 2.0. */
 
       <CronSchedulerConfiguration
         v-if="property instanceof CronProperty"
-        :class="index < propertyList.length - 1 ? 'mb-6' : ''"
+        :class="{ 'mb-6': index < propertyList.length - 1 }"
         :editable="editable"
         :cron-schedule="property.value"
         @on-valid-schedule="
@@ -134,7 +134,7 @@ Licensed under the Elastic License 2.0. */
 
       <InterventionTriggerConditions
         v-if="property instanceof DataCheckProperty"
-        :class="index < propertyList.length - 1 ? 'mb-8' : ''"
+        :class="{ 'mb-8': index < propertyList.length - 1 }"
         :trigger-conditions="property"
         :editable="editable"
         @on-emit-trigger-conditions="
@@ -147,5 +147,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>

@@ -46,23 +46,26 @@ Licensed under the Elastic License 2.0. */
       >
     </h6>
     <div>{{ $t(props.property.description) }}</div>
-    <!-- eslint-disable -->
     <div v-if="editable" class="flex w-full flex-col gap-1">
       <InputText
         v-for="index in property.maxSize"
+        :key="index"
         class="w-full"
         :class="!editable && property.value?.[index - 1] ? 'w-fit' : 'hidden'"
-        :key="index"
         :value="property.value?.[index - 1]"
-        @keyup="update($event, index - 1)"
         type="text"
         :disabled="!editable"
         :placeholder="t('global.labels.option') + ' ' + index"
         style="display: block"
+        @keyup="update($event, index - 1)"
       />
     </div>
     <div v-else-if="!editable" class="space-around flex flex-row">
-      <div v-for="index in property.maxSize" class="flex items-center">
+      <div
+        v-for="index in property.maxSize"
+        :key="index"
+        class="flex items-center"
+      >
         <span>{{ property.value?.[index - 1] }}</span>
         <span
           v-if="property.value?.[index] && index !== property.maxSize"
@@ -72,6 +75,5 @@ Licensed under the Elastic License 2.0. */
         </span>
       </div>
     </div>
-    <!-- eslint-enable -->
   </div>
 </template>

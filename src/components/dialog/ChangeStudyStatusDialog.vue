@@ -38,14 +38,14 @@ Licensed under the Elastic License 2.0. */
       <span class="text-color"> Id {{ study.studyId }}: </span>
       <span class="color-primary">{{ study.title }}</span>
     </h3>
-    <h5 class="mb-7 font-medium">
+    <h5 class="mb-7 text-lg font-medium">
       {{ $t('study.statusChange.labels.changeTo') }}
       <StudyStatusPill :status="study.status!" />
       {{ $t('global.labels.to') }}
       <StudyStatusPill :status="changedStatus" />
     </h5>
     <div class="mb-10">
-      <h5 class="font-bold">{{ $t('study.props.purpose') }}</h5>
+      <h5 class="text-lg font-bold">{{ $t('study.props.purpose') }}</h5>
       <div>{{ study.purpose }}</div>
     </div>
     <div class="mb-8 mt-10 px-14">
@@ -95,7 +95,11 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
+      <Button
+        type="button"
+        class="p-button btn-gray !mr-3"
+        @click="closeDialog"
+      >
         {{ $t('global.labels.close') }}
       </Button>
       <Button
@@ -108,26 +112,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .buttons {
-    button {
-      margin-left: 10px;
-    }
-  }
-  h5 {
-    font-size: 18px;
-  }
-  .status {
-    border: 2px solid var(--text-color);
-    &.active {
-      border-color: var(--green-400);
-    }
-    &.draft {
-      border-color: var(--gray-400);
-    }
-  }
-  .btn-gray {
-    margin-right: 0.5rem;
-  }
-</style>

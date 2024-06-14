@@ -13,6 +13,7 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../../stores/studyStore';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import AbsoluteSchedulerRepetition from '../subComponents/AbsoluteSchedulerRepetition.vue';
+  import { ScheduleType } from '../../models/Scheduler';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -21,11 +22,9 @@ Licensed under the Elastic License 2.0. */
 
   const scheduler: any = dialogRef.value.data.scheduler;
   const returnSchedule: Ref<Event> = ref({
-    type: scheduler.type ? scheduler.type : 'Event',
-    dtstart: scheduler.dtstart
-      ? scheduler.dtstart
-      : studyStore.study.plannedStart,
-    dtend: scheduler.dtend ? scheduler.dtend : studyStore.study.plannedEnd,
+    type: scheduler.type ?? ScheduleType.Event,
+    dtstart: scheduler.dtstart ?? studyStore.study.plannedStart,
+    dtend: scheduler.dtend ?? studyStore.study.plannedEnd,
     rrule: scheduler.rrule,
   });
 
@@ -35,14 +34,14 @@ Licensed under the Elastic License 2.0. */
   const calendarEnd: Ref<Date> = ref(
     new Date(returnSchedule.value.dtend as string),
   );
-  const calendarEndChangedWithStart: Ref<boolean> = ref(false);
+  let calendarEndChangedWithStart: boolean = false;
 
-  watch(calendarStart, async (newValue, oldValue) => {
+  watch(calendarStart, (newValue, oldValue) => {
     validateDate('calendarStart', newValue, oldValue);
   });
 
-  watch(calendarEnd, async (newValue, oldValue) => {
-    if (!calendarEndChangedWithStart.value) {
+  watch(calendarEnd, (newValue, oldValue) => {
+    if (!calendarEndChangedWithStart) {
       validateDate('calendarEnd', newValue, oldValue);
     }
   });
@@ -69,10 +68,9 @@ Licensed under the Elastic License 2.0. */
       calendarStart.value.getMonth() === calendarEnd.value.getMonth() &&
       calendarStart.value.getFullYear() === calendarEnd.value.getFullYear(),
   ); // Individual Observation Checkbox
-  const hasRruleValue: Ref<boolean> = ref(
-    !returnSchedule.value.rrule ? false : true,
-  ); // Repeat Event Checkbox
+  const hasRruleValue: Ref<boolean> = ref(!!returnSchedule.value.rrule); // Repeat Event Checkbox
 
+  let rruleErrors: MoreTableChoice[] = [];
   function onChangeSingleDayEventCheckbox() {
     if (
       singleDayEventCheckbox.value &&
@@ -88,7 +86,7 @@ Licensed under the Elastic License 2.0. */
       }, 60);
     }
     if (!singleDayEventCheckbox.value) {
-      rruleErrors.value = [];
+      rruleErrors = [];
       hasRruleValue.value = false;
     }
   }
@@ -96,30 +94,29 @@ Licensed under the Elastic License 2.0. */
   function onChangeEntireDayCheckbox() {
     if (entireDayCheckbox.value) {
       calendarStart.value.setHours(0, 0, 0);
-      calendarEndChangedWithStart.value = true;
+      calendarEndChangedWithStart = true;
       setTimeout(() => {
         calendarEnd.value.setHours(23, 59, 59);
       }, 60);
     }
   }
 
-  const errors: Ref<Array<MoreTableChoice>> = ref([]);
-  const warnings: Ref<Array<MoreTableChoice>> = ref([]);
+  let errors: MoreTableChoice[] = [];
+  let warnings: MoreTableChoice[] = [];
+
   function getErrorOrWarning(
     type: string,
     label: string,
   ): string | null | undefined {
     switch (type) {
       case 'warning': {
-        const item = warnings.value.find((el) =>
+        const item = warnings.find((el) =>
           el.label === label ? el.value : '',
         );
         return item?.value;
       }
       case 'error': {
-        const item = errors.value.find((el) =>
-          el.label === label ? el.value : '',
-        );
+        const item = errors.find((el) => (el.label === label ? el.value : ''));
         return item?.value;
       }
       default:
@@ -128,50 +125,45 @@ Licensed under the Elastic License 2.0. */
   }
 
   function validateDate(dateType: string, newValue: Date, oldValue: Date) {
-    errors.value = [];
-    warnings.value = [];
+    errors = [];
+    warnings = [];
+
+    const updateHours = (targetDate: Ref<Date>, sourceDate: Date) => {
+      targetDate.value.setHours(
+        sourceDate.getHours(),
+        sourceDate.getMinutes(),
+        sourceDate.getSeconds(),
+      );
+    };
+
     switch (dateType) {
       case 'calendarStart':
         {
           if (newValue > calendarEnd.value) {
             calendarStart.value = newValue;
             if (oldValue.getDate() !== newValue.getDate()) {
-              calendarStart.value.setHours(
-                oldValue.getHours(),
-                oldValue.getMinutes(),
-                oldValue.getSeconds(),
-              );
+              updateHours(calendarStart, oldValue);
             }
-            calendarEndChangedWithStart.value = true;
+            calendarEndChangedWithStart = true;
             calendarEnd.value = calendarStart.value;
             setTimeout(() => {
-              calendarEndChangedWithStart.value = false;
+              calendarEndChangedWithStart = false;
             }, 60);
 
-            warnings.value.push({
+            warnings.push({
               label: 'endWasChangedWithStartValue',
               value: t(
                 'scheduler.warningsAndErrors.endWasChangedWithStartValue',
               ),
             });
-          } else {
-            if (oldValue.getDate() !== newValue.getDate()) {
-              calendarStart.value.setHours(
-                oldValue.getHours(),
-                oldValue.getMinutes(),
-                oldValue.getSeconds(),
-              );
-            }
+          } else if (oldValue.getDate() !== newValue.getDate()) {
+            updateHours(calendarStart, oldValue);
           }
         }
         break;
       case 'calendarEnd': {
         if (oldValue.getDate() !== newValue.getDate()) {
-          calendarEnd.value.setHours(
-            oldValue.getHours(),
-            oldValue.getMinutes(),
-            oldValue.getSeconds(),
-          );
+          updateHours(calendarEnd, oldValue);
         }
       }
     }
@@ -187,9 +179,8 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  const rruleErrors: Ref<MoreTableChoice[]> = ref([]);
   function onRruleErrorUpdate(updatedRruleErrors: MoreTableChoice[]) {
-    rruleErrors.value = updatedRruleErrors;
+    rruleErrors = updatedRruleErrors;
   }
 
   function save() {
@@ -202,7 +193,7 @@ Licensed under the Elastic License 2.0. */
       returnSchedule.value.rrule = undefined;
     }
 
-    if (!errors.value.length && !rruleErrors.value.length) {
+    if (!errors.length && !rruleErrors.length) {
       try {
         dialogRef.value.close(returnSchedule.value);
       } catch (e) {
@@ -220,7 +211,7 @@ Licensed under the Elastic License 2.0. */
   <div class="scheduler relative">
     <div class="grid grid-cols-6 items-center gap-4">
       <div class="header-info col-span-6 mb-4">
-        <h6>{{ $t('scheduler.labels.event.setDates') }}</h6>
+        <h6 class="font-medium">{{ $t('scheduler.labels.event.setDates') }}</h6>
         <div>{{ $t('scheduler.labels.event.setDatesDesc') }}</div>
       </div>
 
@@ -228,7 +219,7 @@ Licensed under the Elastic License 2.0. */
         <h5 class="text-color mb-1 font-bold">
           {{ $t('cronSchedule.example.title') }}
         </h5>
-        <div class="examples">
+        <div class="examples p-2">
           <div class="mb-1.5">
             <div class="color-primary font-medium">
               {{ $t('scheduler.labels.event.example.titles.singleDay') }}
@@ -269,7 +260,7 @@ Licensed under the Elastic License 2.0. */
 
       <hr class="col-span-6" />
 
-      <h6 class="col-span-6">
+      <h6 class="col-span-6 font-medium">
         {{ $t('scheduler.preview.title.individualEvent') }}
       </h6>
 
@@ -320,11 +311,12 @@ Licensed under the Elastic License 2.0. */
         :placeholder="'dd/mm/yyyy'"
         autocomplete="off"
         class="start-date col-span-2 col-start-2 w-full"
-        :class="
-          getErrorOrWarning('warning', 'endWasChangedWithStartValue')
-            ? 'calendar-warning'
-            : ''
-        "
+        :class="{
+          'calendar-warning': getErrorOrWarning(
+            'warning',
+            'endWasChangedWithStartValue',
+          ),
+        }"
       />
 
       <Calendar
@@ -335,11 +327,12 @@ Licensed under the Elastic License 2.0. */
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :placeholder="'hh:mm'"
         class="p-calendar-timeonly start-date start-time col-span-1"
-        :class="
-          getErrorOrWarning('warning', 'endWasChangedWithStartValue')
-            ? 'calendar-warning'
-            : ''
-        "
+        :class="{
+          'calendar-warning': getErrorOrWarning(
+            'warning',
+            'endWasChangedWithStartValue',
+          ),
+        }"
         time-only
       />
       <div
@@ -349,7 +342,7 @@ Licensed under the Elastic License 2.0. */
         {{ getErrorOrWarning('warning', 'endWasChangedWithStartValue') }}
       </div>
 
-      <div class="checkboxen col-span-7 col-start-2 grid grid-cols-2">
+      <div class="col-span-7 col-start-2 grid grid-cols-2">
         <div class="col-start-1">
           {{ $t('scheduler.labels.event.oneDayObservation') }}:
           <Checkbox
@@ -382,10 +375,10 @@ Licensed under the Elastic License 2.0. */
       />
     </div>
 
-    <div style="height: 100px"></div>
-    <div class="pos-bottom grid w-full grid-cols-6">
-      <div class="col-start-0 buttons col-span-6 mt-8 justify-end text-right">
-        <Button class="btn-gray" @click="cancel()">{{
+    <div class="h-24"></div>
+    <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
+      <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
+        <Button class="btn-gray !mr-3" @click="cancel()">{{
           $t('global.labels.cancel')
         }}</Button>
         <Button @click="save()">{{ $t('global.labels.save') }}</Button>
@@ -402,25 +395,12 @@ Licensed under the Elastic License 2.0. */
   .scheduler {
     min-height: 37.5rem;
 
-    .pos-bottom {
-      position: absolute;
-      bottom: 1.25rem;
-      right: 1.25rem;
-    }
-
     input::placeholder {
       color: var(--bluegray-300);
     }
 
     h6 {
       color: var(--primary-color);
-      font-weight: 500;
-    }
-  }
-
-  .buttons {
-    button {
-      margin-left: 10px;
     }
   }
 
@@ -430,7 +410,6 @@ Licensed under the Elastic License 2.0. */
 
   .examples {
     border: 1px solid var(--surface-50);
-    padding: 0.5rem;
     border-radius: 6px;
     background-color: var(--surface-50);
   }

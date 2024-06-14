@@ -53,7 +53,6 @@ Licensed under the Elastic License 2.0. */
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
         :use-confirm-dialog="false"
-        class="mt-20"
       />
       <div class="mb-30"></div>
     </div>

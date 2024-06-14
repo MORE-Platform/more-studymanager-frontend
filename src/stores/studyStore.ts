@@ -41,7 +41,10 @@ export const useStudyStore = defineStore('study', () => {
         .updateStudy(study.value.studyId, studyResponse)
         .then((response) => response.data)
         .catch((e: AxiosError) => {
-          handleIndividualError(e, 'cannot update study' + study.value.studyId);
+          handleIndividualError(
+            e,
+            `cannot update study ${study.value.studyId}`,
+          );
           return study.value;
         });
     }
@@ -82,7 +85,7 @@ export const useStudyStore = defineStore('study', () => {
                 alert('Could not update study status');
                 handleIndividualError(
                   e,
-                  'Could not update study status' + study.value.studyId,
+                  `Could not update study status ${study.value.studyId}`,
                 );
               });
           })
@@ -90,7 +93,7 @@ export const useStudyStore = defineStore('study', () => {
             alert('Could not update study');
             handleIndividualError(
               e,
-              'Could not update study' + study.value.studyId,
+              `Could not update study ${study.value.studyId}`,
             );
           });
       } else {
@@ -103,7 +106,7 @@ export const useStudyStore = defineStore('study', () => {
             alert('Could not update study status');
             handleIndividualError(
               e,
-              'Could not update study status' + study.value.studyId,
+              `Could not update study status ${study.value.studyId}`,
             );
           });
       }
@@ -205,8 +208,8 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  async function exportStudyCalendar(studyId: number): Promise<void> {
-    await window.open(`api/v1/studies/${studyId}/calendar.ics`);
+  function exportStudyCalendar(studyId: number): void {
+    window.open(`api/v1/studies/${studyId}/calendar.ics`);
   }
 
   function downloadJSON(filename: string, file: File): void {
@@ -215,7 +218,7 @@ export const useStudyStore = defineStore('study', () => {
     if (link) {
       link.setAttribute(
         'href',
-        'data:application/json; charset=utf-8,' + encodeURIComponent(fileJSON),
+        `data:application/json; charset=utf-8,${encodeURIComponent(fileJSON)}`,
       );
       link.setAttribute('download', filename);
       link.style.display = 'hidden';

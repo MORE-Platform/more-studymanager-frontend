@@ -84,9 +84,13 @@ Licensed under the Elastic License 2.0. */
   function listObservations() {
     observationsApi
       .listObservations(props.studyId)
-      .then((r) =>
-        r.data.map(
-          (r) => ({ name: r.title, value: r.observationId }) as Option,
+      .then((observation) =>
+        observation.data.map(
+          (observation) =>
+            ({
+              name: observation.title,
+              value: observation.observationId,
+            }) as Option,
         ),
       )
       .then((options) => (observations.value = [emptyOption, ...options]));
@@ -95,9 +99,13 @@ Licensed under the Elastic License 2.0. */
   function listParticipants() {
     participantsApi
       .listParticipants(props.studyId)
-      .then((r) =>
-        r.data.map(
-          (r) => ({ name: r.alias, value: r.participantId }) as Option,
+      .then((participant) =>
+        participant.data.map(
+          (participant) =>
+            ({
+              name: participant.alias,
+              value: participant.participantId,
+            }) as Option,
         ),
       )
       .then((options) => (participants.value = [emptyOption, ...options]));
