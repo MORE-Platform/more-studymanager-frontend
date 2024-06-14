@@ -20,7 +20,7 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <footer class="footer w-full">
+  <footer class="footer z-1000 w-full">
     <div class="content-block mx-24 my-6 flex justify-between">
       <div>
         <OverlayPanel ref="buildInfoPanel">
@@ -30,7 +30,7 @@ Licensed under the Elastic License 2.0. */
               :key="tier"
               class="build-info"
             >
-              <div class="build-info_tier">{{ tier }}:</div>
+              <div class="font-bold capitalize">{{ tier }}:</div>
               <div class="build-info">
                 <span class="build-info_git">
                   {{ info.branch || '' }}@{{ info.rev || '?' }}
@@ -83,13 +83,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  .p-overlaypanel-content {
-    .build-info_tier {
-      text-transform: capitalize;
-      font-weight: bold;
-    }
-    .build-info_git {
-      font-family: monospace;
-    }
+  .build-info_git {
+    font-family: monospace;
   }
 </style>

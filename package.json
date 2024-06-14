@@ -33,7 +33,7 @@
     "pg": "8.11.5",
     "pinia": "2.1.7",
     "primeicons": "5.0.0",
-    "primevue": "3.17.0",
+    "primevue": "3.46.0",
     "quill": "^2.0.2",
     "starwars-names": "1.6.0",
     "vue": "3.4.27",

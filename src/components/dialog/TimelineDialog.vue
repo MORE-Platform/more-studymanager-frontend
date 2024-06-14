@@ -25,7 +25,7 @@
     <p v-if="event.class === 'observation'">{{ endDate }}</p>
     <p>{{ scheduleType }}</p>
     <p>{{ typeTranslation }}</p>
-    <p v-if="purpose">{{ t('study.props.purpose') + ': ' + purpose }}</p>
+    <p v-if="purpose">{{ `${t('study.props.purpose')}: ${purpose}` }}</p>
     <p v-if="event.class === 'observation'">
       {{
         hidden
@@ -35,5 +35,3 @@
     </p>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>

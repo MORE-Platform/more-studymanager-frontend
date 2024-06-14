@@ -591,7 +591,6 @@
         "interventionTitle": "Intervention title",
         "triggerConditions": "Trigger conditions",
         "triggerConditionsDesc": "Configure trigger properties from observations or observation types. To compare the property values use <, >, >=, <=, = or != (is not).",
-        "pushNotification": "Push notification",
         "addTriggerGroup": "Add trigger group",
         "chooseObservation": "Choose observation",
         "triggerType": "Trigger-Type",

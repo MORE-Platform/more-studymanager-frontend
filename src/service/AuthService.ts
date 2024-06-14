@@ -23,7 +23,7 @@ export default class AuthService {
           .updateToken(70)
           .then((refreshed) => {
             if (refreshed) {
-              console.log('Token refreshed: ' + refreshed);
+              console.log(`Token refreshed: ${refreshed}`);
             }
           })
           .catch(() => {

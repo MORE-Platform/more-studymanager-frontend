@@ -23,7 +23,7 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import DeleteStudyDialog from './dialog/DeleteStudyDialog.vue';
-  import { ref, Ref } from 'vue';
+  import { reactive } from 'vue';
   import AlertMsg from './shared/AlertMsg.vue';
 
   const studyStore = useStudyStore();
@@ -32,8 +32,18 @@ Licensed under the Elastic License 2.0. */
   const loader = useLoader();
   const { t } = useI18n();
 
-  const showMessage: Ref<boolean> = ref(false);
-  const alertMessage: Ref<string> = ref('');
+  const alert = reactive({
+    message: '',
+    showMessage: false,
+  });
+  function setAlertMessage(message: string) {
+    alert.message = message;
+    alert.showMessage = true;
+  }
+  function clearAlertMessage() {
+    alert.message = '';
+    alert.showMessage = false;
+  }
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: t('study.props.studyId'), sortable: true },
@@ -258,10 +268,9 @@ Licensed under the Elastic License 2.0. */
 
   function onCopyId(studyId: number | undefined, title: string | undefined) {
     if (studyId) {
-      const studyUrl = location.host + '/studies/' + studyId;
+      const studyUrl = `${location.host}/studies/${studyId}`;
       navigator.clipboard.writeText(studyUrl);
-      showMessage.value = true;
-      alertMessage.value = t('study.dialog.msg.urlCopied', { studyId, title });
+      setAlertMessage(t('study.dialog.msg.urlCopied', { studyId, title }));
     }
   }
 
@@ -322,12 +331,12 @@ Licensed under the Elastic License 2.0. */
     <DynamicDialog />
 
     <AlertMsg
-      :show-msg="showMessage"
-      :message="alertMessage"
+      :show-msg="alert.showMessage"
+      :message="alert.message"
       type="msg"
       severity-type="success"
       style-modifier="msgPosition"
-      @on-msg-change="showMessage = false"
+      @on-msg-change="clearAlertMessage"
     />
   </div>
 </template>

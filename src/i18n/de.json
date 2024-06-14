@@ -593,7 +593,6 @@
         "interventionTitle": "Interventionstitel",
         "triggerConditions": "Auslöserkonditionen",
         "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: <, >, <=, >=, = oder != (nicht gleich).",
-        "pushNotification": "Push Notification",
         "addTriggerGroup": "Konditionsgruppe hinzufügen",
         "chooseObservation": "Datenerhebung auswählen",
         "triggerType": "Triggertyp",

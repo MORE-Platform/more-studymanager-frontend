@@ -6,8 +6,6 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { Action, Trigger } from '../generated-sources/openapi';
-
 export interface MoreTableColumn {
   field: string;
   header: string;
@@ -22,11 +20,6 @@ export interface MoreTableColumn {
   placeholder?: string;
   arrayLabels?: MoreTableChoice[];
   columnWidth?: string;
-}
-
-// filter
-export interface MoreTableFilters {
-  [key: string]: MoreTableFilterOption;
 }
 
 export interface MoreTableFilterOption {
@@ -130,7 +123,6 @@ export enum FileUploadModeType {
   basic = 'basic',
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface MoreTableEditableProperties {}
 
 export interface MoreTableEditableChoiceProperties
@@ -141,12 +133,6 @@ export interface MoreTableEditableChoiceProperties
 export interface MoreTableEditableChoicePropertyValues {
   label?: string;
   value: string;
-}
-
-export enum MoreTableRoleTypes {
-  STUDY_ADMIN = 'Study Administrator',
-  STUDY_OPERATOR = 'Study Operator',
-  STUDY_VIEWER = 'Study Viewer',
 }
 
 export interface MoreTableCollaboratorItem {
@@ -168,21 +154,6 @@ export interface MoreIntegrationTableMap {
 export interface MoreIntegrationLink {
   observationId: number;
   tokenLabel: string;
-}
-
-export interface MoreInterventionTableMap {
-  studyId: number;
-  interventionId: number;
-  studyGroupId?: number;
-  title: string;
-  purpose: string;
-  schdeule?: string;
-  trigger?: Trigger;
-  actions?: Action;
-  created: string;
-  modified: string;
-  cronTime?: string;
-  cronRepetition?: string;
 }
 
 export interface MoreStudyGroupTableMap {

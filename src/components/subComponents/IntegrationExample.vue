@@ -17,7 +17,7 @@ Licensed under the Elastic License 2.0. */
     <h6 class="mb-2 mt-6 font-bold">
       {{ $t('integration.dialog.example.title') }}
     </h6>
-    <div class="example-box">
+    <div class="example-box mb-4 p-2">
       <h6 class="mb-1.5 font-bold">
         {{ $t('integration.dialog.example.dataTitle') }}
       </h6>
@@ -54,7 +54,7 @@ Licensed under the Elastic License 2.0. */
         </small>
       </code>
     </div>
-    <div class="example-box">
+    <div class="example-box mb-4 p-2">
       <h6 class="mb-1.5 font-bold">
         {{ $t('integration.dialog.example.participantsTitle') }}
       </h6>
@@ -89,9 +89,7 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   .integration-example .example-box {
     border: 1px solid var(--surface-50);
-    padding: 0.5rem;
     border-radius: 6px;
     background-color: var(--surface-50);
-    margin-bottom: 16px;
   }
 </style>

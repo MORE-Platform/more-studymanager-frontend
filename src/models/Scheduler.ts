@@ -33,3 +33,8 @@ export interface RRule {
   // repeat by set position
   bysetpos?: number;
 }
+
+export const ScheduleType = {
+  RelativeEvent: 'RelativeEvent',
+  Event: 'Event',
+} as const;

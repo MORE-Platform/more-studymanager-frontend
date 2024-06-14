@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
   import { Frequency, RecurrenceRule } from '../../generated-sources/openapi';
-  import { PropType, ref, Ref, watch } from 'vue';
+  import { PropType, reactive, ref, Ref, watch } from 'vue';
   import Checkbox from 'primevue/checkbox';
   import InputNumber from 'primevue/inputnumber';
   import SelectButton from 'primevue/selectbutton';
@@ -26,7 +26,12 @@
     (e: 'onRruleCheckboxChange', rruleChecked: boolean): void;
   }>();
 
-  const returnRrule: Ref<RecurrenceRule> = ref({
+  enum RRuleEndOptions {
+    never = 'never',
+    after = 'after',
+  }
+
+  const returnRrule: RecurrenceRule = reactive({
     freq: props.schedulerRrule?.freq,
     until: props.schedulerRrule?.until,
     count: props.schedulerRrule?.count,
@@ -38,67 +43,60 @@
   });
 
   const previewCount: Ref<number | undefined> = ref(
-    returnRrule.value.count && returnRrule.value.byday?.length
-      ? returnRrule.value.count / returnRrule.value.byday.length
-      : returnRrule.value.count
-        ? returnRrule.value.count
-        : undefined,
+    returnRrule.count && returnRrule.byday?.length
+      ? returnRrule.count / returnRrule.byday.length
+      : returnRrule.count ?? undefined,
   );
 
   const rruleEventCheckbox: Ref<boolean> = ref(props.rruleChecked);
   emit('onRruleCheckboxChange', rruleEventCheckbox.value);
 
-  const rruleErrors: Ref<Array<MoreTableChoice>> = ref([]);
+  let rruleErrors: MoreTableChoice[] = [];
 
   function checkErrors() {
-    rruleErrors.value = [];
+    rruleErrors = [];
     if (rruleEventCheckbox.value) {
-      if (typeof returnRrule.value.freq === 'undefined') {
-        rruleErrors.value.push({
+      if (typeof returnRrule.freq === 'undefined') {
+        rruleErrors.push({
           label: 'freqIsEmpty',
           value: t('scheduler.warningsAndErrors.rruleFreqIsEmpty'),
         });
       }
-      if (
-        returnRrule.value.freq === Frequency.Weekly &&
-        !returnRrule.value.byday?.length
-      ) {
-        rruleErrors.value.push({
+      if (returnRrule.freq === Frequency.Weekly && !returnRrule.byday?.length) {
+        rruleErrors.push({
           label: 'rruleWeeklyIsMissingByDay',
           value: t('scheduler.warningsAndErrors.rruleWeeklyIsMissingByDay'),
         });
       }
       if (
-        rruleEndOptionValue.value === 'after' &&
+        rruleEndOptionValue.value === RRuleEndOptions.after &&
         typeof previewCount.value !== 'number'
       ) {
-        rruleErrors.value.push({
+        rruleErrors.push({
           label: 'rruleEndIsEmpty',
           value: t('scheduler.warningsAndErrors.rruleEndIsEmpty'),
         });
       }
     }
 
-    emit('onRruleError', rruleErrors.value);
+    emit('onRruleError', rruleErrors);
   }
 
   function getError(label: string): string | null | undefined {
-    const item = rruleErrors.value.find((el) =>
-      el.label === label ? el.value : '',
-    );
+    const item = rruleErrors.find((el) => (el.label === label ? el.value : ''));
     return item?.value;
   }
 
   const rruleEndOptions = [
     {
       label: t('scheduler.labels.event.repetitionEnd.studyEnd'),
-      value: 'never',
-      unit: 'never',
+      value: RRuleEndOptions.never,
+      unit: RRuleEndOptions.never,
     },
     {
       label: t('scheduler.labels.event.repetitionEnd.after'),
-      value: 'after',
-      unit: 'after',
+      value: RRuleEndOptions.after,
+      unit: RRuleEndOptions.after,
     },
   ];
 
@@ -149,17 +147,16 @@
   ];
 
   const rruleCountLabel: Ref<string | undefined> = ref(
-    returnRrule.value && returnRrule.value.freq
-      ? rruleFrequencyOptions.find(
-          (f: any) => f.value === returnRrule.value.freq,
-        )?.unit
+    returnRrule && returnRrule.freq
+      ? rruleFrequencyOptions.find((f: any) => f.value === returnRrule.freq)
+          ?.unit
       : '',
   );
 
-  const rruleEndOptionValue: Ref<string> = ref('never');
+  const rruleEndOptionValue: Ref<string> = ref(RRuleEndOptions.never);
 
-  if (typeof returnRrule.value.count === 'number') {
-    rruleEndOptionValue.value = 'after';
+  if (typeof returnRrule.count === 'number') {
+    rruleEndOptionValue.value = RRuleEndOptions.after;
   }
 
   function setRruleCountLabel(rruleFreq: string | undefined) {
@@ -177,70 +174,67 @@
 
   function setRepetitionEnd(type: string | undefined) {
     switch (type) {
-      case 'after':
+      case RRuleEndOptions.after:
         {
-          returnRrule.value.until = undefined;
-          if (returnRrule.value.freq === Frequency.Daily) {
-            returnRrule.value.byday = undefined;
+          returnRrule.until = undefined;
+          if (returnRrule.freq === Frequency.Daily) {
+            returnRrule.byday = undefined;
           }
         }
         break;
-      case 'never': {
-        returnRrule.value.count = undefined;
+      case RRuleEndOptions.never: {
+        returnRrule.count = undefined;
         previewCount.value = undefined;
-        returnRrule.value.until = undefined;
-        returnRrule.value.byday = undefined;
+        returnRrule.until = undefined;
+        returnRrule.byday = undefined;
       }
     }
     onChangeRrule();
   }
 
   watch(previewCount, () => {
-    if (previewCount.value && rruleEndOptionValue.value === 'after') {
-      if (returnRrule.value.byday?.length) {
-        returnRrule.value.count =
-          previewCount.value * returnRrule.value.byday.length;
+    if (
+      previewCount.value &&
+      rruleEndOptionValue.value === RRuleEndOptions.after
+    ) {
+      if (returnRrule.byday?.length) {
+        returnRrule.count = previewCount.value * returnRrule.byday.length;
       } else {
-        returnRrule.value.count = previewCount.value;
+        returnRrule.count = previewCount.value;
       }
     }
   });
 
   function onChangeRrule(type?: string, eventValue?: any) {
-    if (
-      type === 'byday' &&
-      previewCount.value &&
-      returnRrule.value.byday?.length
-    ) {
-      returnRrule.value.count =
-        previewCount.value * returnRrule.value.byday.length;
+    if (type === 'byday' && previewCount.value && returnRrule.byday?.length) {
+      returnRrule.count = previewCount.value * returnRrule.byday.length;
     }
 
-    if (!rruleErrors.value.length) {
-      emit('onRruleChange', returnRrule.value);
+    if (!rruleErrors.length) {
+      emit('onRruleChange', returnRrule);
     }
 
     if (type === 'count') {
       previewCount.value = eventValue;
       if (!previewCount.value) {
-        returnRrule.value.count = undefined;
+        returnRrule.count = undefined;
       }
     }
 
-    if (returnRrule.value.freq === Frequency.Daily && returnRrule.value.byday) {
-      returnRrule.value.byday = undefined;
+    if (returnRrule.freq === Frequency.Daily && returnRrule.byday) {
+      returnRrule.byday = undefined;
     }
 
     checkErrors();
-    emit('onRruleError', rruleErrors.value);
-    emit('onRruleChange', returnRrule.value);
+    emit('onRruleError', rruleErrors);
+    emit('onRruleChange', returnRrule);
   }
 </script>
 
 <template>
   <div class="absolute-scheduler-rrule">
     <div class="col-span-6 col-start-1 grid grid-cols-6 gap-4">
-      <hr class="col-start-0 col-span-6 mb-4 mt-4" />
+      <hr class="col-start-0 col-span-6 my-4" />
       <h6 class="col-span-6">{{ $t('scheduler.labels.event.repeat') }}</h6>
       <div class="col-span-6 mb-2">
         {{ $t('scheduler.labels.event.repeatDesc') }}
@@ -298,7 +292,7 @@
           >
             {{ getError('rruleWeeklyIsMissingByDay') }}
           </div>
-          <hr class="col-start-0 col-span-6 mb-4 mt-4" />
+          <hr class="col-start-0 col-span-6 my-4" />
         </div>
 
         <!-- repetition ending options -->
@@ -320,7 +314,7 @@
             />
             <!-- selected repeat end option: after -->
             <div
-              v-if="rruleEndOptionValue === 'after'"
+              v-if="rruleEndOptionValue === RRuleEndOptions.after"
               class="col-span-5 col-start-2 inline gap-4"
             >
               <InputNumber

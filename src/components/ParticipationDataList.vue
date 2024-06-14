@@ -26,6 +26,8 @@ Licensed under the Elastic License 2.0. */
   import { onBeforeRouteLeave } from 'vue-router';
   import DatapointList from './subComponents/DatapointList.vue';
 
+  const { t } = useI18n();
+  const { handleIndividualError } = useErrorHandling();
   const { componentsApi } = useComponentsApi();
   const { dataApi } = useDataApi();
 
@@ -49,12 +51,9 @@ Licensed under the Elastic License 2.0. */
     clearInterval(timer);
   });
 
-  const { t } = useI18n();
-  const { handleIndividualError } = useErrorHandling();
-
   const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
 
-  function listParticipationData(): Promise<ParticipationDataMapping[]> {
+  async function listParticipationData(): Promise<ParticipationDataMapping[]> {
     return dataApi
       .getParticipationData(props.studyId)
       .then((response) =>
@@ -89,9 +88,9 @@ Licensed under the Elastic License 2.0. */
 
   let factories: ComponentFactory[];
 
-  function getObservationTypeLabel(observationType: string) {
+  function getObservationTypeLabel(observationType: string): string {
     const label = factories.find(
-      (item) => item.componentId === observationType,
+      (f) => f.componentId === observationType,
     )?.title;
     return label !== undefined ? t(label) : '';
   }
@@ -141,10 +140,10 @@ Licensed under the Elastic License 2.0. */
   ];
 
   function setObservationGroups(data: ParticipationDataMapping[]) {
-    groupedParticipantData.value = data.reduce(function (r, a) {
-      r[a.observationId] = r[a.observationId] || [];
-      r[a.observationId].push(a);
-      return r;
+    groupedParticipantData.value = data.reduce(function (prev, curr) {
+      prev[curr.observationId] = prev[curr.observationId] || [];
+      prev[curr.observationId].push(curr);
+      return prev;
     }, Object.create(null));
   }
 
@@ -170,16 +169,12 @@ Licensed under the Elastic License 2.0. */
       >
         {{ $t('data.dataList.title') }}
       </h4>
-      <Accordion
-        :active-index="0"
-        lazy
-        expand-icon="pi pi-chevron-up"
-        class="mt-5"
-      >
+      <Accordion :active-index="0" lazy expand-icon="pi pi-chevron-up">
         <AccordionTab
           v-for="observationData in groupedParticipantData"
           :key="observationData[0].observationId"
           :header="observationData[0].observationTitle as string"
+          headerClass="mt-2.5"
         >
           <MoreTable
             v-if="observationData.length"
@@ -206,12 +201,7 @@ Licensed under the Elastic License 2.0. */
       margin: 0;
     }
   }
-  :deep(.p-accordion) {
-    margin-top: 0;
-  }
-  :deep(.p-accordion-header) {
-    margin-top: 10px;
-  }
+
   :deep(.p-accordion-header) {
     a {
       padding: 0.5rem 0 1rem 0 !important;

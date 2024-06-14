@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { PropType, ref, Ref } from 'vue';
+  import { PropType } from 'vue';
   import {
     Study,
     StudyRole,
@@ -18,7 +18,6 @@ Licensed under the Elastic License 2.0. */
   import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
-  import AlertMsg from '../shared/AlertMsg.vue';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -94,11 +93,38 @@ Licensed under the Elastic License 2.0. */
     StudyRole.Operator,
   ];
 
+  function hasAccessToEdit(): boolean {
+    return (
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.Paused) ||
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.Draft) ||
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.PausedPreview)
+    );
+  }
+
+  function hasMissingContactData(): boolean {
+    return (
+      (!props.study?.contact?.institute &&
+        props.study?.contact?.person === 'pending' &&
+        props.study?.contact?.email === 'pending' &&
+        !props.study?.contact?.phoneNumber) ||
+      (!props.study?.contact?.institute &&
+        !props.study?.contact?.person &&
+        !props.study?.contact?.email &&
+        !props.study?.contact?.phoneNumber)
+    );
+  }
+
   const webcalUrl = `webcal://${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
   const calenderUrl = `${location.origin}/api/v1/studies/${props.study.studyId}/calendar.ics`;
-
-  const showMessage: Ref<boolean> = ref(false);
-  const alertMessage: Ref<string> = ref('');
 </script>
 
 <template>
@@ -145,23 +171,9 @@ Licensed under the Elastic License 2.0. */
         ></StudyStatusChange>
         <Button
           v-if="props.study.status !== StudyStatus.Closed"
-          class="buttons"
           type="button"
           :title="$t('study.statusChange.edit')"
-          :disabled="
-            ((props.userRoles.some((r: StudyRole) =>
-              accessEditDetailsRoles.includes(r),
-            ) &&
-              props.study.status === StudyStatus.Paused) ||
-              (props.userRoles.some((r: StudyRole) =>
-                accessEditDetailsRoles.includes(r),
-              ) &&
-                props.study.status === StudyStatus.Draft) ||
-              (props.userRoles.some((r: StudyRole) =>
-                accessEditDetailsRoles.includes(r),
-              ) &&
-                props.study.status === StudyStatus.PausedPreview)) === false
-          "
+          :disabled="!hasAccessToEdit()"
           @click="openEditDialog()"
           ><span>{{ $t('study.statusChange.edit') }}</span></Button
         >
@@ -169,7 +181,7 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="mb-6">
-      <h5>{{ $t('study.ical.title') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">{{ $t('study.ical.title') }}</h5>
       <div class="flex items-center">
         <div class="mr-4 inline">
           <a :href="webcalUrl">{{ calenderUrl }}</a>
@@ -178,7 +190,7 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="mb-6">
-      <h5>{{ $t('study.props.purpose') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">{{ $t('study.props.purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
         <span v-else class="placeholder">
@@ -187,7 +199,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.participantInfo') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.participantInfo') }}
+      </h5>
       <div>
         <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
         <span v-else class="placeholder">
@@ -196,7 +210,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.consentInfo') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.consentInfo') }}
+      </h5>
       <div class="mt-2">
         <span v-if="study.consentInfo">
           {{ study.consentInfo }}
@@ -205,7 +221,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.finishText') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.finishText') }}
+      </h5>
       <div>
         <span v-if="study.finishText">{{ study.finishText }}</span>
         <span v-else class="placeholder">{{
@@ -214,20 +232,10 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
-      <div
-        v-if="
-          (!study?.contact?.institute &&
-            study?.contact?.person === 'pending' &&
-            study?.contact?.email === 'pending' &&
-            !study?.contact?.phoneNumber) ||
-          (!study?.contact?.institute &&
-            !study?.contact?.person &&
-            !study?.contact?.email &&
-            !study?.contact?.phoneNumber)
-        "
-        class="placeholder"
-      >
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.dialog.label.contactInfo') }}
+      </h5>
+      <div v-if="hasMissingContactData()" class="placeholder">
         {{ $t('study.placeholder.missingContactData') }}
       </div>
 
@@ -259,52 +267,4 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
   <DynamicDialog />
-  <AlertMsg
-    :show-msg="showMessage"
-    :message="alertMessage"
-    type="msg"
-    severity-type="success"
-    style-modifier="msgPosition"
-    @on-msg-change="showMessage = false"
-  />
 </template>
-
-<style scoped lang="postcss">
-  :deep(.formatted-text) {
-    ul {
-      margin: 10px 0 10px 5px;
-      list-style: disc;
-      li {
-        margin-left: 30px;
-      }
-    }
-  }
-
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 2px;
-  }
-  button.edit-btn {
-    border: none;
-    background-color: transparent;
-    padding: 0 !important;
-
-    span:before {
-      color: black;
-    }
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: lightgrey !important;
-      span:before {
-        color: var(--primary-color);
-      }
-    }
-  }
-
-  .overview-edit-details .placeholder {
-    color: var(--surface-400);
-  }
-</style>

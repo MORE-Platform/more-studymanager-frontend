@@ -59,7 +59,11 @@ Licensed under the Elastic License 2.0. */
     />
 
     <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
+      <Button
+        type="button"
+        class="p-button btn-gray !mr-3"
+        @click="closeDialog"
+      >
         {{ $t('global.labels.close') }}
       </Button>
       <Button
@@ -85,9 +89,5 @@ Licensed under the Elastic License 2.0. */
         width: 50%;
       }
     }
-  }
-
-  .btn-gray {
-    margin-right: 0.5rem;
   }
 </style>
