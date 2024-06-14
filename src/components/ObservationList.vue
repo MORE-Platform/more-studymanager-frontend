@@ -35,6 +35,7 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import dayjs from 'dayjs';
+  import { ScheduleType } from '../models/Scheduler';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -44,7 +45,7 @@ Licensed under the Elastic License 2.0. */
 
   const observationList: Ref<Observation[]> = ref([]);
   const dialog = useDialog();
-  //const loading = ref(true)
+
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
@@ -57,10 +58,10 @@ Licensed under the Elastic License 2.0. */
     props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
-    (item) =>
+    (studyGroup) =>
       ({
-        label: item.title,
-        value: item.studyGroupId?.toString(),
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
       }) as MoreTableChoice,
   );
   groupStatuses.push({
@@ -76,10 +77,10 @@ Licensed under the Elastic License 2.0. */
 
   const factories: ComponentFactory[] = await getFactories();
   const observationTypes: MoreTableActionOption[] = factories.map(
-    (item: any) => ({
-      label: t(item.title),
-      value: item.componentId,
-      description: t(item.description),
+    (cf: ComponentFactory) => ({
+      label: t(cf.title ?? ''),
+      value: cf.componentId,
+      description: t(cf.description ?? ''),
     }),
   );
 
@@ -183,7 +184,7 @@ Licensed under the Elastic License 2.0. */
               confirmMsg: t('observation.dialog.deleteMsg.confirm'),
               row: row,
               elTitle: getObservationTypeString(row.type)
-                ? row.title + ' (' + getObservationTypeString(row.type) + ')'
+                ? `${row.title} (${getObservationTypeString(row.type)})`
                 : row.title,
               elInfoTitle: t('study.props.purpose'),
               elInfoDesc: row.purpose,
@@ -223,8 +224,7 @@ Licensed under the Elastic License 2.0. */
 
   function getObservationTypeString(observationType: string) {
     return t(
-      factories.find((item) => item.componentId === observationType)
-        ?.title as string,
+      factories.find((f) => f.componentId === observationType)?.title as string,
     );
   }
 
@@ -232,28 +232,28 @@ Licensed under the Elastic License 2.0. */
     observationList.value = await observationsApi
       .listObservations(props.studyId)
       .then((response: AxiosResponse) => {
-        return response.data.map((item: Observation) => {
+        return response.data.map((observation: Observation) => {
           return {
-            studyId: item.studyId,
-            observationId: item.observationId,
-            studyGroupId: item.studyGroupId,
-            title: item.title,
-            purpose: item.purpose,
-            participantInfo: item.participantInfo,
-            type: item.type,
-            typeLabel: getObservationTypeString(item.type as string),
-            properties: item.properties,
-            schedule: item.schedule,
-            scheduleType: item.schedule?.type
-              ? t(`scheduler.type.${item.schedule?.type}`)
+            studyId: observation.studyId,
+            observationId: observation.observationId,
+            studyGroupId: observation.studyGroupId,
+            title: observation.title,
+            purpose: observation.purpose,
+            participantInfo: observation.participantInfo,
+            type: observation.type,
+            typeLabel: getObservationTypeString(observation.type as string),
+            properties: observation.properties,
+            schedule: observation.schedule,
+            scheduleType: observation.schedule?.type
+              ? t(`scheduler.type.${observation.schedule?.type}`)
               : '',
-            scheduleStart: getScheduleDate(item.schedule, 'dtstart'),
-            scheduleEnd: getScheduleDate(item.schedule, 'dtend'),
-            created: item.created,
-            modified: item.modified,
-            hidden: item.hidden,
-            noSchedule: item.noSchedule,
-            hasRepetition: getScheduleHasRepetition(item.schedule),
+            scheduleStart: getScheduleDate(observation.schedule, 'dtstart'),
+            scheduleEnd: getScheduleDate(observation.schedule, 'dtend'),
+            created: observation.created,
+            modified: observation.modified,
+            hidden: observation.hidden,
+            noSchedule: observation.noSchedule,
+            hasRepetition: getScheduleHasRepetition(observation.schedule),
           };
         });
       })
@@ -267,11 +267,11 @@ Licensed under the Elastic License 2.0. */
   ): boolean {
     if (schedule) {
       switch (schedule.type) {
-        case 'Event': {
+        case ScheduleType.Event: {
           const s = schedule as Event;
           return !!s.rrule;
         }
-        case 'RelativeEvent': {
+        case ScheduleType.RelativeEvent: {
           const s = schedule as RelativeEvent;
           return !!s.rrrule;
         }
@@ -285,7 +285,7 @@ Licensed under the Elastic License 2.0. */
     prop: string,
   ) {
     switch (scheduler?.type) {
-      case 'Event': {
+      case ScheduleType.Event: {
         const schedule = scheduler as Event;
         switch (prop) {
           case 'dtstart':
@@ -304,7 +304,7 @@ Licensed under the Elastic License 2.0. */
             return undefined;
         }
       }
-      case 'RelativeEvent': {
+      case ScheduleType.RelativeEvent: {
         const schedule = scheduler as RelativeEvent;
         switch (prop) {
           case 'dtstart':
@@ -351,14 +351,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   async function updateObservation(observation: Observation) {
-    //do change immediately (ux)
-    const i = observationList.value.findIndex(
-      (o: Observation) => o.observationId === observation.observationId,
-    );
-    if (i > -1) {
-      observationList.value[i] = observation;
-    }
-
     await observationsApi
       .updateObservation(
         props.studyId,
@@ -369,7 +361,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update opservation " + observation.title,
+          `Couldn't update observation ${observation.title}`,
         ),
       );
   }
@@ -384,7 +376,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete observation ' + requestObservation.observationId,
+          `Cannot delete observation ${requestObservation.observationId}`,
         ),
       );
   }
@@ -446,7 +438,7 @@ Licensed under the Elastic License 2.0. */
 
   function openEditObservation(observationId: number) {
     const observation = observationList.value.find(
-      (o) => o.observationId === observationId,
+      (observation) => observation.observationId === observationId,
     );
     if (observation) {
       let dialogTitle = t('observation.dialog.header.edit');

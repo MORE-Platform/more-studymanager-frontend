@@ -27,20 +27,24 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="dialog delete-confirm-dialog">
+  <div class="dialog text-base">
     <div class="mb-6">{{ introMsg }}</div>
     <h3 class="font-medium">
       <span class="color-primary">{{ elTitle }}</span>
     </h3>
     <div v-if="elInfoTitle && elInfoDesc" class="mt-5">
-      <h5>{{ elInfoTitle }}</h5>
+      <h5 class="text-lg font-bold">{{ elInfoTitle }}</h5>
       <div>{{ elInfoDesc }}</div>
     </div>
 
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
     <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
+      <Button
+        type="button"
+        class="p-button btn-gray !mr-3"
+        @click="closeDialog"
+      >
         {{ $t('global.labels.close') }}
       </Button>
       <Button
@@ -53,16 +57,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .delete-confirm-dialog {
-    font-size: 1rem;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  .btn-gray {
-    margin-right: 0.5rem;
-  }
-</style>

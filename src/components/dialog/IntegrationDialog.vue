@@ -25,22 +25,21 @@ Licensed under the Elastic License 2.0. */
     dialogRef.value.data?.observationList || [];
   const factories: ComponentFactory[] = dialogRef.value.data?.factories || [];
 
-  const observationValues: MoreTableChoice[] = observationList.map((item) => {
-    return {
-      label: (item.title + getObservationName(item.type as string)) as string,
-      value: item.observationId?.toString() || null,
-    };
-  });
+  const observationValues: MoreTableChoice[] = observationList.map(
+    (observation) => {
+      return {
+        label:
+          `${observation.title} (${getObservationName(observation.type as string)})` as string,
+        value: observation.observationId?.toString() || null,
+      };
+    },
+  );
 
   function getObservationName(type: string): string {
-    return (
-      ' (' +
-      t(factories.find((item) => type === item.componentId)?.title as string) +
-      ')'
-    );
+    return t(factories.find((f) => type === f.componentId)?.title as string);
   }
 
-  const selectedObservation: Ref<MoreTableChoice | null> = ref(null);
+  const selectedObservation: Ref<number | null> = ref(null);
   const tokenLabel: Ref<string> = ref('');
 
   const editable = studyStore.study.status !== StudyStatus.Closed;
@@ -64,10 +63,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getError(label: string): string | null | undefined {
-    const item = errors.value.find((el) =>
-      el.label === label ? el.value : '',
-    );
-    return item?.value;
+    return errors.value.find((el) => el.label === label)?.value;
   }
 
   function save() {
@@ -90,11 +86,11 @@ Licensed under the Elastic License 2.0. */
       <form
         id="interventionDialogForm"
         class="grid grid-cols-8 items-center gap-4"
-        :class="editable ? '' : 'gap-y-2'"
+        :class="{ 'gap-y-2': !editable }"
         @submit.prevent="save()"
       >
-        <div class="col-start-0 col-span-8" :class="editable ? '' : 'pb-4'">
-          <h5 class="mb-1 mt-1">
+        <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
+          <h5 class="my-1 text-base font-bold">
             {{ $t('integration.dialog.label.integrationTitle') }}
           </h5>
 
@@ -108,12 +104,11 @@ Licensed under the Elastic License 2.0. */
             type="text"
             required
             :placeholder="$t('integration.dialog.placeholder.tokenLabelInput')"
-            style="width: 100%"
             :disabled="!editable"
           ></InputText>
         </div>
         <div class="col-start-0 col-span-8">
-          <h5 class="mb-0.5 mt-1">
+          <h5 class="mb-0.5 mt-1 text-base font-bold">
             {{ $t('integration.dialog.label.chooseObservation') }}
           </h5>
           <div class="mb-2">
@@ -126,7 +121,7 @@ Licensed under the Elastic License 2.0. */
 
           <Dropdown
             v-model="selectedObservation"
-            style="width: 100%"
+            class="w-full"
             :options="observationValues"
             :name="'observation'"
             option-label="label"
@@ -141,7 +136,7 @@ Licensed under the Elastic License 2.0. */
           <Button class="btn-gray" @click="cancel()">{{
             $t('global.labels.cancel')
           }}</Button>
-          <Button type="submit" @click="checkErrors()">{{
+          <Button class="!ml-2" type="submit" @click="checkErrors()">{{
             $t('global.labels.save')
           }}</Button>
         </div>
@@ -149,15 +144,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .buttons {
-    button {
-      margin-left: 10px;
-    }
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-</style>

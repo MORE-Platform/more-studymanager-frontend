@@ -70,7 +70,6 @@ Licensed under the Elastic License 2.0. */
     (e: 'onError', error: string): void;
   }>();
 
-  const triggerConditionError: Ref<string | undefined> = ref('');
   const rowOpenError: Ref<string | undefined> = ref('');
 
   function setRowOpenError(error: boolean | string) {
@@ -83,7 +82,6 @@ Licensed under the Elastic License 2.0. */
     }
   }
   function setTriggerConditionError(triggerTableE?: string) {
-    triggerConditionError.value = triggerTableE;
     emit('onError', triggerTableE ? triggerTableE : '');
   }
 
@@ -182,42 +180,44 @@ Licensed under the Elastic License 2.0. */
   }
 
   function validateEditedRow(triggerConfig: QueryObjectInner): boolean {
-    if (
+    return !!(
       triggerConfig.observationId &&
       triggerConfig.observationType &&
       triggerConfig.observationProperty &&
       triggerConfig.operator &&
       triggerConfig.propertyValue
-    ) {
-      return true;
-    } else {
-      return false;
-    }
+    );
   }
 
   function updateRowData(item: InterventionTriggerUpdateData) {
-    if (validateEditedRow(item.data)) {
-      item.data.error = false;
-      if (typeof triggerConditionObj.value.value !== 'undefined') {
-        triggerConditionObj.value.value[item.groupIndex].parameter[
-          item.rowIndex
-        ] = item.data;
-        if (
-          triggerConditionObj.value.value[item.groupIndex].parameter[
-            item.rowIndex
-          ].observationType === 'gps-mobile-observation'
-        ) {
-          triggerConditionObj.value.value[item.groupIndex].parameter[
-            item.rowIndex
-          ].propertyValue = triggerConditionObj.value.value[item.groupIndex]
-            .parameter[item.rowIndex].propertyValue as number;
-        }
-        triggerConditionObj.value.value[item.groupIndex].parameter[
-          item.rowIndex
-        ].editMode = false;
-        emitTriggerConditions();
-      }
+    if (!validateEditedRow(item.data)) {
+      return;
     }
+
+    item.data.error = false;
+
+    if (typeof triggerConditionObj.value.value === 'undefined') {
+      return;
+    }
+
+    triggerConditionObj.value.value[item.groupIndex].parameter[item.rowIndex] =
+      item.data;
+
+    if (
+      triggerConditionObj.value.value[item.groupIndex].parameter[item.rowIndex]
+        .observationType === 'gps-mobile-observation'
+    ) {
+      triggerConditionObj.value.value[item.groupIndex].parameter[
+        item.rowIndex
+      ].propertyValue = triggerConditionObj.value.value[item.groupIndex]
+        .parameter[item.rowIndex].propertyValue as number;
+    }
+
+    triggerConditionObj.value.value[item.groupIndex].parameter[
+      item.rowIndex
+    ].editMode = false;
+
+    emitTriggerConditions();
   }
 
   function addRow(item: InterventionTriggerUpdateItem) {
@@ -262,14 +262,9 @@ Licensed under the Elastic License 2.0. */
   }
 
   function checkTriggerConditionErrors() {
-    let hasErrors = false;
-    triggerConditionObj.value?.value?.forEach((item: QueryObject) => {
-      item.parameter.forEach((p) => {
-        if (p.error) {
-          hasErrors = true;
-        }
-      });
-    });
+    const hasErrors = triggerConditionObj.value?.value?.some(
+      (item: QueryObject) => item.parameter.some((p) => p.error),
+    );
 
     if (hasErrors) {
       emit('onError', 'Trigger Condition Table is not saved.');
@@ -289,12 +284,9 @@ Licensed under the Elastic License 2.0. */
         v-if="
           triggerConditionObj.value && triggerConditionObj.value.length === 0
         "
-        class="mb-6 mt-6 w-full text-center"
+        class="my-6 w-full text-center"
       >
-        <Button
-          type="button"
-          class="p-button mb-6 mt-6"
-          @click="addTriggerGroup()"
+        <Button type="button" class="p-button my-6" @click="addTriggerGroup()"
           ><span class="pi pi-plus mr-2"></span>
           {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
         >
@@ -319,7 +311,7 @@ Licensed under the Elastic License 2.0. */
           :columns="triggerConditionColumns"
           class="mt-6"
           :editable="editable"
-          :row-open-error="rowOpenError ? rowOpenError : ''"
+          :row-open-error="rowOpenError ?? ''"
           @on-add-trigger-group="addTriggerGroup($event)"
           @on-toggle-row-edit="toggleRowEdit($event)"
           @on-update-row-data="updateRowData($event)"
@@ -330,13 +322,7 @@ Licensed under the Elastic License 2.0. */
         />
       </div>
       <div v-else>
-        <div
-          v-if="
-            triggerConditionObj.value !== null ||
-            triggerConditionObj.value !== undefined
-          "
-          class="error mb-4 mt-2"
-        >
+        <div class="error mb-4 mt-2">
           {{ $t('intervention.error.emptyTriggerConditions') }}
         </div>
         <div class="flex justify-center">
@@ -353,5 +339,3 @@ Licensed under the Elastic License 2.0. */
     </Suspense>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>

@@ -18,17 +18,14 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     ValidationReport,
     StudyStatus,
+    ListComponentsComponentTypeEnum,
   } from '../../generated-sources/openapi';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import PropertyInputs from './shared/PropertyInputs.vue';
 
-  import {
-    CronProperty,
-    DataCheckProperty,
-    Property,
-  } from '../../models/InputModels';
+  import { CronProperty, Property } from '../../models/InputModels';
   import ActionProperty from './shared/ActionProperty.vue';
   import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
 
@@ -47,47 +44,47 @@ Licensed under the Elastic License 2.0. */
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
-  const propInputError: Ref<string> = ref('');
+  let propInputError: string = '';
 
   /* parses the trigger properties as Property to validate and work with it - makes it easy extandable*/
   function getTriggerProperties(tType: string): Property<any>[] | undefined {
     const triggerTypeProps = triggerFactories.find(
-      (item: any) => item.componentId === tType,
+      (tf: any) => tf.componentId === tType,
     ).properties;
 
-    const properties: Ref<Property<any>[]> = ref(
-      triggerTypeProps.map((json: any) => Property.fromJson(json)),
+    let properties: Property<any>[] = triggerTypeProps.map((json: any) =>
+      Property.fromJson(json),
     );
 
     if (
       typeof triggerData !== 'undefined' &&
       typeof triggerData.properties !== 'undefined'
     ) {
-      properties.value = properties.value.map((p: Property<any>) =>
+      properties = properties.map((p: Property<any>) =>
         triggerData.properties
           ? p.setValue(triggerData.properties?.[p.id])
           : p.setValue(p.defaultValue),
       );
     } else {
-      properties.value = properties.value.map((p: Property<any>) =>
+      properties = properties.map((p: Property<any>) =>
         p.setValue(p.defaultValue),
       );
     }
 
-    return properties.value;
+    return properties;
   }
 
   /*trigger type options are used for the trigger type dropdown to switch between and provide a specific description*/
-  const triggerTypesOptions = triggerFactories.map((item: any) => ({
-    label: t(item.title),
-    value: item.componentId,
-    description: t(item.description),
+  const triggerTypesOptions = triggerFactories.map((tf: any) => ({
+    label: t(tf.title),
+    value: tf.componentId,
+    description: t(tf.description),
   }));
 
   /*gets the trigger description by type value*/
   function getTriggerTypeDescription(triggerType: string): string {
     const trigger = triggerTypesOptions.find(
-      (item: any) => item.value === triggerType,
+      (tto: any) => tto.value === triggerType,
     );
     return trigger.description;
   }
@@ -107,37 +104,34 @@ Licensed under the Elastic License 2.0. */
       : undefined,
   );
 
-  const actionsArray: Ref<any[]> = ref(actionsData || []);
+  const actionsArray: Ref<Action[]> = ref(actionsData || []);
   const triggerProperties: Ref<Property<any>[] | undefined> = ref(
     triggerType.value ? getTriggerProperties(triggerType.value) : undefined,
   );
 
-  const removeActions: Ref<number[]> = ref([]);
+  const removeActions: number[] = [];
 
   const actionJsonError: Ref<string[]> = ref([]);
   const actionsEmptyError: Ref<string> = ref('');
   const triggerJsonError: Ref<string | undefined> = ref();
-  const triggerConditionsError: Ref<string | undefined> = ref(undefined);
-
-  const interventionRowIsOpen: Ref<boolean> = ref(false);
 
   if (actionsArray.value.length) {
-    actionsArray.value = actionsArray.value.map((item) => ({
-      actionId: item.actionId,
-      type: item.type,
-      properties: item.properties,
+    actionsArray.value = actionsArray.value.map((action: Action) => ({
+      actionId: action.actionId,
+      type: action.type,
+      properties: action.properties,
     }));
   }
 
   const actionTypesOptions = ref(
-    actionFactories.map((item: ComponentFactory) => ({
-      label: item.title ? t(item.title) : '',
-      value: item.componentId,
+    actionFactories.map((cf: ComponentFactory) => ({
+      label: cf.title ? t(cf.title) : '',
+      value: cf.componentId,
       command: () => {
         actionsArray.value.push({
-          type: item.componentId,
-          properties: item.defaultProperties,
-        });
+          type: cf.componentId,
+          properties: cf.defaultProperties,
+        } as Action);
       },
     })),
   );
@@ -151,7 +145,7 @@ Licensed under the Elastic License 2.0. */
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
-        if (component !== 'action') {
+        if (component !== ListComponentsComponentTypeEnum.Action) {
           parsedProps = Property.toJson(props);
         } else {
           parsedProps = props;
@@ -182,32 +176,32 @@ Licensed under the Elastic License 2.0. */
   }
 
   function save() {
-    if (externalErrors.value.length === 0 && errors.value.length === 0) {
+    if (errors.length === 0) {
       Promise.all(
         [
-          ...actionsArray.value.map((item, id) => ({
-            component: 'action',
-            type: item.type,
-            properties: item.properties,
+          ...actionsArray.value.map((action: Action, id) => ({
+            component: ListComponentsComponentTypeEnum.Action,
+            type: action.type,
+            properties: action.properties,
             id,
           })),
           {
-            component: 'trigger',
+            component: ListComponentsComponentTypeEnum.Trigger,
             type: triggerType.value,
             properties: triggerProperties.value
               ? triggerProperties.value
               : '{}',
             id: -1,
           },
-        ].map((v) => validate(v.component, v.type, v.properties, v.id)),
+        ].map((v) =>
+          validate(v.component, v.type as string, v.properties, v.id),
+        ),
       )
         .then((response: any) => {
           return response;
         })
         .then((report: ValidationReport) => {
-          if (report.valid) {
-            console.log('is valid');
-          } else {
+          if (!report.valid) {
             const jsonError = (report.errors || [])
               .concat(report.warnings || [])
               .map((e) => e.message)
@@ -217,10 +211,10 @@ Licensed under the Elastic License 2.0. */
             }
           }
 
-          const actionsProps = actionsArray.value.map((item) => ({
-            actionId: item?.actionId,
-            type: item.type,
-            properties: item.properties,
+          const actionsProps = actionsArray.value.map((action: Action) => ({
+            actionId: action?.actionId,
+            type: action.type,
+            properties: action.properties,
           }));
 
           const returnIntervention = {
@@ -241,7 +235,7 @@ Licensed under the Elastic License 2.0. */
                 properties: Property.toJson(triggerProperties.value),
               },
               actions: actionsProps,
-              removeActions: removeActions.value,
+              removeActions: removeActions,
             };
 
             actionJsonError.value = [];
@@ -254,7 +248,7 @@ Licensed under the Elastic License 2.0. */
         })
 
         .catch((reason) => {
-          if (reason.component === 'trigger') {
+          if (reason.component === ListComponentsComponentTypeEnum.Trigger) {
             triggerJsonError.value = reason.msg;
           } else {
             const actionErrors = [];
@@ -265,49 +259,30 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  const errors: Ref<Array<MoreTableChoice>> = ref([]);
-  const externalErrors: Ref<Array<any>> = ref([]);
+  let errors: MoreTableChoice[] = [];
 
   function checkErrors() {
-    errors.value = [];
+    errors = [];
     if (!title.value) {
-      errors.value.push({
+      errors.push({
         label: 'title',
         value: t('intervention.error.addTitle'),
       });
     }
     if (typeof triggerProperties.value === 'undefined') {
-      errors.value.push({
-        label: 'trigger',
+      errors.push({
+        label: ListComponentsComponentTypeEnum.Trigger,
         value: t('intervention.error.addTriggerTypeConfig'),
       });
     }
-    if (triggerProperties.value) {
-      for (const prop in triggerProperties.value) {
-        if (triggerProperties.value[prop] instanceof DataCheckProperty) {
-          if (triggerConditionsError.value) {
-            errors.value.push({
-              label: 'dataCheckTriggerConditions',
-              value: triggerConditionsError.value,
-            });
-          }
-        }
-      }
-    }
     if (!actionsArray.value.length) {
-      errors.value.push({
-        label: 'action',
+      errors.push({
+        label: ListComponentsComponentTypeEnum.Action,
         value: t('intervention.error.addAction'),
       });
     }
-    if (interventionRowIsOpen.value) {
-      errors.value.push({
-        label: 'interventionRowIsOpen',
-        value: t('intervention.error.interventionRowIsOpen'),
-      });
-    }
-    if (propInputError.value) {
-      errors.value.push({
+    if (propInputError) {
+      errors.push({
         label: 'propInputError',
         value: 'A triggerprop has an error.',
       });
@@ -315,22 +290,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getError(label: string): string | null | undefined {
-    const item = errors.value.find((el) =>
-      el.label === label ? el.value : '',
-    );
-    return item?.value;
-  }
-
-  function checkExternalErrors(e?: string) {
-    externalErrors.value = [];
-    if (e) {
-      externalErrors.value.push(e);
-    }
-  }
-
-  function checkPropertyErrors(value: any) {
-    checkErrors();
-    checkExternalErrors(value);
+    return errors.find((el) => el.label === label)?.value;
   }
 
   function cancel() {
@@ -338,26 +298,27 @@ Licensed under the Elastic License 2.0. */
   }
 
   function deleteAction(actionId: number, index: number) {
-    removeActions.value.push(actionId);
+    removeActions.push(actionId);
     actionsArray.value.splice(index, 1);
   }
 
   function nameForActionType(actionType?: string) {
     return actionFactories.find(
-      (a: ComponentFactory) => a.componentId === actionType,
+      (cf: ComponentFactory) => cf.componentId === actionType,
     )?.label;
   }
   function setTriggerConfig(tType: string) {
     const cronValue = triggerProperties.value?.find(
-      (item) => item.id === 'cronSchedule',
+      (tp) => tp.id === 'cronSchedule',
     )?.value;
     triggerProperties.value = getTriggerProperties(tType);
-
     if (cronValue) {
       const cron = triggerProperties.value?.find(
-        (item) => item.id === 'cronSchedule',
+        (tp) => tp.id === 'cronSchedule',
       ) as Property<CronProperty>;
-      cron.value = cronValue;
+      if (cron) {
+        cron.value = cronValue;
+      }
     }
     triggerType.value = tType;
     checkErrors();
@@ -379,11 +340,14 @@ Licensed under the Elastic License 2.0. */
   }
 
   function propertyError(item: StringEmit) {
-    propInputError.value = item.value;
+    propInputError = item.value;
     checkErrors();
   }
 
-  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  function getLabelForChoiceValue(
+    value: any,
+    values: MoreTableChoice[],
+  ): string | undefined {
     if (value) {
       const v = value.toString();
       return values.find((s: any) => s.value === v)?.label;
@@ -393,31 +357,31 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="dialog" :class="editable ? '' : 'dialog-disabled'">
-    <div class="mb-5" :class="editable ? '' : 'pb-4'">
+  <div class="dialog" :class="{ 'dialog-disabled': !editable }">
+    <div class="mb-5" :class="{ 'pb-4': !editable }">
       <h5 class="mb-1">
         {{ $t('intervention.dialog.title') }}
       </h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-html="$t('intervention.dialog.description')"></h6>
+      <h6>{{ $t('intervention.dialog.description') }}</h6>
     </div>
     <form
       id="interventionDialogForm"
       class="grid grid-cols-8 items-center gap-4"
-      :class="editable ? '' : 'gap-y-2'"
+      :class="{ 'gap-y-2': !editable }"
       @submit.prevent="save()"
     >
-      <div class="col-start-0 col-span-8 mt-2" :class="editable ? '' : 'pb-4'">
+      <div class="col-start-0 col-span-8 mt-2" :class="{ 'pb-4': !editable }">
         <h5>{{ $t('intervention.dialog.label.interventionTitle') }}*</h5>
         <div v-if="getError('title')" class="error col-span-8 mb-2">
           {{ getError('title') }}
         </div>
         <InputText
           v-model="title"
+          class="w-full"
           type="text"
           required
           :placeholder="$t('study.placeholder.titleInput')"
-          style="width: 100%"
           :disabled="!editable"
         ></InputText>
       </div>
@@ -426,9 +390,9 @@ Licensed under the Elastic License 2.0. */
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
+          class="w-full"
           :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
-          style="width: 100%"
           :disabled="!editable"
         ></Textarea>
       </div>
@@ -436,7 +400,7 @@ Licensed under the Elastic License 2.0. */
         class="section-group col-start-0 col-span-8 mt-4 grid grid-cols-2 items-end lg:grid-cols-3"
       >
         <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
-        <div class="col-span-3 col-start-3" :class="editable ? '' : 'text-end'">
+        <div class="col-span-3 col-start-3" :class="{ 'text-end': !editable }">
           <div class="col-span-3">
             <div v-if="!editable" class="inline font-bold">
               {{ $t('intervention.dialog.label.triggerType') }}
@@ -455,20 +419,27 @@ Licensed under the Elastic License 2.0. */
           </div>
         </div>
         <div class="col-span-6">
-          <div v-if="getError('trigger')" class="error col-span-8 mb-4">
-            {{ getError('trigger') }}
+          <div
+            v-if="getError(ListComponentsComponentTypeEnum.Trigger)"
+            class="error col-span-8 mb-4"
+          >
+            {{ getError(ListComponentsComponentTypeEnum.Trigger) }}
           </div>
         </div>
         <div
           v-if="triggerType"
-          class="section-content col-span-2 grid grid-cols-2 lg:col-span-3 lg:grid-cols-3"
+          class="section-content col-span-2 mt-2.5 grid grid-cols-2 rounded p-5 lg:col-span-3 lg:grid-cols-3"
         >
           <div
             v-if="triggerType"
             class="col-span-8"
             :class="[
-              [editable && !getError('trigger') ? 'mb-5' : 'mb-3'],
-              [triggerType ? '' : 'is-empty'],
+              [
+                editable && !getError(ListComponentsComponentTypeEnum.Trigger)
+                  ? 'mb-5'
+                  : 'mb-3',
+              ],
+              [!triggerType ? 'is-empty' : null],
             ]"
           >
             {{ getTriggerTypeDescription(triggerType) }}
@@ -488,7 +459,6 @@ Licensed under the Elastic License 2.0. */
                 }"
                 @on-property-change="updateProperty($event)"
                 @on-error="propertyError($event)"
-                @on-check-errors="checkPropertyErrors($event)"
               />
             </div>
           </div>
@@ -513,8 +483,11 @@ Licensed under the Elastic License 2.0. */
             </div>
             <div class="pi pi-chevron-down"></div
           ></Button>
-          <div v-if="getError('action')" class="error col-span-8 mb-4">
-            {{ getError('action') }}
+          <div
+            v-if="getError(ListComponentsComponentTypeEnum.Action)"
+            class="error col-span-8 mb-4"
+          >
+            {{ getError(ListComponentsComponentTypeEnum.Action) }}
           </div>
           <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true" />
         </div>
@@ -523,14 +496,14 @@ Licensed under the Elastic License 2.0. */
         </div>
         <div
           v-if="actionsArray.length"
-          class="section-content col-span-9 grid grid-cols-2 lg:grid-cols-3"
+          class="section-content col-span-9 mt-2.5 grid grid-cols-2 rounded p-5 lg:grid-cols-3"
         >
           <div v-if="actionsArray.length" class="col-span-9">
             <div
               v-for="(action, index) in actionsArray"
               :key="index"
               class="col-start-0 js-action col-span-9"
-              :class="index < actionsArray.length - 1 ? 'mb-4' : ''"
+              :class="{ 'mb-4': index < actionsArray.length - 1 }"
             >
               <hr v-if="index !== 0" class="my-4" />
 
@@ -561,7 +534,9 @@ Licensed under the Elastic License 2.0. */
                   v-if="editable"
                   :icon="'pi pi-trash'"
                   :disabled="!editable"
-                  @click="deleteAction(actionsArray[index].actionId, index)"
+                  @click="
+                    deleteAction(actionsArray[index].actionId as number, index)
+                  "
                 />
               </div>
             </div>
@@ -579,7 +554,7 @@ Licensed under the Elastic License 2.0. */
           option-label="label"
           option-value="value"
           :disabled="!editable"
-          :class="studyGroupId ? 'dropdown-has-value' : ''"
+          :class="{ 'dropdown-has-value': studyGroupId }"
           :placeholder="
             studyGroupId
               ? getLabelForChoiceValue(studyGroupId as number, groupStates)
@@ -617,7 +592,7 @@ Licensed under the Elastic License 2.0. */
   @import '../../styles/components/moreTable-dialogs.pcss';
 
   :deep(.dropdown-has-value .p-dropdown-label) {
-    color: var(--text-color) !important;
+    color: var(--text-color);
   }
 
   .dropdown-btn {
@@ -630,9 +605,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   .dialog #interventionDialogForm .section-group .section-content {
-    margin-top: 10px;
     border: 1px solid var(--bluegray-50);
-    padding: 20px;
-    border-radius: 4px;
   }
 </style>

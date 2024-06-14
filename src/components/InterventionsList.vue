@@ -15,6 +15,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
+    ListComponentsComponentTypeEnum,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -42,7 +43,6 @@ Licensed under the Elastic License 2.0. */
 
   const interventionList: Ref<Intervention[]> = ref([]);
   const dialog = useDialog();
-  //const interventionTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
     studyId: { type: Number, required: true },
@@ -56,23 +56,23 @@ Licensed under the Elastic License 2.0. */
     props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
-    (item) =>
+    (studyGroup) =>
       ({
-        label: item.title,
-        value: item.studyGroupId?.toString(),
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
       }) as MoreTableChoice,
   );
   groupStatuses.push({ label: 'Entire Study', value: null });
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
-      .listComponents('action')
+      .listComponents(ListComponentsComponentTypeEnum.Action)
       .then((response: any) => response.data);
   }
 
   async function getTriggerFactories(): Promise<ComponentFactory[]> {
     return componentsApi
-      .listComponents('trigger')
+      .listComponents(ListComponentsComponentTypeEnum.Trigger)
       .then((response: any) => response.data);
   }
 
@@ -211,21 +211,13 @@ Licensed under the Elastic License 2.0. */
           true,
         );
       case 'edit':
-        return openEditIntervetion(action.row.interventionId);
+        return openEditIntervention(action.row.interventionId);
       default:
         console.error('no handler for action', action);
     }
   }
 
   async function changeValue(intervention: Intervention) {
-    //do change immediately (ux)
-    const i = interventionList.value.findIndex(
-      (i: Intervention) => i.interventionId === intervention.interventionId,
-    );
-    if (i > -1) {
-      interventionList.value[i] = intervention;
-    }
-
     await interventionsApi
       .updateIntervention(
         props.studyId,
@@ -236,7 +228,7 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update intervention " + intervention.title,
+          `Couldn't update intervention ${intervention.title}`,
         ),
       );
   }
@@ -251,23 +243,23 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete intervention ' + requestIntervention.interventionId,
+          `Cannot delete intervention ${requestIntervention.interventionId}`,
         ),
       );
   }
 
   async function createIntervention(object: any) {
-    const interventionId: Ref<number | undefined> = ref(
-      await addIntervention(object.intervention),
+    const interventionId: number | undefined = await addIntervention(
+      object.intervention,
     );
 
-    if (interventionId.value) {
-      await updateTrigger(interventionId.value as number, object.trigger);
+    if (interventionId) {
+      await updateTrigger(interventionId, object.trigger);
       object.actions.forEach((action: Action) => {
-        createAction(interventionId.value as number, action);
+        createAction(interventionId, action);
       });
 
-      await listInterventions();
+      listInterventions();
     }
   }
 
@@ -285,7 +277,7 @@ Licensed under the Elastic License 2.0. */
       .createAction(props.studyId, interventionId, action)
       .then(listInterventions)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create action on: ' + interventionId),
+        handleIndividualError(e, `Cannot create action on: ${interventionId}`),
       );
   }
 
@@ -297,7 +289,7 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .updateAction(props.studyId, interventionId, actionId, action)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot update action: ' + action.actionId),
+        handleIndividualError(e, `Cannot update action: ${action.actionId}`),
       );
   }
 
@@ -305,7 +297,7 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .deleteAction(props.studyId, interventionId, actionId)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot delete action: ' + actionId),
+        handleIndividualError(e, `Cannot delete action: ${actionId}`),
       );
   }
 
@@ -313,7 +305,7 @@ Licensed under the Elastic License 2.0. */
     await interventionsApi
       .updateTrigger(props.studyId, interventionId, trigger)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create trigger on: ' + interventionId),
+        handleIndividualError(e, `Cannot create trigger on: ${interventionId}`),
       );
   }
 
@@ -346,30 +338,22 @@ Licensed under the Elastic License 2.0. */
   }
 
   async function updateIntervention(intervention: Intervention) {
-    const i = interventionList.value.findIndex(
-      (v) => v.interventionId === intervention.interventionId,
-    );
-    if (i > -1) {
-      interventionList.value[i] = intervention;
-
-      await interventionsApi
-        .updateIntervention(
-          props.studyId,
-          intervention.interventionId as number,
-          intervention,
-        )
-        .then(listInterventions)
-        .catch((e: AxiosError) =>
-          handleIndividualError(
-            e,
-            'Cannot update intervention: ' + intervention.interventionId,
-          ),
-        );
-      return i;
-    }
+    await interventionsApi
+      .updateIntervention(
+        props.studyId,
+        intervention.interventionId as number,
+        intervention,
+      )
+      .then(listInterventions)
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          `Cannot update intervention: ${intervention.interventionId}`,
+        ),
+      );
   }
 
-  function openEditIntervetion(interventionId: number) {
+  function openEditIntervention(interventionId: number) {
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId,
     );
@@ -460,7 +444,7 @@ Licensed under the Elastic License 2.0. */
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
-      @onselect="openEditIntervetion($event)"
+      @onselect="openEditIntervention($event)"
       @onaction="execute($event)"
       @onchange="changeValue($event)"
     />

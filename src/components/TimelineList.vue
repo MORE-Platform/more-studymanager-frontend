@@ -17,6 +17,7 @@ Licensed under the Elastic License 2.0. */
   import {
     ComponentFactory,
     InterventionTimelineEvent,
+    ListComponentsComponentTypeEnum,
     ObservationTimelineEvent,
     Participant,
     StudyGroup,
@@ -73,7 +74,7 @@ Licensed under the Elastic License 2.0. */
     selectedDate = studyStartDate;
   }
 
-  const participantsList: Ref<Participant[]> = ref([]);
+  let participantsList: Participant[] = [];
   const observationAndInterventionOptions: Ref<groupOption[]> = ref([]);
   const participantOptions: Ref<dropdownOption[]> = ref([
     {
@@ -91,10 +92,10 @@ Licensed under the Elastic License 2.0. */
 
   studyGroupOptions.value.push(
     ...props.studyGroups.map(
-      (item) =>
+      (studyGroup) =>
         ({
-          label: item.title,
-          value: item.studyGroupId?.toString(),
+          label: studyGroup.title,
+          value: studyGroup.studyGroupId?.toString(),
         }) as dropdownOption,
     ),
   );
@@ -213,20 +214,20 @@ Licensed under the Elastic License 2.0. */
 
     if (e.value) {
       filteredParticipants.push(
-        ...participantsList.value.filter(
+        ...participantsList.filter(
           (participant) => participant.studyGroupId === parseInt(e.value),
         ),
       );
     } else {
-      filteredParticipants.push(...participantsList.value);
+      filteredParticipants.push(...participantsList);
     }
 
     filteredOptions.push(
       ...filteredParticipants.map(
-        (item) =>
+        (fp) =>
           ({
-            label: item.alias,
-            value: item.participantId?.toString(),
+            label: fp.alias,
+            value: fp.participantId?.toString(),
           }) as dropdownOption,
       ),
     );
@@ -266,8 +267,8 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getStudyGroupIdByParticipantId(id: number): string | undefined {
-    const foundParticipant = participantsList.value.find(
-      (participant) => participant.participantId === id,
+    const foundParticipant = participantsList.find(
+      (p) => p.participantId === id,
     );
 
     return foundParticipant?.studyGroupId?.toString();
@@ -358,15 +359,15 @@ Licensed under the Elastic License 2.0. */
   }
 
   async function listParticipant(): Promise<void> {
-    participantsList.value = await participantsApi
+    participantsList = await participantsApi
       .listParticipants(props.studyId)
       .then((response) => {
         participantOptions.value.push(
           ...response.data.map(
-            (item) =>
+            (p) =>
               ({
-                label: item.alias,
-                value: item.participantId?.toString(),
+                label: p.alias,
+                value: p.participantId?.toString(),
               }) as dropdownOption,
           ),
         );
@@ -375,7 +376,7 @@ Licensed under the Elastic License 2.0. */
       })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participants');
-        return participantsList.value;
+        return participantsList;
       });
   }
 
@@ -385,7 +386,7 @@ Licensed under the Elastic License 2.0. */
       .then((response: any) => response.data);
 
     const interventionTypes = await componentsApi
-      .listComponents('trigger')
+      .listComponents(ListComponentsComponentTypeEnum.Trigger)
       .then((response: any) => response.data);
 
     return [...observationTypes, ...interventionTypes];

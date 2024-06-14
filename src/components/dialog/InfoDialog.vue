@@ -16,7 +16,7 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="info-dialog">
+  <div class="text-base">
     <div class="mb-8">{{ message }}</div>
     <div class="flex justify-end">
       <Button type="button" class="btn-gray" @click="closeDialog">{{
@@ -25,13 +25,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .info-dialog {
-    font-size: 1rem;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-</style>

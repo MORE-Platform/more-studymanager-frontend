@@ -33,14 +33,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .data-header-textblock {
-    h3 {
-      font-weight: 600;
-    }
-    h4 {
-      font-size: 1rem;
-    }
-  }
-</style>

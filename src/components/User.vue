@@ -11,8 +11,6 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div>
     <h2 v-if="userStore.userName">{{ userStore.userName }}</h2>
-    <h3 v-if="userStore.userInstitution">
-      {{ userStore.userInstitution }}
-    </h3>
+    <h3 v-if="userStore.userInstitution">{{ userStore.userInstitution }}</h3>
   </div>
 </template>

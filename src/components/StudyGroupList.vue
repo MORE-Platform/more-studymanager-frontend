@@ -64,7 +64,6 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: t('global.labels.id'), sortable: true },
     {
@@ -151,6 +150,8 @@ Licensed under the Elastic License 2.0. */
       visible: () => getEditAccess(),
     },
   ];
+
+  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
   function getEditAccess(): boolean {
     return (
