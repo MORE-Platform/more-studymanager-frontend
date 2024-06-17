@@ -18,9 +18,7 @@ Licensed under the Elastic License 2.0. */
   const dialogRef: any = inject('dialogRef');
   const collaborator: MoreTableCollaboratorItem =
     dialogRef.value.data?.collaborator || {};
-  const roleList: MoreTableChoice[] = dialogRef.value.data?.roleList || [
-    { label: t('studyCollaborator.dialog.emptyDropdownValues'), value: null },
-  ];
+  const roleList: MoreTableChoice[] = dialogRef.value.data?.roleList;
   const roleValue: Ref<MoreTableChoice | undefined> = ref();
   const warning: Ref<string | undefined> = ref(undefined);
 
@@ -55,14 +53,14 @@ Licensed under the Elastic License 2.0. */
 
     <h6 class="mb-2">{{ $t('studyCollaborator.dialog.chooseRoles') }}</h6>
     <div v-if="warning" class="error mb-3">{{ warning }}</div>
-    <div v-for="role in roleList" :key="role.value">
+    <div v-for="role in roleList" :key="role.value!">
       <RadioButton
         v-model="roleValue"
         name="roles"
-        :input-id="role.value"
+        :input-id="role.value!"
         :value="role"
       ></RadioButton>
-      <label :for="role.value" class="ml-2">{{ role.label }}</label>
+      <label :for="role.value!" class="ml-2">{{ role.label }}</label>
     </div>
 
     <div class="buttons mt-1 justify-end text-right">

@@ -299,7 +299,6 @@
       "addRole": "Please choose at least one role to continue.",
       "addCollaboratorInfo": "will be added to your collaborator list. ",
       "chooseRoles": "Choose your collaborators roles:",
-      "emptyDropdownValues": "Currently there are no roles available.",
       "header": {
         "delete": "Delete study collaborator",
         "add": "Add collaborator"
