@@ -300,7 +300,6 @@
       "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
       "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
       "chooseRoles": "Wählen Sie die Rolle(n) für Ihren Studien-Mitarbeiter: ",
-      "emptyDropdownValues": "Zur Zeit sind keine Rollen verfügbar.",
       "assignedRoles": "Vergebene Rolle(n)",
       "header": {
         "delete": "Studien-Mitarbeiter löschen",
