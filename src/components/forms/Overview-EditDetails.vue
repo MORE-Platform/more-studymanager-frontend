@@ -15,7 +15,6 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
-  import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
 
@@ -132,33 +131,35 @@ Licensed under the Elastic License 2.0. */
     <div class="mb-8 flex justify-between">
       <div class="grid grid-cols-3 gap-x-6 pr-3 2xl:grid-cols-5">
         <div class="order-1 grid content-center 2xl:order-1">
-          <span class="font-bold">{{ $t('study.props.plannedStart') }}: </span
-          >{{ dayjs(study.plannedStart).format('DD/MM/YYYY') }}
+          <span class="font-bold">{{ $t('study.props.plannedStart') }}:</span>
+          <template v-if="study.plannedStart">
+            {{ $d(new Date(study.plannedStart), 'short') }}
+          </template>
         </div>
         <div class="order-4 grid content-center 2xl:order-2">
-          <span class="font-bold">{{ $t('study.props.actualStart') }}: </span>
-          <span v-if="study.start">{{
-            dayjs(study.start).format('DD/MM/YYYY')
-          }}</span
-          ><span v-else>-</span>
+          <span class="font-bold">{{ $t('study.props.actualStart') }}:</span>
+          <template v-if="study.start">
+            {{ $d(new Date(study.start), 'short') }}
+          </template>
+          <span v-else>-</span>
         </div>
         <div class="order-2 grid content-center 2xl:order-3">
-          <span class="font-bold">{{ $t('study.props.plannedEnd') }}: </span
-          >{{ dayjs(study.plannedEnd).format('DD/MM/YYYY') }}
+          <span class="font-bold">{{ $t('study.props.plannedEnd') }}:</span>
+          <template v-if="study.plannedEnd">
+            {{ $d(new Date(study.plannedEnd), 'short') }}
+          </template>
         </div>
         <div class="order-5 grid content-center 2xl:order-4">
-          <span class="font-bold">{{ $t('study.props.actualEnd') }}: </span>
-          <span v-if="study.end">{{
-            dayjs(study.end).format('DD/MM/YYYY')
-          }}</span
+          <span class="font-bold">{{ $t('study.props.actualEnd') }}:</span>
+          <template v-if="study.end">{{
+            $d(new Date(study.end), 'short')
+          }}</template
           ><span v-else>-</span>
         </div>
         <div class="order-3 grid content-center 2xl:order-5">
-          <span class="font-bold">{{ $t('study.props.duration') }}: </span>
+          <span class="font-bold">{{ $t('study.props.duration') }}:</span>
           <span v-if="study.duration?.value && study.duration.unit">{{
-            `${study.duration.value} ${t(
-              `scheduler.preview.unit.${study.duration.unit}`,
-            )}`
+            `${t(`scheduler.preview.value.${study.duration.unit}`, study.duration.value)}`
           }}</span
           ><span v-else>-</span>
         </div>

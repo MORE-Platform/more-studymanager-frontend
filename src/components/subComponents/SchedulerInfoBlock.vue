@@ -13,11 +13,10 @@ Licensed under the Elastic License 2.0. */
   } from '../../generated-sources/openapi';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
-  import dayjs from 'dayjs';
   import { isObjectEmpty } from '../../utils/commonUtils';
   import { ScheduleType } from '../../models/Scheduler';
 
-  const { t } = useI18n();
+  const { t, d } = useI18n();
 
   const props = defineProps({
     scheduler: {
@@ -57,16 +56,12 @@ Licensed under the Elastic License 2.0. */
         switch (prop) {
           case 'dtstart': {
             return schedule.dtstart
-              ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart,
-                ).format('HH:mm')}`
+              ? `${d(new Date(schedule.dtstart), 'long')}`
               : undefined;
           }
           case 'dtend':
             return schedule.dtend
-              ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtend,
-                ).format('HH:mm')}`
+              ? `${d(new Date(schedule.dtend), 'long')}`
               : undefined;
           default:
             return undefined;
@@ -138,9 +133,7 @@ Licensed under the Elastic License 2.0. */
             }
             case 'repetitionEnd': {
               if (schedule.rrule?.until) {
-                return `${t('scheduler.preview.title.on')} ${dayjs(
-                  schedule.rrule.until,
-                ).format('DD/MM/YYYY')}`;
+                return `${t('scheduler.preview.title.on')} ${d(new Date(schedule.rrule.until), 'short')}`;
               } else {
                 const repetitionCount =
                   schedule.rrule?.byday &&

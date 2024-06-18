@@ -90,7 +90,7 @@ Licensed under the Elastic License 2.0. */
     },
     {
       field: 'durationUnit',
-      header: t(''),
+      header: '',
       type: MoreTableFieldType.choice,
       editable: { values: durationUnitOptions },
       placeholder: t('studyGroup.groupList.placeholder.durationUnit'),

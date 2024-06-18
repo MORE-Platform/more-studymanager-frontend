@@ -410,8 +410,8 @@ Licensed under the Elastic License 2.0. */
           :min-date="new Date(studyStore.study.plannedStart as string)"
           :max-date="new Date(studyStore.study.plannedEnd as string)"
           autocomplete="off"
-          date-format="dd/mm/yy"
-          placeholder="dd/mm/yyyy"
+          :date-format="$t('dateFormat')"
+          :placeholder="$t('dateFormat')"
           @date-select="listTimeline"
         />
       </div>

@@ -28,7 +28,7 @@ Licensed under the Elastic License 2.0. */
           }),
         },
         props: {
-          header: 'Welcome to More',
+          header: t('welcomeToMore'),
           style: {
             width: '50vw',
           },
