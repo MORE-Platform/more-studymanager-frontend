@@ -79,7 +79,7 @@ Licensed under the Elastic License 2.0. */
       :options="observationList"
       option-label="title"
       class="w-full"
-      :aria-describedby="property.id + '-help'"
+      :aria-describedby="`${property.id}-help`"
       :disabled="!editable"
       :placeholder="$t(props.property.description)"
     />

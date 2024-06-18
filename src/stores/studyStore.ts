@@ -82,7 +82,11 @@ export const useStudyStore = defineStore('study', () => {
                 }
               })
               .catch((e: AxiosError) => {
-                alert('Could not update study status');
+                alert(
+                  `Could not update study status: ${
+                    (e.response?.data as any)?.message
+                  }`,
+                );
                 handleIndividualError(
                   e,
                   `Could not update study status ${study.value.studyId}`,
@@ -103,7 +107,11 @@ export const useStudyStore = defineStore('study', () => {
             study.value.status = status;
           })
           .catch((e: AxiosError) => {
-            alert('Could not update study status');
+            alert(
+              `Could not update study status: ${
+                (e.response?.data as any)?.message
+              }`,
+            );
             handleIndividualError(
               e,
               `Could not update study status ${study.value.studyId}`,
@@ -184,7 +192,7 @@ export const useStudyStore = defineStore('study', () => {
     await importExportApi
       .exportStudy(studyId)
       .then((response: AxiosResponse) => {
-        const filename: string = 'study_config_' + studyId + '.json';
+        const filename: string = `study_config_${studyId}.json`;
         downloadJSON(filename, response.data);
       })
       .catch((e: AxiosError) => {
