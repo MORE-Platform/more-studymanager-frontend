@@ -208,8 +208,8 @@ Licensed under the Elastic License 2.0. */
               ? new Date(study.plannedStart)
               : new Date()
           "
-          placeholder="dd/mm/yyyy"
-          date-format="dd/mm/yy"
+          :placeholder="$t('dateFormat')"
+          :date-format="$t('dateFormat')"
           autocomplete="off"
         />
       </div>
@@ -221,8 +221,8 @@ Licensed under the Elastic License 2.0. */
           v-model="end"
           class="w-full"
           :name="'end'"
-          placeholder="dd/mm/yyyy"
-          date-format="dd/mm/yy"
+          :placeholder="$t('dateFormat')"
+          :date-format="$t('dateFormat')"
           autocomplete="off"
           :min-date="start"
         />

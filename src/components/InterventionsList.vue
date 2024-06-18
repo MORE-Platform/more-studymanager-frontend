@@ -62,7 +62,10 @@ Licensed under the Elastic License 2.0. */
         value: studyGroup.studyGroupId?.toString(),
       }) as MoreTableChoice,
   );
-  groupStatuses.push({ label: 'Entire Study', value: null });
+  groupStatuses.push({
+    label: t('global.placeholder.entireStudy'),
+    value: null,
+  });
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi

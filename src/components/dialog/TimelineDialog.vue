@@ -1,18 +1,13 @@
 <script setup lang="ts">
   import { inject } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import dayjs from 'dayjs';
   import { Event } from 'vue-cal';
-  const { t } = useI18n();
+  const { t, d } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
   const event: Event = dialogRef.value.data.event;
-  const startDate = `${t('global.labels.start')}: ${dayjs(event.start).format(
-    'DD/MM/YYYY',
-  )}, ${dayjs(event.start).format('HH:mm')}`;
-  const endDate = `${t('global.labels.end')}: ${dayjs(event.end).format(
-    'DD/MM/YYYY',
-  )}, ${dayjs(event.end).format('HH:mm')}`;
+  const startDate = `${t('global.labels.start')}: ${d(new Date(event.start), 'long')}`;
+  const endDate = `${t('global.labels.end')}: ${d(new Date(event.end), 'long')}`;
   const scheduleType = event.cScheduleType;
   const typeTranslation = event.cTypeTranslation;
   const purpose = event.cPurpose;

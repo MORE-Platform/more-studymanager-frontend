@@ -469,7 +469,7 @@ Licensed under the Elastic License 2.0. */
         option-label="label"
         option-value="value"
         icon="pi pi-plus"
-        placeholder="enter"
+        :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
         :disabled="!editable"
         @change="changeNextGroupCondition()"
       />

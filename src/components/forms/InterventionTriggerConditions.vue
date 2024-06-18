@@ -45,22 +45,24 @@ Licensed under the Elastic License 2.0. */
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
       field: 'observationId',
-      header: 'Observation',
+      header: t('observation.singular'),
       editable: true,
     },
     {
       field: 'observationProperty',
-      header: 'Observation Property',
+      header: t(
+        'intervention.dialog.label.triggerConditionObservationProperty',
+      ),
       editable: true,
     },
     {
       field: 'operator',
-      header: 'Operator',
+      header: t('intervention.dialog.label.triggerConditionOperator'),
       editable: true,
     },
     {
       field: 'propertyValue',
-      header: 'Property Value',
+      header: t('intervention.dialog.label.triggerConditionPropertyValue'),
       editable: true,
     },
   ]);
