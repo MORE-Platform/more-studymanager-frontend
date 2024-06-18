@@ -27,7 +27,6 @@ Licensed under the Elastic License 2.0. */
   import MultiSelect from 'primevue/multiselect';
   import { useConfirm } from 'primevue/useconfirm';
   import FileUpload from 'primevue/fileupload';
-  import dayjs from 'dayjs';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import {
@@ -650,11 +649,11 @@ Licensed under the Elastic License 2.0. */
           />
           <Calendar
             v-if="column.type === MoreTableFieldType.calendar"
-            v-model="data['__internalValue_' + field]"
+            v-model="data[`__internalValue_${field}`]"
             style="width: 100%"
             input-id="dateformat"
             autocomplete="off"
-            date-format="dd/mm/yy"
+            :date-format="$t('dateFormat')"
           />
           <div v-if="column.type === MoreTableFieldType.choice">
             <Dropdown
@@ -698,7 +697,7 @@ Licensed under the Elastic License 2.0. */
             :placeholder="
               column.placeholder
                 ? column.placeholder
-                : $t('global.labels.chooseDropdownOptionDefault')
+                : $t('global.placeholder.chooseDropdownOptionDefault')
             "
             :show-toggle-all="false"
             class="z-top"
@@ -739,14 +738,14 @@ Licensed under the Elastic License 2.0. */
             {{ getNestedField(data, field) }}
           </div>
           <div v-if="column.type === MoreTableFieldType.nestedDatetime">
-            {{ dayjs(getNestedField(data, field)).format('DD/MM/YYYY, HH:mm') }}
+            {{ $d(new Date(getNestedField(data, field)), 'long') }}
           </div>
           <div
             v-if="data[field] === null"
             v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
             class="placeholder"
           >
-            {{ column.placeholder || $t('global.labels.no-value') }}
+            {{ column.placeholder || $t('global.labels.noValue') }}
           </div>
           <div
             v-else
@@ -783,12 +782,12 @@ Licensed under the Elastic License 2.0. */
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
-              {{ dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY') }}
+              {{ $d(new Date(data[`__internalValue_${field}`]), 'short') }}
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
               <span v-if="!data[field]"> - </span>
               <span v-else-if="data[field] && data[field] !== '-'">
-                {{ dayjs(data[field]).format('DD/MM/YYYY, HH:mm') }}
+                {{ $d(new Date(data[field]), 'long') }}
               </span>
               <span v-else>
                 {{ data[field] }}

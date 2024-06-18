@@ -44,12 +44,12 @@ Licensed under the Elastic License 2.0. */
       v-model="property.value"
       type="text"
       class="w-full"
-      :aria-describedby="property.id + '-help'"
+      :aria-describedby="`${property.id}-help`"
       :disabled="!editable"
       :placeholder="
         props.property.description
           ? $t(props.property.description)
-          : 'Enter text value'
+          : $t('global.placeholder.enterTextValue')
       "
     />
   </div>

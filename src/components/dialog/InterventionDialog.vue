@@ -40,7 +40,8 @@ Licensed under the Elastic License 2.0. */
   const groupStates: MoreTableChoice[] =
     dialogRef.value.data?.groupStates || [];
   const groupPlaceholder =
-    dialogRef.value.data?.groupPlaceholder || 'Entire Study';
+    dialogRef.value.data?.groupPlaceholder ||
+    t('global.placeholder.entireStudy');
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
 
@@ -284,7 +285,7 @@ Licensed under the Elastic License 2.0. */
     if (propInputError) {
       errors.push({
         label: 'propInputError',
-        value: 'A triggerprop has an error.',
+        value: t('intervention.error.triggerProp'),
       });
     }
   }

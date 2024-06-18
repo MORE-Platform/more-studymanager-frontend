@@ -469,11 +469,7 @@
         <div class="col-span-2">
           <div v-if="totalDays">
             {{
-              `${$t(
-                'scheduler.dialog.relativeSchedule.rrrule.ends',
-              )} ${totalDays} ${$t(
-                'scheduler.dialog.relativeSchedule.rrrule.endsAfter',
-              )} `
+              `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)} `
             }}
           </div>
         </div>

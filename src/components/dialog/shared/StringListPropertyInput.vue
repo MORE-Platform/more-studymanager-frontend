@@ -55,7 +55,7 @@ Licensed under the Elastic License 2.0. */
         :value="property.value?.[index - 1]"
         type="text"
         :disabled="!editable"
-        :placeholder="t('global.labels.option') + ' ' + index"
+        :placeholder="t('global.labels.option', { value: index })"
         style="display: block"
         @keyup="update($event, index - 1)"
       />

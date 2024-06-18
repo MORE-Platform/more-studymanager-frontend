@@ -274,8 +274,8 @@ Licensed under the Elastic License 2.0. */
 
       <Calendar
         v-model="calendarStart"
-        date-format="dd/mm/yy"
-        :placeholder="'dd/mm/yyyy'"
+        :date-format="$t('dateFormat')"
+        :placeholder="$t('dateFormat')"
         :min-date="new Date(studyStore.study.plannedStart as string)"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :manual-input="false"
@@ -289,7 +289,7 @@ Licensed under the Elastic License 2.0. */
         :min-date="new Date(studyStore.study.plannedStart as string)"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :manual-input="false"
-        :placeholder="'hh:mm'"
+        placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
         time-only
       />
@@ -307,8 +307,8 @@ Licensed under the Elastic License 2.0. */
         :min-date="calendarStart"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :manual-input="false"
-        date-format="dd/mm/yy"
-        :placeholder="'dd/mm/yyyy'"
+        :date-format="$t('dateFormat')"
+        :placeholder="$t('dateFormat')"
         autocomplete="off"
         class="start-date col-span-2 col-start-2 w-full"
         :class="{
@@ -325,7 +325,7 @@ Licensed under the Elastic License 2.0. */
         :manual-input="false"
         :min-date="new Date(studyStore.study.plannedStart as string)"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
-        :placeholder="'hh:mm'"
+        placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
         :class="{
           'calendar-warning': getErrorOrWarning(

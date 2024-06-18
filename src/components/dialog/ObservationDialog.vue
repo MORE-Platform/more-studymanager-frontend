@@ -132,7 +132,10 @@ Licensed under the Elastic License 2.0. */
           }
         });
     } catch (e: any) {
-      jsonError.value = `${t('observation.error.noValidField')} '${e.key}': ${e.message}`;
+      jsonError.value = t('observation.error.noValidField', {
+        key: e.key,
+        message: e.message,
+      });
     }
   }
 

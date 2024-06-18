@@ -37,7 +37,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
     let count = studyGroups.value.length;
     while (title === undefined) {
       count += 1;
-      const _title = `${i18n.global.t('study.props.studyGroup')} ${count}`;
+      const _title = i18n.global.t('study.props.studyGroup', { size: count });
       if (!studyGroups.value.find((g) => g.title === _title)) {
         title = _title;
       }

@@ -34,13 +34,12 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
-  import dayjs from 'dayjs';
   import { ScheduleType } from '../models/Scheduler';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
-  const { t } = useI18n();
+  const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
   const observationList: Ref<Observation[]> = ref([]);
@@ -290,15 +289,11 @@ Licensed under the Elastic License 2.0. */
         switch (prop) {
           case 'dtstart':
             return schedule.dtstart
-              ? `${dayjs(schedule.dtstart).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtstart,
-                ).format('HH:mm')}`
+              ? `${d(new Date(schedule.dtstart), 'long')}`
               : undefined;
           case 'dtend':
             return schedule.dtend
-              ? `${dayjs(schedule.dtend).format('DD/MM/YYYY')}, ${dayjs(
-                  schedule.dtend,
-                ).format('HH:mm')}`
+              ? `${d(new Date(schedule.dtend), 'long')}`
               : undefined;
           default:
             return undefined;
