@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
         >{{ $t(property.name) }}<span v-if="property.required">*</span></label
       >
     </h6>
-    <div v-if="props.property.description" :id="property.id + '-help'">
+    <div v-if="props.property.description" :id="`${property.id}-help`">
       {{ $t(props.property.description) }}
     </div>
 

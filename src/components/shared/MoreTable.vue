@@ -324,9 +324,9 @@ Licensed under the Elastic License 2.0. */
   function clean(row: any) {
     props.columns.forEach((column) => {
       if (column.type === MoreTableFieldType.calendar) {
-        const date = row['__internalValue_' + column.field];
+        const date = row[`__internalValue_${column.field}`];
         row[column.field] = dateToDateString(date);
-        delete row['__internalValue_' + column.field];
+        delete row[`__internalValue_${column.field}`];
       }
     });
     return row;
@@ -628,7 +628,7 @@ Licensed under the Elastic License 2.0. */
         :filter="tableFilter"
         :show-filter-match-modes="filterMatchMode(column)"
         :header-style="
-          column.columnWidth ? 'width: ' + column.columnWidth : undefined
+          column.columnWidth ? `width: ${column.columnWidth}` : undefined
         "
       >
         <template v-if="column.editable" #editor="{ data, field }">
@@ -774,7 +774,7 @@ Licensed under the Elastic License 2.0. */
               <span v-else>{{ data[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.statusString">
-              {{ $t('study.statusStrings.' + data[field]) }}
+              {{ $t(`study.statusStrings.${data[field]}`) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(

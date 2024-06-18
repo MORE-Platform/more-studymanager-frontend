@@ -128,7 +128,7 @@ Licensed under the Elastic License 2.0. */
               confirmMsg: t('studyCollaborator.dialog.deleteMsg.confirm'),
               row: row,
               elTitle: row.institution
-                ? row.name + ' (' + row.institution + ')'
+                ? `${row.name} (${row.institution})`
                 : row.name,
               elInfoTitle: t('studyCollaborator.dialog.assignedRoles'),
               elInfoDesc: getRolesString(row.roles),
