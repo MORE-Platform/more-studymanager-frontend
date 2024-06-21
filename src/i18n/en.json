@@ -1,7 +1,6 @@
 {
   "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
   "welcomeToMore": "Welcome to More",
-  "dateFormat": "dd/mm/yy",
   "global": {
     "labels": {
       "close": "Close",
@@ -166,7 +165,7 @@
       },
       "labels": {
         "changeStatus": "Change study status",
-        "changeTo": "Change status from "
+        "changeFrom": "Change status from"
       }
     },
     "statusStrings": {
@@ -234,7 +233,7 @@
       "description": {
         "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
         "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
-        "durationExample": "Study Start; 01/07/2023 - Study End: 31/12/2023 (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
+        "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
         "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",
@@ -950,12 +949,12 @@
           "titles": {
             "singleDay": "Single data capture",
             "series": "Repeat single day schedule for 10 days",
-            "fullTimespan": "Continuous observation from 27.07.2024 - 27.07.2024"
+            "fullTimespan": "Continuous data collection over the entire two-month period"
           },
           "values": {
-            "singleDay": "Check 'One day observation' &bull; Timeframe: 27/07/2024, 14:00 - 16:00",
-            "series": "Check 'One day observation' &bull; Timeframe: 27/07/2024, 14:00 - 16:00<br>Repeat: Daily - After 10 days",
-            "fullTimespan": "Uncheck 'One day observation' &bull; Start: 27/07/2024, 08:00 - End: 27/09/2024, 20:00<br>Optional: Check 'Entire day'"
+            "singleDay": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00",
+            "series": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00<br>Repeat: Daily - After 10 days",
+            "fullTimespan": "Uncheck 'One day observation' &bull; Start: {egStartDate}, 08:00 - End: {egEndDate}, 20:00<br>Optional: Check 'Entire day'"
           }
         }
       }
@@ -995,7 +994,7 @@
         "startValue": "Starts on",
         "endValue": "Ends on",
         "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
-        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on 01/12/2023, study start is set to Day 2. They start on 02/12/2023.)",
+        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Ends {days} day after individual study start | Ends {days} day after individual study start | Ends {days} days after individual study start",
           "repeated": "Repeated",

@@ -196,7 +196,12 @@ Licensed under the Elastic License 2.0. */
       v-if="scheduler.type === ScheduleType.RelativeEvent"
       class="col-span-8 mb-3"
     >
-      {{ $t(`scheduler.dialog.relativeSchedule.dayExplanation`) }}
+      {{
+        $t('scheduler.dialog.relativeSchedule.dayExplanation', {
+          egLoginDate: $d(new Date('2023-12-01'), 'short'),
+          egStartDate: $d(new Date('2023-12-02'), 'short'),
+        })
+      }}
     </div>
 
     <div

@@ -14,7 +14,9 @@ Licensed under the Elastic License 2.0. */
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import AbsoluteSchedulerRepetition from '../subComponents/AbsoluteSchedulerRepetition.vue';
   import { ScheduleType } from '../../models/Scheduler';
+  import { useGlobalStore } from '../../stores/globalStore';
 
+  const dateFormat = useGlobalStore().getDateFormat;
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
 
@@ -227,7 +229,11 @@ Licensed under the Elastic License 2.0. */
             <div>
               <!-- eslint-disable vue/no-v-html -->
               <span
-                v-html="$t('scheduler.labels.event.example.values.singleDay')"
+                v-html="
+                  $t('scheduler.labels.event.example.values.singleDay', {
+                    egDate: $d(new Date('2024-07-27'), 'short'),
+                  })
+                "
               />
             </div>
           </div>
@@ -238,7 +244,11 @@ Licensed under the Elastic License 2.0. */
             <div>
               <!-- eslint-disable vue/no-v-html -->
               <span
-                v-html="$t('scheduler.labels.event.example.values.series')"
+                v-html="
+                  $t('scheduler.labels.event.example.values.series', {
+                    egDate: $d(new Date('2024-07-27'), 'short'),
+                  })
+                "
               />
             </div>
           </div>
@@ -250,7 +260,10 @@ Licensed under the Elastic License 2.0. */
               <!-- eslint-disable vue/no-v-html -->
               <span
                 v-html="
-                  $t('scheduler.labels.event.example.values.fullTimespan')
+                  $t('scheduler.labels.event.example.values.fullTimespan', {
+                    egStartDate: $d(new Date('2024-07-27'), 'short'),
+                    egEndDate: $d(new Date('2024-09-27'), 'short'),
+                  })
                 "
               />
             </div>
@@ -274,8 +287,8 @@ Licensed under the Elastic License 2.0. */
 
       <Calendar
         v-model="calendarStart"
-        :date-format="$t('dateFormat')"
-        :placeholder="$t('dateFormat')"
+        :date-format="dateFormat"
+        :placeholder="dateFormat"
         :min-date="new Date(studyStore.study.plannedStart as string)"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :manual-input="false"
@@ -307,8 +320,8 @@ Licensed under the Elastic License 2.0. */
         :min-date="calendarStart"
         :max-date="new Date(studyStore.study.plannedEnd as string)"
         :manual-input="false"
-        :date-format="$t('dateFormat')"
-        :placeholder="$t('dateFormat')"
+        :date-format="dateFormat"
+        :placeholder="dateFormat"
         autocomplete="off"
         class="start-date col-span-2 col-start-2 w-full"
         :class="{

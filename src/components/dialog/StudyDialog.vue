@@ -19,6 +19,9 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import Dropdown from 'primevue/dropdown';
+  import { useGlobalStore } from '../../stores/globalStore';
+
+  const dateFormat = useGlobalStore().getDateFormat;
 
   const dialogRef: any = inject('dialogRef');
   const study: Study = dialogRef.value.data?.study || {};
@@ -208,8 +211,8 @@ Licensed under the Elastic License 2.0. */
               ? new Date(study.plannedStart)
               : new Date()
           "
-          :placeholder="$t('dateFormat')"
-          :date-format="$t('dateFormat')"
+          :placeholder="dateFormat"
+          :date-format="dateFormat"
           autocomplete="off"
         />
       </div>
@@ -221,8 +224,8 @@ Licensed under the Elastic License 2.0. */
           v-model="end"
           class="w-full"
           :name="'end'"
-          :placeholder="$t('dateFormat')"
-          :date-format="$t('dateFormat')"
+          :placeholder="dateFormat"
+          :date-format="dateFormat"
           autocomplete="off"
           :min-date="start"
         />
@@ -243,7 +246,12 @@ Licensed under the Elastic License 2.0. */
             {{ $t('study.dialog.label.durationExample') }}
           </div>
           <div class="mt-0.5">
-            {{ $t('study.dialog.description.durationExample') }}
+            {{
+              $t('study.dialog.description.durationExample', {
+                egStartDate: $d(new Date('2023-07-01'), 'short'),
+                egEndDate: $d(new Date('2023-12-31'), 'short'),
+              })
+            }}
           </div>
         </div>
         <div class="grid grid-cols-6 items-center gap-4">
