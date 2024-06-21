@@ -1,7 +1,6 @@
 {
   "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie, indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
   "welcomeToMore": "Willkommen bei More",
-  "dateFormat": "dd.mm.yy",
   "global": {
     "labels": {
       "close": "Schließen",
@@ -166,7 +165,7 @@
       },
       "labels": {
         "changeStatus": "Studienstatus ändern",
-        "changeTo": "Statusänderung von "
+        "changeFrom": "Statusänderung von"
       }
     },
     "statusStrings": {
@@ -234,7 +233,7 @@
       "description": {
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
         "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet.",
-        "durationExample": "Studienbeginn: 01.07.2023 - Studienende: 31.12.2023 (5 Monate) - Studiendauer: 4 Wochen\nDie aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
+        "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen\nDie aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
@@ -953,9 +952,9 @@
             "fullTimespan": "Fortlaufende Datenerhebung über ganze Zeitspanne von zwei Monaten"
           },
           "values": {
-            "singleDay": "'An einem Tag' auswählen <br>Start: 27.07.2024 14:00 - 16:00",
-            "series": "'An einem Tag' auswählen <br>Zeitspanne: 27.07.2024 14:00 - 18:00 <br>Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
-            "fullTimespan": "'An einem Tag' nicht auswählen <br>Start: 27.07.2024 08:00, End: 27.09.2024 20:00<br>Optional: ganztägig auswählen"
+            "singleDay": "'An einem Tag' auswählen <br>Start: {egDate} 14:00 - 16:00",
+            "series": "'An einem Tag' auswählen <br>Zeitspanne: {egDate} 14:00 - 18:00 <br>Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
+            "fullTimespan": "'An einem Tag' nicht auswählen <br>Start: {egStartDate} 08:00, End: {egEndDate} 20:00<br>Optional: ganztägig auswählen"
           }
         }
       }
@@ -995,7 +994,7 @@
         "startValue": "Startet am",
         "endValue": "Endet am",
         "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
-        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein Teilnehmer meldet sich am 01.12.2023 an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am 02.12.2023.)",
+        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein Teilnehmer meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
           "repeated": "Wiederholung",

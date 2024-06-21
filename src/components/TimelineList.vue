@@ -33,7 +33,9 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { dateToDateString } from '../utils/dateUtils';
   import TimelineDialog from './dialog/TimelineDialog.vue';
+  import { useGlobalStore } from '../stores/globalStore';
   const dialog = useDialog();
+  const dateFormat = useGlobalStore().getDateFormat;
   const { t, locale } = useI18n();
   const studyStore = useStudyStore();
   const { calendarApi } = useCalendarApi();
@@ -410,8 +412,8 @@ Licensed under the Elastic License 2.0. */
           :min-date="new Date(studyStore.study.plannedStart as string)"
           :max-date="new Date(studyStore.study.plannedEnd as string)"
           autocomplete="off"
-          :date-format="$t('dateFormat')"
-          :placeholder="$t('dateFormat')"
+          :date-format="dateFormat"
+          :placeholder="dateFormat"
           @date-select="listTimeline"
         />
       </div>

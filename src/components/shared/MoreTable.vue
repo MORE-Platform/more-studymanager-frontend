@@ -35,7 +35,8 @@ Licensed under the Elastic License 2.0. */
     StudyStatus,
   } from '../../generated-sources/openapi';
   import Checkbox from 'primevue/checkbox';
-
+  import { useGlobalStore } from '../../stores/globalStore';
+  const dateFormat = useGlobalStore().getDateFormat;
   const props = defineProps({
     title: {
       type: String,
@@ -653,7 +654,7 @@ Licensed under the Elastic License 2.0. */
             style="width: 100%"
             input-id="dateformat"
             autocomplete="off"
-            :date-format="$t('dateFormat')"
+            :date-format="dateFormat"
           />
           <div v-if="column.type === MoreTableFieldType.choice">
             <Dropdown

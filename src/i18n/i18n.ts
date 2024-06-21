@@ -22,7 +22,7 @@ const localeDe: Locale = 'de';
 let usersLanguage = window.navigator.language;
 usersLanguage = usersLanguage.split('-')[0];
 
-const datetimeFormats = {
+const datetimeFormats: IntlDateTimeFormats = {
   en: {
     short: {
       year: 'numeric',
@@ -35,6 +35,7 @@ const datetimeFormats = {
       day: '2-digit',
       hour: 'numeric',
       minute: 'numeric',
+      hour12: false,
     },
     longSec: {
       year: 'numeric',
@@ -67,7 +68,7 @@ const datetimeFormats = {
       second: '2-digit',
     },
   },
-} as IntlDateTimeFormats;
+};
 
 export default createI18n({
   legacy: false,
