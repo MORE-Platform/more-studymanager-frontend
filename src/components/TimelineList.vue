@@ -4,10 +4,10 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import VueCal, { Event } from 'vue-cal';
+  import VueCal, { Event, VueCalEvent } from 'vue-cal';
   import 'vue-cal/dist/vuecal.css';
   import { useI18n } from 'vue-i18n';
-  import { computed, PropType, ref, Ref } from 'vue';
+  import { computed, ComputedRef, PropType, ref, Ref } from 'vue';
   import Calendar from 'primevue/calendar';
   import DynamicDialog from 'primevue/dynamicdialog';
   import { useDialog } from 'primevue/usedialog';
@@ -33,6 +33,12 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { dateToDateString } from '../utils/dateUtils';
   import TimelineDialog from './dialog/TimelineDialog.vue';
+  import {
+    DropdownOption,
+    GroupOption,
+    EventDetail,
+    EventOptions,
+  } from '../models/Timeline';
   import { useGlobalStore } from '../stores/globalStore';
   const dialog = useDialog();
   const dateFormat = useGlobalStore().getDateFormat;
@@ -43,16 +49,6 @@ Licensed under the Elastic License 2.0. */
   const { componentsApi } = useComponentsApi();
   const { handleIndividualError } = useErrorHandling();
 
-  interface groupOption {
-    label: string;
-    items: Array<dropdownOption>;
-  }
-
-  interface dropdownOption {
-    label: string;
-    value: string | undefined;
-  }
-
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
@@ -62,8 +58,12 @@ Licensed under the Elastic License 2.0. */
   const filterStudyGroup = ref();
   const filterParticipant = ref();
   const filterObservationAndIntervention = ref();
+  // We differ between EventDetail (with more data for the dialog) and Event (prop for the VueCal component)
   const timelineEventsList: Ref<Event[]> = ref([]);
+  const eventToEventDetailMapper: Record<string, EventDetail> = {};
   const factories: ComponentFactory[] = await getFactories();
+  const observationAndInterventionOptions: Ref<GroupOption[]> = ref([]);
+  let participantsList: Participant[] = [];
 
   const studyStartDate =
     studyStore.study.start ?? studyStore.study.plannedStart;
@@ -76,20 +76,18 @@ Licensed under the Elastic License 2.0. */
     selectedDate = studyStartDate;
   }
 
-  let participantsList: Participant[] = [];
-  const observationAndInterventionOptions: Ref<groupOption[]> = ref([]);
-  const participantOptions: Ref<dropdownOption[]> = ref([
+  const participantOptions: Ref<DropdownOption[]> = ref([
     {
       label: t('participants.placeholder.allParticipants'),
       value: undefined,
-    } as dropdownOption,
+    } as DropdownOption,
   ]);
 
-  const studyGroupOptions: Ref<dropdownOption[]> = ref([
+  const studyGroupOptions: Ref<DropdownOption[]> = ref([
     {
       label: t('global.placeholder.entireStudy'),
       value: undefined,
-    } as dropdownOption,
+    } as DropdownOption,
   ]);
 
   studyGroupOptions.value.push(
@@ -98,121 +96,196 @@ Licensed under the Elastic License 2.0. */
         ({
           label: studyGroup.title,
           value: studyGroup.studyGroupId?.toString(),
-        }) as dropdownOption,
+        }) as DropdownOption,
     ),
   );
 
-  const events = computed(() => {
+  const events: ComputedRef<Event[]> = computed(() => {
     return timelineEventsList.value.filter((event: Event) => {
+      const eventDetail = getEventDetailByEventCid(event.cId);
       return (
-        filterObservationAndIntervention.value.includes(event.cType) ||
-        event.allDay ||
-        event.class === 'participant-joined'
+        eventDetail?.options.includes(EventOptions.ignoreFilter) ||
+        filterObservationAndIntervention.value.includes(eventDetail?.type)
       );
     });
   });
 
+  function getEventDetailByEventCid(cId: string): EventDetail | undefined {
+    return eventToEventDetailMapper[cId];
+  }
+
   function setupEventsList(rsData: StudyTimeline) {
     timelineEventsList.value = [];
 
-    timelineEventsList.value.push({
-      start: dateToDateString(new Date(studyStartDate as string)),
-      end: dateToDateString(new Date(studyStartDate as string)),
+    addStudyStartEvent();
+    addStudyDurationEvent(rsData);
+    addParticipantJoinedEvent(rsData);
+    addObservationEvents(rsData);
+    addInterventionEvents(rsData);
+    addStudyEndEvent();
+  }
+
+  function addStudyStartEvent() {
+    const studyStartEvent: Event = {
+      start: new Date(studyStartDate as string),
+      end: new Date(studyStartDate as string),
       title: studyStore.study.start
         ? t('timeline.labels.studyStart')
         : t('timeline.labels.plannedStart'),
       class: 'study-date',
       allDay: true,
-    } as Event);
+      cId: 'study-date',
+    };
+    eventToEventDetailMapper[studyStartEvent.cId] = {
+      ...studyStartEvent,
+      options: [EventOptions.ignoreFilter],
+    } as EventDetail;
+    timelineEventsList.value.push(studyStartEvent);
+  }
 
+  function addStudyDurationEvent(rsData: StudyTimeline) {
     if (rsData.studyDuration) {
-      timelineEventsList.value.push({
+      const studyDurationEvent: Event = {
         start: new Date(rsData.studyDuration.from as string),
         end: new Date(rsData.studyDuration.to as string),
         title: t('timeline.labels.study'),
         class: 'study-range',
         allDay: true,
-      } as Event);
+        cId: 'study-range',
+      };
+      eventToEventDetailMapper[studyDurationEvent.cId] = {
+        ...studyDurationEvent,
+        options: [EventOptions.ignoreFilter],
+      } as EventDetail;
+      timelineEventsList.value.push(studyDurationEvent);
     }
+  }
 
+  function addParticipantJoinedEvent(rsData: StudyTimeline) {
     if (rsData.participantSignup) {
-      timelineEventsList.value.push({
+      const participantJoinedEvent = {
         start: new Date(rsData.participantSignup as string),
         end: new Date(
           new Date(rsData.participantSignup).getTime() + 30 * 60000,
         ),
         title: t('timeline.labels.participantJoined'),
         class: 'participant-joined',
-      } as Event);
-    }
-
-    rsData.observations?.forEach((observation: ObservationTimelineEvent) => {
-      const event: Event = {
-        start: new Date(observation.start ?? ''),
-        end: new Date(observation.end ?? ''),
-        title: observation.title,
-        class: 'observation',
-        cHidden: observation.hidden,
-        cScheduleType: t(`scheduler.type.${observation.scheduleType}`),
-        cTypeTranslation: t(
-          getTranslationKeyByObservationOrInterventionType(observation.type),
-        ),
-        cType: observation.type,
-        cPurpose: observation.purpose,
+        cId: 'participant-joined',
       };
-      timelineEventsList.value.push(event);
-    });
-    rsData.interventions?.forEach((intervention: InterventionTimelineEvent) => {
-      const event: Event = {
-        start: new Date(intervention.start ?? ''),
-        end: new Date(
-          new Date(intervention.start ?? '').getTime() + 30 * 60000,
-        ),
-        title: intervention.title,
-        class: 'intervention',
-        cTypeTranslation: t(
-          getTranslationKeyByObservationOrInterventionType(
+      eventToEventDetailMapper[participantJoinedEvent.cId] = {
+        ...participantJoinedEvent,
+        options: [
+          EventOptions.showDialogInformation,
+          EventOptions.ignoreFilter,
+        ],
+      } as EventDetail;
+      timelineEventsList.value.push(participantJoinedEvent);
+    }
+  }
+
+  function addObservationEvents(rsData: StudyTimeline) {
+    rsData.observations?.forEach(
+      (observation: ObservationTimelineEvent, idx: number) => {
+        const observationsEvent: Event = {
+          start: new Date(observation.start ?? ''),
+          end: new Date(observation.end ?? ''),
+          title: observation.title,
+          class: 'observation',
+          cId: `observation-${idx}`,
+        };
+        eventToEventDetailMapper[observationsEvent.cId] = {
+          ...observationsEvent,
+          isHidden: observation.hidden,
+          scheduleType: t(`scheduler.type.${observation.scheduleType}`),
+          typeTranslation: getTranslationByObservationOrInterventionType(
+            observation.type,
+          ),
+          type: observation.type ?? '',
+          purpose: observation.purpose ?? '',
+          options: [
+            EventOptions.showEyeIcon,
+            EventOptions.showDialogInformation,
+            EventOptions.showEndDateInDialog,
+            EventOptions.showStartTime,
+            EventOptions.showEndTime,
+          ],
+        } as EventDetail;
+        timelineEventsList.value.push(observationsEvent);
+      },
+    );
+  }
+
+  function addInterventionEvents(rsData: StudyTimeline) {
+    rsData.interventions?.forEach(
+      (intervention: InterventionTimelineEvent, idx: number) => {
+        const interventionEvent: Event = {
+          start: new Date(intervention.start ?? ''),
+          end: new Date(
+            new Date(intervention.start ?? '').getTime() + 30 * 60000,
+          ),
+          title: intervention.title,
+          class: 'intervention',
+          cId: `intervention-${idx}`,
+        };
+        eventToEventDetailMapper[interventionEvent.cId] = {
+          ...interventionEvent,
+          typeTranslation: getTranslationByObservationOrInterventionType(
             intervention.scheduleType,
           ),
-        ),
-        cType: intervention.scheduleType,
-        cPurpose: intervention.purpose,
-      };
+          type: intervention.scheduleType ?? '',
+          purpose: intervention.purpose ?? '',
+          options: [
+            EventOptions.showDialogInformation,
+            EventOptions.showStartTime,
+          ],
+        } as EventDetail;
+        timelineEventsList.value.push(interventionEvent);
+      },
+    );
+  }
 
-      timelineEventsList.value.push(event);
-    });
-
-    timelineEventsList.value.push({
-      start: dateToDateString(new Date(studyEndDate as string)),
-      end: dateToDateString(new Date(studyEndDate as string)),
+  function addStudyEndEvent() {
+    const studyEndEvent: Event = {
+      start: new Date(studyEndDate as string),
+      end: new Date(studyEndDate as string),
       title: studyStore.study.end
         ? t('timeline.labels.studyEnd')
         : t('timeline.labels.plannedEnd'),
       class: 'study-date',
       allDay: true,
-    } as Event);
+      cId: 'study-date',
+    };
+    eventToEventDetailMapper[studyEndEvent.cId] = {
+      ...studyEndEvent,
+      options: [EventOptions.ignoreFilter],
+    } as EventDetail;
+    timelineEventsList.value.push(studyEndEvent);
   }
 
-  function getTranslationKeyByObservationOrInterventionType(
+  function getTranslationByObservationOrInterventionType(
     type: string | undefined,
   ): string {
+    let translation = '';
     for (let i = 0, len = factories.length; i < len; i++) {
       if (factories[i].componentId === type) {
-        return factories[i].title ?? '';
+        if (factories[i].title) {
+          translation = t(factories[i].title as string);
+          break;
+        }
       }
     }
 
-    return '';
+    return translation;
   }
 
   function onStudyGroupFilterChange(e: DropdownChangeEvent) {
-    const filteredOptions: dropdownOption[] = [];
+    const filteredOptions: DropdownOption[] = [];
     const filteredParticipants: Participant[] = [];
 
     filteredOptions.push({
       label: t('global.placeholder.entireStudy'),
       value: undefined,
-    } as dropdownOption);
+    } as DropdownOption);
 
     if (e.value) {
       filteredParticipants.push(
@@ -226,11 +299,11 @@ Licensed under the Elastic License 2.0. */
 
     filteredOptions.push(
       ...filteredParticipants.map(
-        (fp) =>
+        (filteredParticipant) =>
           ({
-            label: fp.alias,
-            value: fp.participantId?.toString(),
-          }) as dropdownOption,
+            label: filteredParticipant.alias,
+            value: filteredParticipant.participantId?.toString(),
+          }) as DropdownOption,
       ),
     );
 
@@ -243,16 +316,20 @@ Licensed under the Elastic License 2.0. */
     listTimeline();
   }
 
-  function onEventClick(event: Event, e: MouseEvent) {
-    if (event.allDay) {
+  function onEventClick(vueCalEvent: VueCalEvent, e: MouseEvent) {
+    const eventDetail: EventDetail | undefined = getEventDetailByEventCid(
+      vueCalEvent.cId,
+    );
+
+    if (!eventDetail?.options.includes(EventOptions.showDialogInformation)) {
       return;
     }
     dialog.open(TimelineDialog, {
       data: {
-        event: event,
+        eventDetail: eventDetail,
       },
       props: {
-        header: event.title,
+        header: eventDetail.title,
         style: {
           width: '30vw',
         },
@@ -286,37 +363,35 @@ Licensed under the Elastic License 2.0. */
 
   function setupObservationAndInterventionFilterOptions(rsData: StudyTimeline) {
     observationAndInterventionOptions.value = [];
-    const observationOptions: dropdownOption[] = [];
-    const interventionOptions: dropdownOption[] = [];
+    const observationOptions: DropdownOption[] = [];
+    const interventionOptions: DropdownOption[] = [];
 
     rsData.observations?.forEach((observation: ObservationTimelineEvent) => {
       const existingOption = observationOptions.some(
-        (option: dropdownOption) => option.value === observation.type,
+        (option: DropdownOption) => option.value === observation.type,
       );
 
       if (!existingOption) {
         observationOptions.push({
-          label: t(
-            getTranslationKeyByObservationOrInterventionType(observation.type),
+          label: getTranslationByObservationOrInterventionType(
+            observation.type,
           ),
           value: observation.type,
-        } as dropdownOption);
+        } as DropdownOption);
       }
     });
     rsData.interventions?.forEach((intervention: InterventionTimelineEvent) => {
       const existingOption = interventionOptions.some(
-        (option: dropdownOption) => option.value === intervention.scheduleType,
+        (option: DropdownOption) => option.value === intervention.scheduleType,
       );
 
       if (!existingOption) {
         interventionOptions.push({
-          label: t(
-            getTranslationKeyByObservationOrInterventionType(
-              intervention.scheduleType,
-            ),
+          label: getTranslationByObservationOrInterventionType(
+            intervention.scheduleType,
           ),
           value: intervention.scheduleType,
-        } as dropdownOption);
+        } as DropdownOption);
       }
     });
 
@@ -324,21 +399,21 @@ Licensed under the Elastic License 2.0. */
       observationAndInterventionOptions.value.push({
         label: t('observation.plural'),
         items: observationOptions,
-      } as groupOption);
+      } as GroupOption);
     }
 
     if (interventionOptions.length) {
       observationAndInterventionOptions.value.push({
         label: t('intervention.plural'),
         items: interventionOptions,
-      } as groupOption);
+      } as GroupOption);
     }
 
     // Filter preselect all observations and interventions
     filterObservationAndIntervention.value = [
       ...observationOptions,
       ...interventionOptions,
-    ].map((option: dropdownOption) => option.value);
+    ].map((option: DropdownOption) => option.value);
   }
 
   async function listTimeline(): Promise<void> {
@@ -356,6 +431,7 @@ Licensed under the Elastic License 2.0. */
         setupObservationAndInterventionFilterOptions(response.data);
       })
       .catch((e: AxiosError) => {
+        console.log(e);
         handleIndividualError(e, 'cannot list studyTimeline');
       });
   }
@@ -370,7 +446,7 @@ Licensed under the Elastic License 2.0. */
               ({
                 label: p.alias,
                 value: p.participantId?.toString(),
-              }) as dropdownOption,
+              }) as DropdownOption,
           ),
         );
 
@@ -471,8 +547,8 @@ Licensed under the Elastic License 2.0. */
     :on-event-click="onEventClick"
     :min-date="studyStartDate"
     :max-date="studyEndDate"
-    :show-all-day-events="'short'"
-    :events-on-month-view="'short'"
+    show-all-day-events="short"
+    events-on-month-view="short"
     overlaps-per-time-step
     :min-event-width="30"
     today-button
@@ -482,21 +558,34 @@ Licensed under the Elastic License 2.0. */
         {{ event.title }}
         <span
           v-if="
-            !event.allDay &&
-            !['participant-joined', 'intervention'].includes(event.class)
+            getEventDetailByEventCid(event.cId)?.options.includes(
+              EventOptions.showEyeIcon,
+            )
           "
           class="pi mr-0.5"
-          :class="event.cHidden ? 'pi-eye-slash' : 'pi-eye'"
+          :class="
+            getEventDetailByEventCid(event.cId)?.isHidden
+              ? 'pi-eye-slash'
+              : 'pi-eye'
+          "
         >
         </span>
       </div>
       <div
-        v-if="!event.allDay && event.class !== 'participant-joined'"
+        v-if="
+          getEventDetailByEventCid(event.cId)?.options.includes(
+            EventOptions.showStartTime,
+          )
+        "
         class="vuecal__event-time"
       >
         <span>{{ event.start.formatTime('HH:mm') }}</span>
         <span
-          v-if="!['participant-joined', 'intervention'].includes(event.class)"
+          v-if="
+            getEventDetailByEventCid(event.cId)?.options.includes(
+              EventOptions.showEndTime,
+            )
+          "
         >
           - {{ event.end.formatTime('HH:mm') }}</span
         >

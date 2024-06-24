@@ -1,29 +1,29 @@
 <script setup lang="ts">
   import { inject } from 'vue';
   import { useI18n } from 'vue-i18n';
-  import { Event } from 'vue-cal';
+  import { EventDetail, EventOptions } from '../../models/Timeline';
   const { t, d } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
-  const event: Event = dialogRef.value.data.event;
-  const startDate = `${t('global.labels.start')}: ${d(new Date(event.start), 'long')}`;
-  const endDate = `${t('global.labels.end')}: ${d(new Date(event.end), 'long')}`;
-  const scheduleType = event.cScheduleType;
-  const typeTranslation = event.cTypeTranslation;
-  const purpose = event.cPurpose;
-  const hidden = event.cHidden;
+  const eventDetail: EventDetail = dialogRef.value.data.eventDetail;
+  const startDate = `${t('global.labels.start')}: ${d(new Date(eventDetail.start), 'long')}`;
+  const endDate = `${t('global.labels.end')}: ${d(new Date(eventDetail.end), 'long')}`;
 </script>
 
 <template>
   <div class="dialog">
     <p>{{ startDate }}</p>
-    <p v-if="event.class === 'observation'">{{ endDate }}</p>
-    <p>{{ scheduleType }}</p>
-    <p>{{ typeTranslation }}</p>
-    <p v-if="purpose">{{ `${t('study.props.purpose')}: ${purpose}` }}</p>
-    <p v-if="event.class === 'observation'">
+    <p v-if="eventDetail.options.includes(EventOptions.showEndDateInDialog)">
+      {{ endDate }}
+    </p>
+    <p>{{ eventDetail.scheduleType }}</p>
+    <p>{{ eventDetail.typeTranslation }}</p>
+    <p v-if="eventDetail.purpose">
+      {{ `${t('study.props.purpose')}: ${eventDetail.purpose}` }}
+    </p>
+    <p v-if="eventDetail.options.includes(EventOptions.showEyeIcon)">
       {{
-        hidden
+        eventDetail.isHidden
           ? t('observation.props.hidden.true')
           : t('observation.props.hidden.false')
       }}
