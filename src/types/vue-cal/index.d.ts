@@ -51,11 +51,7 @@ declare module 'vue-cal' {
     resizable?: boolean; // optional - force unresizable when events are editable.
     startTimeMinutes?: number;
     endTimeMinutes?: number;
-    cScheduleType?: string | undefined; // Custom attribute
-    cTypeTranslation?: string | undefined; // Custom attribute
-    cType?: string | undefined; // Custom attribute
-    cPurpose?: string | undefined; // Custom attribute
-    cHidden?: boolean | undefined; // Custom attribute
+    cId: string; // Custom attribute
   }
 
   export interface Event {
