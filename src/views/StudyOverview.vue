@@ -12,11 +12,25 @@ Licensed under the Elastic License 2.0. */
   import StudyCollaboratorList from '../components/StudyCollaboratorList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { StudyStatus } from '../generated-sources/openapi';
+  import { dateToDateString } from '../utils/dateUtils';
 
   const route = useRoute();
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
+
+  async function processUpdatedStudyStatus(status: StudyStatus) {
+    await studyStore.updateStudyStatus(status).then(() => {
+      if (status === StudyStatus.Active || status === StudyStatus.Preview) {
+        studyStore.study.start = dateToDateString(new Date());
+      } else if (status === StudyStatus.Draft) {
+        studyStore.study.start = undefined;
+      } else if (status === StudyStatus.Closed) {
+        studyStore.study.end = dateToDateString(new Date());
+      }
+    });
+  }
 
   async function getStudyGroups() {
     await studyGroupStore.getStudyGroups(studyId);
@@ -39,7 +53,7 @@ Licensed under the Elastic License 2.0. */
         :study="studyStore.study"
         :user-roles="studyStore.studyUserRoles"
         @on-update-study="studyStore.updateStudy($event)"
-        @on-update-study-status="studyStore.updateStudyStatus($event)"
+        @on-update-study-status="processUpdatedStudyStatus($event)"
       />
 
       <StudyGroupList

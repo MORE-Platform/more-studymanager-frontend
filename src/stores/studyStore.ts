@@ -13,7 +13,6 @@ import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
-import { dateToDateString } from '../utils/dateUtils';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
@@ -52,72 +51,22 @@ export const useStudyStore = defineStore('study', () => {
 
   async function updateStudyStatus(status: StudyStatus) {
     if (study.value.studyId) {
-      if (
-        status === StudyStatus.Active ||
-        status === StudyStatus.Preview ||
-        status === StudyStatus.Draft
-      ) {
-        if (
-          status === StudyStatus.Active &&
-          !study.value.start &&
-          study.value.plannedStart &&
-          new Date(study.value.plannedStart) > new Date()
-        ) {
-          study.value.plannedStart = new Date().toISOString();
-        }
-        await studiesApi
-          .updateStudy(study.value.studyId, study.value)
-          .then(() => {
-            studiesApi
-              .setStatus(study.value.studyId as number, { status })
-              .then(() => {
-                study.value.status = status;
-                if (
-                  status === StudyStatus.Active ||
-                  status === StudyStatus.Preview
-                ) {
-                  study.value.start = dateToDateString(new Date());
-                } else if (status === StudyStatus.Draft) {
-                  study.value.start = undefined;
-                }
-              })
-              .catch((e: AxiosError) => {
-                alert(
-                  `Could not update study status: ${
-                    (e.response?.data as any)?.message
-                  }`,
-                );
-                handleIndividualError(
-                  e,
-                  `Could not update study status ${study.value.studyId}`,
-                );
-              });
-          })
-          .catch((e: AxiosError) => {
-            alert('Could not update study');
-            handleIndividualError(
-              e,
-              `Could not update study ${study.value.studyId}`,
-            );
-          });
-      } else {
-        await studiesApi
-          .setStatus(study.value.studyId, { status })
-          .then(() => {
-            study.value.status = status;
-          })
-          .catch((e: AxiosError) => {
-            alert(
-              `Could not update study status: ${
-                (e.response?.data as any)?.message
-              }`,
-            );
-            handleIndividualError(
-              e,
-              `Could not update study status ${study.value.studyId}`,
-            );
-          });
-      }
+      await studiesApi
+        .setStatus(study.value.studyId, { status })
+        .then(() => {
+          study.value.status = status;
+        })
+        .catch((e: AxiosError) => {
+          alert(
+            `Could not update study status: ${
+              (e.response?.data as any)?.message
+            }`,
+          );
+          handleIndividualError(
+            e,
+            `Could not update study status ${study.value.studyId}`,
+          );
+        });
     }
   }
 
