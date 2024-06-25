@@ -328,7 +328,13 @@ Licensed under the Elastic License 2.0. */
               v-model="hidden"
               :binary="true"
               class="icon-checkbox show-icon icon-box eye mr-2 inline"
-            />
+            >
+              <template #icon>
+                <div class="p-checkbox-box">
+                  <span class="p-checkbox-icon pi pi-check"></span>
+                </div>
+              </template>
+            </Checkbox>
             <div v-else class="icon-box eye inline">
               <span
                 class="pi mr-0.5"

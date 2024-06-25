@@ -710,6 +710,11 @@ Licensed under the Elastic License 2.0. */
               :binary="true"
               class="icon-checkbox show-icon"
             >
+              <template #icon>
+                <div class="p-checkbox-box">
+                  <span class="p-checkbox-icon pi pi-check"></span>
+                </div>
+              </template>
             </Checkbox>
             <div v-else class="icon-box eye">
               <span
