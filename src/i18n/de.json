@@ -5,6 +5,7 @@
     "labels": {
       "close": "Schließen",
       "save": "Speichern",
+      "apply": "Anwenden",
       "cancel": "Abbrechen",
       "delete": "Löschen",
       "new": "Neu",
@@ -42,6 +43,7 @@
       "chooseDropdownOptionDefault": "Option auswählen",
       "optionsSelected": "Optionen ausgewählt",
       "chooseRole": "Rolle(n) auswählen",
+      "nothingSelected": "Nichts ausgewählt",
       "noGroup": "Keine Gruppe",
       "all": "Alle",
       "enterTextValue": "Textwert eingeben"
@@ -156,7 +158,7 @@
         },
         "preview-draft": {
           "intro": "Sie sind im Begriff die Preview zu beenden",
-          "warning": "Alle aufgezeichneten Daten werden beim Beenden verworfen. Die Teilnehmer werden erneut initialisiert.",
+          "warning": "Alle aufgezeichneten Daten werden beim Beenden verworfen. Die Teilnehmer:innen werden erneut initialisiert.",
           "confirm": "Preview beenden und Daten verwerfen"
         }
       },
@@ -182,14 +184,14 @@
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
-      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer bei Problemen kontaktieren können.",
-      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer bei Problemen anschreiben können."
+      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer:innen bei Problemen kontaktieren können.",
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer:innen bei Problemen anschreiben können."
     },
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
       "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
       "durationInput": "Bitte geben Sie eine Studiendauer ein.",
-      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
+      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer:innen bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
       "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
       "selectLanguage": "Sprache auswählen",
       "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
@@ -232,8 +234,8 @@
       },
       "description": {
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
-        "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet.",
-        "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen\nDie aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
+        "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer:innen aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet.",
+        "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen. Die aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
@@ -449,7 +451,7 @@
       },
       "msg": {
         "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
-        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der Teilnehmer eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
+        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
       },
       "deleteMsg": {
         "warning": "Eine gelöschte Datenerhebung kann nicht wiederhergestellt werden. Wenn Sie die Datenerhebung löschen, gehen alle Konfigurationen verloren.",
@@ -544,7 +546,7 @@
       "example": {
         "title": "Beispiele",
         "dataTitle": "Senden Sie Daten an die API via token",
-        "participantsTitle": "Rufen Sie Teilnehmer über API ab via token",
+        "participantsTitle": "Rufen Sie Teilnehmer:innen über API ab via token",
         "filledExample": "Ausgefülltes Beispiel",
         "yourDomain": "DOMÄNE",
         "yourToken": "TOKEN",
@@ -978,7 +980,7 @@
       "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
     },
     "dialog": {
-      "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
+      "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
       "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
       "repeatEvent": "Event wiederholen",
       "singleEventTitle": "Einzelnes Datenerhebungs-Event",
@@ -991,11 +993,11 @@
       },
       "relativeSchedule": {
         "dialogTitle": "Relativen Zeitplan verwalten",
-        "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
+        "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
         "startValue": "Startet am",
         "endValue": "Endet am",
-        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer (Anmeldung) berechnet.",
-        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein Teilnehmer meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
+        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer:in (Anmeldung) berechnet.",
+        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein/e Teilnehmer:in meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
           "repeated": "Wiederholung",

@@ -380,10 +380,10 @@ Licensed under the Elastic License 2.0. */
         <Button
           v-if="editable"
           :type="editable ? 'submit' : 'button'"
+          :label="$t('global.labels.save')"
           :disabled="!editable"
           @click="checkRequiredFields()"
-          >{{ $t('global.labels.save') }}</Button
-        >
+        />
       </div>
     </form>
   </div>

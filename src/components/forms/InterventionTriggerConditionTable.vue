@@ -402,8 +402,7 @@ Licensed under the Elastic License 2.0. */
               icon="pi pi-pencil"
               :disabled="!editable"
               @click="edit(slotProps.data, slotProps.index)"
-            >
-            </Button>
+            />
             <div v-if="slotProps.index + 1 < rows.length" class="inline p-3">
               &
             </div>
@@ -414,7 +413,7 @@ Licensed under the Elastic License 2.0. */
                 class="p-button p-3"
                 :disabled="!editable"
                 @click="addRow(slotProps.index)"
-              ></Button>
+              />
             </div>
           </div>
           <div
@@ -434,14 +433,14 @@ Licensed under the Elastic License 2.0. */
               type="button"
               icon="pi pi-check"
               @click="save(slotProps.data, slotProps.index)"
-            ></Button>
+            />
             <span class="mr-1.5"></span>
             <Button
               type="button"
               icon="pi pi-times"
               class="btn-gray"
               @click="cancel(slotProps.data, slotProps.index)"
-            ></Button>
+            />
           </div>
         </template>
       </Column>

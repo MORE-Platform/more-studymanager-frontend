@@ -15,12 +15,12 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
+  <div class="data-view container m-auto mt-10">
+    <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    />
     <div
       v-if="
         studyStore.studyUserRoles.some((r: StudyRole) =>

@@ -16,7 +16,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <Header />
-  <main class="pt-20">
+  <main class="mb-20 pt-14">
     <router-view />
   </main>
   <Footer />
@@ -25,6 +25,5 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   main {
     min-height: 85vh;
-    margin-bottom: 5.5rem;
   }
 </style>
