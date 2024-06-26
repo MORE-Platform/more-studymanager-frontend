@@ -14,8 +14,8 @@ Licensed under the Elastic License 2.0. */
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableCollaboratorItem,
-    MoreTableActionResult,
     MoreTableRowActionResult,
+    MoreTableCollaboratorItemOption,
   } from '../models/MoreTableModel';
   import {
     Collaborator,
@@ -30,6 +30,7 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import { useUserStore } from '../stores/userStore';
+  import Dropdown from 'primevue/dropdown';
 
   const dialog = useDialog();
   const { t } = useI18n();
@@ -67,11 +68,11 @@ Licensed under the Elastic License 2.0. */
 
   const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
-  const editAccessRoles: StudyRole[] = [StudyRole.Admin];
+  const editableRoles: StudyRole[] = [StudyRole.Admin];
 
   const editAccess: boolean = props.userRoles.some(
     (r: StudyRole) =>
-      editAccessRoles.includes(r) && props.studyStatus !== StudyStatus.Closed,
+      editableRoles.includes(r) && props.studyStatus !== StudyStatus.Closed,
   );
 
   const collaboratorColumns: MoreTableColumn[] = [
@@ -79,13 +80,13 @@ Licensed under the Elastic License 2.0. */
       field: 'name',
       header: t('studyCollaborator.collaboratorList.props.name'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'institution',
       header: t('studyCollaborator.collaboratorList.props.institution'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'email',
@@ -97,14 +98,11 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.roles'),
       type: MoreTableFieldType.singleselect,
       editable: {
-        values: [
-          { label: t('study.roles.admin'), value: StudyRole.Admin },
-          { label: t('study.roles.operator'), value: StudyRole.Operator },
-          { label: t('study.roles.viewer'), value: StudyRole.Viewer },
-        ],
+        enabled: true,
+        values: roleList,
       },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.chooseRole'),
     },
   ];
@@ -114,6 +112,7 @@ Licensed under the Elastic License 2.0. */
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteCollaborator'),
       visible: (data: MoreTableCollaboratorItem) => {
         return data.uid !== userStore.user?.uid && editAccess;
       },
@@ -147,10 +146,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as MoreTableCollaboratorItem,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -171,47 +170,10 @@ Licensed under the Elastic License 2.0. */
     return rolesString;
   }
 
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      label: t('studyCollaborator.collaboratorList.action.add'),
-      icon: 'pi pi-angle-down',
-      visible: () => editAccess,
-      options: {
-        type: 'search',
-        values: [],
-        valuesCallback: {
-          placeholder: t('studyCollaborator.placeholder.addCollaborator'),
-          filterPlaceholder: t(
-            'studyCollaborator.placeholder.searchCollaborators',
-          ),
-          noResultsPlaceholder: t(
-            'studyCollaborator.placeholder.noResultsFound',
-          ),
-          callback: (query: string) => {
-            return usersApi.findUsers(query).then((response: AxiosResponse) => {
-              return response.data.result.users.map(
-                (u: MoreTableCollaboratorItem) => ({
-                  label: u.name,
-                  value: u.uid,
-                  institution: u.institution,
-                }),
-              );
-            });
-          },
-        },
-      },
-    },
-  ];
-
-  function execute(
-    action: MoreTableRowActionResult<MoreTableCollaboratorItem>,
-  ) {
+  function executeAction(action: MoreTableRowActionResult) {
     switch (action.id) {
       case 'delete':
-        return deleteStudyCollaborator(action.row);
-      case 'create':
-        return openAddCollaboratorDialog(action);
+        return deleteStudyCollaborator(action.row as MoreTableCollaboratorItem);
       default:
         console.error('no handler for action', action);
     }
@@ -301,13 +263,13 @@ Licensed under the Elastic License 2.0. */
       .then(listCollaborators);
   }
 
-  function openAddCollaboratorDialog(action: MoreTableActionResult) {
+  function openAddCollaboratorDialog(options: MoreTableCollaboratorItemOption) {
     dialog.open(StudyCollaboratorDialog, {
       data: {
         collaborator: {
-          name: action.properties.label,
-          institution: action.properties.institution,
-          uid: action.properties.value,
+          name: options.label,
+          institution: options.institution,
+          uid: options.value,
         } as MoreTableCollaboratorItem,
         placeholder: t('global.placeholder.chooseRole'),
         roleList,
@@ -331,40 +293,100 @@ Licensed under the Elastic License 2.0. */
       },
     });
   }
+
+  const collaboratorList: Ref<MoreTableCollaboratorItemOption[]> = ref([]);
+  async function filterActionHandler(query: string) {
+    if (query) {
+      collaboratorList.value = await getUsers(query);
+    }
+  }
+
+  async function getUsers(
+    query: string,
+  ): Promise<MoreTableCollaboratorItemOption[]> {
+    return usersApi.findUsers(query).then((response: AxiosResponse) => {
+      return response.data.result.users.map(
+        (u: MoreTableCollaboratorItem) =>
+          ({
+            label: u.name,
+            value: u.uid,
+            institution: u.institution,
+          }) as MoreTableCollaboratorItemOption,
+      );
+    });
+  }
+
   listCollaborators();
 </script>
 
 <template>
   <div class="collaborator-list mt-20">
     <MoreTable
-      row-id="studyGroupId"
+      row-id="uid"
       :title="$t('studyCollaborator.collaboratorList.title')"
       :subtitle="$t('studyCollaborator.collaboratorList.description')"
       :columns="collaboratorColumns"
       :rows="collaboratorsList"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :editable-access="editAccess"
       :editable="
         (data: MoreTableCollaboratorItem) => {
           return data.uid !== userStore.user?.uid && editAccess;
         }
       "
-      :edit-access-roles="editAccessRoles"
-      :user-study-roles="props.userRoles"
-      empty-message="No collaborators added yet"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
-    />
+      :edit-access-roles="editableRoles"
+      :empty-message="$t('studyCollaborator.placeholder.defaultEmptyMsg')"
+      @on-action="executeAction($event)"
+      @on-change="changeValue($event)"
+    >
+      <template #tableActions>
+        <div>
+          <Dropdown
+            class="button p-button dropdown-search !p-0"
+            :filter="true"
+            :options="collaboratorList"
+            option-label="label"
+            option-value="value"
+            :disabled="!editAccess"
+            panel-class="dropdown-search-panel"
+            :empty-message="
+              t('studyCollaborator.placeholder.searchCollaborators')
+            "
+            :empty-filter-message="
+              t('studyCollaborator.placeholder.noResultsFound')
+            "
+            @filter="filterActionHandler($event.value)"
+          >
+            <template #value>
+              <span class="pi pi-search ml-1 mr-2 text-white"></span>
+              <span class="text-white">
+                {{ t('studyCollaborator.placeholder.addCollaborator') }}
+              </span>
+            </template>
+            <template #dropdownicon>
+              <span class="pi pi-angle-down text-white"></span>
+            </template>
+            <template #option="slotProps">
+              <div
+                v-for="(item, index) in slotProps"
+                :key="index"
+                @click="openAddCollaboratorDialog(slotProps.option)"
+              >
+                <span class="color-primary font-medium">
+                  {{ item.label }}
+                </span>
+                <span v-if="item.institution" class="block">
+                  ({{ item.institution }})
+                </span>
+              </div>
+            </template>
+          </Dropdown>
+        </div>
+      </template>
+    </MoreTable>
 
     <div v-if="useConfirmDialog">
       <ConfirmDialog></ConfirmDialog>
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  :deep(.action .dropdown-search .p-dropdown-trigger) {
-    display: none;
-  }
-</style>

@@ -49,7 +49,6 @@ Licensed under the Elastic License 2.0. */
         row-id="title"
         :editable-access="false"
         :class="'table-data-preview'"
-        :paginator="true"
         :paginator-rows="5"
       />
     </div>

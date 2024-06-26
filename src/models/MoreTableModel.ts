@@ -6,34 +6,32 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
+
+import {
+  Intervention,
+  Observation,
+  Participant,
+  Study,
+  StudyGroup,
+} from '../generated-sources/openapi';
+
 export interface MoreTableColumn {
   field: string;
   header: string;
-  type?: MoreTableFieldType; //default is string
-  editable?:
-    | MoreTableChoiceOptions
-    | MoreTableEditableChoiceProperties
-    | boolean
-    | ((data?: any) => boolean);
+  type?: MoreTableFieldType;
+  editable?: boolean | MoreTableEditable;
   sortable?: boolean;
-  filterable?: boolean | MoreTableFilterOption;
+  filterable?: boolean;
   placeholder?: string;
   arrayLabels?: MoreTableChoice[];
   columnWidth?: string;
 }
 
-export interface MoreTableFilterOption {
-  value?: unknown;
-  showFilterMatchModes?: boolean;
-  matchMode?: string;
+export interface MoreTableEditable {
+  enabled: boolean;
+  values: MoreTableChoice[];
 }
 
-// actions
-export interface MoreTableChoiceOptions {
-  values: MoreTableChoice[];
-  placeholder?: string;
-  showValuesForEditing?: boolean;
-}
 export interface MoreTableChoice {
   label: string;
   value: string | null;
@@ -48,54 +46,26 @@ export interface MoreTableAction {
   id: string;
   label: string;
   icon?: string;
-  options?: MoreTableActionOptions;
-  confirm?: MoreTableActionConfirm;
+  tooltip?: string;
   confirmDeleteDialog?: MoreTableActionConfirmDialog;
   visible?: (data?: any) => boolean;
-  tooltip?: string;
 }
 
-export interface MoreTableRowActionResult<D> {
+export interface MoreTableRowActionResult {
   id: string;
-  row: D;
+  row: ActionResult;
 }
 
-export interface MoreTableActionResult {
-  id: string;
-  properties?: any;
-}
+type ActionResult =
+  | Participant
+  | MoreIntegrationTableMap
+  | StudyGroup
+  | Study
+  | Intervention
+  | Observation
+  | MoreTableCollaboratorItem
+  | MoreStudyGroupTableMap;
 
-export interface MoreTableActionOptions {
-  type: 'menu' | 'split' | 'search' | 'fileUpload';
-  values: MoreTableActionOption[];
-  valuesCallback?: MoreTableActionOptionCallback;
-  uploadOptions?: MoreTableActionFileUpload;
-}
-
-export interface MoreTableActionFileUpload {
-  mode?: FileUploadModeType;
-  multiple?: boolean;
-  acceptType?: string;
-  maxFileSize?: number;
-}
-
-export interface MoreTableActionOption {
-  label: string;
-  value?: any;
-  icon?: string;
-}
-
-export interface MoreTableActionOptionCallback {
-  callback: (query: string) => Promise<Array<MoreTableActionOption[]>>;
-  placeholder?: string;
-  filterPlaceholder?: string;
-  noResultsPlaceholder?: string;
-}
-
-export interface MoreTableActionConfirm {
-  header: string;
-  message: string;
-}
 export interface MoreTableActionConfirmDialog {
   header: string;
   message: string;
@@ -118,29 +88,18 @@ export enum MoreTableFieldType {
   binaryIcon,
 }
 
-export enum FileUploadModeType {
-  advanced = 'advanced',
-  basic = 'basic',
-}
-
-export interface MoreTableEditableProperties {}
-
-export interface MoreTableEditableChoiceProperties
-  extends MoreTableEditableProperties {
-  values: MoreTableEditableChoicePropertyValues[];
-}
-
-export interface MoreTableEditableChoicePropertyValues {
-  label?: string;
-  value: string;
-}
-
 export interface MoreTableCollaboratorItem {
   uid: string;
   name: string;
   institution: string;
   email?: string;
   roles: Array<MoreTableChoice>;
+}
+
+export interface MoreTableCollaboratorItemOption {
+  label: string; // name
+  value: string; // uid
+  institution: string;
 }
 
 export interface MoreIntegrationTableMap {

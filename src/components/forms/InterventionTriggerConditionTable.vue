@@ -309,7 +309,6 @@ Licensed under the Elastic License 2.0. */
     <DataTable
       v-model:editingRows="editingRows"
       selection-mode="single"
-      responsive-layout="scroll"
       :value="rows"
       edit-mode="row"
       table-class="editable-cells-table"

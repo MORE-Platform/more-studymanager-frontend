@@ -330,7 +330,8 @@
     "placeholder": {
       "addCollaborator": "Studien-Mitarbeiter hinzufügen",
       "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen.",
-      "noResultsFound": "Keine Ergebnisse gefunden"
+      "noResultsFound": "Keine Ergebnisse gefunden",
+      "defaultEmptyMsg": "Noch keine Mitarbeiter hinzugefügt."
     }
   },
 
@@ -389,7 +390,7 @@
       "emptyListMsg": "Fügen Sie Teilnehmer:innen zu Ihrer Studie hinzu",
       "action": {
         "distribute": "Automatische Gruppenzuweisung",
-        "import": "CSV importieren",
+        "import": "Teilnehmer:innen importieren",
         "export": "CSV exportieren",
         "add": "Teilnehmer:innen hinzufügen"
       },
@@ -723,7 +724,7 @@
   },
 
   "moreTable": {
-    "defaultEmptyMsg": "Keine Berichte vorhanden",
+    "defaultEmptyMsg": "Keine Einträge vorhanden",
     "filterBy": "Filtern",
     "saveLine": "Bitte speichern"
   },
@@ -1039,8 +1040,16 @@
       "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "saveChanges": "Änderungen speichern",
       "cancelAction": "Abbrechen",
+      "cloneObservation": "Datenerhebung klonen",
+      "cloneIntegration": "Integration klonen",
+      "cloneIntervention": "Intervention klonen",
+      "deleteObservation": "Datenerhebung löschen",
+      "deleteIntegration": "Integration löschen",
+      "deleteIntervention": "Intervention löschen",
+      "deleteCollaborator": "Studien-Mitarbeiter löschen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
+      "deleteParticipantBtn": "Teilnehmer:in löschen",
       "copyStudyUrl": "Studie teilen",
       "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
       "goToStudy": "Studie öffnen"

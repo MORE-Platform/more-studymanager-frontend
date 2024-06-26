@@ -6,12 +6,11 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
   import {
-    FileUploadModeType,
     MoreTableAction,
-    MoreTableActionResult,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
@@ -25,12 +24,19 @@ Licensed under the Elastic License 2.0. */
   import DeleteStudyDialog from './dialog/DeleteStudyDialog.vue';
   import { reactive } from 'vue';
   import AlertMsg from './shared/AlertMsg.vue';
+  import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
+  import Button from 'primevue/button';
 
   const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
   const { t } = useI18n();
+
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'studyId',
+    sortOrder: -1,
+  };
 
   const alert = reactive({
     message: '',
@@ -52,7 +58,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.title'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '30vw',
     },
     {
@@ -65,14 +71,14 @@ Licensed under the Elastic License 2.0. */
     {
       field: 'status',
       header: t('study.props.status'),
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       type: MoreTableFieldType.statusString,
     },
     {
       field: 'userRoles',
       header: t('study.props.roles'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '40vw',
       arrayLabels: [
         { label: t('study.roles.admin'), value: StudyRole.Admin },
@@ -80,9 +86,6 @@ Licensed under the Elastic License 2.0. */
         { label: t('study.roles.viewer'), value: StudyRole.Viewer },
       ],
     },
-  ];
-  const studyColumnsDraft: MoreTableColumn[] = [
-    ...studyColumns,
     {
       field: 'plannedStart',
       header: t('study.props.plannedStart'),
@@ -98,25 +101,7 @@ Licensed under the Elastic License 2.0. */
       sortable: true,
     },
   ];
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('study.studyList.action.addStudy'),
-    },
-    {
-      id: 'import',
-      icon: 'pi pi-upload',
-      label: t('study.studyList.action.importStudy'),
-      options: {
-        type: 'fileUpload',
-        values: [],
-        uploadOptions: {
-          mode: FileUploadModeType.basic,
-        },
-      },
-    },
-  ];
+
   const rowActions: MoreTableAction[] = [
     {
       id: 'delete',
@@ -148,13 +133,13 @@ Licensed under the Elastic License 2.0. */
             },
           }),
       },
-      visible: (data) =>
-        (data.status === StudyStatus.Draft &&
-          data.userRoles.some((r: any) =>
+      visible: (study: Study) =>
+        (study.status === StudyStatus.Draft &&
+          !!study.userRoles?.some((r: any) =>
             [StudyRole.Admin, StudyRole.Operator].includes(r),
           )) ||
-        (data.status === StudyStatus.Closed &&
-          data.userRoles.some((r: any) =>
+        (study.status === StudyStatus.Closed &&
+          !!study.userRoles?.some((r: any) =>
             [StudyRole.Admin, StudyRole.Operator].includes(r),
           )),
     },
@@ -163,8 +148,8 @@ Licensed under the Elastic License 2.0. */
       label: t('study.studyList.labels.exportStudyConfig'),
       icon: 'pi pi-download',
       tooltip: t('study.studyList.labels.exportStudyConfig'),
-      visible: (data) =>
-        data.userRoles.some((r: any) =>
+      visible: (study: Study) =>
+        !!study.userRoles?.some((r: any) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r),
         ),
     },
@@ -173,22 +158,22 @@ Licensed under the Elastic License 2.0. */
       label: t('study.studyList.labels.exportStudyData'),
       icon: 'pi pi-chart-bar',
       tooltip: t('study.studyList.labels.exportStudyData'),
-      visible: (data) =>
-        data.userRoles.some((r: any) => [StudyRole.Admin].includes(r)),
+      visible: (study: Study) =>
+        !!study.userRoles?.some((r: any) => [StudyRole.Admin].includes(r)),
     },
     {
       id: 'exportCalendar',
       label: t('study.studyList.labels.exportStudyCalendar'),
       icon: 'pi pi-calendar',
       tooltip: t('study.studyList.labels.exportStudyCalendar'),
-      visible: (data) =>
-        data.userRoles.some((r: any) =>
+      visible: (study: Study) =>
+        !!study.userRoles?.some((r: any) =>
           [StudyRole.Admin, StudyRole.Operator].includes(r),
         ),
     },
   ];
 
-  const rowEndActions: MoreTableAction[] = [
+  const endRowActions: MoreTableAction[] = [
     {
       id: 'goToStudy',
       label: t('tooltips.moreTable.goToStudy'),
@@ -205,7 +190,7 @@ Licensed under the Elastic License 2.0. */
       tooltip: t('tooltips.moreTable.copyStudyUrl'),
     },
   ];
-  const editAccessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
   function goToStudy(id: string) {
     router.push({
@@ -214,24 +199,21 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function executeAction(action: MoreTableRowActionResult<Study>) {
+  function executeAction(action: MoreTableRowActionResult) {
+    const row = action.row as Study;
     switch (action.id) {
       case 'delete':
-        return studyStore.deleteStudy(action.row.studyId);
-      case 'create':
-        return openCreateDialog();
-      case 'import':
-        return onImportStudy(action);
+        return studyStore.deleteStudy(row.studyId);
       case 'exportConfig':
-        return onExportStudyConfig(action.row.studyId as number);
+        return onExportStudyConfig(row.studyId as number);
       case 'exportData':
-        return onExportStudyData(action.row.studyId as number);
+        return onExportStudyData(row.studyId as number);
       case 'exportCalendar':
-        return onExportStudyCalendar(action.row.studyId as number);
+        return onExportStudyCalendar(row.studyId as number);
       case 'copyId':
-        return onCopyId(action.row.studyId, action.row.title);
+        return onCopyId(row.studyId, row.title);
       case 'goToStudy':
-        return goToStudy((action.row.studyId as number).toString());
+        return goToStudy((row.studyId as number).toString());
       default:
         console.error('no handler for action', action);
     }
@@ -286,11 +268,11 @@ Licensed under the Elastic License 2.0. */
     studyStore.exportStudyCalendar(studyId);
   }
 
-  function onImportStudy(action: MoreTableActionResult) {
-    if (action.properties?.files) {
-      const file = action.properties?.files[0];
-      studyStore.importStudy(file);
-    }
+  function onImportStudy(event: FileUploadUploaderEvent) {
+    const file: File = Array.isArray(event.files)
+      ? event.files[0]
+      : event.files;
+    studyStore.importStudy(file);
   }
 
   studyStore.listStudies();
@@ -302,14 +284,12 @@ Licensed under the Elastic License 2.0. */
       row-id="studyId"
       :title="$t('study.studyList.title')"
       :subtitle="$t('study.studyList.description')"
-      :columns="studyColumnsDraft"
+      :columns="studyColumns"
       :rows="studyStore.studies"
       :row-actions="rowActions"
-      :row-end-actions="rowEndActions"
+      :end-row-actions="endRowActions"
       :front-row-actions="frontRowActions"
-      :table-actions="tableActions"
-      :editable-access="true"
-      :sort-options="{ sortField: 'studyId', sortOrder: -1 }"
+      :sort-options="sortOptions"
       :editable="
         (data: Study) => {
           return (
@@ -319,14 +299,35 @@ Licensed under the Elastic License 2.0. */
           );
         }
       "
-      :edit-access-roles="editAccessRoles"
+      :edit-access-roles="editableRoles"
       :loading="loader.isLoading.value"
       :empty-message="$t('study.studyList.emptyListMsg')"
       class="table-title-width"
-      @onselect="goToStudy($event)"
-      @onaction="executeAction($event)"
-      @onchange="updateStudyInPlace($event)"
-    />
+      @on-select="goToStudy($event)"
+      @on-action="executeAction($event)"
+      @on-change="updateStudyInPlace($event)"
+    >
+      <template #tableActions>
+        <div class="ml-2.5">
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('study.studyList.action.addStudy')"
+            @click="openCreateDialog()"
+          ></Button>
+        </div>
+        <div class="ml-2.5">
+          <FileUpload
+            mode="basic"
+            :choose-label="t('study.studyList.action.importStudy')"
+            :custom-upload="true"
+            :auto="true"
+            accept=".json"
+            @uploader="onImportStudy($event)"
+          ></FileUpload>
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
 
