@@ -13,7 +13,6 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { StudyStatus } from '../generated-sources/openapi';
-  import { dateToDateString } from '../utils/dateUtils';
 
   const route = useRoute();
   const studyStore = useStudyStore();
@@ -22,13 +21,8 @@ Licensed under the Elastic License 2.0. */
 
   async function processUpdatedStudyStatus(status: StudyStatus): Promise<void> {
     await studyStore.updateStudyStatus(status).then(() => {
-      if (status === StudyStatus.Active || status === StudyStatus.Preview) {
-        studyStore.study.start = dateToDateString(new Date());
-      } else if (status === StudyStatus.Draft) {
-        studyStore.study.start = undefined;
-      } else if (status === StudyStatus.Closed) {
-        studyStore.study.end = dateToDateString(new Date());
-      }
+      // To update the start/plannedStart/end Date in the UI immediately
+      studyStore.getStudy(studyId);
     });
   }
 
