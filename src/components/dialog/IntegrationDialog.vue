@@ -28,10 +28,9 @@ Licensed under the Elastic License 2.0. */
   const observationValues: MoreTableChoice[] = observationList.map(
     (observation) => {
       return {
-        label:
-          `${observation.title} (${getObservationName(observation.type as string)})` as string,
+        label: `${observation.title} (${getObservationName(observation.type as string)})`,
         value: observation.observationId?.toString() || null,
-      };
+      } as MoreTableChoice;
     },
   );
 
@@ -52,13 +51,13 @@ Licensed under the Elastic License 2.0. */
       errors.value.push({
         label: 'tokenLabel',
         value: t('integration.error.addTokenLabel'),
-      });
+      } as MoreTableChoice);
     }
     if (!selectedObservation.value) {
       errors.value.push({
         label: 'selectedObservation',
         value: t('integration.error.selectObservation'),
-      });
+      } as MoreTableChoice);
     }
   }
 

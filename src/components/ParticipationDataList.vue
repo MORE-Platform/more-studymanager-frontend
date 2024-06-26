@@ -18,6 +18,7 @@ Licensed under the Elastic License 2.0. */
   import {
     MoreTableColumn,
     MoreTableFieldType,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
   import { ComponentFactory } from '../generated-sources/openapi';
@@ -37,6 +38,11 @@ Licensed under the Elastic License 2.0. */
       required: true,
     },
   });
+
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'lastDataReceived',
+    sortOrder: -1,
+  };
 
   let timer: NodeJS.Timeout | number;
 
@@ -181,9 +187,8 @@ Licensed under the Elastic License 2.0. */
             row-id="observationId"
             :columns="studyDataColumns"
             :rows="observationData"
-            :row-actions="[]"
             :row-edit-btn="false"
-            :sort-options="{ sortField: 'lastDataReceived', sortOrder: -1 }"
+            :sort-options="sortOptions"
             :editable="() => false"
             :empty-message="$t('data.dataList.emptyListMsg')"
           />

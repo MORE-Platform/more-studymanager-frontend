@@ -330,7 +330,8 @@
     "placeholder": {
       "addCollaborator": "Add collaborator",
       "searchCollaborators": "Type to search collaborators",
-      "noResultsFound": "No results found"
+      "noResultsFound": "No results found",
+      "defaultEmptyMsg": "No collaborators added yet."
     }
   },
 
@@ -389,7 +390,7 @@
       "emptyListMsg": "Add study participants to your study",
       "action": {
         "distribute": "Assign study groups",
-        "import": "Import CSV",
+        "import": "Import participants",
         "export": "Export CSV",
         "add": "Add participant"
       },
@@ -1039,8 +1040,16 @@
       "editBtn": "Edit shown properties.",
       "saveChanges": "Save changes",
       "cancelAction": "Cancel",
+      "cloneObservation": "Clone observation",
+      "cloneIntegration": "Clone integration",
+      "cloneIntervention": "Clone intervention",
+      "deleteObservation": "Delete observation",
+      "deleteIntegration": "Delete integration",
+      "deleteIntervention": "Delete intervention",
+      "deleteCollaborator": "Delete collaborator",
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
+      "deleteParticipantBtn": "Delete participant",
       "copyStudyUrl": "Share study",
       "showStudy": "Click on row to show study details page.",
       "goToStudy": "Go to study"

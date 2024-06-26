@@ -8,8 +8,8 @@ Licensed under the Elastic License 2.0. */
   import {
     MoreStudyGroupTableMap,
     MoreTableAction,
-    MoreTableChoice,
     MoreTableColumn,
+    MoreTableChoice,
     MoreTableFieldType,
     MoreTableRowActionResult,
   } from '../models/MoreTableModel';
@@ -25,6 +25,7 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useDialog } from 'primevue/usedialog';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import Button from 'primevue/button';
 
   const studyGroupStore = useStudyGroupStore();
   const dialog = useDialog();
@@ -76,7 +77,7 @@ Licensed under the Elastic License 2.0. */
     {
       field: 'purpose',
       header: t('study.props.purpose'),
-      editable: true, //Not sure, where do we actually take the group time from?
+      editable: true,
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
       columnWidth: '20vw',
     },
@@ -92,7 +93,7 @@ Licensed under the Elastic License 2.0. */
       field: 'durationUnit',
       header: '',
       type: MoreTableFieldType.choice,
-      editable: { values: durationUnitOptions },
+      editable: { enabled: true, values: durationUnitOptions },
       placeholder: t('studyGroup.groupList.placeholder.durationUnit'),
       columnWidth: '1vw',
     },
@@ -103,7 +104,7 @@ Licensed under the Elastic License 2.0. */
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteStudyGroupBtn'),
-      visible: () => getEditAccess(),
+      visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('studyGroup.dialog.header.delete'),
         message: t('studyGroup.dialog.msg.delete'),
@@ -134,48 +135,33 @@ Licensed under the Elastic License 2.0. */
               if (options?.data) {
                 executeAction({
                   id: 'delete',
-                  row: options.data as StudyGroup,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
       },
     },
   ];
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      label: t('studyGroup.dialog.header.create'),
-      icon: 'pi pi-plus',
-      visible: () => getEditAccess(),
-    },
-  ];
 
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  function getEditAccess(): boolean {
-    return (
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Draft) ||
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Paused) ||
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.PausedPreview)
-    );
-  }
+  const actionsVisible =
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.Draft) ||
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.Paused) ||
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.PausedPreview);
 
-  function executeAction(
-    action: MoreTableRowActionResult<MoreStudyGroupTableMap>,
-  ) {
-    const r = action.row
-      ? studyGroupStore.toStudyGroup(action.row)
+  function executeAction(action: MoreTableRowActionResult) {
+    const row: StudyGroup = action.row
+      ? studyGroupStore.toStudyGroup(action.row as StudyGroup)
       : action.row;
 
     switch (action.id) {
       case 'delete':
-        return studyGroupStore.deleteStudyGroup(r);
-      case 'create':
-        return studyGroupStore.createStudyGroup(props.studyId);
+        return studyGroupStore.deleteStudyGroup(row);
       default:
         console.error('no handler for action', action);
     }
@@ -195,15 +181,24 @@ Licensed under the Elastic License 2.0. */
       :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
       :rows="studyGroupStore.studyGroupMap"
-      :editable-access="getEditAccess()"
+      :editable-access="actionsVisible"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :edit-access-roles="editableRoles"
       :empty-message="$t('studyGroup.groupList.placeholder.emptyGroupList')"
       class="table-title-width"
-      @onaction="executeAction($event)"
-      @onchange="changeValueInPlace($event)"
-    />
+      @on-action="executeAction($event)"
+      @on-change="changeValueInPlace($event)"
+    >
+      <template #tableActions>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          :label="t('studyGroup.dialog.header.create')"
+          :disabled="!actionsVisible"
+          @click="studyGroupStore.createStudyGroup(props.studyId)"
+        ></Button>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
   </div>
 </template>
