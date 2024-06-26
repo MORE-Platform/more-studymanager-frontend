@@ -48,7 +48,7 @@ Licensed under the Elastic License 2.0. */
 
   let timer: NodeJS.Timeout | number;
 
-  function loadData() {
+  function loadData(): void {
     timer ??= setInterval(function () {
       listDataPoints();
     }, 10000);
@@ -58,7 +58,7 @@ Licensed under the Elastic License 2.0. */
   onBeforeRouteLeave(() => {
     clearInterval(timer);
   });
-  function listDataPoints() {
+  function listDataPoints(): void {
     dataApi
       .getDataPoints(
         props.studyId,
@@ -81,7 +81,7 @@ Licensed under the Elastic License 2.0. */
     return string;
   }
 
-  function listObservations() {
+  function listObservations(): void {
     observationsApi
       .listObservations(props.studyId)
       .then((observation) =>
@@ -96,7 +96,7 @@ Licensed under the Elastic License 2.0. */
       .then((options) => (observations.value = [emptyOption, ...options]));
   }
 
-  function listParticipants() {
+  function listParticipants(): void {
     participantsApi
       .listParticipants(props.studyId)
       .then((participant) =>

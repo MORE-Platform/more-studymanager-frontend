@@ -76,7 +76,7 @@ Licensed under the Elastic License 2.0. */
     return Property.toJson(actionProps);
   }
 
-  function updateProperty(prop: Property<any>, i: number) {
+  function updateProperty(prop: Property<any>, i: number): void {
     actionProperties.value[i].value = prop;
 
     if (actionProperties.value) {

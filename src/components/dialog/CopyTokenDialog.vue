@@ -18,12 +18,12 @@ Licensed under the Elastic License 2.0. */
   const { t } = useI18n();
   const showMessage: Ref<boolean> = ref(false);
 
-  function copyToken() {
+  function copyToken(): void {
     navigator.clipboard.writeText(token);
     showMessage.value = true;
   }
 
-  function closeDialog() {
+  function closeDialog(): void {
     infoDialogRef.value.close();
   }
 </script>

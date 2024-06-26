@@ -128,7 +128,7 @@ Licensed under the Elastic License 2.0. */
     actionFactories.map((cf: ComponentFactory) => ({
       label: cf.title ? t(cf.title) : '',
       value: cf.componentId,
-      command: () => {
+      command: (): void => {
         actionsArray.value.push({
           type: cf.componentId,
           properties: cf.defaultProperties,
@@ -142,7 +142,7 @@ Licensed under the Elastic License 2.0. */
     componentType: string,
     props: any,
     i?: number,
-  ) {
+  ): Promise<void> {
     return new Promise((resolve, reject) => {
       let parsedProps: any;
       try {
@@ -176,7 +176,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function save() {
+  function save(): void {
     if (errors.length === 0) {
       Promise.all(
         [
@@ -262,31 +262,31 @@ Licensed under the Elastic License 2.0. */
 
   let errors: MoreTableChoice[] = [];
 
-  function checkErrors() {
+  function checkErrors(): void {
     errors = [];
     if (!title.value) {
       errors.push({
         label: 'title',
         value: t('intervention.error.addTitle'),
-      });
+      } as MoreTableChoice);
     }
     if (typeof triggerProperties.value === 'undefined') {
       errors.push({
         label: ListComponentsComponentTypeEnum.Trigger,
         value: t('intervention.error.addTriggerTypeConfig'),
-      });
+      } as MoreTableChoice);
     }
     if (!actionsArray.value.length) {
       errors.push({
         label: ListComponentsComponentTypeEnum.Action,
         value: t('intervention.error.addAction'),
-      });
+      } as MoreTableChoice);
     }
     if (propInputError) {
       errors.push({
         label: 'propInputError',
         value: t('intervention.error.triggerProp'),
-      });
+      } as MoreTableChoice);
     }
   }
 
@@ -294,21 +294,23 @@ Licensed under the Elastic License 2.0. */
     return errors.find((el) => el.label === label)?.value;
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 
-  function deleteAction(actionId: number, index: number) {
+  function deleteAction(actionId: number, index: number): void {
     removeActions.push(actionId);
     actionsArray.value.splice(index, 1);
   }
 
-  function nameForActionType(actionType?: string) {
+  function nameForActionType(
+    actionType?: string,
+  ): ComponentFactory | undefined {
     return actionFactories.find(
       (cf: ComponentFactory) => cf.componentId === actionType,
     )?.label;
   }
-  function setTriggerConfig(tType: string) {
+  function setTriggerConfig(tType: string): void {
     const cronValue = triggerProperties.value?.find(
       (tp) => tp.id === 'cronSchedule',
     )?.value;
@@ -326,21 +328,21 @@ Licensed under the Elastic License 2.0. */
   }
 
   const actionMenu = ref();
-  function actionToggle(event: MouseEvent) {
+  function actionToggle(event: MouseEvent): void {
     actionMenu.value.toggle(event);
   }
 
-  function updateActionProps(action: Action, index: number) {
+  function updateActionProps(action: Action, index: number): void {
     actionsArray.value[index] = action;
   }
 
-  function updateProperty(item: PropertyEmit) {
+  function updateProperty(item: PropertyEmit): void {
     if (triggerProperties.value) {
       triggerProperties.value[item.index].value = item.value;
     }
   }
 
-  function propertyError(item: StringEmit) {
+  function propertyError(item: StringEmit): void {
     propInputError = item.value;
     checkErrors();
   }

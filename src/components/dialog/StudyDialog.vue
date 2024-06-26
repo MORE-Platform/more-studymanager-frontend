@@ -95,7 +95,7 @@ Licensed under the Elastic License 2.0. */
   );
   const contactPhoneNumber: Ref<string> = ref(study.contact?.phoneNumber ?? '');
 
-  function save() {
+  function save(): void {
     returnStudy.plannedStart = dateToDateString(start.value);
     returnStudy.plannedEnd = dateToDateString(end.value);
     returnStudy.duration =
@@ -114,7 +114,7 @@ Licensed under the Elastic License 2.0. */
 
   let errors: MoreTableChoice[] = [];
 
-  function checkRequiredFields() {
+  function checkRequiredFields(): void {
     errors = [];
     if (!returnStudy.title) {
       errors.push({ label: 'title', value: t('study.error.addTitle') });
@@ -168,7 +168,7 @@ Licensed under the Elastic License 2.0. */
     }
   });
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 </script>

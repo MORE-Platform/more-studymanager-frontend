@@ -38,7 +38,7 @@ Licensed under the Elastic License 2.0. */
     (e: 'removeScheduler'): void;
   }>();
 
-  function getSchedulerDescription() {
+  function getSchedulerDescription(): string {
     switch (props.scheduler.type) {
       case ScheduleType.Event:
         return t('scheduler.dialog.absoluteSchedule.description');
@@ -49,7 +49,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function getDateValues(prop: string) {
+  function getDateValues(prop: string): string | undefined {
     switch (props.scheduler.type) {
       case ScheduleType.Event: {
         const schedule = props.scheduler as Event;
@@ -93,7 +93,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function getRepetitionValue(prop: string) {
+  function getRepetitionValue(prop: string): string | undefined {
     switch (props.scheduler.type) {
       case ScheduleType.Event:
         {

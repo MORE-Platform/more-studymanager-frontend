@@ -14,7 +14,7 @@ Licensed under the Elastic License 2.0. */
       required: true,
     },
   });
-  const emit = defineEmits<{ (e: 'onchange', status: StudyStatus): void }>();
+  const emit = defineEmits<{ (e: 'onChange', status: StudyStatus): void }>();
 
   interface StatusButton {
     textKey: string;
@@ -78,7 +78,7 @@ Licensed under the Elastic License 2.0. */
       class="!mr-2.5"
       type="button"
       :title="$t(button.textKey)"
-      @click="emit('onchange', button.status)"
+      @click="emit('onChange', button.status)"
     >
       {{ $t(button.textKey) }}
     </Button>

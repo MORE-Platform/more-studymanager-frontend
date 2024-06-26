@@ -10,7 +10,7 @@ Licensed under the Elastic License 2.0. */
   const infoDialogRef: any = inject('dialogRef');
   const message: number = infoDialogRef?.value?.data?.message;
 
-  function closeDialog() {
+  function closeDialog(): void {
     infoDialogRef.value.close();
   }
 </script>

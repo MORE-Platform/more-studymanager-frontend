@@ -46,7 +46,7 @@ Licensed under the Elastic License 2.0. */
 
   let timer: NodeJS.Timeout | number;
 
-  function loadData() {
+  function loadData(): void {
     timer ??= setInterval(function () {
       listParticipationData().then(setObservationGroups);
     }, 10000);
@@ -145,7 +145,7 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  function setObservationGroups(data: ParticipationDataMapping[]) {
+  function setObservationGroups(data: ParticipationDataMapping[]): void {
     groupedParticipantData.value = data.reduce(function (prev, curr) {
       prev[curr.observationId] = prev[curr.observationId] || [];
       prev[curr.observationId].push(curr);

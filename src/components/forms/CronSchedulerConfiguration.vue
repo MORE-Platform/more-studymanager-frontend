@@ -98,11 +98,11 @@ Licensed under the Elastic License 2.0. */
     message: '',
     hasError: false,
   });
-  function setCronError(message: string) {
+  function setCronError(message: string): void {
     cronError.message = message;
     cronError.hasError = true;
   }
-  function clearCronError() {
+  function clearCronError(): void {
     cronError.message = '';
     cronError.hasError = false;
   }
@@ -112,7 +112,7 @@ Licensed under the Elastic License 2.0. */
     (e: 'onError', errorMessage?: string): string;
   }>();
 
-  function validate() {
+  function validate(): void {
     let parsedTriggerSchedule = '';
 
     tempCronSchedule.value.forEach((item, index) => {

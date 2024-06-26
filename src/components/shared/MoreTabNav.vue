@@ -95,7 +95,7 @@ Licensed under the Elastic License 2.0. */
     access.value = props.studyRoles.some((r) => activeTab.access.includes(r));
   }
 
-  function getAccess() {
+  function getAccess(): void {
     if (!activeTab) {
       return;
     }
@@ -126,7 +126,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function getDialogMsg(activeTab: Tab) {
+  function getDialogMsg(activeTab: Tab): string {
     let msg: string =
       activeTab.name + t('studyNavigation.accessDialog.accessInformation');
 
@@ -146,11 +146,11 @@ Licensed under the Elastic License 2.0. */
     return msg;
   }
 
-  function getVisible(accessRoles: StudyRole[]) {
+  function getVisible(accessRoles: StudyRole[]): boolean {
     return props.studyRoles.some((r) => accessRoles.includes(r));
   }
 
-  function setActiveTab() {
+  function setActiveTab(): void {
     tabs.forEach((tab: Tab) => {
       tab.active = tab.name === route.name;
     });

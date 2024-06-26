@@ -42,11 +42,11 @@ Licensed under the Elastic License 2.0. */
     message: '',
     showMessage: false,
   });
-  function setAlertMessage(message: string) {
+  function setAlertMessage(message: string): void {
     alert.message = message;
     alert.showMessage = true;
   }
-  function clearAlertMessage() {
+  function clearAlertMessage(): void {
     alert.message = '';
     alert.showMessage = false;
   }
@@ -192,38 +192,44 @@ Licensed under the Elastic License 2.0. */
   ];
   const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  function goToStudy(id: string) {
+  function goToStudy(id: string): void {
     router.push({
       name: t('studyNavigation.tabLink.overview'),
       params: { studyId: id },
     });
   }
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     const row = action.row as Study;
     switch (action.id) {
       case 'delete':
-        return studyStore.deleteStudy(row.studyId);
+        studyStore.deleteStudy(row.studyId);
+        break;
       case 'exportConfig':
-        return onExportStudyConfig(row.studyId as number);
+        onExportStudyConfig(row.studyId as number);
+        break;
       case 'exportData':
-        return onExportStudyData(row.studyId as number);
+        onExportStudyData(row.studyId as number);
+        break;
       case 'exportCalendar':
-        return onExportStudyCalendar(row.studyId as number);
+        onExportStudyCalendar(row.studyId as number);
+        break;
       case 'copyId':
-        return onCopyId(row.studyId, row.title);
+        onCopyId(row.studyId, row.title);
+        break;
       case 'goToStudy':
-        return goToStudy((row.studyId as number).toString());
+        goToStudy((row.studyId as number).toString());
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  function updateStudyInPlace(study: Study) {
+  function updateStudyInPlace(study: Study): void {
     studyStore.updateStudyInStudies(study);
   }
 
-  function openCreateDialog() {
+  function openCreateDialog(): void {
     dialog.open(StudyDialog, {
       data: {
         study: undefined,
@@ -248,7 +254,10 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function onCopyId(studyId: number | undefined, title: string | undefined) {
+  function onCopyId(
+    studyId: number | undefined,
+    title: string | undefined,
+  ): void {
     if (studyId) {
       const studyUrl = `${location.host}/studies/${studyId}`;
       navigator.clipboard.writeText(studyUrl);
@@ -256,19 +265,19 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function onExportStudyConfig(studyId: number) {
+  function onExportStudyConfig(studyId: number): void {
     studyStore.exportStudyConfig(studyId);
   }
 
-  function onExportStudyData(studyId: number) {
+  function onExportStudyData(studyId: number): void {
     studyStore.exportStudyData(studyId);
   }
 
-  function onExportStudyCalendar(studyId: number) {
+  function onExportStudyCalendar(studyId: number): void {
     studyStore.exportStudyCalendar(studyId);
   }
 
-  function onImportStudy(event: FileUploadUploaderEvent) {
+  function onImportStudy(event: FileUploadUploaderEvent): void {
     const file: File = Array.isArray(event.files)
       ? event.files[0]
       : event.files;

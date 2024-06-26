@@ -20,7 +20,7 @@ Licensed under the Elastic License 2.0. */
   const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
-  async function processUpdatedStudyStatus(status: StudyStatus) {
+  async function processUpdatedStudyStatus(status: StudyStatus): Promise<void> {
     await studyStore.updateStudyStatus(status).then(() => {
       if (status === StudyStatus.Active || status === StudyStatus.Preview) {
         studyStore.study.start = dateToDateString(new Date());
@@ -32,12 +32,8 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  async function getStudyGroups() {
-    await studyGroupStore.getStudyGroups(studyId);
-  }
-
   studyStore.getStudy(studyId);
-  getStudyGroups();
+  studyGroupStore.getStudyGroups(studyId);
 </script>
 
 <template>

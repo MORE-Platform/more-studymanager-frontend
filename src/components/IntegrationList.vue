@@ -137,7 +137,7 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
@@ -195,20 +195,24 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     const row = action.row as MoreIntegrationTableMap;
     switch (action.id) {
       case 'delete':
-        return deleteIntegration(row);
+        deleteIntegration(row);
+        break;
       case 'clone':
-        return createIntegration({
+        createIntegration({
           observationId: row.observationId,
           tokenLabel: row.tokenLabel,
         } as MoreIntegrationLink);
+        break;
     }
   }
 
-  async function updateIntegration(integration: MoreIntegrationTableMap) {
+  async function updateIntegration(
+    integration: MoreIntegrationTableMap,
+  ): Promise<void> {
     await observationsApi
       .updateTokenLabel(
         props.studyId,
@@ -230,7 +234,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function openIntegrationDialog(headerText: string) {
+  async function openIntegrationDialog(headerText: string): Promise<void> {
     dialog.open(IntegrationDialog, {
       data: {
         observationList: observationList,
@@ -257,7 +261,9 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  async function deleteIntegration(integration: MoreIntegrationTableMap) {
+  async function deleteIntegration(
+    integration: MoreIntegrationTableMap,
+  ): Promise<void> {
     await observationsApi
       .deleteToken(
         props.studyId,
@@ -273,15 +279,9 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function getObservationTokens(studyId: number, observationId: number) {
-    await observationsApi.getTokens(studyId, observationId).then((request) => {
-      return request;
-    });
-  }
-  getObservationTokens(props.studyId, 1);
-
-  async function createIntegration(integrationCreate: MoreIntegrationLink) {
+  async function createIntegration(
+    integrationCreate: MoreIntegrationLink,
+  ): Promise<void> {
     await observationsApi
       .createToken(props.studyId, integrationCreate.observationId, {
         tokenId: 0,
@@ -301,7 +301,7 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  function openInfoDialog(token: EndpointToken) {
+  function openInfoDialog(token: EndpointToken): void {
     dialog.open(CopyTokenDialog, {
       data: {
         title: `${token.tokenLabel} (Id: ${token.tokenId})`,
