@@ -114,7 +114,7 @@ Licensed under the Elastic License 2.0. */
     return eventToEventDetailMapper[cId];
   }
 
-  function setupEventsList(rsData: StudyTimeline) {
+  function setupEventsList(rsData: StudyTimeline): void {
     timelineEventsList.value = [];
 
     addStudyStartEvent();
@@ -125,7 +125,7 @@ Licensed under the Elastic License 2.0. */
     addStudyEndEvent();
   }
 
-  function addStudyStartEvent() {
+  function addStudyStartEvent(): void {
     const studyStartEvent: Event = {
       start: new Date(studyStartDate as string),
       end: new Date(studyStartDate as string),
@@ -143,7 +143,7 @@ Licensed under the Elastic License 2.0. */
     timelineEventsList.value.push(studyStartEvent);
   }
 
-  function addStudyDurationEvent(rsData: StudyTimeline) {
+  function addStudyDurationEvent(rsData: StudyTimeline): void {
     if (rsData.studyDuration) {
       const studyDurationEvent: Event = {
         start: new Date(rsData.studyDuration.from as string),
@@ -161,7 +161,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function addParticipantJoinedEvent(rsData: StudyTimeline) {
+  function addParticipantJoinedEvent(rsData: StudyTimeline): void {
     if (rsData.participantSignup) {
       const participantJoinedEvent = {
         start: new Date(rsData.participantSignup as string),
@@ -183,7 +183,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function addObservationEvents(rsData: StudyTimeline) {
+  function addObservationEvents(rsData: StudyTimeline): void {
     rsData.observations?.forEach(
       (observation: ObservationTimelineEvent, idx: number) => {
         const observationsEvent: Event = {
@@ -215,7 +215,7 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function addInterventionEvents(rsData: StudyTimeline) {
+  function addInterventionEvents(rsData: StudyTimeline): void {
     rsData.interventions?.forEach(
       (intervention: InterventionTimelineEvent, idx: number) => {
         const interventionEvent: Event = {
@@ -244,7 +244,7 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function addStudyEndEvent() {
+  function addStudyEndEvent(): void {
     const studyEndEvent: Event = {
       start: new Date(studyEndDate as string),
       end: new Date(studyEndDate as string),
@@ -278,7 +278,7 @@ Licensed under the Elastic License 2.0. */
     return translation;
   }
 
-  function onStudyGroupFilterChange(e: DropdownChangeEvent) {
+  function onStudyGroupFilterChange(e: DropdownChangeEvent): void {
     const filteredOptions: DropdownOption[] = [];
     const filteredParticipants: Participant[] = [];
 
@@ -311,12 +311,12 @@ Licensed under the Elastic License 2.0. */
     listTimeline();
   }
 
-  function onParticipantFilterChange(e: DropdownChangeEvent) {
+  function onParticipantFilterChange(e: DropdownChangeEvent): void {
     filterStudyGroup.value = getStudyGroupIdByParticipantId(parseInt(e.value));
     listTimeline();
   }
 
-  function onEventClick(vueCalEvent: VueCalEvent, e: MouseEvent) {
+  function onEventClick(vueCalEvent: VueCalEvent, e: MouseEvent): void {
     const eventDetail: EventDetail | undefined = getEventDetailByEventCid(
       vueCalEvent.cId,
     );
@@ -353,7 +353,7 @@ Licensed under the Elastic License 2.0. */
     return foundParticipant?.studyGroupId?.toString();
   }
 
-  function clearAllFilters() {
+  function clearAllFilters(): void {
     filterRelativeStartDate.value = undefined;
     filterStudyGroup.value = undefined;
     filterParticipant.value = undefined;
@@ -361,7 +361,9 @@ Licensed under the Elastic License 2.0. */
     listTimeline();
   }
 
-  function setupObservationAndInterventionFilterOptions(rsData: StudyTimeline) {
+  function setupObservationAndInterventionFilterOptions(
+    rsData: StudyTimeline,
+  ): void {
     observationAndInterventionOptions.value = [];
     const observationOptions: DropdownOption[] = [];
     const interventionOptions: DropdownOption[] = [];
@@ -458,12 +460,12 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  async function getFactories() {
-    const observationTypes = await componentsApi
+  async function getFactories(): Promise<ComponentFactory[]> {
+    const observationTypes: ComponentFactory[] = await componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
 
-    const interventionTypes = await componentsApi
+    const interventionTypes: ComponentFactory[] = await componentsApi
       .listComponents(ListComponentsComponentTypeEnum.Trigger)
       .then((response: any) => response.data);
 

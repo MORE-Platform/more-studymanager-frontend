@@ -183,7 +183,9 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  async function listActions(interventionId?: number) {
+  async function listActions(
+    interventionId?: number,
+  ): Promise<Action[] | undefined> {
     if (interventionId) {
       return interventionsApi
         .listActions(props.studyId, interventionId)
@@ -192,7 +194,10 @@ Licensed under the Elastic License 2.0. */
       return undefined;
     }
   }
-  async function getTrigger(interventionId?: number) {
+
+  async function getTrigger(
+    interventionId?: number,
+  ): Promise<Trigger | undefined> {
     if (interventionId) {
       return interventionsApi
         .getTrigger(props.studyId, interventionId)
@@ -202,25 +207,28 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     const row = action.row as Intervention;
     switch (action.id) {
       case 'delete':
-        return deleteIntervention(row);
+        deleteIntervention(row);
+        break;
       case 'clone':
-        return openInterventionDialog(
+        openInterventionDialog(
           t('intervention.dialog.header.clone'),
           row,
           true,
         );
+        break;
       case 'edit':
-        return openEditIntervention(row.interventionId);
+        openEditIntervention(row.interventionId);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  async function changeValue(intervention: Intervention) {
+  async function changeValue(intervention: Intervention): Promise<void> {
     await interventionsApi
       .updateIntervention(
         props.studyId,
@@ -236,7 +244,9 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function deleteIntervention(requestIntervention: Intervention) {
+  async function deleteIntervention(
+    requestIntervention: Intervention,
+  ): Promise<void> {
     await interventionsApi
       .deleteIntervention(
         props.studyId,
@@ -251,7 +261,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function createIntervention(object: any) {
+  async function createIntervention(object: any): Promise<void> {
     const interventionId: number | undefined = await addIntervention(
       object.intervention,
     );
@@ -266,7 +276,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function addIntervention(intervention: Intervention) {
+  async function addIntervention(intervention: Intervention): Promise<number> {
     return interventionsApi
       .addIntervention(props.studyId, intervention)
       .then((response: AxiosResponse) => response.data.interventionId)
@@ -275,7 +285,10 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function createAction(interventionId: number, action: Action) {
+  async function createAction(
+    interventionId: number,
+    action: Action,
+  ): Promise<void> {
     await interventionsApi
       .createAction(props.studyId, interventionId, action)
       .then(listInterventions)
@@ -288,7 +301,7 @@ Licensed under the Elastic License 2.0. */
     interventionId: number,
     actionId: number,
     action: Action,
-  ) {
+  ): Promise<void> {
     await interventionsApi
       .updateAction(props.studyId, interventionId, actionId, action)
       .catch((e: AxiosError) =>
@@ -296,7 +309,10 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function deleteAction(interventionId: number, actionId: number) {
+  async function deleteAction(
+    interventionId: number,
+    actionId: number,
+  ): Promise<void> {
     await interventionsApi
       .deleteAction(props.studyId, interventionId, actionId)
       .catch((e: AxiosError) =>
@@ -304,7 +320,10 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function updateTrigger(interventionId: number, trigger: Trigger) {
+  async function updateTrigger(
+    interventionId: number,
+    trigger: Trigger,
+  ): Promise<void> {
     await interventionsApi
       .updateTrigger(props.studyId, interventionId, trigger)
       .catch((e: AxiosError) =>
@@ -312,7 +331,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function updateInterventionData(object: any) {
+  async function updateInterventionData(object: any): Promise<void> {
     await updateIntervention(object.intervention);
 
     if (object.intervention.interventionId) {
@@ -340,7 +359,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function updateIntervention(intervention: Intervention) {
+  async function updateIntervention(intervention: Intervention): Promise<void> {
     await interventionsApi
       .updateIntervention(
         props.studyId,
@@ -356,7 +375,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function openEditIntervention(interventionId: number | undefined) {
+  function openEditIntervention(interventionId: number | undefined): void {
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId,
     );
@@ -376,7 +395,7 @@ Licensed under the Elastic License 2.0. */
     headerText: string,
     intervention?: Intervention,
     clone?: boolean,
-  ) {
+  ): void {
     Promise.all([
       listActions(intervention?.interventionId),
       getTrigger(intervention?.interventionId),

@@ -32,11 +32,11 @@ Licensed under the Elastic License 2.0. */
     (e: 'onUpdateStudyStatus', status: StudyStatus): void;
   }>();
 
-  function updateStudy(study: Study) {
+  function updateStudy(study: Study): void {
     emit('onUpdateStudy', study);
   }
 
-  function updateStudyStatus(status: StudyStatus) {
+  function updateStudyStatus(status: StudyStatus): void {
     dialog.open(ChangeStudyStatusDialog, {
       data: {
         study: props.study,
@@ -62,7 +62,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function openEditDialog() {
+  function openEditDialog(): void {
     dialog.open(StudyDialog, {
       data: {
         study: props.study,
@@ -168,7 +168,7 @@ Licensed under the Elastic License 2.0. */
         <StudyStatusChange
           v-if="props.userRoles.find((r) => r === StudyRole.Admin)"
           :status="study.status || ''"
-          @onchange="updateStudyStatus"
+          @on-change="updateStudyStatus"
         ></StudyStatusChange>
         <Button
           v-if="props.study.status !== StudyStatus.Closed"

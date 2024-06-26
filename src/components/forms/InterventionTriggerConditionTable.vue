@@ -136,7 +136,7 @@ Licensed under the Elastic License 2.0. */
     { label: '!=', value: '!=' },
   ];
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
@@ -167,7 +167,9 @@ Licensed under the Elastic License 2.0. */
     return [];
   }
 
-  function getOperatorOptions(trigger: InterventionTriggerConfig) {
+  function getOperatorOptions(
+    trigger: InterventionTriggerConfig,
+  ): MoreTableChoice[] {
     const operator: ComponentFactoryMeasurementsInner = getOperator(trigger);
     return (operator && operator.type === 'DOUBLE') ||
       (operator && operator.type === 'INTEGER')
@@ -184,7 +186,7 @@ Licensed under the Elastic License 2.0. */
     ) as ComponentFactoryMeasurementsInner;
   }
 
-  function updateEditRows() {
+  function updateEditRows(): void {
     props.rows.forEach((item: InterventionTriggerConfig) => {
       if (item.editMode) {
         editingRows.value.push(item);
@@ -192,7 +194,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function changeObservationType(trigger: InterventionTriggerConfig) {
+  function changeObservationType(trigger: InterventionTriggerConfig): void {
     if (trigger.observationId) {
       const observation = findObservationById(
         trigger.observationId,
@@ -231,14 +233,14 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function changeNextGroupCondition() {
+  function changeNextGroupCondition(): void {
     emit('onChangeGroupCondition', {
       groupIndex: props.groupIndex,
       value: conditionValue.value,
     });
   }
 
-  function edit(trigger: InterventionTriggerConfig, index: number) {
+  function edit(trigger: InterventionTriggerConfig, index: number): void {
     rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
@@ -250,7 +252,7 @@ Licensed under the Elastic License 2.0. */
     editingRows.value.push(trigger);
   }
 
-  function cancel(trigger: InterventionTriggerConfig, index: number) {
+  function cancel(trigger: InterventionTriggerConfig, index: number): void {
     rowOpenError.value = '';
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
@@ -262,7 +264,7 @@ Licensed under the Elastic License 2.0. */
     editingRows.value = [];
   }
 
-  function save(trigger: QueryObjectInner, index: number) {
+  function save(trigger: QueryObjectInner, index: number): void {
     const returnTrigger: QueryObjectInner = trigger;
 
     if (
@@ -282,7 +284,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function addRow(index: number) {
+  function addRow(index: number): void {
     rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onAddRow', {
@@ -291,14 +293,14 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function deleteRow(index: number) {
+  function deleteRow(index: number): void {
     emit('onDeleteRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
   }
 
-  function addTriggerGroup() {
+  function addTriggerGroup(): void {
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();
   }

@@ -22,7 +22,7 @@ Licensed under the Elastic License 2.0. */
   const roleValue: Ref<MoreTableChoice | undefined> = ref();
   const warning: Ref<string | undefined> = ref(undefined);
 
-  function save() {
+  function save(): void {
     if (!roleValue.value) {
       warning.value = t('studyCollaborator.dialog.addRole');
     } else {
@@ -37,7 +37,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 </script>

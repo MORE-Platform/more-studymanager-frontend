@@ -53,7 +53,7 @@
 
   let rruleErrors: MoreTableChoice[] = [];
 
-  function checkErrors() {
+  function checkErrors(): void {
     rruleErrors = [];
     if (rruleEventCheckbox.value) {
       if (typeof returnRrule.freq === 'undefined') {
@@ -159,7 +159,7 @@
     rruleEndOptionValue.value = RRuleEndOptions.after;
   }
 
-  function setRruleCountLabel(rruleFreq: string | undefined) {
+  function setRruleCountLabel(rruleFreq: string | undefined): void {
     if (rruleFreq) {
       rruleCountLabel.value = rruleFrequencyOptions.find(
         (f: any) => f.value === rruleFreq,
@@ -167,12 +167,12 @@
     }
   }
 
-  function toggleRruleCheckbox() {
+  function toggleRruleCheckbox(): void {
     checkErrors();
     emit('onRruleCheckboxChange', rruleEventCheckbox.value);
   }
 
-  function setRepetitionEnd(type: string | undefined) {
+  function setRepetitionEnd(type: string | undefined): void {
     switch (type) {
       case RRuleEndOptions.after:
         {
@@ -205,7 +205,7 @@
     }
   });
 
-  function onChangeRrule(type?: string, eventValue?: any) {
+  function onChangeRrule(type?: string, eventValue?: any): void {
     if (type === 'byday' && previewCount.value && returnRrule.byday?.length) {
       returnRrule.count = previewCount.value * returnRrule.byday.length;
     }

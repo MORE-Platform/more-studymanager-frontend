@@ -113,7 +113,7 @@ Licensed under the Elastic License 2.0. */
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteCollaborator'),
-      visible: (data: MoreTableCollaboratorItem) => {
+      visible: (data: MoreTableCollaboratorItem): boolean => {
         return data.uid !== userStore.user?.uid && editAccess;
       },
       confirmDeleteDialog: {
@@ -170,16 +170,17 @@ Licensed under the Elastic License 2.0. */
     return rolesString;
   }
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     switch (action.id) {
       case 'delete':
-        return deleteStudyCollaborator(action.row as MoreTableCollaboratorItem);
+        deleteStudyCollaborator(action.row as MoreTableCollaboratorItem);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  async function listCollaborators() {
+  async function listCollaborators(): Promise<void> {
     await collaboratorsApi
       .listStudyCollaborators(props.studyId)
       .then((response: AxiosResponse) => {
@@ -196,7 +197,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function addStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
+  function addStudyCollaborator(collaborator: MoreTableCollaboratorItem): void {
     collaboratorsApi
       .setStudyCollaboratorRoles(
         props.studyId,
@@ -206,32 +207,32 @@ Licensed under the Elastic License 2.0. */
       .then(listCollaborators);
   }
 
-  function getRoleChoices(roles: StudyRole[]) {
+  function getRoleChoices(roles: StudyRole[]): MoreTableChoice[] {
     const roleChoices: MoreTableChoice[] = [];
     roles.forEach((item) => {
       if (item === StudyRole.Admin) {
         roleChoices.push({
           label: t('study.roles.admin'),
           value: StudyRole.Admin,
-        });
+        } as MoreTableChoice);
       }
       if (item === StudyRole.Operator) {
         roleChoices.push({
           label: t('study.roles.operator'),
           value: StudyRole.Operator,
-        });
+        } as MoreTableChoice);
       }
       if (item === StudyRole.Viewer) {
         roleChoices.push({
           label: t('study.roles.viewer'),
           value: StudyRole.Viewer,
-        });
+        } as MoreTableChoice);
       }
     });
     return roleChoices;
   }
 
-  function changeValue(collabListItem: MoreTableCollaboratorItem) {
+  function changeValue(collabListItem: MoreTableCollaboratorItem): void {
     const collaborator: Collaborator = {
       roles: collabListItem.roles.map(
         (c: MoreTableChoice) => c.value as StudyRole,
@@ -257,13 +258,17 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function deleteStudyCollaborator(collaborator: MoreTableCollaboratorItem) {
+  function deleteStudyCollaborator(
+    collaborator: MoreTableCollaboratorItem,
+  ): void {
     collaboratorsApi
       .clearStudyCollaboratorRoles(props.studyId, collaborator.uid)
       .then(listCollaborators);
   }
 
-  function openAddCollaboratorDialog(options: MoreTableCollaboratorItemOption) {
+  function openAddCollaboratorDialog(
+    options: MoreTableCollaboratorItemOption,
+  ): void {
     dialog.open(StudyCollaboratorDialog, {
       data: {
         collaborator: {
@@ -295,7 +300,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const collaboratorList: Ref<MoreTableCollaboratorItemOption[]> = ref([]);
-  async function filterActionHandler(query: string) {
+  async function filterActionHandler(query: string): Promise<void> {
     if (query) {
       collaboratorList.value = await getUsers(query);
     }

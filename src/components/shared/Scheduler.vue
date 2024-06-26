@@ -73,7 +73,7 @@ Licensed under the Elastic License 2.0. */
   const hasRruleValue: Ref<boolean> = ref(!!returnSchedule.value.rrule); // Repeat Event Checkbox
 
   let rruleErrors: MoreTableChoice[] = [];
-  function onChangeSingleDayEventCheckbox() {
+  function onChangeSingleDayEventCheckbox(): void {
     if (
       singleDayEventCheckbox.value &&
       calendarStart.value &&
@@ -93,7 +93,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function onChangeEntireDayCheckbox() {
+  function onChangeEntireDayCheckbox(): void {
     if (entireDayCheckbox.value) {
       calendarStart.value.setHours(0, 0, 0);
       calendarEndChangedWithStart = true;
@@ -126,11 +126,15 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function validateDate(dateType: string, newValue: Date, oldValue: Date) {
+  function validateDate(
+    dateType: string,
+    newValue: Date,
+    oldValue: Date,
+  ): void {
     errors = [];
     warnings = [];
 
-    const updateHours = (targetDate: Ref<Date>, sourceDate: Date) => {
+    const updateHours = (targetDate: Ref<Date>, sourceDate: Date): void => {
       targetDate.value.setHours(
         sourceDate.getHours(),
         sourceDate.getMinutes(),
@@ -171,26 +175,26 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function toggleHasRruleValue(rruleCheckbox: boolean) {
+  function toggleHasRruleValue(rruleCheckbox: boolean): void {
     hasRruleValue.value = rruleCheckbox;
   }
 
-  function onRruleUpdate(schedulerRrule: RecurrenceRule) {
+  function onRruleUpdate(schedulerRrule: RecurrenceRule): void {
     if (hasRruleValue.value) {
       returnSchedule.value.rrule = schedulerRrule;
     }
   }
 
-  function onRruleErrorUpdate(updatedRruleErrors: MoreTableChoice[]) {
+  function onRruleErrorUpdate(updatedRruleErrors: MoreTableChoice[]): void {
     rruleErrors = updatedRruleErrors;
   }
 
-  function save() {
+  function save(): void {
     // setCalendarStart and calendarEnd into returnSchedule object
     returnSchedule.value.dtstart = calendarStart.value.toISOString();
     returnSchedule.value.dtend = calendarEnd.value.toISOString();
 
-    // check if repeateChecked is on -> if not set rrule: undefined, if it is save rrule with close
+    // check if repeatedChecked is on -> if not set rrule: undefined, if it is safe rrule with close
     if (!hasRruleValue.value) {
       returnSchedule.value.rrule = undefined;
     }
@@ -204,7 +208,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 </script>

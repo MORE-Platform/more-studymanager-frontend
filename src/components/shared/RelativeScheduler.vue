@@ -125,7 +125,7 @@
     return errors.find((el) => el.label === label)?.value;
   }
 
-  function checkErrors() {
+  function checkErrors(): void {
     errors = [];
     if (
       !returnSchedule.dtstart.offset?.value ||
@@ -199,7 +199,7 @@
     }
   }
 
-  function calculatedRepeat() {
+  function calculatedRepeat(): void {
     if (!repeatChecked.value) {
       return;
     }
@@ -253,11 +253,11 @@
     }
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 
-  function save() {
+  function save(): void {
     returnSchedule.dtstart.time = startTime.value
       ?.toTimeString()
       .substring(0, 5);

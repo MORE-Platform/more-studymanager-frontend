@@ -9,12 +9,20 @@
 import axios, { AxiosError } from 'axios';
 import useLoader from './useLoader';
 
-export function useErrorHandling() {
+type UseErrorHandlingReturnType = {
+  handleIndividualError: (
+    error: AxiosError & { globallyHandled?: boolean },
+    messageKey?: string,
+  ) => void;
+  activateGlobalErrorHandlingInterceptor: () => void;
+};
+
+export function useErrorHandling(): UseErrorHandlingReturnType {
   const loader = useLoader();
   const handleIndividualError = (
     error: AxiosError & { globallyHandled?: boolean },
     messageKey?: string,
-  ) => {
+  ): void => {
     if (!error.globallyHandled) {
       console.error(
         error.config?.url
@@ -24,7 +32,7 @@ export function useErrorHandling() {
       loader.reset();
     }
   };
-  const activateGlobalErrorHandlingInterceptor = () => {
+  const activateGlobalErrorHandlingInterceptor = (): void => {
     axios.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {

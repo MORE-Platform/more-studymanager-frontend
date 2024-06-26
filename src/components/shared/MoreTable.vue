@@ -33,6 +33,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
+    Visibility,
   } from '../../generated-sources/openapi';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
@@ -101,7 +102,7 @@ Licensed under the Elastic License 2.0. */
 
   const enableEditMode = ref(false);
   updateEditableStatus();
-  function updateEditableStatus() {
+  function updateEditableStatus(): void {
     if (props.editableAccess) {
       enableEditMode.value = props.columns.some((c) => c.editable);
     } else {
@@ -115,7 +116,7 @@ Licensed under the Elastic License 2.0. */
     },
   );
 
-  function rowActionHandler(action: MoreTableAction, row: any) {
+  function rowActionHandler(action: MoreTableAction, row: any): void {
     if (action.confirmDeleteDialog) {
       action.confirmDeleteDialog.dialog(row);
     } else {
@@ -123,19 +124,20 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function isVisible(action: MoreTableAction, row: any = undefined) {
+  function isVisible(action: MoreTableAction, row: any = undefined): boolean {
     return action.visible === undefined || action.visible(row);
   }
 
   const rowIDsInEditMode: Ref<any[]> = ref([]);
-  function isRowInEditMode(row: any) {
+  function isRowInEditMode(row: any): boolean {
     if (row[props.rowId]) {
       return rowIDsInEditMode.value.includes(row[props.rowId]);
     }
+    return false;
   }
 
   const editingRows: Ref<any[]> = ref([]);
-  function setRowToEditMode(row: any) {
+  function setRowToEditMode(row: any): void {
     rowIDsInEditMode.value = [];
     editingRows.value = [];
 
@@ -146,7 +148,7 @@ Licensed under the Elastic License 2.0. */
     editingRows.value.push(row);
   }
 
-  function cancelEditMode(row: any) {
+  function cancelEditMode(row: any): void {
     editingRows.value.splice(
       editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId]),
     );
@@ -155,12 +157,12 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function saveEditChanges(row: any) {
+  function saveEditChanges(row: any): void {
     emit('onChange', cleanRow(row));
     cancelEditMode(row);
   }
 
-  function isRowEditable(row: any) {
+  function isRowEditable(row: any): boolean {
     if (!props.editableAccess) {
       return false;
     }
@@ -181,13 +183,13 @@ Licensed under the Elastic License 2.0. */
     return props.editable(row);
   }
 
-  function onRowClick(event: DataTableRowClickEvent) {
+  function onRowClick(event: DataTableRowClickEvent): void {
     if (rowIDsInEditMode.value.length === 0) {
       emit('onSelect', event.data[props.rowId]);
     }
   }
 
-  function prepareRows(rows: any) {
+  function prepareRows(rows: any): any {
     return rows.map((row: any) => {
       props.columns.forEach((column) => {
         if (column.type === MoreTableFieldType.calendar) {
@@ -200,7 +202,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function cleanRow(row: any) {
+  function cleanRow(row: any): any {
     props.columns.forEach((column) => {
       if (column.type === MoreTableFieldType.calendar) {
         const date = row[`__internalValue_${column.field}`];
@@ -211,7 +213,10 @@ Licensed under the Elastic License 2.0. */
     return row;
   }
 
-  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  function getLabelForChoiceValue(
+    value: any,
+    values: MoreTableChoice[],
+  ): string {
     return (
       values.find((s: any) => s.value === value?.toString())?.label || value
     );
@@ -220,7 +225,7 @@ Licensed under the Elastic License 2.0. */
   function getLabelForMultiSelectValue(
     setValues: any,
     valueChoices?: MoreTableChoice[],
-  ) {
+  ): string[] {
     if (valueChoices) {
       const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
@@ -243,13 +248,15 @@ Licensed under the Elastic License 2.0. */
     return editable.values;
   }
 
-  function isColumnEditable(editable: boolean | MoreTableEditable | undefined): boolean {
+  function isColumnEditable(
+    editable: boolean | MoreTableEditable | undefined,
+  ): boolean {
     if (editable === undefined) return false;
     if (typeof editable === 'boolean') return editable;
     return editable.enabled;
   }
 
-  function getObservationVisibility(type: string) {
+  function getObservationVisibility(type: string): Visibility | undefined {
     return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
   }

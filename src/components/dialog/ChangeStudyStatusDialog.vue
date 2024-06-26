@@ -15,10 +15,10 @@ Licensed under the Elastic License 2.0. */
   const study: Study = dialogRef.value.data.study;
   const changedStatus: StudyStatus = dialogRef.value.data.changedStatus;
 
-  function setStudyStatus() {
+  function setStudyStatus(): void {
     dialogRef.value.close(changedStatus);
   }
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
 </script>

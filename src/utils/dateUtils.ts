@@ -6,7 +6,7 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-export function dateToDateString(date: Date) {
+export function dateToDateString(date: Date): string | undefined {
   return dateToDateTimeString(date)?.substring(0, 10);
 }
 

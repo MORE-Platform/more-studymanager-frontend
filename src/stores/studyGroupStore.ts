@@ -23,7 +23,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
   const studyGroups: Ref<StudyGroup[]> = ref([]);
 
   // Actions
-  async function getStudyGroups(studyId: number) {
+  async function getStudyGroups(studyId: number): Promise<void> {
     studyGroups.value = await studyGroupsApi
       .listStudyGroups(studyId)
       .then((response) => response.data)
@@ -32,7 +32,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
         return studyGroups.value;
       });
   }
-  async function createStudyGroup(studyId: number) {
+  async function createStudyGroup(studyId: number): Promise<void> {
     let title;
     let count = studyGroups.value.length;
     while (title === undefined) {
@@ -53,7 +53,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
       );
   }
 
-  function deleteStudyGroup(studyGroup: StudyGroup) {
+  function deleteStudyGroup(studyGroup: StudyGroup): void {
     studyGroupsApi
       .deleteStudyGroup(
         studyGroup.studyId as number,
@@ -71,7 +71,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
         handleIndividualError(e, 'cannot delete study group'),
       );
   }
-  async function updateStudyGroup(studyGroup: StudyGroup) {
+  async function updateStudyGroup(studyGroup: StudyGroup): Promise<void> {
     const position = studyGroups.value.findIndex(
       (studyGroupsItem) =>
         studyGroupsItem.studyGroupId === studyGroup.studyGroupId,
@@ -90,7 +90,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
     }
   }
 
-  function toStudyGroupMap() {
+  function toStudyGroupMap(): MoreStudyGroupTableMap[] {
     return studyGroups.value.map((studyGroup: StudyGroup) => {
       return {
         studyId: studyGroup.studyId,
@@ -124,7 +124,7 @@ export const useStudyGroupStore = defineStore('studyGroup', () => {
       duration: d,
       numberOfParticipants: row.numberOfParticipants,
       created: row.created,
-      modiefied: row.modified,
+      modified: row.modified,
     } as StudyGroup;
   }
 

@@ -75,7 +75,7 @@ Licensed under the Elastic License 2.0. */
     value: null,
   } as MoreTableChoice);
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
@@ -85,7 +85,7 @@ Licensed under the Elastic License 2.0. */
   const observationTypes: any[] = factories.map((cf: ComponentFactory) => ({
     label: cf.title ? t(cf.title) : '',
     value: cf.componentId,
-    command: () => {
+    command: (): void => {
       openObservationDialog(t('observation.dialog.header.create'), {
         type: cf.componentId,
       });
@@ -223,7 +223,7 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  function getObservationTypeString(observationType: string) {
+  function getObservationTypeString(observationType: string): string {
     return t(
       factories.find((f) => f.componentId === observationType)?.title as string,
     );
@@ -326,25 +326,24 @@ Licensed under the Elastic License 2.0. */
     return '';
   }
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     const row = action.row as Observation;
     switch (action.id) {
       case 'delete':
-        return deleteObservation(row);
+        deleteObservation(row);
+        break;
       case 'clone':
-        return openObservationDialog(
-          t('observation.dialog.header.clone'),
-          row,
-          true,
-        );
+        openObservationDialog(t('observation.dialog.header.clone'), row, true);
+        break;
       case 'edit':
-        return openEditObservation(row.observationId);
+        openEditObservation(row.observationId);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  async function updateObservation(observation: Observation) {
+  async function updateObservation(observation: Observation): Promise<void> {
     await observationsApi
       .updateObservation(
         props.studyId,
@@ -360,7 +359,9 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  async function deleteObservation(requestObservation: Observation) {
+  async function deleteObservation(
+    requestObservation: Observation,
+  ): Promise<void> {
     await observationsApi
       .deleteObservation(
         props.studyId,
@@ -375,7 +376,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function factoryForType(type?: string) {
+  function factoryForType(type?: string): ComponentFactory | undefined {
     return factories.find((f) => f.componentId === type);
   }
 
@@ -383,7 +384,7 @@ Licensed under the Elastic License 2.0. */
     headerText: string,
     observation?: Observation,
     clone?: boolean,
-  ) {
+  ): void {
     dialog.open(ObservationDialog, {
       data: {
         groupStates: groupStatuses,
@@ -421,7 +422,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function createObservation(newObservation: Observation) {
+  function createObservation(newObservation: Observation): void {
     observationsApi
       .addObservation(props.studyId, newObservation)
       .then(listObservations)
@@ -430,7 +431,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function openEditObservation(observationId: number | undefined) {
+  function openEditObservation(observationId: number | undefined): void {
     const observation = observationList.value.find(
       (observation) => observation.observationId === observationId,
     );
@@ -445,10 +446,11 @@ Licensed under the Elastic License 2.0. */
       openObservationDialog(dialogTitle, observation);
     }
   }
+
   listObservations();
 
   const menu = ref();
-  function toggleButtonMenu(event: MouseEvent) {
+  function toggleButtonMenu(event: MouseEvent): void {
     menu.value.toggle(event);
   }
 </script>

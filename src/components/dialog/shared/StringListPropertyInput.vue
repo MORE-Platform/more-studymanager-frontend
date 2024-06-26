@@ -22,7 +22,7 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
-  const update = (event: KeyboardEvent, index: number) => {
+  const update = (event: KeyboardEvent, index: number): void => {
     if (props.property.value) {
       props.property.value[index] = (event.target as HTMLInputElement).value;
     }

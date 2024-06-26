@@ -19,11 +19,11 @@ Licensed under the Elastic License 2.0. */
   const confirmMsg: string = infoDialogRef?.value?.data?.confirmMsg;
   const study: Study = infoDialogRef?.value?.data?.study;
 
-  function deleteStudy() {
+  function deleteStudy(): void {
     studyStore.deleteStudy(study.studyId);
     infoDialogRef.value.close();
   }
-  function closeDialog() {
+  function closeDialog(): void {
     infoDialogRef.value.close();
   }
 </script>

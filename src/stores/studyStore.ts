@@ -34,7 +34,7 @@ export const useStudyStore = defineStore('study', () => {
         return study.value;
       });
   }
-  async function updateStudy(studyResponse: Study) {
+  async function updateStudy(studyResponse: Study): Promise<void> {
     if (study.value.studyId) {
       study.value = await studiesApi
         .updateStudy(study.value.studyId, studyResponse)
@@ -49,7 +49,7 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function updateStudyStatus(status: StudyStatus) {
+  async function updateStudyStatus(status: StudyStatus): Promise<void> {
     if (study.value.studyId) {
       await studiesApi
         .setStatus(study.value.studyId, { status })
@@ -82,7 +82,7 @@ export const useStudyStore = defineStore('study', () => {
       );
   }
 
-  async function deleteStudy(studyId: number | undefined) {
+  async function deleteStudy(studyId: number | undefined): Promise<void> {
     if (studyId) {
       await studiesApi
         .deleteStudy(studyId)
@@ -106,7 +106,7 @@ export const useStudyStore = defineStore('study', () => {
         return studies.value;
       });
   }
-  async function updateStudyInStudies(changedStudy: Study) {
+  async function updateStudyInStudies(changedStudy: Study): Promise<void> {
     const i = studies.value.findIndex(
       (studyItem) => studyItem.studyId === changedStudy.studyId,
     );
@@ -120,7 +120,7 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function importStudy(importedStudy: File) {
+  async function importStudy(importedStudy: File): Promise<void> {
     await importExportApi
       .importStudy(importedStudy, {
         headers: {

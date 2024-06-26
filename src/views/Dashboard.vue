@@ -17,7 +17,7 @@ Licensed under the Elastic License 2.0. */
 
   userStore.getUser().then(() => openWelcomeMessage());
 
-  function openWelcomeMessage() {
+  function openWelcomeMessage(): void {
     const storageItem = localStorage.getItem('welcomeMsg');
     if (userStore.user?.uid && !storageItem) {
       dialog.open(InfoDialog, {

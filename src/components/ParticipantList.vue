@@ -35,6 +35,7 @@ Licensed under the Elastic License 2.0. */
   import Menu from 'primevue/menu';
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
+  import { MenuOptions } from '../models/ComponentModels';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -160,31 +161,31 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const addParticipantOptions: any[] = [
+  const addParticipantOptions: MenuOptions[] = [
     {
       label: t('participants.participantsList.labels.add1'),
       value: 1,
-      command: () => createParticipant(1),
+      command: (): void => createParticipant(1),
     },
     {
       label: t('participants.participantsList.labels.add3'),
       value: 3,
-      command: () => createParticipant(3),
+      command: (): void => createParticipant(3),
     },
     {
       label: t('participants.participantsList.labels.add10'),
       value: 10,
-      command: () => createParticipant(10),
+      command: (): void => createParticipant(10),
     },
     {
       label: t('participants.participantsList.labels.add25'),
       value: 25,
-      command: () => createParticipant(25),
+      command: (): void => createParticipant(25),
     },
     {
       label: t('participants.participantsList.labels.add50'),
       value: 50,
-      command: () => createParticipant(50),
+      command: (): void => createParticipant(50),
     },
   ];
 
@@ -245,7 +246,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
-  function shuffleArray(a: Participant[]) {
+  function shuffleArray(a: Participant[]): Participant[] {
     let j, x, i;
     for (i = a.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
@@ -256,7 +257,10 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  function executeAction(action: MoreTableRowActionResult, withData?: boolean) {
+  function executeAction(
+    action: MoreTableRowActionResult,
+    withData?: boolean,
+  ): void {
     switch (action.id) {
       case 'delete':
         deleteParticipant(action.row as Participant, !!withData);
@@ -266,7 +270,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function createParticipant(amount: number) {
+  function createParticipant(amount: number): void {
     const i = amount || 1;
     const participants = starWarsNames
       .random(i)
@@ -360,7 +364,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const menu = ref();
-  function toggleButtonMenu(event: MouseEvent) {
+  function toggleButtonMenu(event: MouseEvent): void {
     menu.value.toggle(event);
   }
 

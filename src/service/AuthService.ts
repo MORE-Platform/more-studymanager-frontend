@@ -15,7 +15,7 @@ export default class AuthService {
     this.keycloak = new Keycloak(options);
   }
 
-  public async init() {
+  public async init(): Promise<boolean> {
     const loggedIn = await this.keycloak.init({ onLoad: 'login-required' });
     if (loggedIn) {
       setInterval(() => {

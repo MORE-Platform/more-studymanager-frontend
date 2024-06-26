@@ -42,7 +42,7 @@ Licensed under the Elastic License 2.0. */
     (e: 'onMsgChange'): boolean;
   }>();
 
-  function showMessage() {
+  function showMessage(): void {
     setTimeout(() => {
       emit('onMsgChange');
     }, 3000);

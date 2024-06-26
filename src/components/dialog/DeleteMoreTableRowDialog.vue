@@ -17,11 +17,11 @@ Licensed under the Elastic License 2.0. */
   const elInfoTitle: string = dialogRef?.value?.data?.elInfoTitle;
   const elInfoDesc: string = dialogRef?.value?.data?.elInfoDesc;
 
-  function deleteRowEl() {
+  function deleteRowEl(): void {
     dialogRef.value.close(row);
   }
 
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
 </script>
