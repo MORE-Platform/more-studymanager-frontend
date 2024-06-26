@@ -484,10 +484,12 @@
 
     <div class="grid w-full grid-cols-6">
       <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
-        <Button class="btn-gray !mr-3" @click="cancel()">{{
-          $t('global.labels.cancel')
-        }}</Button>
-        <Button @click="save()">{{ $t('global.labels.save') }}</Button>
+        <Button
+          class="btn-gray !mr-3"
+          :label="$t('global.labels.cancel')"
+          @click="cancel()"
+        />
+        <Button :label="$t('global.labels.save')" @click="save()" />
       </div>
     </div>
   </div>

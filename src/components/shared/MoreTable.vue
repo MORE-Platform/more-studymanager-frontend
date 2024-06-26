@@ -272,7 +272,7 @@ Licensed under the Elastic License 2.0. */
           <span v-html="subtitle" />
         </h4>
       </div>
-      <div class="actions table-actions flex flex-1 justify-end">
+      <div class="actions table-actions ml-2.5 flex flex-1 justify-end">
         <slot
           name="tableActions"
           :is-in-edit-mode="rowIDsInEditMode.length"
@@ -311,7 +311,7 @@ Licensed under the Elastic License 2.0. */
               type="button"
               :icon="action.icon"
               @click="rowActionHandler(action, slotProps.data)"
-            ></Button>
+            />
           </div>
         </template>
       </Column>
@@ -330,6 +330,23 @@ Licensed under the Elastic License 2.0. */
           column.columnWidth ? `width: ${column.columnWidth}` : undefined
         "
       >
+        <template #filterclear="{ filterCallback }">
+          <Button
+            type="button"
+            outlined
+            severity="cancel"
+            :label="$t('global.labels.cancel')"
+            @click="filterCallback()"
+          />
+        </template>
+        <template #filterapply="{ filterCallback }">
+          <Button
+            type="button"
+            severity="info"
+            :label="$t('global.labels.apply')"
+            @click="filterCallback()"
+          />
+        </template>
         <template
           v-if="isColumnEditable(column.editable)"
           #editor="{ data, field }"
@@ -555,8 +572,7 @@ Licensed under the Elastic License 2.0. */
                 rowIDsInEditMode.length ? true : !isRowEditable(slotProps.data)
               "
               @click="setRowToEditMode(slotProps.data)"
-            >
-            </Button>
+            />
             <div v-for="action in endRowActions" :key="action.id">
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
@@ -582,14 +598,14 @@ Licensed under the Elastic License 2.0. */
               type="button"
               icon="pi pi-check"
               @click="saveEditChanges(slotProps.data)"
-            ></Button>
+            />
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.cancelAction')"
               type="button"
               icon="pi pi-times"
               class="btn-gray"
               @click="cancelEditMode(slotProps.data)"
-            ></Button>
+            />
           </div>
         </template>
       </Column>

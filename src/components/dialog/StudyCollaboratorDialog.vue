@@ -64,12 +64,12 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="buttons mt-1 justify-end text-right">
-      <Button class="btn-gray" @click="cancel()">{{
-        $t('global.labels.cancel')
-      }}</Button>
-      <Button class="!ml-2" @click="save()">{{
-        $t('global.labels.save')
-      }}</Button>
+      <Button
+        class="btn-gray"
+        :label="$t('global.labels.cancel')"
+        @click="cancel()"
+      />
+      <Button class="!ml-2" :label="$t('global.labels.save')" @click="save()" />
     </div>
   </div>
 </template>

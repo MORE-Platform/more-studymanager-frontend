@@ -170,14 +170,16 @@ Licensed under the Elastic License 2.0. */
           :status="study.status || ''"
           @on-change="updateStudyStatus"
         ></StudyStatusChange>
-        <Button
-          v-if="props.study.status !== StudyStatus.Closed"
-          type="button"
-          :title="$t('study.statusChange.edit')"
-          :disabled="!hasAccessToEdit()"
-          @click="openEditDialog()"
-          ><span>{{ $t('study.statusChange.edit') }}</span></Button
-        >
+        <div>
+          <Button
+            v-if="props.study.status !== StudyStatus.Closed"
+            type="button"
+            :title="$t('study.statusChange.edit')"
+            :disabled="!hasAccessToEdit()"
+            @click="openEditDialog()"
+            ><span>{{ $t('study.statusChange.edit') }}</span></Button
+          >
+        </div>
       </div>
     </div>
 

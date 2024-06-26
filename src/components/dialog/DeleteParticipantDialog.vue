@@ -39,26 +39,23 @@ Licensed under the Elastic License 2.0. */
       <Button
         type="button"
         class="p-button btn-gray !mr-3"
+        :label="$t('global.labels.close')"
         @click="closeDialog"
-      >
-        {{ $t('global.labels.close') }}
-      </Button>
+      />
 
       <Button
         type="button"
         class="p-button p-button-danger !mr-3"
+        :label="$t('participants.dialog.deleteMsg.deleteWithoutData')"
         @click="deleteParticipant(false)"
-      >
-        {{ $t('participants.dialog.deleteMsg.deleteWithoutData') }}
-      </Button>
+      />
 
       <Button
         type="button"
         class="p-button p-button-danger"
+        :label="$t('participants.dialog.deleteMsg.deleteWithData')"
         @click="deleteParticipant(true)"
-      >
-        {{ $t('participants.dialog.deleteMsg.deleteWithData') }}
-      </Button>
+      />
     </div>
   </div>
 </template>

@@ -386,12 +386,12 @@ Licensed under the Elastic License 2.0. */
       :editable="checkEditablePermissions"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
-      class="width-65"
+      class="width-50"
       @on-action="executeAction($event)"
       @on-change="changeValue($event)"
     >
       <template #tableActions="{ isInEditMode }">
-        <div class="ml-2.5">
+        <div>
           <Button
             type="button"
             :disabled="isInEditMode ? true : !actionsVisible"
@@ -405,13 +405,14 @@ Licensed under the Elastic License 2.0. */
           <Button
             type="button"
             :label="t('participants.participantsList.action.distribute')"
-            :disabled="actionsVisible && participantsList.length === 0"
+            :disabled="!actionsVisible || participantsList.length === 0"
             @click="openDistributeDialog()"
-          ></Button>
+          />
         </div>
         <div class="ml-2.5">
           <FileUpload
             mode="basic"
+            upload-icon="pi pi-upload"
             :choose-label="t('participants.participantsList.action.import')"
             :custom-upload="true"
             :auto="true"
@@ -427,7 +428,7 @@ Licensed under the Elastic License 2.0. */
             :label="t('participants.participantsList.action.export')"
             :disabled="participantsList.length === 0"
             @click="exportParticipants()"
-          ></Button>
+          />
         </div>
       </template>
     </MoreTable>
@@ -437,7 +438,7 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  :deep(.width-65 .title) {
-    width: 65%;
+  :deep(.width-50 .title) {
+    width: 50%;
   }
 </style>

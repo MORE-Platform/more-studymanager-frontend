@@ -48,7 +48,7 @@ Licensed under the Elastic License 2.0. */
 
   const durationUnitOptions: MoreTableChoice[] = [
     {
-      label: 'Nothing selected',
+      label: t('global.placeholder.nothingSelected'),
       value: null,
     },
     {
@@ -191,13 +191,15 @@ Licensed under the Elastic License 2.0. */
       @on-change="changeValueInPlace($event)"
     >
       <template #tableActions>
-        <Button
-          type="button"
-          icon="pi pi-plus"
-          :label="t('studyGroup.dialog.header.create')"
-          :disabled="!actionsVisible"
-          @click="studyGroupStore.createStudyGroup(props.studyId)"
-        ></Button>
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('studyGroup.dialog.header.create')"
+            :disabled="!actionsVisible"
+            @click="studyGroupStore.createStudyGroup(props.studyId)"
+          />
+        </div>
       </template>
     </MoreTable>
     <ConfirmDialog></ConfirmDialog>

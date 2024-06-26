@@ -317,17 +317,18 @@ Licensed under the Elastic License 2.0. */
       @on-change="updateStudyInPlace($event)"
     >
       <template #tableActions>
-        <div class="ml-2.5">
+        <div>
           <Button
             type="button"
             icon="pi pi-plus"
             :label="t('study.studyList.action.addStudy')"
             @click="openCreateDialog()"
-          ></Button>
+          />
         </div>
         <div class="ml-2.5">
           <FileUpload
             mode="basic"
+            upload-icon="pi pi-upload"
             :choose-label="t('study.studyList.action.importStudy')"
             :custom-upload="true"
             :auto="true"

@@ -50,7 +50,7 @@ Licensed under the Elastic License 2.0. */
 
   const durationUnitOptions = [
     {
-      label: 'Nothing selected',
+      label: t('global.placeholder.nothingSelected'),
       value: undefined,
     },
     {
@@ -408,12 +408,17 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
       <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
-        <Button class="btn-gray" @click="cancel()"
-          >{{ $t('global.labels.cancel') }}
-        </Button>
-        <Button class="!ml-2" type="submit" @click="checkRequiredFields()"
-          >{{ $t('global.labels.save') }}
-        </Button>
+        <Button
+          class="btn-gray"
+          :label="$t('global.labels.cancel')"
+          @click="cancel()"
+        />
+        <Button
+          class="!ml-2"
+          type="submit"
+          :label="$t('global.labels.save')"
+          @click="checkRequiredFields()"
+        />
       </div>
     </form>
   </div>

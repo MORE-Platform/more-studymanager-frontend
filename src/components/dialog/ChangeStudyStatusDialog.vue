@@ -98,17 +98,15 @@ Licensed under the Elastic License 2.0. */
       <Button
         type="button"
         class="p-button btn-gray !mr-3"
+        :label="$t('global.labels.close')"
         @click="closeDialog"
-      >
-        {{ $t('global.labels.close') }}
-      </Button>
+      />
       <Button
         type="button"
         class="p-button btn-important ml-2"
+        :label="$t('study.statusChange.labels.changeStatus')"
         @click="setStudyStatus"
-      >
-        {{ $t('study.statusChange.labels.changeStatus') }}
-      </Button>
+      />
     </div>
   </div>
 </template>

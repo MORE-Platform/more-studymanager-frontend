@@ -169,7 +169,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="more-tab-nav mb-16">
     <div
-      class="tab-parent flex flex-wrap justify-end border-b border-gray-200 text-center text-lg font-medium leading-5 text-gray-500 dark:border-gray-700 dark:text-gray-400"
+      class="tab-parent flex flex-wrap justify-end text-center text-lg font-medium leading-5 text-gray-500 dark:text-gray-400"
     >
       <div v-for="tab in tabs" :key="tab.name">
         <div
@@ -178,7 +178,7 @@ Licensed under the Elastic License 2.0. */
         >
           <a
             href="#"
-            class="inline-block rounded-t-lg px-5 py-4"
+            class="inline-block rounded-t-lg px-4 py-3"
             :class="
               !getVisible(tab.access)
                 ? 'bg-gray-200 text-gray-400'
@@ -207,6 +207,7 @@ Licensed under the Elastic License 2.0. */
   .more-tab-nav {
     margin-top: -0.938rem;
     .tab-parent {
+      border-bottom: 1px solid var(--primary-color);
       .tab-element {
         a {
           border: 0.063rem solid var(--bluegray-200);
@@ -216,7 +217,6 @@ Licensed under the Elastic License 2.0. */
 
     .bg-blue-500 {
       background-color: var(--primary-color) !important;
-      border-bottom: 2px solid var(--bluegray-200) !important;
     }
 
     .tab-inactive {

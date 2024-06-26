@@ -582,9 +582,10 @@ Licensed under the Elastic License 2.0. */
         <Button
           v-if="editable"
           type="submit"
+          :label="$t('global.labels.save')"
           :disabled="!editable"
           @click="checkErrors()"
-          >{{ $t('global.labels.save') }}</Button
+        />
         >
       </div>
     </form>
