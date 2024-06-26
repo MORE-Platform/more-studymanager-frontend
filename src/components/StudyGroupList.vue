@@ -154,19 +154,20 @@ Licensed under the Elastic License 2.0. */
     (props.userRoles.some((r) => editableRoles.includes(r)) &&
       props.studyStatus === StudyStatus.PausedPreview);
 
-  function executeAction(action: MoreTableRowActionResult) {
+  function executeAction(action: MoreTableRowActionResult): void {
     const row: StudyGroup = action.row
       ? studyGroupStore.toStudyGroup(action.row as StudyGroup)
       : action.row;
 
     switch (action.id) {
       case 'delete':
-        return studyGroupStore.deleteStudyGroup(row);
+        studyGroupStore.deleteStudyGroup(row);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
-  function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap) {
+  function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap): void {
     studyGroupStore.updateStudyGroup(
       studyGroupStore.toStudyGroup(studyGroupMap),
     );

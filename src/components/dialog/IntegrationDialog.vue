@@ -45,7 +45,7 @@ Licensed under the Elastic License 2.0. */
 
   const errors: Ref<Array<MoreTableChoice>> = ref([]);
 
-  function checkErrors() {
+  function checkErrors(): void {
     errors.value = [];
     if (!tokenLabel.value) {
       errors.value.push({
@@ -65,14 +65,14 @@ Licensed under the Elastic License 2.0. */
     return errors.value.find((el) => el.label === label)?.value;
   }
 
-  function save() {
+  function save(): void {
     dialogRef.value.close({
       observationId: selectedObservation.value,
       tokenLabel: tokenLabel.value,
     });
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 </script>

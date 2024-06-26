@@ -6,28 +6,36 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { readonly, ref } from 'vue';
+import { readonly, Ref, ref } from 'vue';
 import axios from 'axios';
 
-const loaderSemaphore = ref(0);
-const loaderValue = ref(false);
+const loaderSemaphore: Ref<number> = ref(0);
+const loaderValue: Ref<boolean> = ref(false);
 
-const loader = {
-  enable: () => {
+interface Loader {
+  enable: () => void;
+  disable: () => void;
+  reset: () => void;
+  isLoading: Readonly<Ref<boolean>>;
+  activateLoadingInterceptor: () => void;
+}
+
+const loader: Loader = {
+  enable: (): void => {
     loaderSemaphore.value += 1;
     loaderValue.value = loaderSemaphore.value > 0;
   },
-  disable: () => {
+  disable: (): void => {
     loaderSemaphore.value =
       loaderSemaphore.value < 2 ? 0 : loaderSemaphore.value - 1;
     loaderValue.value = loaderSemaphore.value > 0;
   },
-  reset: () => {
+  reset: (): void => {
     loaderSemaphore.value = 0;
     loaderValue.value = false;
   },
   isLoading: readonly(loaderValue),
-  activateLoadingInterceptor: () => {
+  activateLoadingInterceptor: (): void => {
     axios.interceptors.request.use(
       (config) => {
         return {
@@ -84,6 +92,6 @@ const loader = {
     );
   },
 };
-export default () => {
+export default (): Loader => {
   return loader;
 };

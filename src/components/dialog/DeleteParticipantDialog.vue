@@ -15,11 +15,11 @@ Licensed under the Elastic License 2.0. */
   const confirmMsg: string = dialogRef?.value?.data?.confirmMsg;
   const participant: Participant = dialogRef?.value?.data?.participant;
 
-  function deleteParticipant(withData: boolean) {
+  function deleteParticipant(withData: boolean): void {
     dialogRef.value.close({ participant, withData });
   }
 
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
 </script>

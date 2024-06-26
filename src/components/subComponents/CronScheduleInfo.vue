@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
 
   const isDialogOpen = ref(false);
 
-  function openDialog() {
+  function toggleDialog(): void {
     isDialogOpen.value = !isDialogOpen.value;
   }
 </script>
@@ -38,7 +38,7 @@ Licensed under the Elastic License 2.0. */
       <div class="relative ml-2 inline">
         <div
           class="pi pi-info-circle info-circle hover-circle mb-2 cursor-pointer font-bold"
-          @click="openDialog"
+          @click="toggleDialog"
         ></div>
         <div
           v-if="isDialogOpen"

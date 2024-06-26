@@ -29,7 +29,7 @@ Licensed under the Elastic License 2.0. */
     >
       <ParticipantList
         :study-groups="studyGroupStore.studyGroups"
-        :status-status="studyStore.studyStatus"
+        :study-status="studyStore.studyStatus"
         :study-id="studyStore.studyId"
       ></ParticipantList>
     </div>

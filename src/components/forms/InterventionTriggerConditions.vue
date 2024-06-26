@@ -74,7 +74,7 @@ Licensed under the Elastic License 2.0. */
 
   const rowOpenError: Ref<string | undefined> = ref('');
 
-  function setRowOpenError(error: boolean | string) {
+  function setRowOpenError(error: boolean | string): void {
     if (error) {
       rowOpenError.value = t('intervention.error.interventionRowIsOpen');
       emit('onError', rowOpenError.value);
@@ -83,11 +83,11 @@ Licensed under the Elastic License 2.0. */
       emit('onError', rowOpenError.value);
     }
   }
-  function setTriggerConditionError(triggerTableE?: string) {
+  function setTriggerConditionError(triggerTableE?: string): void {
     emit('onError', triggerTableE ? triggerTableE : '');
   }
 
-  function emitTriggerConditions() {
+  function emitTriggerConditions(): void {
     if (
       !rowOpenError.value &&
       typeof triggerConditionObj.value.value !== 'undefined'
@@ -99,7 +99,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function addTriggerGroup(groupIndex?: number) {
+  function addTriggerGroup(groupIndex?: number): void {
     setRowOpenError(true);
     if (
       (groupIndex as number) >= 0 &&
@@ -128,7 +128,7 @@ Licensed under the Elastic License 2.0. */
     checkTriggerConditionErrors();
   }
 
-  function setEditModeFalse() {
+  function setEditModeFalse(): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value.forEach((item: QueryObject) =>
         item.parameter.forEach((param) => (param.editMode = false)),
@@ -138,7 +138,7 @@ Licensed under the Elastic License 2.0. */
     checkTriggerConditionErrors();
   }
 
-  function toggleRowEdit(item: InterventionTriggerUpdateItem) {
+  function toggleRowEdit(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter[
         item.rowIndex
@@ -191,7 +191,7 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
-  function updateRowData(item: InterventionTriggerUpdateData) {
+  function updateRowData(item: InterventionTriggerUpdateData): void {
     if (!validateEditedRow(item.data)) {
       return;
     }
@@ -222,7 +222,7 @@ Licensed under the Elastic License 2.0. */
     emitTriggerConditions();
   }
 
-  function addRow(item: InterventionTriggerUpdateItem) {
+  function addRow(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       setEditModeFalse();
       triggerConditionObj.value.value[item.groupIndex].parameter.push({
@@ -237,7 +237,7 @@ Licensed under the Elastic License 2.0. */
     }
     checkTriggerConditionErrors();
   }
-  function deleteRow(item: InterventionTriggerUpdateItem) {
+  function deleteRow(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter.splice(
         item.rowIndex,
@@ -255,7 +255,7 @@ Licensed under the Elastic License 2.0. */
     checkTriggerConditionErrors();
   }
 
-  function changeGroupCondition(item: GroupConditionChange) {
+  function changeGroupCondition(item: GroupConditionChange): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].nextGroupCondition =
         item.value;
@@ -263,7 +263,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function checkTriggerConditionErrors() {
+  function checkTriggerConditionErrors(): void {
     const hasErrors = triggerConditionObj.value?.value?.some(
       (item: QueryObject) => item.parameter.some((p) => p.error),
     );

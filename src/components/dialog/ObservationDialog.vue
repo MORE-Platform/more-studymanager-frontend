@@ -47,7 +47,6 @@ Licensed under the Elastic License 2.0. */
   const title = ref(observation.title);
   const purpose = ref(observation.purpose);
   const participantInfo = ref(observation.participantInfo);
-  // properties = configuration
   const properties: Ref<Property<any>[]> = ref(
     factory.properties
       .map((json: any) => Property.fromJson(json))
@@ -79,7 +78,7 @@ Licensed under the Elastic License 2.0. */
     return undefined;
   }
 
-  function openScheduler(schedulerType: string) {
+  function openScheduler(schedulerType: string): void {
     dialog.open(
       schedulerType === 'relative' ? RelativeScheduler : AbsoluteScheduler,
       {
@@ -110,7 +109,7 @@ Licensed under the Elastic License 2.0. */
       },
     );
   }
-  function validate() {
+  function validate(): void {
     let parsedProps: any;
     try {
       parsedProps = Property.toJson(properties.value);
@@ -139,7 +138,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function save(props: any) {
+  function save(props: any): void {
     if (isObjectEmpty(scheduler.value)) {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
@@ -174,19 +173,19 @@ Licensed under the Elastic License 2.0. */
 
   let errors: MoreTableChoice[] = [];
 
-  function checkRequiredFields() {
+  function checkRequiredFields(): void {
     errors = [];
     if (!title.value) {
       errors.push({
         label: 'title',
         value: t('observation.error.addTitle'),
-      });
+      } as MoreTableChoice);
     }
     if (!participantInfo.value) {
       errors.push({
         label: 'participantInfo',
         value: t('observation.error.addParticipantInfo'),
-      });
+      } as MoreTableChoice);
     }
   }
 
@@ -194,17 +193,17 @@ Licensed under the Elastic License 2.0. */
     return errors.find((el) => el.label === label)?.value;
   }
 
-  function cancel() {
+  function cancel(): void {
     dialogRef.value.close();
   }
 
-  function removeScheduler() {
+  function removeScheduler(): void {
     if (scheduler.value) {
       scheduler.value = {};
     }
   }
 
-  function updateProperty(item: PropertyEmit) {
+  function updateProperty(item: PropertyEmit): void {
     properties.value[item.index].value = item.value;
   }
 </script>

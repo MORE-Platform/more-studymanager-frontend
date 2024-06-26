@@ -21,7 +21,7 @@ import { useStudyGroupStore } from '../stores/studyGroupStore';
 import Integrations from '../views/Integrations.vue';
 import Timeline from '../views/Timeline.vue';
 
-const studyResolver = async (to: any, from: any, next: any) => {
+const studyResolver = async (to: any, from: any, next: any): Promise<void> => {
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
   if (

@@ -14,11 +14,11 @@ Licensed under the Elastic License 2.0. */
   const auth = inject('authService') as AuthService;
 
   const loading = useLoader().isLoading;
-  function logout() {
+  function logout(): void {
     auth.logout();
   }
 
-  function checkRoute(routeName: string) {
+  function checkRoute(routeName: string): boolean {
     return routeName === route.meta.title;
   }
 </script>

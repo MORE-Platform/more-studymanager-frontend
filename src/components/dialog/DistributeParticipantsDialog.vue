@@ -18,10 +18,10 @@ Licensed under the Elastic License 2.0. */
   const studyGroups: Array<StudyGroup> =
     dialogRef.value.data?.studyGroups || [];
 
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
-  function distribute() {
+  function distribute(): void {
     dialogRef.value.close(true);
   }
 

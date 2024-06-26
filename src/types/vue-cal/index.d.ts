@@ -263,7 +263,7 @@ declare module 'vue-cal' {
   export type VueCal = Props;
 
   export class VueCal extends Vue {
-    $on<T extends keyof Events>(event: T, callback: EventListeners[T]) {
+    $on<T extends keyof Events>(event: T, callback: EventListeners[T]): void {
       return super.$on(event, callback);
     }
 
