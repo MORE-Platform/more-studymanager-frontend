@@ -23,6 +23,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -34,6 +35,7 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import Button from 'primevue/button';
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
@@ -50,6 +52,11 @@ Licensed under the Elastic License 2.0. */
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'title',
+    sortOrder: -1,
+  };
+
   const actionsVisible =
     props.studyStatus === StudyStatus.Draft ||
     props.studyStatus === StudyStatus.Paused ||
@@ -65,7 +72,7 @@ Licensed under the Elastic License 2.0. */
   groupStatuses.push({
     label: t('global.placeholder.entireStudy'),
     value: null,
-  });
+  } as MoreTableChoice);
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
@@ -85,7 +92,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.title'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '16vw',
     },
     {
@@ -99,20 +106,11 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses },
+      editable: { enabled: true, values: groupStatuses },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '10vw',
-    },
-  ];
-
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('intervention.interventionList.action.add'),
-      visible: () => actionsVisible,
     },
   ];
 
@@ -120,12 +118,14 @@ Licensed under the Elastic License 2.0. */
     {
       id: 'clone',
       label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneIntervention'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteIntervention'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('intervention.dialog.header.delete'),
@@ -155,10 +155,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as StudyGroup,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -166,11 +166,12 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const rowEndActions: MoreTableAction[] = [
+  const endRowActions: MoreTableAction[] = [
     {
       id: 'edit',
       label: t('global.labels.edit'),
       icon: 'pi pi-cog',
+      tooltip: t('tooltips.editBtn'),
     },
   ];
 
@@ -201,20 +202,19 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function execute(action: MoreTableRowActionResult<any>) {
+  function executeAction(action: MoreTableRowActionResult) {
+    const row = action.row as Intervention;
     switch (action.id) {
       case 'delete':
-        return deleteIntervention(action.row);
-      case 'create':
-        return openInterventionDialog(t('intervention.dialog.header.create'));
+        return deleteIntervention(row);
       case 'clone':
         return openInterventionDialog(
           t('intervention.dialog.header.clone'),
-          action.row,
+          row,
           true,
         );
       case 'edit':
-        return openEditIntervention(action.row.interventionId);
+        return openEditIntervention(row.interventionId);
       default:
         console.error('no handler for action', action);
     }
@@ -356,7 +356,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function openEditIntervention(interventionId: number) {
+  function openEditIntervention(interventionId: number | undefined) {
     const intervention = interventionList.value.find(
       (i) => i.interventionId === interventionId,
     );
@@ -439,18 +439,29 @@ Licensed under the Elastic License 2.0. */
       :columns="interventionColumns"
       :rows="interventionList"
       :row-actions="rowActions"
-      :row-end-actions="rowEndActions"
-      :table-actions="tableActions"
-      :sort-options="{ sortField: 'title', sortOrder: -1 }"
+      :end-row-actions="endRowActions"
+      :sort-options="sortOptions"
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
-      @onselect="openEditIntervention($event)"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
-    />
+      @on-select="openEditIntervention($event)"
+      @on-action="executeAction($event)"
+      @on-change="changeValue($event)"
+    >
+      <template #tableActions>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          :label="t('intervention.interventionList.action.add')"
+          :disabled="!actionsVisible"
+          @click="
+            openInterventionDialog(t('intervention.dialog.header.create'))
+          "
+        ></Button>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>

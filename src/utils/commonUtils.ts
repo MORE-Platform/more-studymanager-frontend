@@ -9,3 +9,14 @@
 export function isObjectEmpty(obj: Record<string, any>): boolean {
   return !obj || Object.keys(obj).length === 0;
 }
+
+export function shortenText(
+  text?: string,
+  maxLength: number = 180,
+  append: string = '...',
+): string | undefined {
+  if (text && text.length > maxLength) {
+    return text.substring(0, maxLength) + append;
+  }
+  return text;
+}

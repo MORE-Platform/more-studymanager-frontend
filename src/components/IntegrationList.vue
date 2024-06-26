@@ -20,8 +20,10 @@ Licensed under the Elastic License 2.0. */
     MoreIntegrationLink,
     MoreIntegrationTableMap,
     MoreTableAction,
+    MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import { useI18n } from 'vue-i18n';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -30,6 +32,7 @@ Licensed under the Elastic License 2.0. */
   import useLoader from '../composable/useLoader';
   import IntegrationDialog from './dialog/IntegrationDialog.vue';
   import CopyTokenDialog from './dialog/CopyTokenDialog.vue';
+  import Button from 'primevue/button';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -43,12 +46,17 @@ Licensed under the Elastic License 2.0. */
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'tokenLabel',
+    sortOrder: 1,
+  };
+
   const actionsVisible = props.studyStatus !== StudyStatus.Closed;
 
   let observationList: Observation[] = [];
   const integrationList: Ref<MoreIntegrationTableMap[]> = ref([]);
 
-  const integrationListColumns = [
+  const integrationColumns: MoreTableColumn[] = [
     {
       field: 'tokenId',
       header: t('integration.props.tokenId'),
@@ -64,13 +72,13 @@ Licensed under the Elastic License 2.0. */
       field: 'observationId',
       header: t('integration.props.observationId'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'observationTitle',
       header: t('integration.props.observationTitle'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'created',
@@ -108,7 +116,7 @@ Licensed under the Elastic License 2.0. */
                       tokenId: token.tokenId,
                       tokenLabel: token.tokenLabel,
                       created: token.created,
-                    });
+                    } as MoreIntegrationTableMap);
                   });
                 }
               })
@@ -140,12 +148,14 @@ Licensed under the Elastic License 2.0. */
     {
       id: 'clone',
       label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneIntegration'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteObservation'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('integration.dialog.header.delete'),
@@ -174,10 +184,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as MoreIntegrationTableMap,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -185,25 +195,15 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('integration.integrationList.action.add'),
-      visible: () => actionsVisible,
-    },
-  ];
-
-  function execute(action: MoreTableRowActionResult<any>) {
+  function executeAction(action: MoreTableRowActionResult) {
+    const row = action.row as MoreIntegrationTableMap;
     switch (action.id) {
       case 'delete':
-        return deleteIntegration(action.row);
-      case 'create':
-        return openIntegrationDialog(t('integration.dialog.header.create'));
+        return deleteIntegration(row);
       case 'clone':
         return createIntegration({
-          observationId: action.row.observationId,
-          tokenLabel: action.row.tokenLabel,
+          observationId: row.observationId,
+          tokenLabel: row.tokenLabel,
         } as MoreIntegrationLink);
     }
   }
@@ -332,21 +332,30 @@ Licensed under the Elastic License 2.0. */
   <div class="integration-list">
     <MoreTable
       row-id="tokenId"
-      :sort-options="{ sortField: 'tokenLabel', sortOrder: 1 }"
+      :sort-options="sortOptions"
       :title="$t('integration.integrationList.title')"
       :subtitle="$t('integration.integrationList.description')"
-      :columns="integrationListColumns"
+      :columns="integrationColumns"
       :rows="integrationList"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('integration.integrationList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
-      @onaction="execute($event)"
-      @onchange="updateIntegration($event)"
-    />
+      @on-action="executeAction($event)"
+      @on-change="updateIntegration($event)"
+    >
+      <template #tableActions>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          :label="t('integration.integrationList.action.add')"
+          :disabled="!actionsVisible"
+          @click="openIntegrationDialog(t('integration.dialog.header.create'))"
+        ></Button>
+      </template>
+    </MoreTable>
     <DynamicDialog />
   </div>
 </template>

@@ -18,11 +18,11 @@ Licensed under the Elastic License 2.0. */
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
-    MoreTableActionOption,
     MoreTableChoice,
-    MoreTableCollaboratorItem,
     MoreTableColumn,
     MoreTableFieldType,
+    MoreTableRowActionResult,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -35,6 +35,8 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import { ScheduleType } from '../models/Scheduler';
+  import Button from 'primevue/button';
+  import Menu from 'primevue/menu';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -51,6 +53,11 @@ Licensed under the Elastic License 2.0. */
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'title',
+    sortOrder: -1,
+  };
+
   const actionsVisible =
     props.studyStatus === StudyStatus.Draft ||
     props.studyStatus === StudyStatus.Paused ||
@@ -66,7 +73,7 @@ Licensed under the Elastic License 2.0. */
   groupStatuses.push({
     label: t('global.placeholder.entireStudy'),
     value: null,
-  });
+  } as MoreTableChoice);
 
   async function getFactories() {
     return componentsApi
@@ -75,20 +82,22 @@ Licensed under the Elastic License 2.0. */
   }
 
   const factories: ComponentFactory[] = await getFactories();
-  const observationTypes: MoreTableActionOption[] = factories.map(
-    (cf: ComponentFactory) => ({
-      label: t(cf.title ?? ''),
-      value: cf.componentId,
-      description: t(cf.description ?? ''),
-    }),
-  );
+  const observationTypes: any[] = factories.map((cf: ComponentFactory) => ({
+    label: cf.title ? t(cf.title) : '',
+    value: cf.componentId,
+    command: () => {
+      openObservationDialog(t('observation.dialog.header.create'), {
+        type: cf.componentId,
+      });
+    },
+  }));
 
   const observationColumns: MoreTableColumn[] = [
     {
       field: 'typeLabel',
       header: t('observation.props.type'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '5vw',
     },
     {
@@ -96,7 +105,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.title'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '10vw',
     },
     {
@@ -110,9 +119,9 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses },
+      editable: { enabled: true, values: groupStatuses },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '5vw',
     },
@@ -151,26 +160,18 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-angle-down',
-      label: t('observation.observationList.action.add'),
-      visible: () => actionsVisible,
-      options: { type: 'menu', values: observationTypes },
-    },
-  ];
-
   const rowActions: MoreTableAction[] = [
     {
       id: 'clone',
       label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneObservation'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteObservation'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('observation.dialog.header.delete'),
@@ -202,10 +203,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as MoreTableCollaboratorItem,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -213,11 +214,12 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const rowEndActions: MoreTableAction[] = [
+  const endRowActions: MoreTableAction[] = [
     {
       id: 'edit',
       label: t('global.labels.edit'),
       icon: 'pi pi-cog',
+      tooltip: t('tooltips.editBtn'),
     },
   ];
 
@@ -282,7 +284,7 @@ Licensed under the Elastic License 2.0. */
   function getScheduleDate(
     scheduler: ObservationSchedule | undefined,
     prop: string,
-  ) {
+  ): string | undefined {
     switch (scheduler?.type) {
       case ScheduleType.Event: {
         const schedule = scheduler as Event;
@@ -324,22 +326,19 @@ Licensed under the Elastic License 2.0. */
     return '';
   }
 
-  function execute(action: any) {
+  function executeAction(action: MoreTableRowActionResult) {
+    const row = action.row as Observation;
     switch (action.id) {
       case 'delete':
-        return deleteObservation(action.row);
-      case 'create':
-        return openObservationDialog(t('observation.dialog.header.create'), {
-          type: action.properties,
-        });
+        return deleteObservation(row);
       case 'clone':
         return openObservationDialog(
           t('observation.dialog.header.clone'),
-          action.row,
+          row,
           true,
         );
       case 'edit':
-        return openEditObservation(action.row.observationId);
+        return openEditObservation(row.observationId);
       default:
         console.error('no handler for action', action);
     }
@@ -431,7 +430,7 @@ Licensed under the Elastic License 2.0. */
       );
   }
 
-  function openEditObservation(observationId: number) {
+  function openEditObservation(observationId: number | undefined) {
     const observation = observationList.value.find(
       (observation) => observation.observationId === observationId,
     );
@@ -447,6 +446,11 @@ Licensed under the Elastic License 2.0. */
     }
   }
   listObservations();
+
+  const menu = ref();
+  function toggleButtonMenu(event: MouseEvent) {
+    menu.value.toggle(event);
+  }
 </script>
 
 <template>
@@ -458,19 +462,31 @@ Licensed under the Elastic License 2.0. */
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
-      :row-end-actions="rowEndActions"
-      :table-actions="tableActions"
-      :sort-options="{ sortField: 'title', sortOrder: -1 }"
+      :end-row-actions="endRowActions"
+      :sort-options="sortOptions"
       :editable-access="actionsVisible"
       :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
       :component-factory="factories"
       class="table-title-width"
-      @onselect="openEditObservation($event)"
-      @onaction="execute($event)"
-      @onchange="updateObservation($event)"
-    />
+      @on-select="openEditObservation($event)"
+      @on-action="executeAction($event)"
+      @on-change="updateObservation($event)"
+    >
+      <template #tableActions="{ isInEditMode }">
+        <div>
+          <Button
+            type="button"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @click="toggleButtonMenu($event)"
+            >{{ t('observation.observationList.action.add') }}
+            <span class="pi pi-angle-down ml-3"></span
+          ></Button>
+          <Menu ref="menu" :model="observationTypes" :popup="true" />
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>
