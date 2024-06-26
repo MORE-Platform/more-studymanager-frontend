@@ -5,6 +5,7 @@
     "labels": {
       "close": "Close",
       "save": "Save",
+      "apply": "Apply",
       "cancel": "Cancel",
       "delete": "Delete",
       "new": "New",
@@ -42,6 +43,7 @@
       "chooseDropdownOptionDefault": "Choose option",
       "optionsSelected": "options selected",
       "chooseRole": "Choose role",
+      "nothingSelected": "Nothing selected",
       "noGroup": "No group",
       "all": "All",
       "enterTextValue": "Enter text value"
@@ -233,7 +235,7 @@
       "description": {
         "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
         "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
-        "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks\nThe participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
+        "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks. The participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
         "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",

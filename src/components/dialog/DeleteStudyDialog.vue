@@ -44,19 +44,25 @@ Licensed under the Elastic License 2.0. */
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
     <div class="flex justify-end gap-2">
-      <Button type="button" class="p-button btn-gray" @click="closeDialog">
-        {{ $t('global.labels.close') }}
-      </Button>
-      <Button type="button" class="p-button btn-important" @click="deleteStudy">
-        {{ $t('global.labels.delete') }}
-      </Button>
+      <Button
+        type="button"
+        class="p-button btn-gray"
+        :label="$t('global.labels.close')"
+        @click="closeDialog"
+      />
+      <Button
+        type="button"
+        class="p-button btn-important"
+        :label="$t('global.labels.delete')"
+        @click="deleteStudy"
+      />
       <Button
         type="button"
         class="p-button btn-important disabled pointer-events-none"
         disabled
+        :label="$t('participants.dialog.deleteMsg.deleteWithData')"
         @click="deleteStudy"
-        >{{ $t('participants.dialog.deleteMsg.deleteWithData') }}</Button
-      >
+      />
     </div>
   </div>
 </template>

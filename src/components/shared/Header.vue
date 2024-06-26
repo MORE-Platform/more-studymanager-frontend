@@ -24,7 +24,7 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <header class="more-header py-5 shadow-md">
+  <header class="more-header py-2 shadow-md">
     <div class="container m-auto flex justify-between px-10">
       <router-link to="/">
         <div class="logo cursor-pointer">
@@ -135,7 +135,7 @@ Licensed under the Elastic License 2.0. */
       position: fixed;
       z-index: 1000;
       width: 100%;
-      top: 78px;
+      top: 62px;
     }
 
     .logo {

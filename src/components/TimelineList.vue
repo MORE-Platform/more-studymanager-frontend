@@ -480,7 +480,7 @@ Licensed under the Elastic License 2.0. */
   <div class="title w-full">
     <div class="flex flex-row justify-between">
       <h3 class="mb-1 font-bold">Filter</h3>
-      <Button icon="pi pi-filter-slash" @click="clearAllFilters"></Button>
+      <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
     </div>
     <div class="mb-3 flex gap-5">
       <div>
@@ -594,10 +594,7 @@ Licensed under the Elastic License 2.0. */
       </div>
     </template>
     <template #today-button>
-      <Button
-        icon="pi pi-calendar"
-        :title="t('timeline.labels.today')"
-      ></Button>
+      <Button icon="pi pi-calendar" :title="t('timeline.labels.today')" />
     </template>
   </VueCal>
 

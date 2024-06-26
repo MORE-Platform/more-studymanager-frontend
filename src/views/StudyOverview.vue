@@ -32,11 +32,8 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="overview-view container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
-    <MoreTabNav
-      :study-id="studyId"
-      :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    <StudyHeader :study="studyStore.study" />
+    <MoreTabNav :study-id="studyId" :study-roles="studyStore.studyUserRoles" />
     <div class="container rounded-lg bg-white p-10">
       <OverviewEditDetails
         :style-modifier="'mb-16'"

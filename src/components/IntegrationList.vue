@@ -347,13 +347,17 @@ Licensed under the Elastic License 2.0. */
       @on-change="updateIntegration($event)"
     >
       <template #tableActions>
-        <Button
-          type="button"
-          icon="pi pi-plus"
-          :label="t('integration.integrationList.action.add')"
-          :disabled="!actionsVisible"
-          @click="openIntegrationDialog(t('integration.dialog.header.create'))"
-        ></Button>
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('integration.integrationList.action.add')"
+            :disabled="!actionsVisible"
+            @click="
+              openIntegrationDialog(t('integration.dialog.header.create'))
+            "
+          />
+        </div>
       </template>
     </MoreTable>
     <DynamicDialog />

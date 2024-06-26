@@ -71,16 +71,15 @@ Licensed under the Elastic License 2.0. */
   });
 </script>
 <template>
-  <div v-if="filteredButtons.length" class="flex">
+  <div v-if="filteredButtons.length" class="flex items-baseline">
     <Button
       v-for="button in filteredButtons"
       :key="button.textKey"
       class="!mr-2.5"
       type="button"
       :title="$t(button.textKey)"
+      :label="$t(button.textKey)"
       @click="emit('onChange', button.status)"
-    >
-      {{ $t(button.textKey) }}
-    </Button>
+    />
   </div>
 </template>

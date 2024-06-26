@@ -37,13 +37,19 @@ Licensed under the Elastic License 2.0. */
     </div>
     <IntegrationExample :token="token" />
     <div class="mt-8 flex justify-end">
-      <Button type="button" class="btn-gray" @click="closeDialog">{{
-        $t('global.labels.close')
-      }}</Button>
+      <Button
+        type="button"
+        class="btn-gray"
+        :label="$t('global.labels.close')"
+        @click="closeDialog"
+      />
 
-      <Button type="button" class="p-button !ml-2" @click="copyToken">{{
-        $t('integration.dialog.label.copyToken')
-      }}</Button>
+      <Button
+        type="button"
+        class="p-button !ml-2"
+        :label="$t('integration.dialog.label.copyToken')"
+        @click="copyToken"
+      />
     </div>
   </div>
 

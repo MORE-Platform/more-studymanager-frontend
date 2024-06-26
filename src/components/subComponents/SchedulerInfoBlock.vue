@@ -282,34 +282,34 @@ Licensed under the Elastic License 2.0. */
         v-if="scheduler.type !== ScheduleType.RelativeEvent"
         class="justify-center"
         type="button"
-        :disabeld="!editable"
-        @click="emit('openDialog', 'absolute')"
-        >{{
+        :label="
           scheduler.type
             ? $t('scheduler.labels.editScheduler')
             : $t('scheduler.labels.openScheduler')
-        }}</Button
-      >
+        "
+        :disabeld="!editable"
+        @click="emit('openDialog', 'absolute')"
+      />
       <Button
         v-if="scheduler.type !== ScheduleType.Event"
         class="p-button justify-center"
         type="button"
-        :disabled="!editable"
-        @click="emit('openDialog', 'relative')"
-        >{{
+        :label="
           scheduler.type
             ? $t('scheduler.labels.editRelativeScheduler')
             : $t('scheduler.labels.openRelativeScheduler')
-        }}</Button
-      >
+        "
+        :disabled="!editable"
+        @click="emit('openDialog', 'relative')"
+      />
       <Button
         v-if="scheduler.dtstart"
         class="p-button btn-important justify-center"
         type="button"
+        :label="$t('scheduler.labels.removeScheduler')"
         :disabled="!editable"
         @click="emit('removeScheduler')"
-        >{{ $t('scheduler.labels.removeScheduler') }}</Button
-      >
+      />
     </div>
   </div>
 </template>

@@ -132,12 +132,17 @@ Licensed under the Elastic License 2.0. */
         <div
           class="buttons col-start-0 col-span-8 mt-1 justify-end text-right align-bottom"
         >
-          <Button class="btn-gray" @click="cancel()">{{
-            $t('global.labels.cancel')
-          }}</Button>
-          <Button class="!ml-2" type="submit" @click="checkErrors()">{{
-            $t('global.labels.save')
-          }}</Button>
+          <Button
+            class="btn-gray"
+            :label="$t('global.labels.cancel')"
+            @click="cancel()"
+          />
+          <Button
+            class="!ml-2"
+            type="submit"
+            :label="$t('global.labels.save')"
+            @click="checkErrors()"
+          />
         </div>
       </form>
     </div>

@@ -470,15 +470,17 @@ Licensed under the Elastic License 2.0. */
       @on-change="changeValue($event)"
     >
       <template #tableActions>
-        <Button
-          type="button"
-          icon="pi pi-plus"
-          :label="t('intervention.interventionList.action.add')"
-          :disabled="!actionsVisible"
-          @click="
-            openInterventionDialog(t('intervention.dialog.header.create'))
-          "
-        ></Button>
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('intervention.interventionList.action.add')"
+            :disabled="!actionsVisible"
+            @click="
+              openInterventionDialog(t('intervention.dialog.header.create'))
+            "
+          />
+        </div>
       </template>
     </MoreTable>
     <ConfirmDialog></ConfirmDialog>

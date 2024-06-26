@@ -21,7 +21,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <footer class="footer z-1000 w-full">
-    <div class="content-block mx-24 my-6 flex justify-between">
+    <div class="content-block mx-24 my-2 flex justify-between">
       <div>
         <OverlayPanel ref="buildInfoPanel">
           <div class="w-25rem flex flex-col gap-3">
