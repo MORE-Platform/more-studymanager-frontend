@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 
@@ -27,6 +28,14 @@ export default defineConfig({
           return path.replace(/^\/api/, '');
         },
       },
+    },
+  },
+  test: {
+    include: ['tests/**/*.spec.ts'],
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: 'tests/coverage',
     },
   },
 });

@@ -13,15 +13,11 @@
     "jsx": "preserve",
     "sourceMap": true,
     "baseUrl": ".",
-    "lib": ["esnext", "dom",
-      "dom.iterable",
-      "scripthost"],
-    "types": ["vite/client", "node"],
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "types": ["vite/client", "node", "vitest/globals", "vitest/server-test-utils"],
     "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
     "typeRoots": ["src/types", "node_modules/@types"],
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"],
 }
