@@ -40,7 +40,7 @@ Licensed under the Elastic License 2.0. */
     </h3>
     <h5 class="mb-7 text-lg font-medium">
       {{ $t('study.statusChange.labels.changeFrom') }}
-      <StudyStatusPill :status="study.status!" />
+      <StudyStatusPill :status="study.status as StudyStatus" />
       {{ $t('global.labels.to') }}
       <StudyStatusPill :status="changedStatus" />
     </h5>
