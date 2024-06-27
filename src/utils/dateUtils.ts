@@ -33,7 +33,7 @@ export function dateTimeStringToDate(dateTimeString: string): Date | undefined {
 
 export function ZTimeToOffsetTime(date: Date): Date {
   const offset = date.getTimezoneOffset() / 60;
-  const newTime = date;
+  const newTime = new Date(date.getTime());
   newTime.setHours(date.getHours() - offset);
   return newTime;
 }
