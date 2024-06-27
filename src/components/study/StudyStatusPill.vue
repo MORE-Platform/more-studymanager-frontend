@@ -36,11 +36,5 @@
       border-color: var(--gray-400);
       color: var(--gray-400);
     }
-
-    &.inline {
-      padding: 0.313rem;
-      border-radius: 0.25rem;
-      font-size: 1.5rem;
-    }
   }
 </style>
