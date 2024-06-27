@@ -24,6 +24,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableChoice,
     MoreTableSortOptions,
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -462,6 +463,7 @@ Licensed under the Elastic License 2.0. */
       :sort-options="sortOptions"
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
+      :enable-row-selection="RowSelectionMode.Single"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
       class="table-title-width table-btn-min-height"

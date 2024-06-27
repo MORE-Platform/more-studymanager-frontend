@@ -310,7 +310,6 @@ Licensed under the Elastic License 2.0. */
   <div class="trigger-condition-row">
     <DataTable
       v-model:editingRows="editingRows"
-      selection-mode="single"
       :value="rows"
       edit-mode="row"
       table-class="editable-cells-table"
@@ -320,7 +319,6 @@ Licensed under the Elastic License 2.0. */
         :key="column.field"
         :field="column.field"
         :header="column.header"
-        :row-hover="true"
       >
         <template #body="{ data, field }">
           <span v-if="field === 'observationId'">
@@ -385,7 +383,7 @@ Licensed under the Elastic License 2.0. */
           />
         </template>
       </Column>
-      <Column key="action" row-hover="true" class="row-action text-end">
+      <Column key="action" class="row-action text-end">
         <template #body="slotProps">
           <div v-if="!slotProps.data.editMode" class="text-end">
             <span class="mr-1.5"></span>
