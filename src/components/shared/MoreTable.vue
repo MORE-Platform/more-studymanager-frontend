@@ -13,6 +13,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableSortOptions,
+    RowSelectionMode,
   } from '../../models/MoreTableModel';
   import DataTable, {
     DataTableFilterMeta,
@@ -57,6 +58,7 @@ Licensed under the Elastic License 2.0. */
     editAccessRoles?: StudyRole[];
     paginatorRows?: number;
     componentFactory?: ComponentFactory[];
+    enableRowSelection?: RowSelectionMode;
   }
 
   const props = withDefaults(defineProps<MoreTableProps>(), {
@@ -75,6 +77,7 @@ Licensed under the Elastic License 2.0. */
     editAccessRoles: (): StudyRole[] => [],
     paginatorRows: undefined,
     componentFactory: undefined,
+    enableRowSelection: undefined,
   });
 
   const emit = defineEmits<{
@@ -289,7 +292,7 @@ Licensed under the Elastic License 2.0. */
       :edit-mode="enableEditMode ? 'row' : undefined"
       :loading="loading"
       filter-display="menu"
-      selection-mode="single"
+      :selection-mode="enableRowSelection"
       :scrolable="false"
       :frozen-columns="2"
       :paginator="!!paginatorRows && rows.length > paginatorRows"
@@ -299,7 +302,6 @@ Licensed under the Elastic License 2.0. */
       <Column
         v-if="frontRowActions.length"
         key="actions"
-        :row-hover="true"
         class="row-actions"
         :frozen="true"
       >
@@ -322,7 +324,6 @@ Licensed under the Elastic License 2.0. */
         :field="column.field"
         :header="column.header"
         :data-key="column.field"
-        :row-hover="true"
         :sortable="column.sortable"
         :filter="tableFilter"
         :show-filter-match-modes="false"
@@ -539,12 +540,7 @@ Licensed under the Elastic License 2.0. */
         </template>
       </Column>
 
-      <Column
-        key="actions"
-        :row-hover="true"
-        class="row-actions"
-        :frozen="true"
-      >
+      <Column key="actions" class="row-actions" :frozen="true">
         <template #body="slotProps">
           <div v-if="!isRowInEditMode(slotProps.data)">
             <div v-for="action in rowActions" :key="action.id">
@@ -632,6 +628,10 @@ Licensed under the Elastic License 2.0. */
     :deep(.p-datatable-loading-overlay) {
       filter: blur(5px);
       background-color: #ffffff99;
+    }
+
+    :deep(.p-datatable .p-datatable-tbody > tr:focus) {
+      outline: none;
     }
 
     :deep(.pi-exclamation-circle.big:before) {

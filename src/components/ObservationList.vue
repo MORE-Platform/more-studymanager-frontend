@@ -23,6 +23,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableSortOptions,
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -471,6 +472,7 @@ Licensed under the Elastic License 2.0. */
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
       :component-factory="factories"
+      :enable-row-selection="RowSelectionMode.Single"
       class="table-title-width"
       @on-select="openEditObservation($event)"
       @on-action="executeAction($event)"
