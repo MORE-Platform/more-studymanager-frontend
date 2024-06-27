@@ -11,6 +11,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableSortOptions,
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
@@ -299,6 +300,7 @@ Licensed under the Elastic License 2.0. */
       :end-row-actions="endRowActions"
       :front-row-actions="frontRowActions"
       :sort-options="sortOptions"
+      :enable-row-selection="RowSelectionMode.Single"
       :editable="
         (data: Study) => {
           return (

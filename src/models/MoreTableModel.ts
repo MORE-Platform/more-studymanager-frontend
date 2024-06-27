@@ -126,3 +126,8 @@ export interface MoreStudyGroupTableMap {
   created?: string;
   modified?: string;
 }
+
+export enum RowSelectionMode {
+  Single = 'single',
+  Multiple = 'multiple',
+}
