@@ -167,7 +167,7 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="more-tab-nav mb-16">
+  <div class="more-tab-nav mb-10">
     <div
       class="tab-parent flex flex-wrap justify-end text-center text-lg font-medium leading-5 text-gray-500 dark:text-gray-400"
     >
