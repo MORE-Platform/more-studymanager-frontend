@@ -60,7 +60,7 @@ Licensed under the Elastic License 2.0. */
     <div class="flex justify-end">
       <Button
         type="button"
-        class="p-button btn-gray !mr-3"
+        class="p-button btn-gray"
         :label="$t('global.labels.close')"
         @click="closeDialog"
       />
