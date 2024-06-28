@@ -70,7 +70,7 @@
       "observations": "Datenerhebungen",
       "interventions": "Interventionen",
       "integration": "Integrationen",
-      "timeline": "Zeitlinie"
+      "timeline": "Kalender"
     },
     "tabLink": {
       "overview": "Overview",
@@ -104,8 +104,8 @@
       "finishText": "Information nach Studienabschluss"
     },
     "ical": {
-      "copyMsg": "Link für das Kallender Abbonement ('{title} (Id: {studyId})') wurde kopiert.",
-      "title": "Kalender link für Abbonnements",
+      "copyMsg": "Link für das Kalender Abonnement ('{title} (Id: {studyId})') wurde kopiert.",
+      "title": "Kalender für Abonnements",
       "copyTitle": "Link kopieren"
     },
     "roles": {
@@ -280,7 +280,7 @@
       }
     },
     "groupList": {
-      "description": "Studiengruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventionen zu gruppieren",
+      "description": "Studiengruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventionen zu gruppieren.",
       "placeholder": {
         "title": "Stellen Sie einen Titel bereit",
         "purpose": "Beschreiben Sie die Zielsetzung für diese Gruppe",
@@ -319,7 +319,7 @@
     },
     "collaboratorList": {
       "title": "Studien-Mitarbeiter",
-      "description": "Studien-Mitarbeiter können eine oder mehrer Rollen haben. Ein <b>Studien-Administrator</b> hat keine Einschränkungen. Ein <b>Studien-Operator</b> kann die Studeie beaufsichtigen, bearbeiten und einsehen, sieht aber keine Daten. Ein <b>Studien-Beobachter</b> kann nur die grundsätzlichen Informationen (Overview) und die eingehenden Daten (Monitoring Tab) einsehen.",
+      "description": "Studien-Mitarbeiter können eine oder mehrer Rollen haben. Ein <b>Studien-Administrator</b> hat keine Einschränkungen. Ein <b>Studien-Operator</b> kann die Studie beaufsichtigen, bearbeiten und einsehen, sieht aber keine Daten. Ein <b>Studien-Beobachter</b> kann nur die grundsätzlichen Informationen (Overview) und die eingehenden Daten (Monitoring Tab) einsehen.",
       "props": {
         "name": "Name",
         "institution": "Organisation",
@@ -339,7 +339,7 @@
 
   "data": {
     "title": "Monitoring",
-    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10sec aktualisiert.",
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10 Sekunden aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
       "title": "Erhaltene Datenpunkte pro Datenerhebung"
@@ -388,7 +388,7 @@
     },
     "participantsList": {
       "title": "Teilnehmer:innen",
-      "description": "Sie können Teilnehmer:innen hinzufügen durch Import eines CSV mit Alias-Namen, oder erstellen Sie sie manuell. Dann können Teilnehmer:innen verteilt werden über die Gruppen. Teilnehmer:innen können auch als CSV exportiert werden.",
+      "description": "Sie können Teilnehmer:innen hinzufügen durch Import einer Liste mit Alias-Namen, oder Sie erstellen sie manuell. Dann können die Teilnehmer:innen auf Gruppen verteilt werden. Teilnehmer:innen können auch als CSV exportiert werden.",
       "emptyListMsg": "Fügen Sie Teilnehmer:innen zu Ihrer Studie hinzu",
       "action": {
         "distribute": "Automatische Gruppenzuweisung",
@@ -432,7 +432,7 @@
     },
     "observationList": {
       "title": "Datenerhebung",
-      "description": "Eine Datenerhebung kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder eines Fragebogens sammeln. Eine Datenerhebung kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt die Datenerhebung für alle Gruppen.",
+      "description": "Eine Datenerhebung kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder einem Fragebogen sammeln. Eine Datenerhebung kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt die Datenerhebung für die gesamte Studie.",
       "emptyListMsg": "Verwalten oder fügen Sie eine Datenerhebung hinzu. Diese werden hier angezeigt.",
       "action": {
         "add": "Datenerhebung hinzufügen"
@@ -564,7 +564,7 @@
     },
     "integrationList": {
       "title": "Externe Datenintegration",
-      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmoduls verlinkt werden. Dieses sammelt und integriert durch diese definierte Daten.",
+      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmodul verknüpft werden.",
       "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
       "action": {
         "add": "Integration hinzufügen"
@@ -624,7 +624,7 @@
     },
     "interventionList": {
       "title": "Interventionen",
-      "description": "Eine Intervention stellt sich aus einer Auslösungsbedingung mit mindestens einer darauf folgender Aktion zusammen.",
+      "description": "Eine Intervention besteht aus einer Auslösungsbedingung und mindestens einer darauf folgenden Aktion.",
       "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
       "action": {
         "add": "Intervention hinzufügen"
