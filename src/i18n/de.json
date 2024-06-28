@@ -712,7 +712,7 @@
 
   "timeline": {
     "labels": {
-      "relativeDate": "Relatives Datum des Studienbeginns",
+      "relativeDate": "Registrierungsdatum",
       "studyStart": "Studienstart",
       "studyEnd": "Studienende",
       "plannedStart": "Geplanter Start",
@@ -1055,6 +1055,9 @@
       "copyStudyUrl": "Studie teilen",
       "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
       "goToStudy": "Studie öffnen"
+    },
+    "timeline": {
+      "relativeDateInfo": "Damit wird der Zeitpunkt simuliert, an dem ein Teilnehmer in die Studie eintritt."
     }
   },
 

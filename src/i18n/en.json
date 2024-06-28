@@ -712,7 +712,7 @@
 
   "timeline": {
     "labels": {
-      "relativeDate": "Relative study start date",
+      "relativeDate": "Enrollment date",
       "studyStart": "Study start",
       "studyEnd": "Study end",
       "plannedStart": "Planned Start",
@@ -1055,6 +1055,9 @@
       "copyStudyUrl": "Share study",
       "showStudy": "Click on row to show study details page.",
       "goToStudy": "Go to study"
+    },
+    "timeline": {
+      "relativeDateInfo": "This simulates the point in time when a participant enters the study."
     }
   },
 

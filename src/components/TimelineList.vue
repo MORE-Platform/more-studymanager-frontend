@@ -484,7 +484,11 @@ Licensed under the Elastic License 2.0. */
     </div>
     <div class="mb-3 flex gap-5">
       <div>
-        {{ $t('timeline.labels.relativeDate') }}:
+        <span>{{ $t('timeline.labels.relativeDate') }}:</span>
+        <span
+          v-tooltip.bottom="$t('tooltips.timeline.relativeDateInfo')"
+          class="pi pi-info-circle color-primary mx-1"
+        ></span>
         <Calendar
           v-model="filterRelativeStartDate"
           :min-date="new Date(studyStore.study.plannedStart as string)"
