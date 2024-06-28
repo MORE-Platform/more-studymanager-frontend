@@ -31,10 +31,7 @@ function getBrowserDateFormat(): string {
   }
 
   const sampleDate = new Date(2023, 6, 17);
-  //const locale = navigator.language || 'en-GB';
-  let usersLanguage = window.navigator.language;
-  usersLanguage = usersLanguage.split('-')[0];
-
+  const usersLanguage = window.navigator.language;
   const dateFormat = new Intl.DateTimeFormat(usersLanguage).formatToParts(
     sampleDate,
   );

@@ -19,55 +19,53 @@ const fallbackLocale: FallbackLocale = 'en';
 const localeEn: Locale = 'en';
 const localeDe: Locale = 'de';
 
-let usersLanguage = window.navigator.language;
-usersLanguage = usersLanguage.split('-')[0];
+const usersLanguage = window.navigator.language;
 
-const datetimeFormats: IntlDateTimeFormats = {
-  en: {
-    short: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    },
-    long: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: false,
-    },
-    longSec: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: '2-digit',
-    },
+const commonDatetimeFormat = {
+  short: {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
   },
-  de: {
-    short: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    },
-    long: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: 'numeric',
-      minute: 'numeric',
-    },
-    longSec: {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: '2-digit',
-    },
+  long: {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
   },
+  longSec: {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: '2-digit',
+  },
+};
+
+const datetimeFormats = {
+  en: commonDatetimeFormat,
+  'en-GB': commonDatetimeFormat,
+  'en-US': commonDatetimeFormat,
+  'en-AU': commonDatetimeFormat,
+  'en-BZ': commonDatetimeFormat,
+  'en-CA': commonDatetimeFormat,
+  'en-IE': commonDatetimeFormat,
+  'en-JM': commonDatetimeFormat,
+  'en-NZ': commonDatetimeFormat,
+  'en-PH': commonDatetimeFormat,
+  'en-ZA': commonDatetimeFormat,
+  'en-TT': commonDatetimeFormat,
+  'en-VI': commonDatetimeFormat,
+  'en-ZW': commonDatetimeFormat,
+  de: commonDatetimeFormat,
+  'de-AT': commonDatetimeFormat,
+  'de-DE': commonDatetimeFormat,
+  'de-CH': commonDatetimeFormat,
+  'de-LI': commonDatetimeFormat,
+  'de-LU': commonDatetimeFormat,
 };
 
 export default createI18n({
@@ -80,6 +78,6 @@ export default createI18n({
     en,
     de,
   },
-  datetimeFormats,
+  datetimeFormats: datetimeFormats as IntlDateTimeFormats,
   warnHtmlMessage: false,
 });
