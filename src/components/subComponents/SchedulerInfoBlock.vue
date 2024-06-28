@@ -15,6 +15,7 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { isObjectEmpty } from '../../utils/commonUtils';
   import { ScheduleType } from '../../models/Scheduler';
+  import { timeToHourMinuteString } from '../../utils/dateUtils';
 
   const { t, d } = useI18n();
 
@@ -75,14 +76,14 @@ Licensed under the Elastic License 2.0. */
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
-                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
+                )} ${schedule.dtstart.offset.value}, ${timeToHourMinuteString(schedule.dtstart.time)}`
               : undefined;
           }
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                }, ${schedule.dtend.time} `
+                }, ${timeToHourMinuteString(schedule.dtend.time)} `
               : undefined;
           default:
             return undefined;

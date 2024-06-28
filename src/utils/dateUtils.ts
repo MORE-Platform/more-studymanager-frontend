@@ -52,3 +52,18 @@ export function ZTimeStringToOffsetTimeString(
   }
   return undefined;
 }
+
+/**
+ * Converts a time string in the format HH:mm:ss into a character string in the format HH:mm.
+ * @param time - A time string in the format HH:mm:ss (e.g. "10:30:00") or `undefined`.
+ * @returns A character string in the format HH:mm (e.g. "10:30") or `undefined` if the input is `undefined`.
+ */
+export function timeToHourMinuteString(
+  time: string | undefined,
+): string | undefined {
+  if (time) {
+    return time.substring(0, 5);
+  }
+
+  return time;
+}
