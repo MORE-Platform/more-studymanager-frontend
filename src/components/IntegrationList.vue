@@ -346,13 +346,13 @@ Licensed under the Elastic License 2.0. */
       @on-action="executeAction($event)"
       @on-change="updateIntegration($event)"
     >
-      <template #tableActions>
+      <template #tableActions="{ isInEditMode }">
         <div>
           <Button
             type="button"
             icon="pi pi-plus"
             :label="t('integration.integrationList.action.add')"
-            :disabled="!actionsVisible"
+            :disabled="isInEditMode ? true : !actionsVisible"
             @click="
               openIntegrationDialog(t('integration.dialog.header.create'))
             "

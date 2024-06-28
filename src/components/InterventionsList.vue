@@ -471,13 +471,13 @@ Licensed under the Elastic License 2.0. */
       @on-action="executeAction($event)"
       @on-change="changeValue($event)"
     >
-      <template #tableActions>
+      <template #tableActions="{ isInEditMode }">
         <div>
           <Button
             type="button"
             icon="pi pi-plus"
             :label="t('intervention.interventionList.action.add')"
-            :disabled="!actionsVisible"
+            :disabled="isInEditMode ? true : !actionsVisible"
             @click="
               openInterventionDialog(t('intervention.dialog.header.create'))
             "
