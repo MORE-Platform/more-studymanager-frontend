@@ -38,6 +38,7 @@ Licensed under the Elastic License 2.0. */
   import { ScheduleType } from '../models/Scheduler';
   import Button from 'primevue/button';
   import Menu from 'primevue/menu';
+  import { timeToHourMinuteString } from '../utils/dateUtils';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -310,13 +311,13 @@ Licensed under the Elastic License 2.0. */
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
-                )} ${schedule.dtstart.offset.value}, ${schedule.dtstart.time}`
+                )} ${schedule.dtstart.offset.value}, ${timeToHourMinuteString(schedule.dtstart.time)}`
               : undefined;
           case 'dtend':
             return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
-                }, ${schedule.dtend.time} `
+                }, ${timeToHourMinuteString(schedule.dtend.time)} `
               : undefined;
           default:
             return undefined;

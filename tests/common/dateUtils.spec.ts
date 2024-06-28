@@ -13,6 +13,7 @@ import {
   dateToDateTimeString,
   ZTimeStringToOffsetTimeString,
   ZTimeToOffsetTime,
+  timeToHourMinuteString,
 } from '../../src/utils/dateUtils';
 
 describe('dateToDateString', () => {
@@ -131,5 +132,42 @@ describe('ZTimeStringToOffsetTimeString', () => {
     const expectedTime = expectedDate.toString().substring(16, 21);
 
     expect(result).toBe(expectedTime);
+  });
+});
+
+describe('timeToHourMinuteString', () => {
+  it('should return HH:mm when given a time string in HH:mm:ss format', () => {
+    const time = '10:30:00';
+    const result = timeToHourMinuteString(time);
+    expect(result).toBe('10:30');
+  });
+
+  it('should return undefined when given undefined', () => {
+    const result = timeToHourMinuteString(undefined);
+    expect(result).toBeUndefined();
+  });
+
+  it('should handle edge cases like short strings correctly', () => {
+    const time = '10:30';
+    const result = timeToHourMinuteString(time);
+    expect(result).toBe('10:30');
+  });
+
+  it('should handle empty string correctly', () => {
+    const time = '';
+    const result = timeToHourMinuteString(time);
+    expect(result).toBe('');
+  });
+
+  it('should handle null string correctly', () => {
+    const time = null as unknown as string;
+    const result = timeToHourMinuteString(time);
+    expect(result).toBeNull();
+  });
+
+  it('should handle time strings with more than 8 characters correctly', () => {
+    const time = '10:30:00 AM';
+    const result = timeToHourMinuteString(time);
+    expect(result).toBe('10:30');
   });
 });
