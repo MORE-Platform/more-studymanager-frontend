@@ -105,7 +105,7 @@
     },
     "ical": {
       "copyMsg": "Link for ICalendar subscription ('{title} (Id: {studyId})') was copied to clipboard.",
-      "title": "Calendar Link for subscription",
+      "title": "Calendar for subscription",
       "copyTitle": "Copy Link"
     },
     "roles": {
@@ -388,7 +388,7 @@
     },
     "participantsList": {
       "title": "Participants",
-      "description": "Add participants manually or by importing a CSV with alias names. Participants can be automatically assigned to groups and exported to a CSV.",
+      "description": "Add participants manually or by importing a list with alias names. Participants can be automatically assigned to groups and exported to a CSV.",
       "emptyListMsg": "Add study participants to your study",
       "action": {
         "distribute": "Assign study groups",
@@ -432,7 +432,7 @@
     },
     "observationList": {
       "title": "Observations",
-      "description": "An observation can be sensor data from a mobile phone, a wearable device or information gathered from a questionnaire. The observations can be assigned to one specific study group. If no study group is assigned, the observation will be applied to all groups.",
+      "description": "An observation can be sensor data from a mobile phone, a wearable device or information gathered from a questionnaire. An observation can be assigned to one specific study group. If no study group is assigned, the observation will be applied to the entire study.",
       "emptyListMsg": "Add and manage your studies observations",
       "action": {
         "add": "Add observation"
