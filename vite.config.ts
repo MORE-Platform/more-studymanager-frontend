@@ -36,6 +36,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reportsDirectory: 'tests/coverage',
+      exclude: ['src/generated-sources/**'],
     },
   },
 });
