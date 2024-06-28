@@ -14,7 +14,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
-    "types": ["vite/client", "node", "vitest/globals", "vitest/server-test-utils"],
+    "types": ["vite/client", "node"],
     "plugins": [{ "name": "@vuedx/typescript-plugin-vue" }],
     "typeRoots": ["src/types", "node_modules/@types"],
   },
