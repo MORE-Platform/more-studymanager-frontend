@@ -405,7 +405,11 @@ Licensed under the Elastic License 2.0. */
           <Button
             type="button"
             :label="t('participants.participantsList.action.distribute')"
-            :disabled="!actionsVisible || participantsList.length === 0"
+            :disabled="
+              isInEditMode
+                ? true
+                : !actionsVisible || participantsList.length === 0
+            "
             @click="openDistributeDialog()"
           />
         </div>
@@ -417,7 +421,7 @@ Licensed under the Elastic License 2.0. */
             :custom-upload="true"
             :auto="true"
             accept=".csv"
-            :disabled="!actionsVisible"
+            :disabled="isInEditMode ? true : !actionsVisible"
             @uploader="importParticipants($event)"
           ></FileUpload>
         </div>
@@ -426,7 +430,7 @@ Licensed under the Elastic License 2.0. */
             type="button"
             icon="pi pi-download"
             :label="t('participants.participantsList.action.export')"
-            :disabled="participantsList.length === 0"
+            :disabled="isInEditMode ? true : participantsList.length === 0"
             @click="exportParticipants()"
           />
         </div>
