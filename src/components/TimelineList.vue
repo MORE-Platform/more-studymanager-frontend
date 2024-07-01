@@ -54,6 +54,7 @@ Licensed under the Elastic License 2.0. */
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
   });
 
+  const vueCalLocale = locale.value.split('-')[0];
   const filterRelativeStartDate = ref();
   const filterStudyGroup = ref();
   const filterParticipant = ref();
@@ -548,7 +549,7 @@ Licensed under the Elastic License 2.0. */
   <VueCal
     :disable-views="['years', 'year']"
     :selected-date="selectedDate"
-    :locale="locale"
+    :locale="vueCalLocale"
     :events="events"
     :on-event-click="onEventClick"
     :min-date="studyStartDate"
