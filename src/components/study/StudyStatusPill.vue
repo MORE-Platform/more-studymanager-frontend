@@ -25,17 +25,17 @@
     text-align: center;
     text-transform: uppercase;
     &.active {
-      border-color: var(--red-400);
-      color: var(--red-400);
+      border-color: var(--green-400);
+      color: var(--green-400);
     }
     &.preview {
-      border-color: var(--red-400);
-      color: var(--red-400);
+      border-color: var(--green-400);
+      color: var(--green-400);
       border-style: dashed;
     }
     &.paused-preview {
-      border-color: var(--green-400);
-      color: var(--green-400);
+      border-color: var(--red-400);
+      color: var(--red-400);
       border-style: dashed;
     }
     &.draft {
@@ -43,8 +43,8 @@
       color: var(--gray-400);
     }
     &.paused {
-      border-color: var(--green-400);
-      color: var(--green-400);
+      border-color: var(--red-400);
+      color: var(--red-400);
     }
     &.closed {
       border-color: var(--blue-400);
