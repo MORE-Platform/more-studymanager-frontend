@@ -6,31 +6,58 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import { useComponentsApi, useDataApi } from '../composable/useApi';
+  import Dropdown, { DropdownChangeEvent } from 'primevue/dropdown';
+  import Accordion from 'primevue/accordion';
+  import AccordionTab from 'primevue/accordiontab';
+  import Chart from 'primevue/chart';
+  import TabView from 'primevue/tabview';
+  import TabPanel from 'primevue/tabpanel';
+  import Calendar from 'primevue/calendar';
+  import Button from 'primevue/button';
+  import {
+    useComponentsApi,
+    useDataApi,
+    useParticipantsApi,
+  } from '../composable/useApi';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { ref, Ref } from 'vue';
+  import { computed, ComputedRef, reactive, ref, Ref, watch } from 'vue';
   import {
+    ChartProperties,
+    ObservationDataViewInfo,
+    ObservationDataViewDataDTO,
+    ObservationDataViewDataRow,
+    ObservationDataViewFilter,
     ParticipationDataGrouping,
     ParticipationDataMapping,
+    ObservationsViewData,
+    ObservationDataViewData,
   } from '../models/ParticipationData';
-  import { AxiosError } from 'axios';
+  import { AxiosError, AxiosResponse } from 'axios';
   import {
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import { ComponentFactory } from '../generated-sources/openapi';
-  import Accordion from 'primevue/accordion';
-  import AccordionTab from 'primevue/accordiontab';
+  import { ComponentFactory, Participant } from '../generated-sources/openapi';
   import { onBeforeRouteLeave } from 'vue-router';
   import DatapointList from './subComponents/DatapointList.vue';
+  import { useStudyStore } from '../stores/studyStore';
+  import { useGlobalStore } from '../stores/globalStore';
+  import { DropdownOption } from '../models/Common';
+  import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import useLoader from '../composable/useLoader';
 
-  const { t } = useI18n();
+  const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
+  const loader = useLoader();
   const { componentsApi } = useComponentsApi();
+  const { participantsApi } = useParticipantsApi();
   const { dataApi } = useDataApi();
+  const dateFormat = useGlobalStore().getDateFormat;
+  const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
 
   const props = defineProps({
     studyId: {
@@ -44,52 +71,309 @@ Licensed under the Elastic License 2.0. */
     sortOrder: -1,
   };
 
-  let timer: NodeJS.Timeout | number;
+  const filterDateRange = ref();
+  watch(filterDateRange, () => {
+    // Only apply filter if there is a "from" and "to" date value available
+    if (filterDateRange.value?.every((v: Date | null) => v !== null)) {
+      applyFilter();
+    }
+  });
+  const filterStudyGroup = ref();
+  const filterParticipant = ref();
 
-  function loadData(): void {
-    timer ??= setInterval(function () {
-      listParticipationData().then(setObservationGroups);
-    }, 10000);
-    listParticipationData().then(setObservationGroups);
+  const studyGroupOptions: Ref<DropdownOption[]> = ref([
+    {
+      label: t('global.placeholder.entireStudy'),
+      value: undefined,
+    } as DropdownOption,
+  ]);
+
+  studyGroupOptions.value.push(
+    ...studyGroupStore.studyGroups.map(
+      (studyGroup) =>
+        ({
+          label: studyGroup.title,
+          value: studyGroup.studyGroupId?.toString(),
+        }) as DropdownOption,
+    ),
+  );
+
+  let participantsList: Participant[] = [];
+  const participantOptions: Ref<DropdownOption[]> = ref([
+    {
+      label: t('participants.placeholder.allParticipants'),
+      value: undefined,
+    } as DropdownOption,
+  ]);
+
+  let timer: NodeJS.Timeout;
+
+  function onStudyGroupFilterChange(e: DropdownChangeEvent): void {
+    const filteredOptions: DropdownOption[] = [];
+    const filteredParticipants: Participant[] = [];
+
+    filteredOptions.push({
+      label: t('participants.placeholder.allParticipants'),
+      value: undefined,
+    } as DropdownOption);
+
+    if (e.value) {
+      filteredParticipants.push(
+        ...participantsList.filter(
+          (participant) => participant.studyGroupId === parseInt(e.value),
+        ),
+      );
+    } else {
+      filteredParticipants.push(...participantsList);
+    }
+
+    filteredOptions.push(
+      ...filteredParticipants.map(
+        (filteredParticipant) =>
+          ({
+            label: filteredParticipant.alias,
+            value: filteredParticipant.participantId?.toString(),
+          }) as DropdownOption,
+      ),
+    );
+
+    participantOptions.value = filteredOptions;
+    applyFilter();
   }
 
-  onBeforeRouteLeave(() => {
-    clearInterval(timer);
+  function onParticipantFilterChange(e: DropdownChangeEvent): void {
+    filterStudyGroup.value = getStudyGroupIdByParticipantId(parseInt(e.value));
+    applyFilter();
+  }
+
+  function onTabChange(observationId: number, tabIndex: number): void {
+    if (tabIndex === 0) {
+      // "Table" Tab is active (no chart)
+      return;
+    }
+    // -1, because of the "Table" tab, the index is higher than the viewData array
+    const viewDataIdx = tabIndex - 1;
+
+    if (observationsViewData[observationId][viewDataIdx].chartData !== null) {
+      // chart data already available - skip
+      return;
+    }
+
+    fetchObservationViewData(+observationId, viewDataIdx, getViewDataFilters());
+  }
+
+  function clearAllFilters(): void {
+    filterParticipant.value = undefined;
+    filterStudyGroup.value = undefined;
+    filterDateRange.value = undefined;
+    applyFilter();
+  }
+
+  const isAnyFilterActive: ComputedRef<boolean> = computed((): boolean => {
+    return (
+      filterParticipant.value !== undefined ||
+      filterStudyGroup.value !== undefined ||
+      filterDateRange.value !== undefined
+    );
   });
 
-  const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
+  function getStudyGroupIdByParticipantId(id: number): string | undefined {
+    const foundParticipant = participantsList.find(
+      (p) => p.participantId === id,
+    );
 
-  async function listParticipationData(): Promise<ParticipationDataMapping[]> {
-    return dataApi
-      .getParticipationData(props.studyId)
-      .then((response) =>
-        response.data.map((item) => {
-          return {
-            participantId: item.participantNamedId?.id,
-            participantAlias: item.participantNamedId?.title || '-',
-            observationId: item.observationNamedId?.id || -1,
-            observationTitle:
-              `${item.observationNamedId?.title} ${getObservationTypeLabel(
-                item.observationType as string,
-              )}` || '-',
-            studyGroupTitle:
-              item.studyGroupNamedId?.title ||
-              t('global.placeholder.entireStudy'),
-            dataReceived: t(
-              `global.labels.${
-                item.dataReceived ? 'dataReceived' : 'noDataReceived'
-              }`,
-            ),
-            lastDataReceived: item.lastDataReceived
-              ? item.lastDataReceived
-              : '-',
-          };
-        }),
-      )
-      .catch((e: AxiosError) => {
-        handleIndividualError(e, 'cannot list participationDataList');
-        return [];
+    return foundParticipant?.studyGroupId?.toString();
+  }
+
+  function getUniqueObservationIds(
+    data: ParticipationDataMapping[],
+  ): Set<number> {
+    const uniqueIds = new Set<number>();
+
+    data.forEach((item) => {
+      uniqueIds.add(item.observationId);
+    });
+
+    return uniqueIds;
+  }
+
+  function applyFilter(): void {
+    for (const observationId in observationsViewData) {
+      for (const viewIdx in observationsViewData[observationId]) {
+        const viewData = observationsViewData[observationId][viewIdx];
+        if (viewData.chartType !== null) {
+          fetchObservationViewData(
+            +observationId,
+            +viewIdx,
+            getViewDataFilters(),
+          );
+        }
+      }
+    }
+  }
+
+  function getViewDataFilters(): ObservationDataViewFilter {
+    return {
+      studyGroupId: filterStudyGroup.value
+        ? +filterStudyGroup.value
+        : undefined,
+      participantId: filterParticipant.value
+        ? +filterParticipant.value
+        : undefined,
+      from: filterDateRange.value ? filterDateRange.value[0] : undefined,
+      to: filterDateRange.value ? filterDateRange.value[1] : undefined,
+    };
+  }
+
+  function convertChartTypeData(
+    observationDataViewData: ObservationDataViewDataDTO,
+  ): ChartProperties | null {
+    if (!observationDataViewData.data?.length) {
+      return null;
+    }
+
+    switch (observationDataViewData.chartType) {
+      case 'pie':
+        return transformToPieChartData(observationDataViewData);
+      case 'line':
+        return transformToLineChartData(observationDataViewData);
+      case 'bar':
+        return transformToBarChartData(observationDataViewData);
+      default:
+        console.log(
+          `Unsupported Chart type: ${observationDataViewData.chartType}`,
+        );
+        return null;
+    }
+  }
+
+  function transformToPieChartData(
+    observationDataViewData: ObservationDataViewDataDTO,
+  ): ChartProperties {
+    return {
+      type: 'pie',
+      data: {
+        labels: observationDataViewData.labels,
+        datasets: [
+          {
+            data: observationDataViewData.data[0].values,
+          },
+        ],
+      },
+      options: getChartOptions(observationDataViewData.view),
+    } as ChartProperties;
+  }
+
+  function transformToLineChartData(
+    observationDataViewData: ObservationDataViewDataDTO,
+  ): ChartProperties {
+    return {
+      type: 'line',
+      data: {
+        labels: formatDateLabels(observationDataViewData.labels),
+        datasets: createDataSet(observationDataViewData.data),
+      },
+      options: getChartOptions(observationDataViewData.view),
+    } as ChartProperties;
+  }
+
+  function transformToBarChartData(
+    observationDataViewData: ObservationDataViewDataDTO,
+  ): ChartProperties {
+    const additionalChartOptions = {
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0,
+          },
+        },
+      },
+    };
+
+    return {
+      type: 'bar',
+      data: {
+        labels: translateLabel(observationDataViewData.labels),
+        datasets: createDataSet(observationDataViewData.data),
+      },
+      options: getChartOptions(
+        observationDataViewData.view,
+        additionalChartOptions,
+      ),
+    } as ChartProperties;
+  }
+
+  function getChartOptions(
+    view: ObservationDataViewInfo,
+    additionalOptions?: any,
+  ): any {
+    return {
+      responsive: false,
+      plugins: {
+        title: {
+          display: true,
+          text: t(view.title),
+        },
+        subtitle: {
+          display: true,
+          text: t(view.description),
+        },
+      },
+      ...additionalOptions,
+    };
+  }
+
+  function formatDateLabels(labels: string[]): string[] | null {
+    if (!labels) {
+      return null;
+    }
+    for (let i = 0, len = labels.length; i < len; i++) {
+      labels[i] = d(new Date(labels[i]), 'long');
+    }
+
+    return labels;
+  }
+
+  function translateLabel(labels: string[]): string[] {
+    return labels.map((label) => {
+      if (label.startsWith('i18n.')) {
+        const key = label.substring(5);
+        return t(key);
+      }
+      return label;
+    });
+  }
+
+  function createDataSet(
+    data: ObservationDataViewDataRow[],
+  ): { label: string[]; data: number[] }[] {
+    const obj = groupAndAggregateValues(data);
+    const dataSets = [];
+    for (const [key, values] of Object.entries(obj)) {
+      dataSets.push({
+        label: translateLabel([key]),
+        data: values,
       });
+    }
+
+    return dataSets;
+  }
+
+  function groupAndAggregateValues(data: ObservationDataViewDataRow[]): {
+    [key: string]: number[];
+  } {
+    return data.reduce(
+      (acc, current) => {
+        if (acc[current.label]) {
+          acc[current.label] = acc[current.label].concat(current.values);
+        } else {
+          acc[current.label] = current.values;
+        }
+        return acc;
+      },
+      {} as { [key: string]: number[] },
+    );
   }
 
   let factories: ComponentFactory[];
@@ -145,6 +429,7 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
+  const groupedParticipantData: Ref<ParticipationDataGrouping> = ref({});
   function setObservationGroups(data: ParticipationDataMapping[]): void {
     groupedParticipantData.value = data.reduce(function (prev, curr) {
       prev[curr.observationId] = prev[curr.observationId] || [];
@@ -153,10 +438,130 @@ Licensed under the Elastic License 2.0. */
     }, Object.create(null));
   }
 
+  async function fetchParticipants(): Promise<void> {
+    participantsList = await participantsApi
+      .listParticipants(props.studyId)
+      .then((response) => {
+        participantOptions.value.push(
+          ...response.data.map(
+            (p) =>
+              ({
+                label: p.alias,
+                value: p.participantId?.toString(),
+              }) as DropdownOption,
+          ),
+        );
+
+        return response.data;
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list participants');
+        return participantsList;
+      });
+  }
+
+  async function fetchParticipationData(): Promise<ParticipationDataMapping[]> {
+    return dataApi
+      .getParticipationData(props.studyId)
+      .then((response) =>
+        response.data.map((item) => {
+          return {
+            participantId: item.participantNamedId?.id,
+            participantAlias: item.participantNamedId?.title || '-',
+            observationId: item.observationNamedId?.id || -1,
+            observationTitle:
+              `${item.observationNamedId?.title} ${getObservationTypeLabel(
+                item.observationType as string,
+              )}` || '-',
+            studyGroupTitle:
+              item.studyGroupNamedId?.title ||
+              t('global.placeholder.entireStudy'),
+            dataReceived: t(
+              `global.labels.${
+                item.dataReceived ? 'dataReceived' : 'noDataReceived'
+              }`,
+            ),
+            lastDataReceived: item.lastDataReceived
+              ? item.lastDataReceived
+              : '-',
+          };
+        }),
+      )
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list participationDataList');
+        return [];
+      });
+  }
+
+  const observationsViewData: ObservationsViewData = reactive({});
+  function fetchViewsForObservation(data: ParticipationDataMapping[]): void {
+    for (const observationId of getUniqueObservationIds(data)) {
+      dataApi
+        .listObservationViews(props.studyId, observationId)
+        .then((response: AxiosResponse) => {
+          if (response.data?.length > 0) {
+            observationsViewData[observationId] = [];
+            response.data.forEach((view: ObservationDataViewInfo) => {
+              observationsViewData[observationId].push({
+                chartType: null,
+                chartData: null,
+                labels: [],
+                view: view,
+              } as ObservationDataViewData);
+            });
+          }
+        })
+        .catch((e: AxiosError) => {
+          handleIndividualError(e, 'cannot list views for observation');
+        });
+    }
+  }
+
+  function fetchObservationViewData(
+    observationId: number,
+    viewDataIdx: number,
+    filter: ObservationDataViewFilter,
+  ): void {
+    dataApi
+      .getObservationViewData(
+        props.studyId,
+        observationId,
+        observationsViewData[observationId][viewDataIdx].view.name,
+        filter.studyGroupId,
+        filter.participantId,
+        filter.from,
+        filter.to,
+      )
+      .then((rs: AxiosResponse) => {
+        observationsViewData[observationId][viewDataIdx].chartType =
+          rs.data.chartType;
+        observationsViewData[observationId][viewDataIdx].chartData =
+          convertChartTypeData(rs.data);
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(e, 'cannot list view data for observation');
+      });
+  }
+
+  function loadData(): void {
+    timer ??= setInterval(function () {
+      fetchParticipationData().then(setObservationGroups);
+    }, 10000);
+    fetchParticipationData().then((data) => {
+      setObservationGroups(data);
+      fetchViewsForObservation(data);
+    });
+    fetchParticipants();
+  }
+
+  onBeforeRouteLeave(() => {
+    clearInterval(timer);
+  });
+
   componentsApi
     .listComponents('observation')
     .then((response: any) => response.data)
-    .then((rsp) => (factories = rsp))
+    .then((rs) => (factories = rs))
     .then(loadData);
 </script>
 
@@ -175,23 +580,95 @@ Licensed under the Elastic License 2.0. */
       >
         {{ $t('data.dataList.title') }}
       </h4>
+
+      <div class="mb-3 flex items-center justify-between gap-5">
+        <div class="flex gap-5">
+          <div>
+            {{ $t('data.labels.dateRange') }}:
+            <Calendar
+              v-model="filterDateRange"
+              :min-date="new Date(studyStore.study.plannedStart as string)"
+              autocomplete="off"
+              selection-mode="range"
+              :manual-input="false"
+              :date-format="dateFormat"
+              :placeholder="`${dateFormat} - ${dateFormat}`"
+            />
+          </div>
+          <div>
+            {{ $t('studyGroup.singular') }}:
+            <Dropdown
+              v-model="filterStudyGroup"
+              :options="studyGroupOptions"
+              option-label="label"
+              option-value="value"
+              :placeholder="$t('studyGroup.placeholder.chooseGroup')"
+              class="ml-1"
+              :disabled="filterParticipant !== undefined"
+              @change="onStudyGroupFilterChange"
+            />
+          </div>
+          <div>
+            {{ $t('participants.singular') }}:
+            <Dropdown
+              v-model="filterParticipant"
+              :options="participantOptions"
+              option-label="label"
+              option-value="value"
+              :placeholder="$t('participants.placeholder.chooseParticipant')"
+              class="ml-1"
+              filter
+              @change="onParticipantFilterChange"
+            />
+          </div>
+        </div>
+        <div>
+          <Button
+            icon="pi pi-filter-slash"
+            :disabled="!isAnyFilterActive"
+            @click="clearAllFilters"
+          />
+        </div>
+      </div>
+
       <Accordion :active-index="0" lazy expand-icon="pi pi-chevron-up">
         <AccordionTab
-          v-for="observationData in groupedParticipantData"
-          :key="observationData[0].observationId"
-          :header="observationData[0].observationTitle as string"
+          v-for="(observationData, observationId) in groupedParticipantData"
+          :key="observationId"
+          :header="observationData[0].observationTitle"
           headerClass="mt-2.5"
         >
-          <MoreTable
-            v-if="observationData.length"
-            row-id="observationId"
-            :columns="studyDataColumns"
-            :rows="observationData"
-            :row-edit-btn="false"
-            :sort-options="sortOptions"
-            :editable="() => false"
-            :empty-message="$t('data.dataList.emptyListMsg')"
-          />
+          <TabView @update:active-index="onTabChange(observationId, $event)">
+            <TabPanel :header="$t('data.labels.latestDataPoints')">
+              <MoreTable
+                v-if="observationData.length"
+                row-id="observationId"
+                :columns="studyDataColumns"
+                :rows="observationData"
+                :row-edit-btn="false"
+                :sort-options="sortOptions"
+                :editable="() => false"
+                :empty-message="$t('data.dataList.emptyListMsg')"
+              />
+            </TabPanel>
+            <TabPanel
+              v-for="(view, idx) in observationsViewData[observationId]"
+              :key="idx"
+              :header="$t(view.view.label)"
+            >
+              <div class="flex min-h-[500px] items-center justify-center">
+                <Chart
+                  v-if="view.chartData"
+                  v-bind="view.chartData"
+                  :height="500"
+                  :width="1000"
+                />
+                <template v-else-if="!loader.isLoading.value">
+                  <h3>{{ $t('data.labels.noDataAvailable') }}</h3>
+                </template>
+              </div>
+            </TabPanel>
+          </TabView>
         </AccordionTab>
       </Accordion>
     </div>

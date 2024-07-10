@@ -33,13 +33,9 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { dateToDateString } from '../utils/dateUtils';
   import TimelineDialog from './dialog/TimelineDialog.vue';
-  import {
-    DropdownOption,
-    GroupOption,
-    EventDetail,
-    EventOptions,
-  } from '../models/Timeline';
+  import { GroupOption, EventDetail, EventOptions } from '../models/Timeline';
   import { useGlobalStore } from '../stores/globalStore';
+  import { DropdownOption } from '../models/Common';
   const dialog = useDialog();
   const dateFormat = useGlobalStore().getDateFormat;
   const { t, locale } = useI18n();
@@ -284,7 +280,7 @@ Licensed under the Elastic License 2.0. */
     const filteredParticipants: Participant[] = [];
 
     filteredOptions.push({
-      label: t('global.placeholder.entireStudy'),
+      label: t('participants.placeholder.allParticipants'),
       value: undefined,
     } as DropdownOption);
 

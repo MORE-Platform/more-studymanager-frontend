@@ -46,13 +46,13 @@ Licensed under the Elastic License 2.0. */
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timeout | number;
+  let timer: NodeJS.Timeout;
 
   function loadData(): void {
-    timer ??= setInterval(function () {
+    timer ??= ((): NodeJS.Timeout => {
       listDataPoints();
-    }, 10000);
-    listDataPoints();
+      return setInterval(listDataPoints, 10000);
+    })();
   }
 
   onBeforeRouteLeave(() => {

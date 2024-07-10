@@ -350,6 +350,37 @@
     },
     "placeholder": {
       "chooseSize": "Größe auswählen"
+    },
+    "labels": {
+      "latestDataPoints": "Letzte Datenpunkte",
+      "dateRange": "Datumsbereich",
+      "noDataAvailable": "Keine Daten verfügbar"
+    },
+    "charts": {
+      "simpleQuestion": {
+        "responseDistribution": {
+          "label": "Alle Antworten",
+          "title": "Verteilung der Antworten der Teilnehmer:innen",
+          "description": "Jedes Segment stellt die Häufigkeit einer bestimmten Antwort dar und zeigt, wie viele Teilnehmer:innen die jeweilige Option gewählt haben."
+        },
+        "responseDistributionStudyGroup": {
+          "label": "Antworten per Gruppe",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
+        },
+        "responseDistributionResponse": {
+          "label": "Gruppierung nach Antwort",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
+        }
+      },
+      "polarVerity": {
+        "avgHeartRate": {
+          "label": "Herzfrequenz",
+          "title": "Durchschnittliche Herzfrequenz pro Teilnehmer im Zeitverlauf",
+          "description": "Vergleicht die durchschnittliche Herzfrequenz aller Teilnehmer über die Zeit mit einem Zeitintervall von 1 Minute."
+        }
+      }
     }
   },
 

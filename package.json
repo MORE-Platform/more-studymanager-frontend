@@ -25,6 +25,7 @@
   "dependencies": {
     "@vuepic/vue-datepicker": "8.6.0",
     "axios": "1.7.1",
+    "chart.js": "^4.4.3",
     "cron-validate": "1.4.5",
     "keycloak-js": "24.0.4",
     "normalize.css": "8.0.1",
