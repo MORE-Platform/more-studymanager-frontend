@@ -350,6 +350,37 @@
     },
     "placeholder": {
       "chooseSize": "Choose a size"
+    },
+    "labels": {
+      "latestDataPoints": "Latest Data Points",
+      "dateRange": "Date range",
+      "noDataAvailable": "No data available"
+    },
+    "charts": {
+      "simpleQuestion": {
+        "responseDistribution": {
+          "label": "All Responses",
+          "title": "Distribution of Participant Responses",
+          "description": "Each segment represents the frequency of a particular answer and shows how many participants selected the respective option."
+        },
+        "responseDistributionStudyGroup": {
+          "label": "Responses by Group",
+          "title": "Response Distribution Across Study Groups",
+          "description": "Each column in the bar chart represents the number of responses per study group."
+        },
+        "responseDistributionResponse": {
+          "label": "Groups by Response",
+          "title": "Response Distribution Across Study Groups",
+          "description": "Each column in the bar chart represents the number of responses per study group."
+        }
+      },
+      "polarVerity": {
+        "avgHeartRate": {
+          "label": "Heart rate",
+          "title": "Average heart rate per participant over time",
+          "description": "Compares the average heart rate of all participants over time, with a time interval of 1 minute."
+        }
+      }
     }
   },
 

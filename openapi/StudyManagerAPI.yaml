@@ -1167,13 +1167,13 @@ paths:
           description: bad request
 
   /studies/{studyId}/data:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
     get:
       tags:
         - data
       description: Get Study Participation Data
       operationId: getParticipationData
-      parameters:
-        - $ref: '#/components/parameters/StudyId'
       responses:
         '200':
           description: Operation successful
@@ -1186,14 +1186,71 @@ paths:
         '404':
           description: not found
 
+  /studies/{studyId}/observations/{observationId}/views:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+    get:
+      operationId: listObservationViews
+      description: "Get a list of available views"
+      tags:
+        - data
+      responses:
+        200:
+          description: List of available Views
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationDataView'
+
+  /studies/{studyId}/observations/{observationId}/views/{viewName}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+      - name: viewName
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - data
+      description: "Get observation view data"
+      operationId: getObservationViewData
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: participantId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationDataViewData'
+        '404':
+          description: not found
+
   /studies/{studyId}/datapoints:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
     get:
       tags:
         - data
       description: Get Data Points
       operationId: getDataPoints
       parameters:
-        - $ref: '#/components/parameters/StudyId'
         - name: observationId
           in: query
           schema:
@@ -1209,7 +1266,6 @@ paths:
           schema:
             type: string
             format: date-time
-            readOnly: true
         - name: size
           in: query
           schema:
@@ -1283,6 +1339,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FrontendConfiguration'
+
   /config/buildInfo:
     get:
       tags:
@@ -1669,6 +1726,52 @@ components:
           type: string
           format: date-time
           readOnly: true
+
+    ObservationDataView:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - name
+
+    ObservationDataViewData:
+      type: object
+      properties:
+        view:
+          $ref: '#/components/schemas/ObservationDataView'
+        chartType:
+          type: string
+          enum:
+            - line
+            - bar
+            - pie
+        labels:
+          type: array
+          items:
+            type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationDataViewDataRow'
+
+    ObservationDataViewDataRow:
+      type: object
+      properties:
+        label:
+          type: string
+        values:
+          type: array
+          items:
+            type: number
+            format: double
+
     DataPoint:
       type: object
       properties:
@@ -1795,6 +1898,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Intervention'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantInfo'
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationInfo'
+
+    ParticipantInfo:
+      type: object
+      properties:
+        studyGroup:
+          type: integer
+
+    IntegrationInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        observationId:
+          $ref: '#/components/schemas/Id'
 
     UserSearchResultList:
       type: object
@@ -1992,6 +2117,7 @@ components:
       required:
         - auth
       readOnly: true
+
     BuildInfo:
       type: object
       properties:
@@ -2058,6 +2184,24 @@ components:
         type: integer
         format: int32
       required: true
+    DateTime:
+      name: dateTime
+      in: query
+      schema:
+        type: string
+        format: date-time
+    From:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date-time
+    To:
+      name: to
+      in: query
+      schema:
+        type: string
+        format: date-time
 
   securitySchemes:
     OAuth:
