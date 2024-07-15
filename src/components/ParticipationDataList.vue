@@ -253,7 +253,7 @@ Licensed under the Elastic License 2.0. */
     return {
       type: 'pie',
       data: {
-        labels: observationDataViewData.labels,
+        labels: transformLabels(observationDataViewData.labels),
         datasets: [
           {
             data: observationDataViewData.data[0].values,
@@ -270,7 +270,7 @@ Licensed under the Elastic License 2.0. */
     return {
       type: 'line',
       data: {
-        labels: formatDateLabels(observationDataViewData.labels),
+        labels: transformLabels(observationDataViewData.labels),
         datasets: createDataSet(observationDataViewData.data),
       },
       options: getChartOptions(observationDataViewData.view),
@@ -294,7 +294,7 @@ Licensed under the Elastic License 2.0. */
     return {
       type: 'bar',
       data: {
-        labels: translateLabel(observationDataViewData.labels),
+        labels: transformLabels(observationDataViewData.labels),
         datasets: createDataSet(observationDataViewData.data),
       },
       options: getChartOptions(
@@ -324,20 +324,11 @@ Licensed under the Elastic License 2.0. */
     };
   }
 
-  function formatDateLabels(labels: string[]): string[] | null {
-    if (!labels) {
-      return null;
-    }
-    for (let i = 0, len = labels.length; i < len; i++) {
-      labels[i] = d(new Date(labels[i]), 'long');
-    }
-
-    return labels;
-  }
-
-  function translateLabel(labels: string[]): string[] {
-    return labels.map((label) => {
-      if (label.startsWith('i18n.')) {
+  function transformLabels(labels: string[]): string[] | null {
+    return labels?.map((label) => {
+      if (isValidDateTimeFormat(label)) {
+        return d(new Date(label), 'long');
+      } else if (label.startsWith('i18n.')) {
         const key = label.substring(5);
         return t(key);
       }
@@ -345,14 +336,19 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
+  function isValidDateTimeFormat(dateTimeString: string): boolean {
+    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/;
+    return regex.test(dateTimeString);
+  }
+
   function createDataSet(
     data: ObservationDataViewDataRow[],
-  ): { label: string[]; data: number[] }[] {
+  ): { label: string[] | null; data: number[] }[] {
     const obj = groupAndAggregateValues(data);
     const dataSets = [];
     for (const [key, values] of Object.entries(obj)) {
       dataSets.push({
-        label: translateLabel([key]),
+        label: transformLabels([key]),
         data: values,
       });
     }
