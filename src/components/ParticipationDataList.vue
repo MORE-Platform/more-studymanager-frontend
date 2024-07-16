@@ -337,7 +337,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function isValidDateTimeFormat(dateTimeString: string): boolean {
-    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}Z$/;
+    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\+\d{4}$/;
     return regex.test(dateTimeString);
   }
 
