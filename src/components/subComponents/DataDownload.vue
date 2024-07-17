@@ -139,7 +139,7 @@
     if (filterDateRange.value && filterDateRange.value.length > 1) {
       filterValues.from = filterDateRange.value[0];
       const toDate = filterDateRange.value[1];
-      toDate.setHours(23, 59);
+      toDate.setHours(23, 59, 59);
       filterValues.to = toDate;
     }
 
