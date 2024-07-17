@@ -128,13 +128,22 @@
   }
 
   function getDownloadFilters(): DownloadDataFilter {
-    return {
+    const filterValues = {
       studyGroupId: filterStudyGroup.value ?? undefined,
       participantId: filterParticipant.value ?? undefined,
       observationId: filterObservation.value ?? undefined,
-      from: filterDateRange.value ? filterDateRange.value[0] : undefined,
-      to: filterDateRange.value ? filterDateRange.value[1] : undefined,
+      from: undefined,
+      to: undefined,
     };
+
+    if (filterDateRange.value && filterDateRange.value.length > 1) {
+      filterValues.from = filterDateRange.value[0];
+      const toDate = filterDateRange.value[1];
+      toDate.setHours(23, 59);
+      filterValues.to = toDate;
+    }
+
+    return filterValues;
   }
 
   const disableStudyGroupFilter: ComputedRef<boolean> = computed(() => {
