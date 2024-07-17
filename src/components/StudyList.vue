@@ -27,6 +27,7 @@ Licensed under the Elastic License 2.0. */
   import AlertMsg from './shared/AlertMsg.vue';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import Button from 'primevue/button';
+  import { DownloadData } from '../models/DataDownloadModel';
 
   const studyStore = useStudyStore();
   const router = useRouter();
@@ -271,7 +272,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function onExportStudyData(studyId: number): void {
-    studyStore.exportStudyData(studyId);
+    studyStore.exportStudyData({ studyId } as DownloadData);
   }
 
   function onExportStudyCalendar(studyId: number): void {

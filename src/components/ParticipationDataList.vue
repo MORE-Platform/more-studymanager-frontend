@@ -106,8 +106,6 @@ Licensed under the Elastic License 2.0. */
     } as DropdownOption,
   ]);
 
-  let timer: NodeJS.Timeout;
-
   function onStudyGroupFilterChange(e: DropdownChangeEvent): void {
     const filteredOptions: DropdownOption[] = [];
     const filteredParticipants: Participant[] = [];
@@ -539,10 +537,13 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
+  let timer: NodeJS.Timeout;
+  const refreshTimeInSeconds = 10;
+
   function loadData(): void {
     timer ??= setInterval(function () {
       fetchParticipationData().then(setObservationGroups);
-    }, 10000);
+    }, refreshTimeInSeconds * 1000);
     fetchParticipationData().then((data) => {
       setObservationGroups(data);
       fetchViewsForObservation(data);
@@ -563,24 +564,21 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div>
-    <div class="title mb-12">
-      <h3 class="font-bold">{{ $t('data.title') }}</h3>
-      <div>{{ $t('data.description') }}</div>
-    </div>
-    <DatapointList :study-id="studyId" class="mb-14"></DatapointList>
-
+    <DatapointList :study-id="studyId" class="mb-14" />
     <div>
       <h4
         v-if="Object.keys(groupedParticipantData).length"
         class="color-primary mb-4 font-bold"
       >
-        {{ $t('data.dataList.title') }}
+        {{ $t('monitoring.dataList.title') }}
       </h4>
-
-      <div class="mb-3 flex items-center justify-between gap-5">
+      <div
+        v-if="Object.keys(groupedParticipantData).length"
+        class="mb-3 flex items-center justify-between gap-5"
+      >
         <div class="flex gap-5">
           <div>
-            {{ $t('data.labels.dateRange') }}:
+            {{ $t('monitoring.labels.dateRange') }}:
             <Calendar
               v-model="filterDateRange"
               :min-date="new Date(studyStore.study.plannedStart as string)"
@@ -635,7 +633,7 @@ Licensed under the Elastic License 2.0. */
           headerClass="mt-2.5"
         >
           <TabView @update:active-index="onTabChange(observationId, $event)">
-            <TabPanel :header="$t('data.labels.latestDataPoints')">
+            <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"
                 row-id="observationId"
@@ -644,7 +642,7 @@ Licensed under the Elastic License 2.0. */
                 :row-edit-btn="false"
                 :sort-options="sortOptions"
                 :editable="() => false"
-                :empty-message="$t('data.dataList.emptyListMsg')"
+                :empty-message="$t('monitoring.dataList.emptyListMsg')"
               />
             </TabPanel>
             <TabPanel
@@ -660,7 +658,7 @@ Licensed under the Elastic License 2.0. */
                   :width="1000"
                 />
                 <template v-else-if="!loader.isLoading.value">
-                  <h3>{{ $t('data.labels.noDataAvailable') }}</h3>
+                  <h3>{{ $t('monitoring.labels.noDataAvailable') }}</h3>
                 </template>
               </div>
             </TabPanel>

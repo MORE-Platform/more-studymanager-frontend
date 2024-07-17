@@ -76,10 +76,16 @@ Licensed under the Elastic License 2.0. */
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
+      title: t('studyNavigation.tabs.monitoring'),
+      name: t('studyNavigation.tabLink.monitoring'),
+      params: { studyId: props.studyId },
+      access: [StudyRole.Admin, StudyRole.Viewer],
+    },
+    {
       title: t('studyNavigation.tabs.data'),
       name: t('studyNavigation.tabLink.data'),
       params: { studyId: props.studyId },
-      access: [StudyRole.Viewer, StudyRole.Admin],
+      access: [StudyRole.Admin, StudyRole.Viewer],
     },
   ] as Tab[];
 
