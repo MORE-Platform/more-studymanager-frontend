@@ -1095,7 +1095,7 @@ paths:
       operationId: exportStudy
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             application/json:
               schema:
@@ -1110,10 +1110,39 @@ paths:
       tags:
         - importExport
       operationId: generateDownloadToken
-      description: generate a download token that can be used once for download and is valid for 10 minutes
+      description: Generate a download token that can be used once for download and is valid for 10 minutes
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: participantId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: observationId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             application/json:
               schema:
@@ -1121,6 +1150,58 @@ paths:
                 properties:
                   token:
                     type: string
+        '404':
+          description: study not found
+
+  /studies/{studyId}/export/studydata/{token}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - importExport
+      description: Download Study data
+      operationId: exportStudyData
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: participantId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: observationId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
         '404':
           description: study not found
 
@@ -1157,7 +1238,7 @@ paths:
       operationId: exportParticipants
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             text/csv:
               schema:
@@ -2134,6 +2215,31 @@ components:
       required:
         - version
         - date
+    DataExport:
+      type: array
+      items:
+        type: object
+        properties:
+          datapoint_id:
+            type: string
+          participant_id:
+            type: string
+          study_id:
+            type: string
+          study_group_id:
+            type: string
+            nullable: true
+          observation_id:
+            type: string
+          observation_type:
+            type: string
+          data_type:
+            type: string
+          storage_date:
+            type: string
+          effective_time_frame:
+            type: string
+        additionalProperties: true
 
   parameters:
     StudyId:

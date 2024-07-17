@@ -13,6 +13,7 @@ import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
+import { DownloadData } from '../models/DataDownloadModel';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
@@ -149,13 +150,25 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  async function exportStudyData(studyId: number): Promise<void> {
+  async function exportStudyData({
+    studyId,
+    studyGroupId,
+    participantId,
+    observationId,
+    from,
+    to,
+  }: DownloadData): Promise<void> {
     await importExportApi
-      .generateDownloadToken(studyId)
-      .then((token) => {
-        window.open(
-          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`,
-        );
+      .generateDownloadToken(
+        studyId,
+        studyGroupId,
+        participantId,
+        observationId,
+        from,
+        to,
+      )
+      .then((rs) => {
+        window.open(rs.headers.location);
       })
       .catch((e: AxiosError) => {
         handleIndividualError(

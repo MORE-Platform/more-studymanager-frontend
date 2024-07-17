@@ -36,7 +36,8 @@
       "message": "Message",
       "option": "Option {value}",
       "data": "Data",
-      "scheduleType": "Schedule Type"
+      "scheduleType": "Schedule Type",
+      "filter": "Filter"
     },
     "placeholder": {
       "entireStudy": "Entire study",
@@ -65,21 +66,23 @@
     },
     "tabs": {
       "overview": "Study",
-      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions",
       "integration": "Integrations",
-      "timeline": "Timeline"
+      "interventions": "Interventions",
+      "timeline": "Timeline",
+      "monitoring": "Monitoring",
+      "data": "Data"
     },
     "tabLink": {
       "overview": "Overview",
-      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
       "interventions": "Interventions",
       "integration": "Integrations",
-      "timeline": "Timeline"
+      "timeline": "Timeline",
+      "monitoring": "Monitoring",
+      "data": "Data"
     }
   },
 
@@ -337,16 +340,20 @@
     }
   },
 
-  "data": {
+  "monitoring": {
     "title": "Monitoring",
-    "description": "You can view the live data of your study here. Data will be updated every 10 seconds.",
+    "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
     "dataList": {
       "emptyListMsg": "Currently there are no observations to track.",
-      "title": "Received data points per observation"
+      "title": "Recorded observations"
     },
     "dataPointsList": {
       "lastDatapoints": "Last data points",
       "resultSize": "Size of result"
+    },
+    "dataDownload": {
+      "title": "Download study data",
+      "description": "Here you can download the study data based on various filters."
     },
     "placeholder": {
       "chooseSize": "Choose a size"
@@ -383,6 +390,8 @@
       }
     }
   },
+
+  "data": {},
 
   "participants": {
     "singular": "Participant",

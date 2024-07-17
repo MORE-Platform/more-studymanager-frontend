@@ -476,7 +476,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="title w-full">
     <div class="flex flex-row justify-between">
-      <h3 class="mb-1 font-bold">Filter</h3>
+      <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
       <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
     </div>
     <div class="mb-3 flex gap-5">

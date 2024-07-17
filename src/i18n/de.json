@@ -36,7 +36,8 @@
       "message": "Nachricht",
       "option": "Option {value}",
       "data": "Daten",
-      "scheduleType": "Zeitplan-Typ"
+      "scheduleType": "Zeitplan-Typ",
+      "filter": "Filter"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -65,21 +66,23 @@
     },
     "tabs": {
       "overview": "Studie",
-      "data": "Monitoring",
       "participants": "Teilnehmer:innen",
       "observations": "Datenerhebungen",
-      "interventions": "Interventionen",
       "integration": "Integrationen",
-      "timeline": "Kalender"
+      "interventions": "Interventionen",
+      "timeline": "Kalender",
+      "monitoring": "Monitoring",
+      "data": "Daten"
     },
     "tabLink": {
       "overview": "Overview",
-      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions",
       "integration": "Integrations",
-      "timeline": "Timeline"
+      "interventions": "Interventions",
+      "timeline": "Timeline",
+      "monitoring": "Monitoring",
+      "data": "Data"
     }
   },
 
@@ -337,16 +340,20 @@
     }
   },
 
-  "data": {
+  "monitoring": {
     "title": "Monitoring",
-    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10 Sekunden aktualisiert.",
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhaltene Datenpunkte pro Datenerhebung"
+      "title": "Erhobene Daten"
     },
     "dataPointsList": {
       "lastDatapoints": "Letzte Datenpunkte",
       "resultSize": "Anzahl der Datenpunkte"
+    },
+    "dataDownload": {
+      "title": "Studiendaten herunterladen",
+      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
     },
     "placeholder": {
       "chooseSize": "Größe auswählen"
@@ -383,6 +390,8 @@
       }
     }
   },
+
+  "data": {},
 
   "participants": {
     "singular": "Teilnehmer",

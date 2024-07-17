@@ -4,18 +4,18 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import StudyHeader from '../components/shared/StudyHeader.vue';
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
-  import { useStudyStore } from '../stores/studyStore';
+  import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '../generated-sources/openapi';
-  import DataDownload from '../components/subComponents/DataDownload.vue';
+  import { useStudyStore } from '../stores/studyStore';
+  import ParticipationDataList from '../components/ParticipationDataList.vue';
 
   const studyStore = useStudyStore();
   const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Viewer];
 </script>
 
 <template>
-  <div class="data-view container m-auto mt-10">
+  <div class="monitoring-view container m-auto mt-10">
     <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
@@ -29,11 +29,7 @@ Licensed under the Elastic License 2.0. */
       "
       class="container rounded-lg bg-white p-10"
     >
-      <Suspense>
-        <DataDownload />
-      </Suspense>
+      <ParticipationDataList :study-id="studyStore.studyId" />
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>
