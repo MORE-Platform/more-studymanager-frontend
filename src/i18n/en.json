@@ -73,16 +73,6 @@
       "timeline": "Timeline",
       "monitoring": "Monitoring",
       "data": "Data"
-    },
-    "tabLink": {
-      "overview": "Overview",
-      "participants": "Participants",
-      "observations": "Observations",
-      "interventions": "Interventions",
-      "integration": "Integrations",
-      "timeline": "Timeline",
-      "monitoring": "Monitoring",
-      "data": "Data"
     }
   },
 
