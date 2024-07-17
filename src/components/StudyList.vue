@@ -196,7 +196,7 @@ Licensed under the Elastic License 2.0. */
 
   function goToStudy(id: string): void {
     router.push({
-      name: t('studyNavigation.tabLink.overview'),
+      name: 'Overview',
       params: { studyId: id },
     });
   }
