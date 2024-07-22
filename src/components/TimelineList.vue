@@ -430,7 +430,6 @@ Licensed under the Elastic License 2.0. */
         setupObservationAndInterventionFilterOptions(response.data);
       })
       .catch((e: AxiosError) => {
-        console.log(e);
         handleIndividualError(e, 'cannot list studyTimeline');
       });
   }

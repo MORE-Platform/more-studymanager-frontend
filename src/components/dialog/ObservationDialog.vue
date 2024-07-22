@@ -29,9 +29,14 @@ Licensed under the Elastic License 2.0. */
   import AbsoluteScheduler from '../shared/Scheduler.vue';
   import { isObjectEmpty } from '../../utils/commonUtils';
   import { ScheduleType } from '../../models/Scheduler';
+  import { AxiosError } from 'axios';
+  import { useErrorHandling } from '../../composable/useErrorHandling';
+  import { useToastService } from '../../composable/toastService';
 
+  const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
+  const { handleIndividualError } = useErrorHandling();
   const studyStore = useStudyStore();
   const { t } = useI18n();
 
@@ -64,8 +69,6 @@ Licensed under the Elastic License 2.0. */
   );
 
   const studyGroupId = ref(observation.studyGroupId);
-
-  const jsonError = ref();
 
   function getLabelForChoiceValue(
     value: any,
@@ -124,17 +127,14 @@ Licensed under the Elastic License 2.0. */
           if (report.valid) {
             save(parsedProps);
           } else {
-            jsonError.value = (report.errors || [])
-              .concat(report.warnings || [])
-              .map((e) => e.message)
-              .join(', ');
+            handleToastErrors(report);
           }
+        })
+        .catch((e: AxiosError) => {
+          handleIndividualError(e, 'cannot fetch study');
         });
     } catch (e: any) {
-      jsonError.value = t('observation.error.noValidField', {
-        key: e.key,
-        message: e.message,
-      });
+      showErrorToast(t('global.error.general'));
     }
   }
 
@@ -276,7 +276,6 @@ Licensed under the Elastic License 2.0. */
       </div>
       <div v-if="properties.length" class="col-start-0 col-span-8">
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
-        <div v-if="jsonError" class="error mb-3">{{ jsonError }}</div>
         <div class="col-start-0 col-span-8">
           <div v-if="properties">
             <PropertyInputs

@@ -14,13 +14,14 @@ import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
 import { DownloadData } from '../models/DataDownloadModel';
+import { useToastService } from '../composable/toastService';
 
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { importExportApi } = useImportExportApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
-
+  const { handleToastErrors } = useToastService();
   // State
   const study: Ref<Study> = ref({});
   const studies: Ref<Study[]> = ref([]);
@@ -58,15 +59,11 @@ export const useStudyStore = defineStore('study', () => {
           study.value.status = status;
         })
         .catch((e: AxiosError) => {
-          alert(
-            `Could not update study status: ${
-              (e.response?.data as any)?.message
-            }`,
-          );
           handleIndividualError(
             e,
             `Could not update study status ${study.value.studyId}`,
           );
+          handleToastErrors(e.response?.data);
         });
     }
   }

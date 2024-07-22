@@ -31,9 +31,9 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="flex flex-col gap-1">
     <h6 class="font-bold">
-      <label v-if="property.name" :for="property.id"
-        >{{ $t(property.name) }}<span v-if="property.required">*</span></label
-      >
+      <label v-if="property.name" :for="property.id">
+        {{ $t(property.name) }}<span v-if="property.required">*</span>
+      </label>
     </h6>
     <div v-if="props.property.description" :id="`${property.id}-help`">
       {{ $t(props.property.description) }}
@@ -41,9 +41,10 @@ Licensed under the Elastic License 2.0. */
 
     <InputText
       :id="property.id"
-      v-model="property.value"
+      v-model.trim="property.value"
       type="text"
       class="w-full"
+      :required="property.required"
       :aria-describedby="`${property.id}-help`"
       :disabled="!editable"
       :placeholder="

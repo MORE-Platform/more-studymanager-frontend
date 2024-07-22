@@ -13,17 +13,25 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { StudyStatus } from '../generated-sources/openapi';
+  import { AxiosError } from 'axios';
+  import { useToastService } from '../composable/toastService';
 
+  const { handleToastErrors } = useToastService();
   const route = useRoute();
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
   async function processUpdatedStudyStatus(status: StudyStatus): Promise<void> {
-    await studyStore.updateStudyStatus(status).then(() => {
-      // To update the start/plannedStart/end Date in the UI immediately
-      studyStore.getStudy(studyId);
-    });
+    await studyStore
+      .updateStudyStatus(status)
+      .then(() => {
+        // To update the start/plannedStart/end Date in the UI immediately
+        studyStore.getStudy(studyId);
+      })
+      .catch((e: AxiosError) => {
+        handleToastErrors(e.response?.data);
+      });
   }
 
   studyStore.getStudy(studyId);

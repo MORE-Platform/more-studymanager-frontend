@@ -40,10 +40,9 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="flex flex-col gap-1">
     <h6 class="font-bold">
-      <label
-        >{{ $t(property.name) }}<span v-if="property.required">*</span
-        ><span v-if="property.required">*</span></label
-      >
+      <label>
+        {{ $t(property.name) }}<span v-if="property.required">*</span>
+      </label>
     </h6>
     <div>{{ $t(props.property.description) }}</div>
     <div v-if="editable" class="flex w-full flex-col gap-1">
@@ -54,6 +53,7 @@ Licensed under the Elastic License 2.0. */
         :class="!editable && property.value?.[index - 1] ? 'w-fit' : 'hidden'"
         :value="property.value?.[index - 1]"
         type="text"
+        :required="property.required"
         :disabled="!editable"
         :placeholder="t('global.labels.option', { value: index })"
         style="display: block"
