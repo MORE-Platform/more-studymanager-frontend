@@ -55,6 +55,16 @@
     },
     "footer": {
       "aboutMore": "Über More"
+    },
+    "error": {
+      "type": {
+        "error": "Fehler",
+        "warning": "Warnung",
+        "info": "Info"
+      },
+      "general": "Ein allgemeiner Fehler ist aufgetreten.",
+      "required": "Erforderlicher Wert '{value}' fehlt.",
+      "immutable": "Der Wert von '{value}' darf nicht geändert werden."
     }
   },
 

@@ -31,9 +31,9 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="gap-1">
     <h5 class="font-bold">
-      <label :for="property.id"
-        >{{ $t(property.name) }}<span v-if="property.required">*</span></label
-      >
+      <label :for="property.id">
+        {{ $t(property.name) }}<span v-if="property.required">*</span>
+      </label>
     </h5>
 
     <div v-if="props.property.description" :id="`${property.id}-help`">
@@ -44,6 +44,7 @@ Licensed under the Elastic License 2.0. */
       :id="property.id"
       v-model="property.value"
       type="number"
+      :required="property.required"
       :max="property.max"
       :min="property.min"
       :disabled="!editable"
