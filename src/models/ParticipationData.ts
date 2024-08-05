@@ -6,6 +6,8 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
+import { DropdownOption } from './Common';
+
 export interface ParticipationDataMapping {
   participantAlias: string;
   observationId: number;
@@ -32,8 +34,14 @@ export interface ObservationDataViewDataRow {
 }
 
 export interface ObservationsViewData {
-  [key: string]: ObservationDataViewData[];
+  [key: string]: ObservationDataView;
 }
+export interface ObservationDataView {
+  selectedView: string | undefined; //Ref<string>;
+  viewOptions: DropdownOption[];
+  data: { [key: string]: ObservationDataViewData };
+}
+
 export interface ObservationDataViewData {
   chartType: ChartType | null;
   view: ObservationDataViewInfo;

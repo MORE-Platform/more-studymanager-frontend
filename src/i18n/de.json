@@ -81,8 +81,7 @@
       "integration": "Integrationen",
       "interventions": "Interventionen",
       "timeline": "Kalender",
-      "monitoring": "Monitoring",
-      "data": "Daten"
+      "monitoringAndData": "Monitoring & Data"
     }
   },
 
@@ -340,26 +339,33 @@
     }
   },
 
+  "monitoringData": {
+    "tabs": {
+      "lastDataPoints": "Letzte Datenpunkte",
+      "recordedObservation": "Erhobene Daten",
+      "dataDownload": "Studiendaten herunterladen"
+    }
+  },
+
   "monitoring": {
     "title": "Monitoring",
     "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhobene Daten"
+      "title": "Erhobene Daten",
+      "description": "Hier werden die zuletzt gesammelten Datenpunkte in tabellarischer Form angezeigt und die gesamten Datenpunkte können in verschiedenen Visualisierungen dargestellt werden."
     },
     "dataPointsList": {
       "lastDatapoints": "Letzte Datenpunkte",
-      "resultSize": "Anzahl der Datenpunkte"
-    },
-    "dataDownload": {
-      "title": "Studiendaten herunterladen",
-      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
+      "resultSize": "Anzahl der Datenpunkte",
+      "filterInfo": "Die Filterung ist nur für die Visualisierung möglich."
     },
     "placeholder": {
       "chooseSize": "Größe auswählen"
     },
     "labels": {
       "latestDataPoints": "Letzte Datenpunkte",
+      "visualization": "Visualisierung",
       "dateRange": "Datumsbereich",
       "noDataAvailable": "Keine Daten verfügbar"
     },
@@ -391,7 +397,12 @@
     }
   },
 
-  "data": {},
+  "data": {
+    "dataDownload": {
+      "title": "Studiendaten herunterladen",
+      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
+    }
+  },
 
   "participants": {
     "singular": "Teilnehmer",

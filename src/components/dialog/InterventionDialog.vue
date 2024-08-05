@@ -586,7 +586,6 @@ Licensed under the Elastic License 2.0. */
           :disabled="!editable"
           @click="checkErrors()"
         />
-        >
       </div>
     </form>
   </div>
