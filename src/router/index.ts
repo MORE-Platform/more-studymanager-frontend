@@ -14,13 +14,12 @@ import NotFound from '../views/NotFound.vue';
 import Interventions from '../views/Interventions.vue';
 import Participants from '../views/Participants.vue';
 import Observations from '../views/Observations.vue';
-import Monitoring from '../views/Monitoring.vue';
+import MonitoringData from '../views/MonitoringData.vue';
 import StudyOverview from '../views/StudyOverview.vue';
 import { useStudyStore } from '../stores/studyStore';
 import { useStudyGroupStore } from '../stores/studyGroupStore';
 import Integrations from '../views/Integrations.vue';
 import Timeline from '../views/Timeline.vue';
-import Data from '../views/Data.vue';
 
 const studyResolver = async (to: any, from: any, next: any): Promise<void> => {
   const studyStore = useStudyStore();
@@ -81,16 +80,10 @@ const routes = [
         component: Timeline,
       },
       {
-        path: 'monitoring',
-        meta: { title: 'Monitoring' },
-        name: 'Monitoring',
-        component: Monitoring,
-      },
-      {
-        path: 'data',
-        meta: { title: 'Data' },
-        name: 'Data',
-        component: Data,
+        path: 'monitoring-data',
+        meta: { title: 'Monitoring & Data' },
+        name: 'Monitoring & Data',
+        component: MonitoringData,
       },
     ],
   },

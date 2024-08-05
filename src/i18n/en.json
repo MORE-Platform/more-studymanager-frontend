@@ -81,8 +81,7 @@
       "integration": "Integrations",
       "interventions": "Interventions",
       "timeline": "Timeline",
-      "monitoring": "Monitoring",
-      "data": "Data"
+      "monitoringAndData": "Monitoring & Data"
     }
   },
 
@@ -340,26 +339,33 @@
     }
   },
 
+  "monitoringData": {
+    "tabs": {
+      "lastDataPoints": "Latest Data Points",
+      "recordedObservation": "Recorded Observations",
+      "dataDownload": "Export study data"
+    }
+  },
+
   "monitoring": {
     "title": "Monitoring",
     "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
     "dataList": {
       "emptyListMsg": "Currently there are no observations to track.",
-      "title": "Recorded observations"
+      "title": "Recorded observations",
+      "description": "The most recently collected data points are displayed here in tabular form and the entire data points can be displayed in various visualizations."
     },
     "dataPointsList": {
       "lastDatapoints": "Last data points",
-      "resultSize": "Size of result"
-    },
-    "dataDownload": {
-      "title": "Download study data",
-      "description": "Here you can download the study data based on various filters."
+      "resultSize": "Size of result",
+      "filterInfo": "Filtering is only possible for visualization."
     },
     "placeholder": {
       "chooseSize": "Choose a size"
     },
     "labels": {
       "latestDataPoints": "Latest Data Points",
+      "visualization": "Visualization",
       "dateRange": "Date range",
       "noDataAvailable": "No data available"
     },
@@ -391,7 +397,12 @@
     }
   },
 
-  "data": {},
+  "data": {
+    "dataDownload": {
+      "title": "Download study data",
+      "description": "Here you can download the study data based on various filters."
+    }
+  },
 
   "participants": {
     "singular": "Participant",
@@ -962,7 +973,7 @@
       "openScheduler": "Add absolute schedule",
       "editScheduler": "Edit absolute schedule",
       "openRelativeScheduler": "Add relative Schedule",
-      "editRelativeScheduler": "Edit relative Schdule",
+      "editRelativeScheduler": "Edit relative Schedule",
       "removeScheduler": "Remove scheduler",
       "frequency": "Frequency",
       "repetitionEnd": "Repetition ends",

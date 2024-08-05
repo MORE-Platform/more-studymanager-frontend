@@ -21,7 +21,7 @@ Licensed under the Elastic License 2.0. */
   } from '../composable/useApi';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
-  import { computed, ComputedRef, reactive, ref, Ref, watch } from 'vue';
+  import { computed, ComputedRef, ref, Ref, watch } from 'vue';
   import {
     ChartProperties,
     ObservationDataViewInfo,
@@ -42,7 +42,6 @@ Licensed under the Elastic License 2.0. */
   import MoreTable from '../components/shared/MoreTable.vue';
   import { ComponentFactory, Participant } from '../generated-sources/openapi';
   import { onBeforeRouteLeave } from 'vue-router';
-  import DatapointList from './subComponents/DatapointList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useGlobalStore } from '../stores/globalStore';
   import { DropdownOption } from '../models/Common';
@@ -144,20 +143,71 @@ Licensed under the Elastic License 2.0. */
     applyFilter();
   }
 
+  const isVisualizationTabActive: Ref<boolean> = ref(false);
+  /**
+   * Initial value is true, because :active-index="0" at the Accordion component,
+   * opens the first accordion by default.
+   */
+  const isAnyAccordionOpen: Ref<boolean> = ref(true);
+
+  const disableVisualizationFilter = computed(() => {
+    return !isVisualizationTabActive.value || !isAnyAccordionOpen.value;
+  });
+
+  function onAccordionIndexChange(index: number | undefined): void {
+    if (index !== undefined && isVisualizationTabActive.value) {
+      // Change from active accordion and visualization tab open to another accordion,
+      // where the first tab (table) is displayed by default
+      isAnyAccordionOpen.value = true;
+      isVisualizationTabActive.value = false;
+    } else {
+      isAnyAccordionOpen.value = index !== undefined;
+    }
+  }
+
   function onTabChange(observationId: number, tabIndex: number): void {
+    // Tabs: Table == 0, Visualization == 1
+    isVisualizationTabActive.value = tabIndex === 1;
+
     if (tabIndex === 0) {
       // "Table" Tab is active (no chart)
       return;
     }
-    // -1, because of the "Table" tab, the index is higher than the viewData array
-    const viewDataIdx = tabIndex - 1;
 
-    if (observationsViewData[observationId][viewDataIdx].chartData !== null) {
+    if (
+      observationsViewData.value[observationId].selectedView &&
+      observationsViewData.value[observationId].data[
+        observationsViewData.value[observationId].selectedView
+      ].chartData !== null
+    ) {
       // chart data already available - skip
       return;
     }
+    if (observationsViewData.value[observationId].selectedView) {
+      fetchObservationViewData(
+        +observationId,
+        observationsViewData.value[observationId].selectedView,
+        getViewDataFilters(),
+      );
+    }
+  }
 
-    fetchObservationViewData(+observationId, viewDataIdx, getViewDataFilters());
+  function onViewOptionChange(
+    e: DropdownChangeEvent,
+    observationId: number,
+  ): void {
+    if (e.value) {
+      if (
+        observationsViewData.value[observationId].selectedView &&
+        observationsViewData.value[observationId].data[
+          observationsViewData.value[observationId].selectedView
+        ].chartData !== null
+      ) {
+        // chart data already available - skip
+        return;
+      }
+      fetchObservationViewData(+observationId, e.value, getViewDataFilters());
+    }
   }
 
   function clearAllFilters(): void {
@@ -196,13 +246,15 @@ Licensed under the Elastic License 2.0. */
   }
 
   function applyFilter(): void {
-    for (const observationId in observationsViewData) {
-      for (const viewIdx in observationsViewData[observationId]) {
-        const viewData = observationsViewData[observationId][viewIdx];
-        if (viewData.chartType !== null) {
+    for (const observationId in observationsViewData.value) {
+      for (const viewName in observationsViewData.value[observationId].data) {
+        if (
+          observationsViewData.value[observationId].data[viewName].chartType !==
+          null
+        ) {
           fetchObservationViewData(
             +observationId,
-            +viewIdx,
+            viewName,
             getViewDataFilters(),
           );
         }
@@ -211,6 +263,15 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getViewDataFilters(): ObservationDataViewFilter {
+    const fromDate = filterDateRange.value
+      ? filterDateRange.value[0]
+      : undefined;
+    const toDate = filterDateRange.value ? filterDateRange.value[1] : undefined;
+
+    if (fromDate && toDate && fromDate.getTime() === toDate.getTime()) {
+      // If we only filter for one day, we need the whole day until the end
+      toDate.setHours(23, 23, 59);
+    }
     return {
       studyGroupId: filterStudyGroup.value
         ? +filterStudyGroup.value
@@ -218,8 +279,8 @@ Licensed under the Elastic License 2.0. */
       participantId: filterParticipant.value
         ? +filterParticipant.value
         : undefined,
-      from: filterDateRange.value ? filterDateRange.value[0] : undefined,
-      to: filterDateRange.value ? filterDateRange.value[1] : undefined,
+      from: fromDate,
+      to: toDate,
     };
   }
 
@@ -401,12 +462,6 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
     },
     {
-      field: 'observationTitle',
-      header: t('observation.singular'),
-      sortable: true,
-      filterable: true,
-    },
-    {
       field: 'dataReceived',
       header: t('global.labels.dataReceived'),
       editable: false,
@@ -487,22 +542,40 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  const observationsViewData: ObservationsViewData = reactive({});
+  const observationsViewData: Ref<ObservationsViewData> = ref({});
   function fetchViewsForObservation(data: ParticipationDataMapping[]): void {
     for (const observationId of getUniqueObservationIds(data)) {
       dataApi
         .listObservationViews(props.studyId, observationId)
         .then((response: AxiosResponse) => {
           if (response.data?.length > 0) {
-            observationsViewData[observationId] = [];
-            response.data.forEach((view: ObservationDataViewInfo) => {
-              observationsViewData[observationId].push({
-                chartType: null,
-                chartData: null,
-                labels: [],
-                view: view,
-              } as ObservationDataViewData);
-            });
+            observationsViewData.value[observationId] = {
+              selectedView: '',
+              viewOptions: [],
+              data: {},
+            };
+            response.data.forEach(
+              (view: ObservationDataViewInfo, index: number) => {
+                observationsViewData.value[observationId].data[view.name] = {
+                  chartType: null,
+                  chartData: null,
+                  labels: [],
+                  view: view,
+                } as ObservationDataViewData;
+                const option: DropdownOption = {
+                  value: view.name,
+                  label: t(view.label),
+                };
+                observationsViewData.value[observationId].viewOptions.push(
+                  option,
+                );
+
+                if (index === 0) {
+                  observationsViewData.value[observationId].selectedView =
+                    view.name;
+                }
+              },
+            );
           }
         })
         .catch((e: AxiosError) => {
@@ -513,23 +586,23 @@ Licensed under the Elastic License 2.0. */
 
   function fetchObservationViewData(
     observationId: number,
-    viewDataIdx: number,
+    viewName: string,
     filter: ObservationDataViewFilter,
   ): void {
     dataApi
       .getObservationViewData(
         props.studyId,
         observationId,
-        observationsViewData[observationId][viewDataIdx].view.name,
+        viewName,
         filter.studyGroupId,
         filter.participantId,
         filter.from,
         filter.to,
       )
       .then((rs: AxiosResponse) => {
-        observationsViewData[observationId][viewDataIdx].chartType =
+        observationsViewData.value[observationId].data[viewName].chartType =
           rs.data.chartType;
-        observationsViewData[observationId][viewDataIdx].chartData =
+        observationsViewData.value[observationId].data[viewName].chartData =
           convertChartTypeData(rs.data);
       })
       .catch((e: AxiosError) => {
@@ -564,18 +637,24 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div>
-    <DatapointList :study-id="studyId" class="mb-14" />
-    <div>
-      <h4
-        v-if="Object.keys(groupedParticipantData).length"
-        class="color-primary mb-4 font-bold"
-      >
-        {{ $t('monitoring.dataList.title') }}
-      </h4>
-      <div
-        v-if="Object.keys(groupedParticipantData).length"
-        class="mb-3 flex items-center justify-between gap-5"
-      >
+    <div v-if="Object.keys(groupedParticipantData).length">
+      <div class="title mb-8">
+        <h3 class="mb-1 font-bold">
+          {{ $t('monitoring.dataList.title') }}
+        </h3>
+        <div>
+          {{ $t('monitoring.dataList.description') }}
+        </div>
+      </div>
+      <div class="flex items-center">
+        <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
+        <span
+          v-tooltip.bottom="$t('monitoring.dataPointsList.filterInfo')"
+          class="pi pi-info-circle color-primary mx-1"
+        ></span>
+      </div>
+
+      <div class="mb-3 flex items-center justify-between gap-5">
         <div class="flex gap-5">
           <div>
             {{ $t('monitoring.labels.dateRange') }}:
@@ -587,6 +666,7 @@ Licensed under the Elastic License 2.0. */
               :manual-input="false"
               :date-format="dateFormat"
               :placeholder="`${dateFormat} - ${dateFormat}`"
+              :disabled="disableVisualizationFilter"
             />
           </div>
           <div>
@@ -598,7 +678,9 @@ Licensed under the Elastic License 2.0. */
               option-value="value"
               :placeholder="$t('studyGroup.placeholder.chooseGroup')"
               class="ml-1"
-              :disabled="filterParticipant !== undefined"
+              :disabled="
+                disableVisualizationFilter || filterParticipant !== undefined
+              "
               @change="onStudyGroupFilterChange"
             />
           </div>
@@ -610,6 +692,7 @@ Licensed under the Elastic License 2.0. */
               option-label="label"
               option-value="value"
               :placeholder="$t('participants.placeholder.chooseParticipant')"
+              :disabled="disableVisualizationFilter"
               class="ml-1"
               filter
               @change="onParticipantFilterChange"
@@ -619,13 +702,18 @@ Licensed under the Elastic License 2.0. */
         <div>
           <Button
             icon="pi pi-filter-slash"
-            :disabled="!isAnyFilterActive"
+            :disabled="disableVisualizationFilter || !isAnyFilterActive"
             @click="clearAllFilters"
           />
         </div>
       </div>
 
-      <Accordion :active-index="0" lazy expand-icon="pi pi-chevron-up">
+      <Accordion
+        :active-index="0"
+        lazy
+        expand-icon="pi pi-chevron-up"
+        @update:active-index="onAccordionIndexChange"
+      >
         <AccordionTab
           v-for="(observationData, observationId) in groupedParticipantData"
           :key="observationId"
@@ -646,14 +734,32 @@ Licensed under the Elastic License 2.0. */
               />
             </TabPanel>
             <TabPanel
-              v-for="(view, idx) in observationsViewData[observationId]"
-              :key="idx"
-              :header="$t(view.view.label)"
+              v-if="observationsViewData[observationId]"
+              :header="$t('monitoring.labels.visualization')"
             >
+              <Dropdown
+                v-model="observationsViewData[observationId].selectedView"
+                :options="observationsViewData[observationId].viewOptions"
+                option-label="label"
+                option-value="value"
+                :placeholder="
+                  $t('global.placeholder.chooseDropdownOptionDefault')
+                "
+                @change="onViewOptionChange($event, observationId)"
+              />
               <div class="flex min-h-[500px] items-center justify-center">
                 <Chart
-                  v-if="view.chartData"
-                  v-bind="view.chartData"
+                  v-if="
+                    observationsViewData[observationId].selectedView &&
+                    observationsViewData[observationId].data[
+                      observationsViewData[observationId].selectedView
+                    ].chartData
+                  "
+                  v-bind="
+                    observationsViewData[observationId].data[
+                      observationsViewData[observationId].selectedView
+                    ].chartData
+                  "
                   :height="500"
                   :width="1000"
                 />
