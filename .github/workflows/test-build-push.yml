@@ -125,7 +125,7 @@ jobs:
         env:
           VITE_GIT_BRANCH: '${{ github.ref_name }}'
           VITE_GIT_REVISION: '${{ github.sha }}'
-
+          DOCKER_BUILD_RECORD_UPLOAD: 'false'
 
 
   event_file:
