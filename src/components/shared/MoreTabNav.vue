@@ -76,14 +76,8 @@ Licensed under the Elastic License 2.0. */
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
-      title: t('studyNavigation.tabs.monitoring'),
-      name: 'Monitoring',
-      params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Viewer],
-    },
-    {
-      title: t('studyNavigation.tabs.data'),
-      name: 'Data',
+      title: t('studyNavigation.tabs.monitoringAndData'),
+      name: 'Monitoring & Data',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Viewer],
     },

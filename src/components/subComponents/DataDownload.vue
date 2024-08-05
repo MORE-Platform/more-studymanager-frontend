@@ -171,10 +171,10 @@
   <div>
     <div class="title mb-8">
       <h3 class="mb-1 font-bold">
-        {{ $t('monitoring.dataDownload.title') }}
+        {{ $t('data.dataDownload.title') }}
       </h3>
       <div>
-        {{ $t('monitoring.dataDownload.description') }}
+        {{ $t('data.dataDownload.description') }}
       </div>
     </div>
     <div class="flex justify-between">
