@@ -37,19 +37,29 @@ export function useToastService(): any {
     const warnings: string[] = [];
 
     report.errors?.forEach((error: ValidationReportItem) => {
-      const errorMessage = error.message
-        ? t(error.message, { value: error.propertyId })
-        : null;
-      if (errorMessage) {
+      let errorMessage = '';
+
+      if (error.message) {
+        if (error.componentTitle) {
+          errorMessage = t('global.error.inComponentTitle', {
+            title: error.componentTitle,
+          });
+        }
+        errorMessage += t(error.message, { value: error.propertyId });
         errors.push(errorMessage);
       }
     });
 
     report.warnings?.forEach((warning: ValidationReportItem) => {
-      const warningMessage = warning.message
-        ? t(warning.message, { value: warning.propertyId })
-        : null;
-      if (warningMessage) {
+      let warningMessage = '';
+
+      if (warning.message) {
+        if (warning.componentTitle) {
+          warningMessage = t('global.error.inComponentTitle', {
+            title: warning.componentTitle,
+          });
+        }
+        warningMessage += t(warning.message, { value: warning.propertyId });
         warnings.push(warningMessage);
       }
     });
