@@ -64,7 +64,8 @@
       },
       "general": "A General error occurred.",
       "required": "Required value '{value}' missing.",
-      "immutable": "The value '{value}' is immutable and cannot be changed."
+      "immutable": "The value '{value}' is immutable and cannot be changed.",
+      "inComponentTitle": "In Observation '{title}': "
     }
   },
 

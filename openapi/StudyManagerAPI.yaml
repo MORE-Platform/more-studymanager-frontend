@@ -11,21 +11,13 @@ servers:
     description: Local Test Server
 paths:
   /components/{componentType}:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
     get:
       tags:
         - components
       operationId: listComponents
       description: List component of certain type
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
       responses:
         '200':
           description: Components successfully returned
@@ -37,26 +29,18 @@ paths:
                   $ref: '#/components/schemas/ComponentFactory'
 
   /components/{componentType}/{componentId}/validate:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
     post:
       tags:
         - components
       description: check if properties are valid for component
       operationId: validateProperties
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -73,31 +57,23 @@ paths:
           description: Not found
 
   /components/{componentType}/{componentId}/api/{slug}:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
+      - name: slug
+        in: path
+        schema:
+          type: string
+        required: true
     post:
       tags:
         - components
       operationId: accessModuleSpecificEndpoint
       description: access module specific endpoint
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
-        - name: slug
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         required: true
         content:
@@ -117,26 +93,18 @@ paths:
           description: Error
 
   /components/{componentType}/{componentId}/web-component.js:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - components
       operationId: getWebComponentScript
       description: Get web component script
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Returned script successfully
@@ -253,10 +221,20 @@ paths:
             schema:
               $ref: '#/components/schemas/StatusChange'
       responses:
-        '202':
-          description: Status changed deleted
+        '200':
+          description: Study status changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
         '400':
-          description: Bad request
+          description: The requested transition is not allowed
+        '409':
+          description: Could not update status due to configuration error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationReport'
 
   /studies/{studyId}/collaborators:
     parameters:
@@ -1482,6 +1460,8 @@ components:
           type: string
         propertyId:
           type: string
+        componentTitle:
+          type: string
         type:
           type: string
 
@@ -1565,7 +1545,6 @@ components:
         - active
         - paused
         - closed
-      readOnly: true
       default: draft
 
     StudyGroup:
@@ -2226,6 +2205,16 @@ components:
         additionalProperties: true
 
   parameters:
+    ComponentType:
+      name: componentType
+      in: path
+      schema:
+        type: string
+        enum:
+          - action
+          - trigger
+          - observation
+      required: true
     StudyId:
       name: studyId
       in: path

@@ -64,7 +64,8 @@
       },
       "general": "Ein allgemeiner Fehler ist aufgetreten.",
       "required": "Erforderlicher Wert '{value}' fehlt.",
-      "immutable": "Der Wert von '{value}' darf nicht geändert werden."
+      "immutable": "Der Wert von '{value}' darf nicht geändert werden.",
+      "inComponentTitle": "In Aufzeichnung '{title}': "
     }
   },
 
