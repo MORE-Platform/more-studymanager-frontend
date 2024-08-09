@@ -337,6 +337,66 @@ paths:
           description: Cleared
         '409':
           description: removal failed
+  /studies/{studyId}/calendar.ics:
+    get:
+      tags:
+        - calendar
+      description: Get study calendar for study as iCal
+      operationId: getStudyCalendar
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully returned study calendar
+          content:
+            text/calendar:
+              schema:
+                type: string
+        '404':
+          description: Not found
+
+  /studies/{studyId}/timeline:
+    get:
+      tags:
+        - calendar
+      description: Get study timeline for study
+      operationId: getStudyTimeline
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: participant
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
+        - name: studyGroup
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
+        - name: referenceDate
+          in: query
+          description: reference date used to calculate relative schedules
+          schema:
+            type: string
+            format: date-time
+        - name: from
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Successfully returned study timeline
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyTimeline'
+        '404':
+          description: Not found
+
 
   /studies/{studyId}/studyGroups:
     post:
@@ -678,7 +738,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenLabel'
+              $ref: '#/components/schemas/EndpointToken'
       responses:
         '201':
           description: Token successfully added
@@ -729,6 +789,33 @@ paths:
         '404':
           description: not found
 
+    put:
+      tags:
+        - observations
+      description: Update label from observation endpoint token
+      operationId: updateTokenLabel
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationId'
+        - $ref: '#/components/parameters/TokenId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EndpointToken'
+      responses:
+        '200':
+          description: Token label successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointToken'
+
+        '400':
+          description: could not update observation
+        '404':
+          description: not found
 
     delete:
       tags:
@@ -1196,7 +1283,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FrontendConfiguration'
-
+  /config/buildInfo:
+    get:
+      tags:
+        - configuration
+      description: retrieve the build info
+      operationId: getBuildInfo
+      responses:
+        200:
+          description: the build-info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BuildInfo'
 
 components:
   schemas:
@@ -1277,6 +1376,8 @@ components:
           type: string
         consentInfo:
           type: string
+        duration:
+          $ref: '#/components/schemas/StudyDuration'
         finishText:
           type: string
         status:
@@ -1337,6 +1438,8 @@ components:
       type: string
       enum:
         - draft
+        - preview
+        - paused-preview
         - active
         - paused
         - closed
@@ -1354,6 +1457,8 @@ components:
           type: string
         purpose:
           type: string
+        duration:
+          $ref: '#/components/schemas/StudyDuration'
         numberOfParticipants:
           type: integer
           readOnly: true
@@ -1365,7 +1470,18 @@ components:
           type: string
           format: date-time
           readOnly: true
-
+    StudyDuration:
+      type: object
+      properties:
+        value:
+          type: integer
+        unit:
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
     Participant:
       type: object
       properties:
@@ -1382,6 +1498,10 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
+        start:
+          type: string
+          format: date-time
+          readOnly: true
         created:
           type: string
           format: date-time
@@ -1422,7 +1542,16 @@ components:
           type: object
           additionalProperties: true
         schedule:
-          $ref: './Event.yaml/#/components/schemas/Event'
+          oneOf:
+            - $ref: './Event.yaml/#/components/schemas/Event'
+            - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
+          discriminator:
+            propertyName: type
+            # mapping:
+            #   event:
+            #     $ref: './Event.yaml/#/components/schemas/Event'
+            #   relativeEvent:
+            #     $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
         created:
           type: string
           format: date-time
@@ -1437,27 +1566,91 @@ components:
           type: boolean
           default: false
 
+
+    StudyTimeline:
+      type: object
+      properties:
+        participantSignup:
+          type: string
+          format: date-time
+        studyDuration:
+          type: object
+          properties:
+            from:
+              type: string
+              format: date
+            to:
+              type: string
+              format: date
+        observations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationTimelineEvent'
+        interventions:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterventionTimelineEvent'
+
+    ObservationTimelineEvent:
+      type: object
+      properties:
+        observationId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        type:
+          type: string
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        hidden:
+          type: boolean
+        scheduleType:
+          type: string
+
+    InterventionTimelineEvent:
+      type: object
+      properties:
+        interventionId:
+          $ref: '#/components/schemas/Id'
+        studyGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        start:
+          type: string
+          format: date-time
+        scheduleType:
+          type: string
+
     EndpointToken:
       type: object
       properties:
         tokenId:
           $ref: '#/components/schemas/Id'
         tokenLabel:
-          $ref: '#/components/schemas/TokenLabel'
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
         token:
           type: string
+          readOnly: true
       required:
         - tokenId
         - tokenLabel
         - created
         - token
-
-    TokenLabel:
-      type: string
 
     ParticipationData:
       type: object
@@ -1514,7 +1707,11 @@ components:
         purpose:
           type: string
         schedule:
-          $ref: './Event.yaml/#/components/schemas/Event'
+          oneOf:
+            - $ref: './Event.yaml/#/components/schemas/Event'
+            - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
+          discriminator:
+            propertyName: type
         trigger:
           $ref: '#/components/schemas/Trigger'
         actions:
@@ -1795,6 +1992,22 @@ components:
       required:
         - auth
       readOnly: true
+    BuildInfo:
+      type: object
+      properties:
+        version:
+          type: string
+          default: '0.0.0'
+        date:
+          type: string
+          format: date-time
+        branch:
+          type: string
+        rev:
+          type: string
+      required:
+        - version
+        - date
 
   parameters:
     StudyId:

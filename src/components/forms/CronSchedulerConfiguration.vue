@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { ref, Ref } from 'vue';
+  import { reactive, ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
   import { CronScheduleChoice } from '../../models/CronSchedulerModel';
   import cron from 'cron-validate';
@@ -64,7 +64,7 @@ Licensed under the Elastic License 2.0. */
   });
 
   const cronArray = props.cronSchedule?.split(' ');
-  const returnCronSchdeuleString: Ref<string> = ref(props.cronSchedule);
+  let returnCronScheduleString: string = props.cronSchedule;
 
   const tempCronSchedule: Ref<CronScheduleChoice[]> = ref([
     {
@@ -94,37 +94,45 @@ Licensed under the Elastic License 2.0. */
     },
   ]);
 
-  const cronError: Ref<string> = ref('');
-  const hasCronError: Ref<boolean> = ref(false);
+  const cronError = reactive({
+    message: '',
+    hasError: false,
+  });
+  function setCronError(message: string): void {
+    cronError.message = message;
+    cronError.hasError = true;
+  }
+  function clearCronError(): void {
+    cronError.message = '';
+    cronError.hasError = false;
+  }
 
   const emit = defineEmits<{
     (e: 'onValidSchedule', cronScheduleString: string): string;
     (e: 'onError', errorMessage?: string): string;
   }>();
 
-  function validate() {
-    const parsedTriggerSchedule: Ref<string> = ref('');
+  function validate(): void {
+    let parsedTriggerSchedule = '';
 
     tempCronSchedule.value.forEach((item, index) => {
-      parsedTriggerSchedule.value = parsedTriggerSchedule.value + item.value;
+      parsedTriggerSchedule += item.value;
       if (index < tempCronSchedule.value.length - 1) {
-        parsedTriggerSchedule.value = parsedTriggerSchedule.value + ' ';
+        parsedTriggerSchedule += ' ';
       }
     });
-    parsedTriggerSchedule.value.split(' ').forEach((item, index) => {
+    parsedTriggerSchedule.split(' ').forEach((item, index) => {
       tempCronSchedule.value[index].value = item;
     });
-    const validCronValue = cron(parsedTriggerSchedule.value, {
+    const validCronValue = cron(parsedTriggerSchedule, {
       preset: 'default-preset',
     });
     if (validCronValue.isValid()) {
-      returnCronSchdeuleString.value = '0 ' + parsedTriggerSchedule.value;
-      cronError.value = '';
-      hasCronError.value = false;
+      returnCronScheduleString = `0 ${parsedTriggerSchedule}`;
+      clearCronError();
       emit('onError', undefined);
-      emit('onValidSchedule', returnCronSchdeuleString.value);
+      emit('onValidSchedule', returnCronScheduleString);
     } else {
-      hasCronError.value = true;
       let error = validCronValue.getError().pop();
       error = error?.split('.')[0].split('(')[0];
       if (error && error[error.length - 1] === ' ') {
@@ -132,7 +140,7 @@ Licensed under the Elastic License 2.0. */
       }
 
       if (error) {
-        cronError.value = t(`cronSchedule.error.${error}`);
+        setCronError(t(`cronSchedule.error.${error}`));
         emit('onError', t(`cronSchedule.error.${error}`));
       }
     }
@@ -140,13 +148,10 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div
-    class="cron-schedule-config"
-    :class="editable ? '' : 'schedule-disabled'"
-  >
+  <div class="cron-schedule-config" :class="{ 'schedule-disabled': !editable }">
     <CronScheduleInfo :editable="editable" />
     <form
-      class="mb-4 grid grid-cols-3 grid-rows-2 items-center gap-4 lg:grid-cols-5"
+      class="mb-4 grid grid-cols-3 grid-rows-2 items-center gap-4 p-2.5 lg:grid-cols-5"
     >
       <div
         v-for="(item, index) in tempCronSchedule"
@@ -168,8 +173,8 @@ Licensed under the Elastic License 2.0. */
         </label>
       </div>
     </form>
-    <div v-show="hasCronError && editable" class="error mb-4">
-      {{ cronError }}
+    <div v-show="cronError.hasError && editable" class="error mb-4">
+      {{ cronError.message }}
     </div>
     <CronScheduleExamples />
   </div>
@@ -183,7 +188,6 @@ Licensed under the Elastic License 2.0. */
   .cron-schedule-config.schedule-disabled {
     form {
       border: 1px solid var(--gray-200);
-      padding: 10px;
     }
   }
 </style>

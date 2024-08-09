@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import Message from 'primevue/message';
-  import { onUpdated, ref, Ref } from 'vue';
+  import { onUpdated } from 'vue';
 
   const props = defineProps({
     styleModifier: {
@@ -42,11 +42,8 @@ Licensed under the Elastic License 2.0. */
     (e: 'onMsgChange'): boolean;
   }>();
 
-  const inlineStyle: Ref<string> = ref('opacity: 0');
-
-  function showMessage() {
+  function showMessage(): void {
     setTimeout(() => {
-      inlineStyle.value = 'opacity: 0%';
       emit('onMsgChange');
     }, 3000);
   }
@@ -60,8 +57,8 @@ Licensed under the Elastic License 2.0. */
           ? 'success'
           : 'info'
         : severityType === 'error'
-        ? 'error'
-        : 'warn'
+          ? 'error'
+          : 'warn'
     "
     class="message"
     :class="styleModifier"

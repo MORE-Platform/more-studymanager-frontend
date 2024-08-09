@@ -6,11 +6,15 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType } from 'vue';
   import {
+    MoreStudyGroupTableMap,
     MoreTableAction,
     MoreTableColumn,
+    MoreTableChoice,
+    MoreTableFieldType,
     MoreTableRowActionResult,
   } from '../models/MoreTableModel';
   import {
+    DurationUnitEnum,
     StudyGroup,
     StudyRole,
     StudyStatus,
@@ -21,6 +25,7 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useDialog } from 'primevue/usedialog';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import Button from 'primevue/button';
 
   const studyGroupStore = useStudyGroupStore();
   const dialog = useDialog();
@@ -41,7 +46,25 @@ Licensed under the Elastic License 2.0. */
     },
   });
 
-  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const durationUnitOptions: MoreTableChoice[] = [
+    {
+      label: t('global.placeholder.nothingSelected'),
+      value: null,
+    },
+    {
+      label: t('scheduler.preview.unit.MINUTE'),
+      value: DurationUnitEnum.Minute,
+    },
+    {
+      label: t('scheduler.preview.unit.HOUR'),
+      value: DurationUnitEnum.Hour,
+    },
+    {
+      label: t('scheduler.preview.unit.DAY'),
+      value: DurationUnitEnum.Day,
+    },
+  ];
+
   const studyGroupColumns: MoreTableColumn[] = [
     { field: 'studyGroupId', header: t('global.labels.id'), sortable: true },
     {
@@ -56,7 +79,23 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.purpose'),
       editable: true,
       placeholder: t('studyGroup.groupList.placeholder.purpose'),
-      columnWidth: '32vw',
+      columnWidth: '20vw',
+    },
+    {
+      field: 'durationValue',
+      header: t('study.props.duration'),
+      type: MoreTableFieldType.number,
+      editable: true,
+      placeholder: t('studyGroup.groupList.placeholder.durationValue'),
+      columnWidth: '5vw',
+    },
+    {
+      field: 'durationUnit',
+      header: '',
+      type: MoreTableFieldType.choice,
+      editable: { enabled: true, values: durationUnitOptions },
+      placeholder: t('studyGroup.groupList.placeholder.durationUnit'),
+      columnWidth: '1vw',
     },
   ];
   const rowActions: MoreTableAction[] = [
@@ -65,7 +104,7 @@ Licensed under the Elastic License 2.0. */
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteStudyGroupBtn'),
-      visible: () => getEditAccess(),
+      visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('studyGroup.dialog.header.delete'),
         message: t('studyGroup.dialog.msg.delete'),
@@ -96,44 +135,42 @@ Licensed under the Elastic License 2.0. */
               if (options?.data) {
                 executeAction({
                   id: 'delete',
-                  row: options.data as StudyGroup,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
       },
     },
   ];
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      label: t('studyGroup.dialog.header.create'),
-      icon: 'pi pi-plus',
-      visible: () => getEditAccess(),
-    },
-  ];
 
-  function getEditAccess(): boolean {
-    return (
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Draft) ||
-      (props.userRoles.some((r) => editableRoles.includes(r)) &&
-        props.studyStatus === StudyStatus.Paused)
-    );
-  }
+  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
 
-  function executeAction(action: MoreTableRowActionResult<StudyGroup>) {
+  const actionsVisible =
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.Draft) ||
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.Paused) ||
+    (props.userRoles.some((r) => editableRoles.includes(r)) &&
+      props.studyStatus === StudyStatus.PausedPreview);
+
+  function executeAction(action: MoreTableRowActionResult): void {
+    const row: StudyGroup = action.row
+      ? studyGroupStore.toStudyGroup(action.row as StudyGroup)
+      : action.row;
+
     switch (action.id) {
       case 'delete':
-        return studyGroupStore.deleteStudyGroup(action.row);
-      case 'create':
-        return studyGroupStore.createStudyGroup(props.studyId);
+        studyGroupStore.deleteStudyGroup(row);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
-  function changeValueInPlace(studyGroup: StudyGroup) {
-    studyGroupStore.updateStudyGroup(studyGroup);
+  function changeValueInPlace(studyGroupMap: MoreStudyGroupTableMap): void {
+    studyGroupStore.updateStudyGroup(
+      studyGroupStore.toStudyGroup(studyGroupMap),
+    );
   }
 </script>
 
@@ -144,16 +181,27 @@ Licensed under the Elastic License 2.0. */
       :title="$t('studyGroup.plural')"
       :subtitle="$t('studyGroup.groupList.description')"
       :columns="studyGroupColumns"
-      :rows="studyGroupStore.studyGroups"
-      :editable-access="getEditAccess()"
+      :rows="studyGroupStore.studyGroupMap"
+      :editable-access="actionsVisible"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :edit-access-roles="editableRoles"
       :empty-message="$t('studyGroup.groupList.placeholder.emptyGroupList')"
       class="table-title-width"
-      @onaction="executeAction($event)"
-      @onchange="changeValueInPlace($event)"
-    />
+      @on-action="executeAction($event)"
+      @on-change="changeValueInPlace($event)"
+    >
+      <template #tableActions>
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('studyGroup.dialog.header.create')"
+            :disabled="!actionsVisible"
+            @click="studyGroupStore.createStudyGroup(props.studyId)"
+          />
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
   </div>
 </template>

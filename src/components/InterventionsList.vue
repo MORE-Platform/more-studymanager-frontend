@@ -15,6 +15,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
+    ListComponentsComponentTypeEnum,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
@@ -22,6 +23,8 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableChoice,
+    MoreTableSortOptions,
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -33,6 +36,7 @@ Licensed under the Elastic License 2.0. */
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import Button from 'primevue/button';
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
@@ -42,7 +46,6 @@ Licensed under the Elastic License 2.0. */
 
   const interventionList: Ref<Intervention[]> = ref([]);
   const dialog = useDialog();
-  //const interventionTypes: Ref<MoreTableActionOptions[]> = ref([])
 
   const props = defineProps({
     studyId: { type: Number, required: true },
@@ -50,28 +53,37 @@ Licensed under the Elastic License 2.0. */
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'title',
+    sortOrder: -1,
+  };
+
   const actionsVisible =
     props.studyStatus === StudyStatus.Draft ||
-    props.studyStatus === StudyStatus.Paused;
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
-    (item) =>
+    (studyGroup) =>
       ({
-        label: item.title,
-        value: item.studyGroupId?.toString(),
-      } as MoreTableChoice)
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
+      }) as MoreTableChoice,
   );
-  groupStatuses.push({ label: 'Entire Study', value: null });
+  groupStatuses.push({
+    label: t('global.placeholder.entireStudy'),
+    value: null,
+  } as MoreTableChoice);
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
-      .listComponents('action')
+      .listComponents(ListComponentsComponentTypeEnum.Action)
       .then((response: any) => response.data);
   }
 
   async function getTriggerFactories(): Promise<ComponentFactory[]> {
     return componentsApi
-      .listComponents('trigger')
+      .listComponents(ListComponentsComponentTypeEnum.Trigger)
       .then((response: any) => response.data);
   }
 
@@ -81,7 +93,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.title'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '16vw',
     },
     {
@@ -95,20 +107,11 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses },
+      editable: { enabled: true, values: groupStatuses },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '10vw',
-    },
-  ];
-
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('intervention.interventionList.action.add'),
-      visible: () => actionsVisible,
     },
   ];
 
@@ -116,12 +119,14 @@ Licensed under the Elastic License 2.0. */
     {
       id: 'clone',
       label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneIntervention'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteIntervention'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('intervention.dialog.header.delete'),
@@ -151,10 +156,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as StudyGroup,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -162,11 +167,12 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const rowEndActions: MoreTableAction[] = [
+  const endRowActions: MoreTableAction[] = [
     {
       id: 'edit',
       label: t('global.labels.edit'),
       icon: 'pi pi-cog',
+      tooltip: t('tooltips.editBtn'),
     },
   ];
 
@@ -178,7 +184,9 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  async function listActions(interventionId?: number) {
+  async function listActions(
+    interventionId?: number,
+  ): Promise<Action[] | undefined> {
     if (interventionId) {
       return interventionsApi
         .listActions(props.studyId, interventionId)
@@ -187,7 +195,10 @@ Licensed under the Elastic License 2.0. */
       return undefined;
     }
   }
-  async function getTrigger(interventionId?: number) {
+
+  async function getTrigger(
+    interventionId?: number,
+  ): Promise<Trigger | undefined> {
     if (interventionId) {
       return interventionsApi
         .getTrigger(props.studyId, interventionId)
@@ -197,132 +208,137 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function execute(action: MoreTableRowActionResult<any>) {
+  function executeAction(action: MoreTableRowActionResult): void {
+    const row = action.row as Intervention;
     switch (action.id) {
       case 'delete':
-        return deleteIntervention(action.row);
-      case 'create':
-        return openInterventionDialog(t('intervention.dialog.header.create'));
+        deleteIntervention(row);
+        break;
       case 'clone':
-        return openInterventionDialog(
+        openInterventionDialog(
           t('intervention.dialog.header.clone'),
-          action.row,
-          true
+          row,
+          true,
         );
+        break;
       case 'edit':
-        return openEditIntervetion(action.row.interventionId);
+        openEditIntervention(row.interventionId);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  async function changeValue(intervention: Intervention) {
-    //do change immediately (ux)
-    const i = interventionList.value.findIndex(
-      (i: Intervention) => i.interventionId === intervention.interventionId
-    );
-    if (i > -1) {
-      interventionList.value[i] = intervention;
-    }
-
+  async function changeValue(intervention: Intervention): Promise<void> {
     await interventionsApi
       .updateIntervention(
         props.studyId,
         intervention.interventionId as number,
-        intervention
+        intervention,
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update intervention " + intervention.title
-        )
+          `Couldn't update intervention ${intervention.title}`,
+        ),
       );
   }
 
-  async function deleteIntervention(requestIntervention: Intervention) {
+  async function deleteIntervention(
+    requestIntervention: Intervention,
+  ): Promise<void> {
     await interventionsApi
       .deleteIntervention(
         props.studyId,
-        requestIntervention.interventionId as number
+        requestIntervention.interventionId as number,
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete intervention ' + requestIntervention.interventionId
-        )
+          `Cannot delete intervention ${requestIntervention.interventionId}`,
+        ),
       );
   }
 
-  async function createIntervention(object: any) {
-    const interventionId: Ref<number | undefined> = ref(
-      await addIntervention(object.intervention)
+  async function createIntervention(object: any): Promise<void> {
+    const interventionId: number | undefined = await addIntervention(
+      object.intervention,
     );
 
-    if (interventionId.value) {
-      await updateTrigger(interventionId.value as number, object.trigger);
+    if (interventionId) {
+      await updateTrigger(interventionId, object.trigger);
       object.actions.forEach((action: Action) => {
-        createAction(interventionId.value as number, action);
+        createAction(interventionId, action);
       });
 
-      await listInterventions();
+      listInterventions();
     }
   }
 
-  async function addIntervention(intervention: Intervention) {
+  async function addIntervention(intervention: Intervention): Promise<number> {
     return interventionsApi
       .addIntervention(props.studyId, intervention)
       .then((response: AxiosResponse) => response.data.interventionId)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create intervention')
+        handleIndividualError(e, 'Cannot create intervention'),
       );
   }
 
-  async function createAction(interventionId: number, action: Action) {
+  async function createAction(
+    interventionId: number,
+    action: Action,
+  ): Promise<void> {
     await interventionsApi
       .createAction(props.studyId, interventionId, action)
       .then(listInterventions)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create action on: ' + interventionId)
+        handleIndividualError(e, `Cannot create action on: ${interventionId}`),
       );
   }
 
   async function updateAction(
     interventionId: number,
     actionId: number,
-    action: Action
-  ) {
+    action: Action,
+  ): Promise<void> {
     await interventionsApi
       .updateAction(props.studyId, interventionId, actionId, action)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot update action: ' + action.actionId)
+        handleIndividualError(e, `Cannot update action: ${action.actionId}`),
       );
   }
 
-  async function deleteAction(interventionId: number, actionId: number) {
+  async function deleteAction(
+    interventionId: number,
+    actionId: number,
+  ): Promise<void> {
     await interventionsApi
       .deleteAction(props.studyId, interventionId, actionId)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot delete action: ' + actionId)
+        handleIndividualError(e, `Cannot delete action: ${actionId}`),
       );
   }
 
-  async function updateTrigger(interventionId: number, trigger: Trigger) {
+  async function updateTrigger(
+    interventionId: number,
+    trigger: Trigger,
+  ): Promise<void> {
     await interventionsApi
       .updateTrigger(props.studyId, interventionId, trigger)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create trigger on: ' + interventionId)
+        handleIndividualError(e, `Cannot create trigger on: ${interventionId}`),
       );
   }
 
-  async function updateInterventionData(object: any) {
+  async function updateInterventionData(object: any): Promise<void> {
     await updateIntervention(object.intervention);
 
     if (object.intervention.interventionId) {
       await updateTrigger(
         object.intervention.interventionId,
-        object.trigger
+        object.trigger,
       ).then(() => {
         listInterventions();
       });
@@ -332,7 +348,7 @@ Licensed under the Elastic License 2.0. */
           updateAction(
             object.intervention.interventionId as number,
             action.actionId,
-            action
+            action,
           );
         } else {
           createAction(object.intervention.interventionId as number, action);
@@ -344,33 +360,25 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function updateIntervention(intervention: Intervention) {
-    const i = interventionList.value.findIndex(
-      (v) => v.interventionId === intervention.interventionId
-    );
-    if (i > -1) {
-      interventionList.value[i] = intervention;
-
-      await interventionsApi
-        .updateIntervention(
-          props.studyId,
-          intervention.interventionId as number,
-          intervention
-        )
-        .then(listInterventions)
-        .catch((e: AxiosError) =>
-          handleIndividualError(
-            e,
-            'Cannot update intervention: ' + intervention.interventionId
-          )
-        );
-      return i;
-    }
+  async function updateIntervention(intervention: Intervention): Promise<void> {
+    await interventionsApi
+      .updateIntervention(
+        props.studyId,
+        intervention.interventionId as number,
+        intervention,
+      )
+      .then(listInterventions)
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          `Cannot update intervention: ${intervention.interventionId}`,
+        ),
+      );
   }
 
-  function openEditIntervetion(interventionId: number) {
+  function openEditIntervention(interventionId: number | undefined): void {
     const intervention = interventionList.value.find(
-      (i) => i.interventionId === interventionId
+      (i) => i.interventionId === interventionId,
     );
     if (intervention) {
       let dialogTitle = t('intervention.dialog.header.edit');
@@ -387,8 +395,8 @@ Licensed under the Elastic License 2.0. */
   function openInterventionDialog(
     headerText: string,
     intervention?: Intervention,
-    clone?: boolean
-  ) {
+    clone?: boolean,
+  ): void {
     Promise.all([
       listActions(intervention?.interventionId),
       getTrigger(intervention?.interventionId),
@@ -435,7 +443,7 @@ Licensed under the Elastic License 2.0. */
               }
             },
           });
-        }
+        },
       )
       .catch(console.error);
   }
@@ -451,18 +459,32 @@ Licensed under the Elastic License 2.0. */
       :columns="interventionColumns"
       :rows="interventionList"
       :row-actions="rowActions"
-      :row-end-actions="rowEndActions"
-      :table-actions="tableActions"
-      :sort-options="{ sortField: 'title', sortOrder: -1 }"
+      :end-row-actions="endRowActions"
+      :sort-options="sortOptions"
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
+      :enable-row-selection="RowSelectionMode.Single"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
-      @onselect="openEditIntervetion($event)"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
-    />
+      @on-select="openEditIntervention($event)"
+      @on-action="executeAction($event)"
+      @on-change="changeValue($event)"
+    >
+      <template #tableActions="{ isInEditMode }">
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('intervention.interventionList.action.add')"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @click="
+              openInterventionDialog(t('intervention.dialog.header.create'))
+            "
+          />
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>

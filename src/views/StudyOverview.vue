@@ -12,34 +12,35 @@ Licensed under the Elastic License 2.0. */
   import StudyCollaboratorList from '../components/StudyCollaboratorList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { StudyStatus } from '../generated-sources/openapi';
 
   const route = useRoute();
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
-  async function getStudyGroups() {
-    await studyGroupStore.getStudyGroups(studyId);
+  async function processUpdatedStudyStatus(status: StudyStatus): Promise<void> {
+    await studyStore.updateStudyStatus(status).then(() => {
+      // To update the start/plannedStart/end Date in the UI immediately
+      studyStore.getStudy(studyId);
+    });
   }
 
   studyStore.getStudy(studyId);
-  getStudyGroups();
+  studyGroupStore.getStudyGroups(studyId);
 </script>
 
 <template>
   <div class="overview-view container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
-    <MoreTabNav
-      :study-id="studyId"
-      :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    <StudyHeader :study="studyStore.study" />
+    <MoreTabNav :study-id="studyId" :study-roles="studyStore.studyUserRoles" />
     <div class="container rounded-lg bg-white p-10">
       <OverviewEditDetails
         :style-modifier="'mb-16'"
         :study="studyStore.study"
         :user-roles="studyStore.studyUserRoles"
         @on-update-study="studyStore.updateStudy($event)"
-        @on-update-study-status="studyStore.updateStudyStatus($event)"
+        @on-update-study-status="processUpdatedStudyStatus($event)"
       />
 
       <StudyGroupList
@@ -53,7 +54,6 @@ Licensed under the Elastic License 2.0. */
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
         :use-confirm-dialog="false"
-        class="mt-20"
       />
       <div class="mb-30"></div>
     </div>

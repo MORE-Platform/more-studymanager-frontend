@@ -18,10 +18,10 @@ Licensed under the Elastic License 2.0. */
   const studyGroups: Array<StudyGroup> =
     dialogRef.value.data?.studyGroups || [];
 
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
-  function distribute() {
+  function distribute(): void {
     dialogRef.value.close(true);
   }
 
@@ -49,7 +49,6 @@ Licensed under the Elastic License 2.0. */
         row-id="title"
         :editable-access="false"
         :class="'table-data-preview'"
-        :paginator="true"
         :paginator-rows="5"
       />
     </div>
@@ -59,16 +58,18 @@ Licensed under the Elastic License 2.0. */
     />
 
     <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
-        {{ $t('global.labels.close') }}
-      </Button>
+      <Button
+        type="button"
+        class="p-button btn-gray"
+        :label="$t('global.labels.close')"
+        @click="closeDialog"
+      />
       <Button
         type="button"
         class="p-button btn-important ml-2"
+        :label="$t('participants.dialog.btn.distributeBtn')"
         @click="distribute"
-      >
-        {{ $t('participants.dialog.btn.distributeBtn') }}
-      </Button>
+      />
     </div>
   </div>
 </template>
@@ -85,9 +86,5 @@ Licensed under the Elastic License 2.0. */
         width: 50%;
       }
     }
-  }
-
-  .btn-gray {
-    margin-right: 0.5rem;
   }
 </style>

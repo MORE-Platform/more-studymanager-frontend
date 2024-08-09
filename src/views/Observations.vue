@@ -18,16 +18,16 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
+  <div class="observation-view container m-auto mt-10">
+    <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    />
     <div
       v-if="
-        studyStore.study?.userRoles?.some((r: StudyRole) =>
-          accessRoles.includes(r)
+        studyStore.studyUserRoles.some((r: StudyRole) =>
+          accessRoles.includes(r),
         )
       "
       class="container rounded-lg bg-white p-10"

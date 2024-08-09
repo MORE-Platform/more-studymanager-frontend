@@ -6,15 +6,6 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-export interface TriggerSchedule {
-  seconds: string;
-  minutes: string;
-  hours: string;
-  dayOfMonth: string;
-  months: string;
-  dayOfWeek: string;
-}
-
 export interface CronScheduleChoice {
   label: string;
   value: string;

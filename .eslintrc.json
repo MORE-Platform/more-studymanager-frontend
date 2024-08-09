@@ -22,6 +22,14 @@
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "vue/no-mutating-props": "off"
+    "@typescript-eslint/explicit-function-return-type": "error",
+    "vue/no-mutating-props": "off",
+    "vue/attribute-hyphenation": [
+      "error",
+      "always",
+      {
+        "ignore": ["headerClass"] // primevue AccordionTab does not fully support kebap-case props (#1263)
+      }
+    ]
   }
 }

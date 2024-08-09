@@ -15,16 +15,16 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
+  <div class="data-view container m-auto mt-10">
+    <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    />
     <div
       v-if="
         studyStore.studyUserRoles.some((r: StudyRole) =>
-          accessRoles.includes(r)
+          accessRoles.includes(r),
         )
       "
       class="container rounded-lg bg-white p-10"
@@ -33,14 +33,3 @@ Licensed under the Elastic License 2.0. */
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .data-header-textblock {
-    h3 {
-      font-weight: 600;
-    }
-    h4 {
-      font-size: 1rem;
-    }
-  }
-</style>

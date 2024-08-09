@@ -15,7 +15,6 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import DynamicDialog from 'primevue/dynamicdialog';
   import StudyStatusChange from './StudyStatusChange.vue';
-  import dayjs from 'dayjs';
   import { useI18n } from 'vue-i18n';
   import ChangeStudyStatusDialog from '../dialog/ChangeStudyStatusDialog.vue';
 
@@ -33,13 +32,11 @@ Licensed under the Elastic License 2.0. */
     (e: 'onUpdateStudyStatus', status: StudyStatus): void;
   }>();
 
-  function updateStudy(study: Study) {
+  function updateStudy(study: Study): void {
     emit('onUpdateStudy', study);
   }
 
-  function updateStudyStatus(status: StudyStatus) {
-    //emit('onUpdateStudyStatus', status);
-
+  function updateStudyStatus(status: StudyStatus): void {
     dialog.open(ChangeStudyStatusDialog, {
       data: {
         study: props.study,
@@ -65,7 +62,7 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function openEditDialog() {
+  function openEditDialog(): void {
     dialog.open(StudyDialog, {
       data: {
         study: props.study,
@@ -83,7 +80,7 @@ Licensed under the Elastic License 2.0. */
         draggable: false,
       },
       onClose: (options) => {
-        if (options) {
+        if (options?.data) {
           updateStudy(options.data as Study);
         }
       },
@@ -94,38 +91,75 @@ Licensed under the Elastic License 2.0. */
     StudyRole.Admin,
     StudyRole.Operator,
   ];
+
+  function hasAccessToEdit(): boolean {
+    return (
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.Paused) ||
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.Draft) ||
+      (props.userRoles.some((r: StudyRole) =>
+        accessEditDetailsRoles.includes(r),
+      ) &&
+        props.study.status === StudyStatus.PausedPreview)
+    );
+  }
+
+  function hasMissingContactData(): boolean {
+    return (
+      (!props.study?.contact?.institute &&
+        props.study?.contact?.person === 'pending' &&
+        props.study?.contact?.email === 'pending' &&
+        !props.study?.contact?.phoneNumber) ||
+      (!props.study?.contact?.institute &&
+        !props.study?.contact?.person &&
+        !props.study?.contact?.email &&
+        !props.study?.contact?.phoneNumber)
+    );
+  }
+
+  const webcalUrl = `webcal://${location.host}/api/v1/studies/${props.study.studyId}/calendar.ics`;
+  const calenderUrl = `${location.origin}/api/v1/studies/${props.study.studyId}/calendar.ics`;
 </script>
 
 <template>
   <div class="overview-edit-details" :class="styleModifier">
-    <div class="mb-8 flex justify-start">
-      <div
-        class="study-info-fixed grid grid-cols-3 gap-x-6 py-3 2xl:grid-cols-5"
-        :style="
-          props.userRoles.find((r) => r === StudyRole.Admin)
-            ? 'width:89%;'
-            : 'width:100%'
-        "
-      >
-        <div>
-          <span class="font-bold">{{ $t('study.props.plannedStart') }}: </span
-          >{{ dayjs(study.plannedStart).format('DD/MM/YYYY') }}
+    <div class="mb-8 flex justify-between">
+      <div class="grid grid-cols-3 gap-x-6 pr-3 2xl:grid-cols-5">
+        <div class="order-1 grid content-center 2xl:order-1">
+          <span class="font-bold">{{ $t('study.props.plannedStart') }}:</span>
+          <template v-if="study.plannedStart">
+            {{ $d(new Date(study.plannedStart), 'short') }}
+          </template>
         </div>
-        <div>
-          <span class="font-bold">{{ $t('study.props.actualStart') }}: </span>
-          <span v-if="study.start">{{
-            dayjs(study.start).format('DD/MM/YYYY')
-          }}</span
+        <div class="order-4 grid content-center 2xl:order-2">
+          <span class="font-bold">{{ $t('study.props.actualStart') }}:</span>
+          <template v-if="study.start">
+            {{ $d(new Date(study.start), 'short') }}
+          </template>
+          <span v-else>-</span>
+        </div>
+        <div class="order-2 grid content-center 2xl:order-3">
+          <span class="font-bold">{{ $t('study.props.plannedEnd') }}:</span>
+          <template v-if="study.plannedEnd">
+            {{ $d(new Date(study.plannedEnd), 'short') }}
+          </template>
+        </div>
+        <div class="order-5 grid content-center 2xl:order-4">
+          <span class="font-bold">{{ $t('study.props.actualEnd') }}:</span>
+          <template v-if="study.end">{{
+            $d(new Date(study.end), 'short')
+          }}</template
           ><span v-else>-</span>
         </div>
-        <div>
-          <span class="font-bold">{{ $t('study.props.plannedEnd') }}: </span
-          >{{ dayjs(study.plannedEnd).format('DD/MM/YYYY') }}
-        </div>
-        <div>
-          <span class="font-bold">{{ $t('study.props.actualEnd') }}: </span>
-          <span v-if="study.end">{{
-            dayjs(study.end).format('DD/MM/YYYY')
+        <div class="order-3 grid content-center 2xl:order-5">
+          <span class="font-bold">{{ $t('study.props.duration') }}:</span>
+          <span v-if="study.duration?.value && study.duration.unit">{{
+            `${t(`scheduler.preview.value.${study.duration.unit}`, study.duration.value)}`
           }}</span
           ><span v-else>-</span>
         </div>
@@ -134,23 +168,32 @@ Licensed under the Elastic License 2.0. */
         <StudyStatusChange
           v-if="props.userRoles.find((r) => r === StudyRole.Admin)"
           :status="study.status || ''"
-          @onchange="updateStudyStatus"
+          @on-change="updateStudyStatus"
         ></StudyStatusChange>
-        <Button
-          v-if="props.study.status !== StudyStatus.Closed"
-          class="buttons"
-          type="button"
-          title="Edit Study Details"
-          :disabled="(props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Paused ||
-      props.userRoles.some((r: StudyRole) => accessEditDetailsRoles.includes(r)) && props.study.status === StudyStatus.Draft) === false"
-          @click="openEditDialog()"
-          ><span>{{ $t('global.labels.edit') }}</span></Button
-        >
+        <div>
+          <Button
+            v-if="props.study.status !== StudyStatus.Closed"
+            type="button"
+            :title="$t('study.statusChange.edit')"
+            :disabled="!hasAccessToEdit()"
+            @click="openEditDialog()"
+            ><span>{{ $t('study.statusChange.edit') }}</span></Button
+          >
+        </div>
       </div>
     </div>
 
     <div class="mb-6">
-      <h5>{{ $t('study.props.purpose') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">{{ $t('study.ical.title') }}</h5>
+      <div class="flex items-center">
+        <div class="mr-4 inline">
+          <a :href="webcalUrl">{{ calenderUrl }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-6">
+      <h5 class="mb-0.5 text-lg font-bold">{{ $t('study.props.purpose') }}</h5>
       <div>
         <span v-if="study.purpose">{{ study.purpose }}</span>
         <span v-else class="placeholder">
@@ -159,7 +202,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.participantInfo') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.participantInfo') }}
+      </h5>
       <div>
         <span v-if="study.participantInfo">{{ study.participantInfo }}</span>
         <span v-else class="placeholder">
@@ -168,7 +213,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.consentInfo') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.consentInfo') }}
+      </h5>
       <div class="mt-2">
         <span v-if="study.consentInfo">
           {{ study.consentInfo }}
@@ -177,7 +224,9 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5>{{ $t('study.props.finishText') }}</h5>
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.props.finishText') }}
+      </h5>
       <div>
         <span v-if="study.finishText">{{ study.finishText }}</span>
         <span v-else class="placeholder">{{
@@ -186,20 +235,10 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
     <div class="mb-6">
-      <h5 class="mb-1">{{ $t('study.dialog.label.contactInfo') }}</h5>
-      <div
-        v-if="
-          (!study?.contact?.institute &&
-            study?.contact?.person === 'pending' &&
-            study?.contact?.email === 'pending' &&
-            !study?.contact?.phoneNumber) ||
-          (!study?.contact?.institute &&
-            !study?.contact?.person &&
-            !study?.contact?.email &&
-            !study?.contact?.phoneNumber)
-        "
-        class="placeholder"
-      >
+      <h5 class="mb-0.5 text-lg font-bold">
+        {{ $t('study.dialog.label.contactInfo') }}
+      </h5>
+      <div v-if="hasMissingContactData()" class="placeholder">
         {{ $t('study.placeholder.missingContactData') }}
       </div>
 
@@ -232,43 +271,3 @@ Licensed under the Elastic License 2.0. */
   </div>
   <DynamicDialog />
 </template>
-
-<style scoped lang="postcss">
-  :deep(.formatted-text) {
-    ul {
-      margin: 10px 0 10px 5px;
-      list-style: disc;
-      li {
-        margin-left: 30px;
-      }
-    }
-  }
-
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 2px;
-  }
-  button.edit-btn {
-    border: none;
-    background-color: transparent;
-    padding: 0 !important;
-
-    span:before {
-      color: black;
-    }
-
-    &:hover,
-    &:active,
-    &:focus {
-      background-color: lightgrey !important;
-      span:before {
-        color: var(--primary-color);
-      }
-    }
-  }
-
-  .overview-edit-details .placeholder {
-    color: var(--surface-400);
-  }
-</style>

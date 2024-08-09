@@ -8,13 +8,12 @@ Licensed under the Elastic License 2.0. */
   import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
 
   import {
-    FileUploadModeType,
     MoreTableAction,
-    MoreTableActionResult,
     MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import {
     Participant,
@@ -25,7 +24,7 @@ Licensed under the Elastic License 2.0. */
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import * as names from 'starwars-names';
+  import * as starWarsNames from 'starwars-names';
   import useLoader from '../composable/useLoader';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
@@ -33,6 +32,10 @@ Licensed under the Elastic License 2.0. */
   import { useDialog } from 'primevue/usedialog';
   import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
   import DeleteParticipantDialog from './dialog/DeleteParticipantDialog.vue';
+  import Menu from 'primevue/menu';
+  import Button from 'primevue/button';
+  import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
+  import { MenuOptions } from '../models/ComponentModels';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -47,30 +50,34 @@ Licensed under the Elastic License 2.0. */
       type: Number,
       required: true,
     },
-    statusStatus: {
+    studyStatus: {
       type: String as PropType<StudyStatus>,
       required: true,
     },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
   });
 
-  const actionsVisible =
-    props.statusStatus === StudyStatus.Draft ||
-    props.statusStatus === StudyStatus.Paused;
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'alias',
+    sortOrder: 1,
+  };
 
-  const groupStatuses: Ref<MoreTableChoice[]> = ref(
-    props.studyGroups.map(
-      (item) =>
-        ({
-          label: item.title,
-          value: item.studyGroupId?.toString(),
-        } as MoreTableChoice)
-    )
+  const actionsVisible =
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
+
+  const groupStatuses: MoreTableChoice[] = props.studyGroups.map(
+    (studyGroup) =>
+      ({
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
+      }) as MoreTableChoice,
   );
-  groupStatuses.value.push({
+  groupStatuses.push({
     label: t('global.placeholder.noGroup'),
     value: null,
-  });
+  } as MoreTableChoice);
 
   const participantsColumns: MoreTableColumn[] = [
     { field: 'participantId', header: t('global.labels.id'), sortable: true },
@@ -79,24 +86,32 @@ Licensed under the Elastic License 2.0. */
       header: t('participants.props.alias'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '15vw',
     },
     { field: 'registrationToken', header: t('participants.props.token') },
     {
       field: 'status',
       header: t('study.props.status'),
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses.value },
+      editable: { enabled: actionsVisible, values: groupStatuses },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.noGroup'),
       columnWidth: '15vw',
+    },
+    {
+      field: 'start',
+      header: t('participants.props.individualStart'),
+      type: MoreTableFieldType.datetime,
+      sortable: true,
+      placeholder: '-',
+      columnWidth: '10vw',
     },
   ];
 
@@ -105,6 +120,7 @@ Licensed under the Elastic License 2.0. */
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteParticipantBtn'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('participants.dialog.header.delete'),
@@ -131,12 +147,12 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute(
+                executeAction(
                   {
                     id: 'delete',
-                    row: options.data.participant as Participant,
-                  },
-                  options.data.withData
+                    row: options.data.participant,
+                  } as MoreTableRowActionResult,
+                  options.data.withData,
                 );
               }
             },
@@ -145,57 +161,31 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const tableActions: MoreTableAction[] = [
+  const addParticipantOptions: MenuOptions[] = [
     {
-      id: 'create',
-      label: t('participants.participantsList.action.add'),
-      icon: 'pi pi-angle-down',
-      visible: () => {
-        return (
-          props.statusStatus === StudyStatus.Draft ||
-          props.statusStatus === StudyStatus.Paused
-        );
-      },
-
-      options: {
-        type: 'menu',
-        values: [
-          { label: t('participants.participantsList.labels.add1'), value: 1 },
-          { label: t('participants.participantsList.labels.add3'), value: 3 },
-          { label: t('participants.participantsList.labels.add10'), value: 10 },
-          { label: t('participants.participantsList.labels.add25'), value: 25 },
-          { label: t('participants.participantsList.labels.add50'), value: 50 },
-        ],
-      },
+      label: t('participants.participantsList.labels.add1'),
+      value: 1,
+      command: (): void => createParticipant(1),
     },
     {
-      id: 'distribute',
-      label: t('participants.participantsList.action.distribute'),
-      visible: () => {
-        return actionsVisible && participantsList.value.length > 0;
-      },
+      label: t('participants.participantsList.labels.add3'),
+      value: 3,
+      command: (): void => createParticipant(3),
     },
     {
-      id: 'import',
-      label: t('participants.participantsList.action.import'),
-      visible: () => {
-        return actionsVisible;
-      },
-      options: {
-        type: 'fileUpload',
-        values: [],
-        uploadOptions: {
-          mode: FileUploadModeType.basic,
-        },
-      },
+      label: t('participants.participantsList.labels.add10'),
+      value: 10,
+      command: (): void => createParticipant(10),
     },
     {
-      id: 'export',
-      label: t('participants.participantsList.action.export'),
-      icon: 'pi pi-download',
-      visible: () => {
-        return participantsList.value.length > 0;
-      },
+      label: t('participants.participantsList.labels.add25'),
+      value: 25,
+      command: (): void => createParticipant(25),
+    },
+    {
+      label: t('participants.participantsList.labels.add50'),
+      value: 50,
+      command: (): void => createParticipant(50),
     },
   ];
 
@@ -209,7 +199,7 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  function openDistrubuteDialog(): void {
+  function openDistributeDialog(): void {
     dialog.open(DistributeParticipantsDialog, {
       data: {
         studyGroups: props.studyGroups,
@@ -238,7 +228,7 @@ Licensed under the Elastic License 2.0. */
   function distributeGroups(): void {
     // copy participants and shuffle list
     const participantCopy = shuffleArray(
-      participantsList.value.map((p) => JSON.parse(JSON.stringify(p)))
+      participantsList.value.map((p) => JSON.parse(JSON.stringify(p))),
     );
     // set group
     for (let i = 0; i < participantCopy.length; i++) {
@@ -256,7 +246,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
-  function shuffleArray(a: Participant[]) {
+  function shuffleArray(a: Participant[]): Participant[] {
     let j, x, i;
     for (i = a.length - 1; i > 0; i--) {
       j = Math.floor(Math.random() * (i + 1));
@@ -267,32 +257,22 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  function execute(
-    action: MoreTableRowActionResult<Participant> | MoreTableActionResult,
-    withData?: boolean
-  ) {
+  function executeAction(
+    action: MoreTableRowActionResult,
+    withData?: boolean,
+  ): void {
     switch (action.id) {
       case 'delete':
-        return deleteParticipant(
-          (action as MoreTableRowActionResult<Participant>).row,
-          !!withData
-        );
-      case 'create':
-        return createParticipant(action as MoreTableActionResult);
-      case 'distribute':
-        return openDistrubuteDialog();
-      case 'import':
-        return importParticipants(action);
-      case 'export':
-        return exportParticipants();
+        deleteParticipant(action.row as Participant, !!withData);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  function createParticipant(actionResult: MoreTableActionResult) {
-    const i = actionResult.properties || 1;
-    const participants = names
+  function createParticipant(amount: number): void {
+    const i = amount || 1;
+    const participants = starWarsNames
       .random(i)
       .map((alias: string) => ({ alias, studyId: props.studyId }));
     participantsApi
@@ -300,50 +280,54 @@ Licensed under the Elastic License 2.0. */
       .then(listParticipant);
   }
 
-  function changeValue(participant: Participant) {
+  function changeValue(participant: Participant): void {
     const i = participantsList.value.findIndex(
-      (v) => v.participantId === participant.participantId
+      (v) => v.participantId === participant.participantId,
     );
     if (i > -1) {
       participantsList.value[i] = participant;
       participantsApi.updateParticipant(
         participant.studyId as number,
         participant.participantId as number,
-        participant
+        participant,
       );
     }
   }
 
   async function deleteParticipant(
     participant: Participant,
-    withData: boolean
-  ) {
+    withData: boolean,
+  ): Promise<void> {
     participantsApi
       .deleteParticipant(
         participant.studyId as number,
         participant.participantId as number,
-        withData
+        withData,
       )
       .then(listParticipant);
   }
 
   async function importParticipants(
-    action: MoreTableActionResult
+    event: FileUploadUploaderEvent,
   ): Promise<void> {
-    if (action.properties?.files) {
-      const file = action.properties?.files[0];
-      await importExportApi
-        .importParticipants(props.studyId, file, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        })
-        .then(() => {
-          setTimeout(function () {
-            listParticipant();
-          }, 100);
-        });
-    }
+    const file: File = Array.isArray(event.files)
+      ? event.files[0]
+      : event.files;
+
+    await importExportApi
+      .importParticipants(props.studyId, file, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(() => {
+        setTimeout(function () {
+          listParticipant();
+        }, 100);
+      })
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, `Couldn't upload file`),
+      );
   }
 
   async function exportParticipants(): Promise<void> {
@@ -369,6 +353,21 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
+  function checkEditablePermissions(row: any): boolean {
+    if (
+      props.studyStatus === StudyStatus.Active ||
+      props.studyStatus === StudyStatus.Preview
+    ) {
+      return row.status === 'new';
+    }
+    return props.studyStatus !== StudyStatus.Closed;
+  }
+
+  const menu = ref();
+  function toggleButtonMenu(event: MouseEvent): void {
+    menu.value.toggle(event);
+  }
+
   listParticipant();
 </script>
 
@@ -376,33 +375,74 @@ Licensed under the Elastic License 2.0. */
   <div class="participant-list">
     <MoreTable
       row-id="participantId"
-      :sort-options="{ sortField: 'alias', sortOrder: 1 }"
+      :sort-options="sortOptions"
       :title="$t('participants.participantsList.title')"
       :subtitle="$t('participants.participantsList.description')"
       :columns="participantsColumns"
       :rows="participantsList"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :loading="loader.isLoading.value"
-      :editable-access="actionsVisible"
+      :editable-access="props.studyStatus !== StudyStatus.Closed"
+      :editable="checkEditablePermissions"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
-      class="width-65"
-      @onaction="execute($event)"
-      @onchange="changeValue($event)"
-    />
+      class="width-50"
+      @on-action="executeAction($event)"
+      @on-change="changeValue($event)"
+    >
+      <template #tableActions="{ isInEditMode }">
+        <div>
+          <Button
+            type="button"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @click="toggleButtonMenu($event)"
+            >{{ t('participants.participantsList.action.add') }}
+            <span class="pi pi-angle-down ml-3"></span
+          ></Button>
+          <Menu ref="menu" :model="addParticipantOptions" :popup="true" />
+        </div>
+        <div class="ml-2.5">
+          <Button
+            type="button"
+            :label="t('participants.participantsList.action.distribute')"
+            :disabled="
+              isInEditMode
+                ? true
+                : !actionsVisible || participantsList.length === 0
+            "
+            @click="openDistributeDialog()"
+          />
+        </div>
+        <div class="ml-2.5">
+          <FileUpload
+            mode="basic"
+            upload-icon="pi pi-upload"
+            :choose-label="t('participants.participantsList.action.import')"
+            :custom-upload="true"
+            :auto="true"
+            accept=".csv"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @uploader="importParticipants($event)"
+          ></FileUpload>
+        </div>
+        <div class="ml-2.5">
+          <Button
+            type="button"
+            icon="pi pi-download"
+            :label="t('participants.participantsList.action.export')"
+            :disabled="isInEditMode ? true : participantsList.length === 0"
+            @click="exportParticipants()"
+          />
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>
 </template>
 
 <style scoped lang="postcss">
-  .table-value-status-new {
-    display: block;
-    margin: 0.063rem 0.188rem 0 0;
-    position: relative;
-  }
-  :deep(.width-65 .title) {
-    width: 65%;
+  :deep(.width-50 .title) {
+    width: 50%;
   }
 </style>

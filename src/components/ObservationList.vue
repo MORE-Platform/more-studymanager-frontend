@@ -8,18 +8,22 @@ Licensed under the Elastic License 2.0. */
   import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
+    Event,
     Observation,
+    ObservationSchedule,
+    RelativeEvent,
     StudyGroup,
     StudyRole,
     StudyStatus,
   } from '../generated-sources/openapi';
   import {
     MoreTableAction,
-    MoreTableActionOption,
     MoreTableChoice,
-    MoreTableCollaboratorItem,
     MoreTableColumn,
     MoreTableFieldType,
+    MoreTableRowActionResult,
+    MoreTableSortOptions,
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -28,64 +32,74 @@ Licensed under the Elastic License 2.0. */
   import { useDialog } from 'primevue/usedialog';
   import ObservationDialog from '../components/dialog/ObservationDialog.vue';
   import useLoader from '../composable/useLoader';
-  import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
+  import { ScheduleType } from '../models/Scheduler';
+  import Button from 'primevue/button';
+  import Menu from 'primevue/menu';
+  import { timeToHourMinuteString } from '../utils/dateUtils';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
-  const studyStore = useStudyStore();
-  const { t } = useI18n();
+  const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
   const observationList: Ref<Observation[]> = ref([]);
   const dialog = useDialog();
-  //const loading = ref(true)
+
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'title',
+    sortOrder: -1,
+  };
+
   const actionsVisible =
-    studyStore.study.status === StudyStatus.Draft ||
-    studyStore.study.status === StudyStatus.Paused;
+    props.studyStatus === StudyStatus.Draft ||
+    props.studyStatus === StudyStatus.Paused ||
+    props.studyStatus === StudyStatus.PausedPreview;
 
   const groupStatuses = props.studyGroups.map(
-    (item) =>
+    (studyGroup) =>
       ({
-        label: item.title,
-        value: item.studyGroupId?.toString(),
-      } as MoreTableChoice)
+        label: studyGroup.title,
+        value: studyGroup.studyGroupId?.toString(),
+      }) as MoreTableChoice,
   );
   groupStatuses.push({
     label: t('global.placeholder.entireStudy'),
     value: null,
-  });
+  } as MoreTableChoice);
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
   }
 
   const factories: ComponentFactory[] = await getFactories();
-  const observationTypes: MoreTableActionOption[] = factories.map(
-    (item: any) => ({
-      label: t(item.title),
-      value: item.componentId,
-      description: t(item.description),
-    })
-  );
+  const observationTypes: any[] = factories.map((cf: ComponentFactory) => ({
+    label: cf.title ? t(cf.title) : '',
+    value: cf.componentId,
+    command: (): void => {
+      openObservationDialog(t('observation.dialog.header.create'), {
+        type: cf.componentId,
+      });
+    },
+  }));
 
   const observationColumns: MoreTableColumn[] = [
     {
       field: 'typeLabel',
       header: t('observation.props.type'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '5vw',
     },
     {
@@ -93,7 +107,7 @@ Licensed under the Elastic License 2.0. */
       header: t('study.props.title'),
       editable: true,
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       columnWidth: '10vw',
     },
     {
@@ -107,9 +121,9 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { values: groupStatuses },
+      editable: { enabled: true, values: groupStatuses },
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '5vw',
     },
@@ -122,28 +136,29 @@ Licensed under the Elastic License 2.0. */
       editable: true,
     },
     {
-      field: 'schedule.dtstart',
+      field: 'scheduleType',
+      header: t('global.labels.scheduleType'),
+      columnWidth: '3vw',
+      sortable: true,
+    },
+    {
+      field: 'scheduleStart',
       header: t('global.labels.start'),
-      type: MoreTableFieldType.nestedDatetime,
       columnWidth: '3vw',
       sortable: true,
     },
     {
-      field: 'schedule.dtend',
+      field: 'scheduleEnd',
       header: t('global.labels.end'),
-      type: MoreTableFieldType.nestedDatetime,
       columnWidth: '3vw',
       sortable: true,
     },
-  ];
-
-  const tableActions: MoreTableAction[] = [
     {
-      id: 'create',
-      icon: 'pi pi-angle-down',
-      label: t('observation.observationList.action.add'),
-      visible: () => actionsVisible,
-      options: { type: 'menu', values: observationTypes },
+      field: 'hasRepetition',
+      header: t('scheduler.labels.repeat'),
+      type: MoreTableFieldType.binaryIcon,
+      columnWidth: '2vw',
+      sortable: true,
     },
   ];
 
@@ -151,12 +166,14 @@ Licensed under the Elastic License 2.0. */
     {
       id: 'clone',
       label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneObservation'),
       visible: () => actionsVisible,
     },
     {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
+      tooltip: t('tooltips.moreTable.deleteObservation'),
       visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('observation.dialog.header.delete'),
@@ -169,7 +186,7 @@ Licensed under the Elastic License 2.0. */
               confirmMsg: t('observation.dialog.deleteMsg.confirm'),
               row: row,
               elTitle: getObservationTypeString(row.type)
-                ? row.title + ' (' + getObservationTypeString(row.type) + ')'
+                ? `${row.title} (${getObservationTypeString(row.type)})`
                 : row.title,
               elInfoTitle: t('study.props.purpose'),
               elInfoDesc: row.purpose,
@@ -188,10 +205,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as MoreTableCollaboratorItem,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -199,18 +216,18 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const rowEndActions: MoreTableAction[] = [
+  const endRowActions: MoreTableAction[] = [
     {
       id: 'edit',
       label: t('global.labels.edit'),
       icon: 'pi pi-cog',
+      tooltip: t('tooltips.editBtn'),
     },
   ];
 
-  function getObservationTypeString(observationType: string) {
+  function getObservationTypeString(observationType: string): string {
     return t(
-      factories.find((item) => item.componentId === observationType)
-        ?.title as string
+      factories.find((f) => f.componentId === observationType)?.title as string,
     );
   }
 
@@ -218,99 +235,158 @@ Licensed under the Elastic License 2.0. */
     observationList.value = await observationsApi
       .listObservations(props.studyId)
       .then((response: AxiosResponse) => {
-        return response.data.map((item: Observation) => {
+        return response.data.map((observation: Observation) => {
           return {
-            studyId: item.studyId,
-            observationId: item.observationId,
-            studyGroupId: item.studyGroupId,
-            title: item.title,
-            purpose: item.purpose,
-            participantInfo: item.participantInfo,
-            type: item.type,
-            typeLabel: getObservationTypeString(item.type as string),
-            properties: item.properties,
-            schedule: item.schedule,
-            created: item.created,
-            modified: item.modified,
-            hidden: item.hidden,
-            noSchedule: item.noSchedule,
+            studyId: observation.studyId,
+            observationId: observation.observationId,
+            studyGroupId: observation.studyGroupId,
+            title: observation.title,
+            purpose: observation.purpose,
+            participantInfo: observation.participantInfo,
+            type: observation.type,
+            typeLabel: getObservationTypeString(observation.type as string),
+            properties: observation.properties,
+            schedule: observation.schedule,
+            scheduleType: observation.schedule?.type
+              ? t(`scheduler.type.${observation.schedule?.type}`)
+              : '',
+            scheduleStart: getScheduleDate(observation.schedule, 'dtstart'),
+            scheduleEnd: getScheduleDate(observation.schedule, 'dtend'),
+            created: observation.created,
+            modified: observation.modified,
+            hidden: observation.hidden,
+            noSchedule: observation.noSchedule,
+            hasRepetition: getScheduleHasRepetition(observation.schedule),
           };
         });
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
 
-  function execute(action: any) {
+  function getScheduleHasRepetition(
+    schedule: ObservationSchedule | undefined,
+  ): boolean {
+    if (schedule) {
+      switch (schedule.type) {
+        case ScheduleType.Event: {
+          const s = schedule as Event;
+          return !!s.rrule;
+        }
+        case ScheduleType.RelativeEvent: {
+          const s = schedule as RelativeEvent;
+          return !!s.rrrule;
+        }
+      }
+    }
+    return false;
+  }
+
+  function getScheduleDate(
+    scheduler: ObservationSchedule | undefined,
+    prop: string,
+  ): string | undefined {
+    switch (scheduler?.type) {
+      case ScheduleType.Event: {
+        const schedule = scheduler as Event;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart
+              ? `${d(new Date(schedule.dtstart), 'long')}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend
+              ? `${d(new Date(schedule.dtend), 'long')}`
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+      case ScheduleType.RelativeEvent: {
+        const schedule = scheduler as RelativeEvent;
+        switch (prop) {
+          case 'dtstart':
+            return schedule.dtstart.offset?.value &&
+              schedule.dtstart.offset?.unit
+              ? `${t(
+                  `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
+                )} ${schedule.dtstart.offset.value}, ${timeToHourMinuteString(schedule.dtstart.time)}`
+              : undefined;
+          case 'dtend':
+            return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
+              ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
+                  schedule.dtend.offset.value
+                }, ${timeToHourMinuteString(schedule.dtend.time)} `
+              : undefined;
+          default:
+            return undefined;
+        }
+      }
+    }
+
+    return '';
+  }
+
+  function executeAction(action: MoreTableRowActionResult): void {
+    const row = action.row as Observation;
     switch (action.id) {
       case 'delete':
-        return deleteObservation(action.row);
-      case 'create':
-        return openObservationDialog(t('observation.dialog.header.create'), {
-          type: action.properties,
-        });
+        deleteObservation(row);
+        break;
       case 'clone':
-        return openObservationDialog(
-          t('observation.dialog.header.clone'),
-          action.row,
-          'clone'
-        );
+        openObservationDialog(t('observation.dialog.header.clone'), row, true);
+        break;
       case 'edit':
-        return openEditObservation(action.row.observationId);
+        openEditObservation(row.observationId);
+        break;
       default:
         console.error('no handler for action', action);
     }
   }
 
-  async function updateObservation(observation: Observation) {
-    //do change immediately (ux)
-    const i = observationList.value.findIndex(
-      (o: Observation) => o.observationId === observation.observationId
-    );
-    if (i > -1) {
-      observationList.value[i] = observation;
-    }
-
+  async function updateObservation(observation: Observation): Promise<void> {
     await observationsApi
       .updateObservation(
         props.studyId,
         observation.observationId as number,
-        observation
+        observation,
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          "Couldn't update opservation " + observation.title
-        )
+          `Couldn't update observation ${observation.title}`,
+        ),
       );
   }
 
-  async function deleteObservation(requestObservation: Observation) {
+  async function deleteObservation(
+    requestObservation: Observation,
+  ): Promise<void> {
     await observationsApi
       .deleteObservation(
         props.studyId,
-        requestObservation.observationId as number
+        requestObservation.observationId as number,
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
         handleIndividualError(
           e,
-          'Cannot delete observation ' + requestObservation.observationId
-        )
+          `Cannot delete observation ${requestObservation.observationId}`,
+        ),
       );
   }
 
-  function factoryForType(type?: string) {
+  function factoryForType(type?: string): ComponentFactory | undefined {
     return factories.find((f) => f.componentId === type);
   }
 
   function openObservationDialog(
     headerText: string,
     observation?: Observation,
-    typeText?: string
-  ) {
+    clone?: boolean,
+  ): void {
     dialog.open(ObservationDialog, {
       data: {
         groupStates: groupStatuses,
@@ -335,7 +411,7 @@ Licensed under the Elastic License 2.0. */
       onClose: (options) => {
         if (options?.data) {
           if (options.data?.observationId) {
-            if (typeText) {
+            if (clone) {
               createObservation(options.data as Observation);
             } else {
               updateObservation(options.data as Observation);
@@ -348,18 +424,18 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function createObservation(newObservation: Observation) {
+  function createObservation(newObservation: Observation): void {
     observationsApi
       .addObservation(props.studyId, newObservation)
       .then(listObservations)
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'Cannot create observation')
+        handleIndividualError(e, 'Cannot create observation'),
       );
   }
 
-  function openEditObservation(observationId: number) {
+  function openEditObservation(observationId: number | undefined): void {
     const observation = observationList.value.find(
-      (o) => o.observationId === observationId
+      (observation) => observation.observationId === observationId,
     );
     if (observation) {
       let dialogTitle = t('observation.dialog.header.edit');
@@ -374,6 +450,11 @@ Licensed under the Elastic License 2.0. */
   }
 
   listObservations();
+
+  const menu = ref();
+  function toggleButtonMenu(event: MouseEvent): void {
+    menu.value.toggle(event);
+  }
 </script>
 
 <template>
@@ -385,19 +466,32 @@ Licensed under the Elastic License 2.0. */
       :columns="observationColumns"
       :rows="observationList"
       :row-actions="rowActions"
-      :row-end-actions="rowEndActions"
-      :table-actions="tableActions"
-      :sort-options="{ sortField: 'title', sortOrder: -1 }"
+      :end-row-actions="endRowActions"
+      :sort-options="sortOptions"
       :editable-access="actionsVisible"
       :loading="loader.isLoading.value"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
       :component-factory="factories"
+      :enable-row-selection="RowSelectionMode.Single"
       class="table-title-width"
-      @onselect="openEditObservation($event)"
-      @onaction="execute($event)"
-      @onchange="updateObservation($event)"
-    />
+      @on-select="openEditObservation($event)"
+      @on-action="executeAction($event)"
+      @on-change="updateObservation($event)"
+    >
+      <template #tableActions="{ isInEditMode }">
+        <div>
+          <Button
+            type="button"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @click="toggleButtonMenu($event)"
+            >{{ t('observation.observationList.action.add') }}
+            <span class="pi pi-angle-down ml-3"></span
+          ></Button>
+          <Menu ref="menu" :model="observationTypes" :popup="true" />
+        </div>
+      </template>
+    </MoreTable>
     <ConfirmDialog></ConfirmDialog>
     <DynamicDialog />
   </div>

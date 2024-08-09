@@ -10,13 +10,13 @@ Licensed under the Elastic License 2.0. */
   const router = useRouter();
 
   router.beforeEach((to) => {
-    document.title = (to.meta?.title as string) + ' (More)' ?? 'More';
+    document.title = to.meta?.title ? to.meta.title + ' (More)' : 'More';
   });
 </script>
 
 <template>
   <Header />
-  <main class="pt-20">
+  <main class="mb-20 pt-14">
     <router-view />
   </main>
   <Footer />
@@ -25,6 +25,5 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   main {
     min-height: 85vh;
-    margin-bottom: 5.5rem;
   }
 </style>

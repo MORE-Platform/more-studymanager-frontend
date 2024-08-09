@@ -10,8 +10,9 @@ Licensed under the Elastic License 2.0. */
     EndpointToken,
     Observation,
     StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
-  import { ref, Ref } from 'vue';
+  import { PropType, ref, Ref } from 'vue';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { useDialog } from 'primevue/usedialog';
@@ -19,7 +20,10 @@ Licensed under the Elastic License 2.0. */
     MoreIntegrationLink,
     MoreIntegrationTableMap,
     MoreTableAction,
+    MoreTableColumn,
     MoreTableFieldType,
+    MoreTableRowActionResult,
+    MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import { useI18n } from 'vue-i18n';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -28,6 +32,7 @@ Licensed under the Elastic License 2.0. */
   import useLoader from '../composable/useLoader';
   import IntegrationDialog from './dialog/IntegrationDialog.vue';
   import CopyTokenDialog from './dialog/CopyTokenDialog.vue';
+  import Button from 'primevue/button';
 
   const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
@@ -37,20 +42,21 @@ Licensed under the Elastic License 2.0. */
   const loader = useLoader();
 
   const props = defineProps({
-    studyId: {
-      type: Number,
-      required: true,
-    },
-    actionsVisible: {
-      type: Boolean,
-      default: false,
-    },
+    studyId: { type: Number, required: true },
+    studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
-  const observationList: Ref<Observation[]> = ref([]);
+  const sortOptions: MoreTableSortOptions = {
+    sortField: 'tokenLabel',
+    sortOrder: 1,
+  };
+
+  const actionsVisible = props.studyStatus !== StudyStatus.Closed;
+
+  let observationList: Observation[] = [];
   const integrationList: Ref<MoreIntegrationTableMap[]> = ref([]);
 
-  const integrationListColumns = [
+  const integrationColumns: MoreTableColumn[] = [
     {
       field: 'tokenId',
       header: t('integration.props.tokenId'),
@@ -60,18 +66,19 @@ Licensed under the Elastic License 2.0. */
       field: 'tokenLabel',
       header: t('integration.props.tokenLabel'),
       sortable: true,
+      editable: true,
     },
     {
       field: 'observationId',
       header: t('integration.props.observationId'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'observationTitle',
       header: t('integration.props.observationTitle'),
       sortable: true,
-      filterable: { showFilterMatchModes: false },
+      filterable: true,
     },
     {
       field: 'created',
@@ -85,10 +92,10 @@ Licensed under the Elastic License 2.0. */
     await observationsApi
       .listObservations(props.studyId)
       .then((response: AxiosResponse) => {
-        observationList.value = response.data;
+        observationList = response.data;
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
   async function listIntegrations(): Promise<void> {
@@ -109,29 +116,28 @@ Licensed under the Elastic License 2.0. */
                       tokenId: token.tokenId,
                       tokenLabel: token.tokenLabel,
                       created: token.created,
-                    });
+                    } as MoreIntegrationTableMap);
                   });
                 }
               })
               .catch((e: AxiosError) => {
                 handleIndividualError(
                   e,
-                  'Could not get the integration tokens for: ' +
-                    observation.observationId
+                  `Could not get the integration tokens for: ${observation.observationId}`,
                 );
               });
-          })
+          }),
         );
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Could not get observation list: ' + props.studyId
+          `Could not get observation list: ${props.studyId}`,
         );
       });
   }
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
@@ -140,10 +146,17 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
+      id: 'clone',
+      label: t('global.labels.clone'),
+      tooltip: t('tooltips.moreTable.cloneIntegration'),
+      visible: () => actionsVisible,
+    },
+    {
       id: 'delete',
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
-      visible: () => props.actionsVisible,
+      tooltip: t('tooltips.moreTable.deleteObservation'),
+      visible: () => actionsVisible,
       confirmDeleteDialog: {
         header: t('integration.dialog.header.delete'),
         message: t('integration.dialog.msg.delete'),
@@ -154,8 +167,7 @@ Licensed under the Elastic License 2.0. */
               warningMsg: t('integration.dialog.deleteMsg.warning'),
               confirmMsg: t('integration.dialog.deleteMsg.confirm'),
               row: row,
-              elTitle:
-                row.tokenLabel + ' (Observation: ' + row.observationTitle + ')',
+              elTitle: `${row.tokenLabel} (Observation: ${row.observationTitle})`,
               elInfoDesc: row.token,
             },
             props: {
@@ -172,10 +184,10 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                execute({
+                executeAction({
                   id: 'delete',
-                  row: options.data as MoreIntegrationTableMap,
-                });
+                  row: options.data,
+                } as MoreTableRowActionResult);
               }
             },
           }),
@@ -183,25 +195,46 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const tableActions: MoreTableAction[] = [
-    {
-      id: 'create',
-      icon: 'pi pi-plus',
-      label: t('integration.integrationList.action.add'),
-      visible: () => props.actionsVisible,
-    },
-  ];
-
-  function execute(action: any) {
+  function executeAction(action: MoreTableRowActionResult): void {
+    const row = action.row as MoreIntegrationTableMap;
     switch (action.id) {
       case 'delete':
-        return deleteIntegration(action.row);
-      case 'create':
-        return openIntegrationDialog(t('integration.dialog.header.create'));
+        deleteIntegration(row);
+        break;
+      case 'clone':
+        createIntegration({
+          observationId: row.observationId,
+          tokenLabel: row.tokenLabel,
+        } as MoreIntegrationLink);
+        break;
     }
   }
 
-  async function openIntegrationDialog(headerText: string) {
+  async function updateIntegration(
+    integration: MoreIntegrationTableMap,
+  ): Promise<void> {
+    await observationsApi
+      .updateTokenLabel(
+        props.studyId,
+        integration.observationId,
+        integration.tokenId,
+        {
+          tokenId: integration.tokenId,
+          tokenLabel: integration.tokenLabel,
+          created: integration.created,
+          token: '',
+        } as EndpointToken,
+      )
+      .then(listIntegrations)
+      .catch((e: AxiosError) =>
+        handleIndividualError(
+          e,
+          `Couldn't update integration ${integration.observationTitle}`,
+        ),
+      );
+  }
+
+  async function openIntegrationDialog(headerText: string): Promise<void> {
     dialog.open(IntegrationDialog, {
       data: {
         observationList: observationList,
@@ -228,41 +261,34 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  async function deleteIntegration(integration: MoreIntegrationTableMap) {
+  async function deleteIntegration(
+    integration: MoreIntegrationTableMap,
+  ): Promise<void> {
     await observationsApi
       .deleteToken(
         props.studyId,
         integration.observationId,
-        integration.tokenId
+        integration.tokenId,
       )
       .then(listIntegrations)
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Cannot delete integration: TokenId (' +
-            integration.tokenId +
-            '), Observation Id: (' +
-            integration.observationId +
-            ')'
+          `Cannot delete integration: TokenId (${integration.tokenId}), Observation Id: (${integration.observationId})`,
         );
       });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async function getObservationTokens(studyId: number, observationId: number) {
-    await observationsApi.getTokens(studyId, observationId).then((request) => {
-      return request;
-    });
-  }
-  getObservationTokens(props.studyId, 1);
-
-  async function createIntegration(integrationCreate: MoreIntegrationLink) {
+  async function createIntegration(
+    integrationCreate: MoreIntegrationLink,
+  ): Promise<void> {
     await observationsApi
-      .createToken(
-        props.studyId,
-        integrationCreate.observationId,
-        integrationCreate.tokenLabel
-      )
+      .createToken(props.studyId, integrationCreate.observationId, {
+        tokenId: 0,
+        tokenLabel: integrationCreate.tokenLabel,
+        created: '',
+        token: '',
+      } as EndpointToken)
       .then((response) => {
         openInfoDialog(response.data);
         listIntegrations();
@@ -270,19 +296,15 @@ Licensed under the Elastic License 2.0. */
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'Cannot create integration for ObservationId ' +
-            integrationCreate.observationId +
-            '(' +
-            integrationCreate.tokenLabel +
-            ')'
+          `Cannot create integration for ObservationId ${integrationCreate.observationId} (${integrationCreate.tokenLabel})`,
         );
       });
   }
 
-  function openInfoDialog(token: EndpointToken) {
+  function openInfoDialog(token: EndpointToken): void {
     dialog.open(CopyTokenDialog, {
       data: {
-        title: token.tokenLabel + ' (Id: ' + token.tokenId + ')',
+        title: `${token.tokenLabel} (Id: ${token.tokenId})`,
         message: t('integration.dialog.msg.createdToken'),
         highlightMsg: token.token,
       },
@@ -297,6 +319,7 @@ Licensed under the Elastic License 2.0. */
         },
         modal: true,
         draggable: false,
+        closeOnEscape: false,
       },
     });
   }
@@ -309,20 +332,34 @@ Licensed under the Elastic License 2.0. */
   <div class="integration-list">
     <MoreTable
       row-id="tokenId"
-      :sort-options="{ sortField: 'tokenLabel', sortOrder: 1 }"
+      :sort-options="sortOptions"
       :title="$t('integration.integrationList.title')"
       :subtitle="$t('integration.integrationList.description')"
-      :columns="integrationListColumns"
+      :columns="integrationColumns"
       :rows="integrationList"
       :row-actions="rowActions"
-      :table-actions="tableActions"
       :loading="loader.isLoading.value"
-      :editable-access="false"
+      :editable-access="actionsVisible"
       :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
       :empty-message="$t('integration.integrationList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
-      @onaction="execute($event)"
-    />
+      @on-action="executeAction($event)"
+      @on-change="updateIntegration($event)"
+    >
+      <template #tableActions="{ isInEditMode }">
+        <div>
+          <Button
+            type="button"
+            icon="pi pi-plus"
+            :label="t('integration.integrationList.action.add')"
+            :disabled="isInEditMode ? true : !actionsVisible"
+            @click="
+              openIntegrationDialog(t('integration.dialog.header.create'))
+            "
+          />
+        </div>
+      </template>
+    </MoreTable>
     <DynamicDialog />
   </div>
 </template>

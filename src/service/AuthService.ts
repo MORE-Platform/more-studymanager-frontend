@@ -15,7 +15,7 @@ export default class AuthService {
     this.keycloak = new Keycloak(options);
   }
 
-  public async init() {
+  public async init(): Promise<boolean> {
     const loggedIn = await this.keycloak.init({ onLoad: 'login-required' });
     if (loggedIn) {
       setInterval(() => {
@@ -23,7 +23,7 @@ export default class AuthService {
           .updateToken(70)
           .then((refreshed) => {
             if (refreshed) {
-              console.log('Token refreshed: ' + refreshed);
+              console.log(`Token refreshed: ${refreshed}`);
             }
           })
           .catch(() => {

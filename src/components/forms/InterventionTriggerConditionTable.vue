@@ -85,24 +85,25 @@ Licensed under the Elastic License 2.0. */
 
   const conditionValue: Ref<string> = ref(props.nextGroupCondition);
   const editingRows: Ref<Array<any>> = ref([]);
-  const observationList: Ref<Observation[]> = ref([]);
+  const rowOpenError: Ref<string> = ref(props.rowOpenError);
+  let observationList: Observation[] = [];
 
   async function getObservationList(): Promise<void> {
     await observationsApi
       .listObservations(props.studyId)
       .then((response: AxiosResponse) => {
-        observationList.value = response.data;
+        observationList = response.data;
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot list observations')
+        handleIndividualError(e, 'cannot list observations'),
       );
   }
   await getObservationList();
 
   const observationValues: InterventionChoice[] =
-    observationList.value.map((o) => ({
-      label: o.title as string,
-      value: o.observationId as number,
+    observationList.map((observation) => ({
+      label: observation.title as string,
+      value: observation.observationId as number,
     })) || [];
 
   onUpdated(() => {
@@ -135,7 +136,7 @@ Licensed under the Elastic License 2.0. */
     { label: '!=', value: '!=' },
   ];
 
-  async function getFactories() {
+  async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
       .then((response: any) => response.data);
@@ -154,19 +155,21 @@ Licensed under the Elastic License 2.0. */
   }>();
 
   function getPropertyOptions(
-    trigger: InterventionTriggerConfig
+    trigger: InterventionTriggerConfig,
   ): ComponentFactoryMeasurementsInner[] {
     if (trigger.observationType) {
       return (
         factories.find(
-          (o: ComponentFactory) => o.componentId === trigger.observationType
+          (cf: ComponentFactory) => cf.componentId === trigger.observationType,
         )?.measurements || []
       );
     }
     return [];
   }
 
-  function getOperatorOptions(trigger: InterventionTriggerConfig) {
+  function getOperatorOptions(
+    trigger: InterventionTriggerConfig,
+  ): MoreTableChoice[] {
     const operator: ComponentFactoryMeasurementsInner = getOperator(trigger);
     return (operator && operator.type === 'DOUBLE') ||
       (operator && operator.type === 'INTEGER')
@@ -175,16 +178,15 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getOperator(
-    trigger: InterventionTriggerConfig
+    trigger: InterventionTriggerConfig,
   ): ComponentFactoryMeasurementsInner {
     return getPropertyOptions(trigger).find(
-      (item) => item.id === trigger.observationProperty
+      (cfmi: ComponentFactoryMeasurementsInner) =>
+        cfmi.id === trigger.observationProperty,
     ) as ComponentFactoryMeasurementsInner;
   }
 
-  const rowOpenError: Ref<string> = ref(props.rowOpenError);
-
-  function updateEditRows() {
+  function updateEditRows(): void {
     props.rows.forEach((item: InterventionTriggerConfig) => {
       if (item.editMode) {
         editingRows.value.push(item);
@@ -192,10 +194,10 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function changeObservationType(trigger: InterventionTriggerConfig) {
+  function changeObservationType(trigger: InterventionTriggerConfig): void {
     if (trigger.observationId) {
       const observation = findObservationById(
-        trigger.observationId
+        trigger.observationId,
       ) as Observation;
 
       trigger.observationType = observation.type as string;
@@ -215,28 +217,30 @@ Licensed under the Elastic License 2.0. */
   }
   function getObservationTitle(observationId: number): string {
     return (
-      observationList.value.find(
-        (item) => (item.observationId as number) === observationId
+      observationList.find(
+        (observation) =>
+          (observation.observationId as number) === observationId,
       )?.title || ''
     );
   }
 
   function findObservationById(observationId: number): Observation {
     return (
-      observationList.value.find(
-        (o) => (o.observationId as number) === observationId
+      observationList.find(
+        (observation) =>
+          (observation.observationId as number) === observationId,
       ) || {}
     );
   }
 
-  function changeNextGroupCondition() {
+  function changeNextGroupCondition(): void {
     emit('onChangeGroupCondition', {
       groupIndex: props.groupIndex,
       value: conditionValue.value,
     });
   }
 
-  function edit(trigger: InterventionTriggerConfig, index: number) {
+  function edit(trigger: InterventionTriggerConfig, index: number): void {
     rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
@@ -248,7 +252,7 @@ Licensed under the Elastic License 2.0. */
     editingRows.value.push(trigger);
   }
 
-  function cancel(trigger: InterventionTriggerConfig, index: number) {
+  function cancel(trigger: InterventionTriggerConfig, index: number): void {
     rowOpenError.value = '';
     emit('onRowOpen', rowOpenError.value);
     emit('onToggleRowEdit', {
@@ -260,28 +264,27 @@ Licensed under the Elastic License 2.0. */
     editingRows.value = [];
   }
 
-  function save(trigger: QueryObjectInner, index: number) {
-    const returnTrigger: Ref<QueryObjectInner> = ref(trigger);
+  function save(trigger: QueryObjectInner, index: number): void {
+    const returnTrigger: QueryObjectInner = trigger;
 
     if (
       getPropertyOptions(trigger).find(
-        (item) => item.id === trigger.observationProperty
+        (cfmi: ComponentFactoryMeasurementsInner) =>
+          cfmi.id === trigger.observationProperty,
       )?.type === 'DOUBLE'
     ) {
-      returnTrigger.value.propertyValue = Number(
-        returnTrigger.value.propertyValue
-      );
+      returnTrigger.propertyValue = Number(returnTrigger.propertyValue);
     }
     rowOpenError.value = '';
     emit('onRowOpen', rowOpenError.value);
     emit('onUpdateRowData', {
-      data: returnTrigger.value,
+      data: returnTrigger,
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
   }
 
-  function addRow(index: number) {
+  function addRow(index: number): void {
     rowOpenError.value = t('intervention.error.interventionRowIsOpen');
     emit('onRowOpen', rowOpenError.value);
     emit('onAddRow', {
@@ -290,14 +293,14 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  function deleteRow(index: number) {
+  function deleteRow(index: number): void {
     emit('onDeleteRow', {
       groupIndex: props.groupIndex,
       rowIndex: index,
     });
   }
 
-  function addTriggerGroup() {
+  function addTriggerGroup(): void {
     emit('onAddTriggerGroup', props.groupIndex);
     updateEditRows();
   }
@@ -307,8 +310,6 @@ Licensed under the Elastic License 2.0. */
   <div class="trigger-condition-row">
     <DataTable
       v-model:editingRows="editingRows"
-      selection-mode="single"
-      responsive-layout="scroll"
       :value="rows"
       edit-mode="row"
       table-class="editable-cells-table"
@@ -318,7 +319,6 @@ Licensed under the Elastic License 2.0. */
         :key="column.field"
         :field="column.field"
         :header="column.header"
-        :row-hover="true"
       >
         <template #body="{ data, field }">
           <span v-if="field === 'observationId'">
@@ -383,7 +383,7 @@ Licensed under the Elastic License 2.0. */
           />
         </template>
       </Column>
-      <Column key="action" row-hover="true" class="row-action text-end">
+      <Column key="action" class="row-action text-end">
         <template #body="slotProps">
           <div v-if="!slotProps.data.editMode" class="text-end">
             <span class="mr-1.5"></span>
@@ -400,8 +400,7 @@ Licensed under the Elastic License 2.0. */
               icon="pi pi-pencil"
               :disabled="!editable"
               @click="edit(slotProps.data, slotProps.index)"
-            >
-            </Button>
+            />
             <div v-if="slotProps.index + 1 < rows.length" class="inline p-3">
               &
             </div>
@@ -412,7 +411,7 @@ Licensed under the Elastic License 2.0. */
                 class="p-button p-3"
                 :disabled="!editable"
                 @click="addRow(slotProps.index)"
-              ></Button>
+              />
             </div>
           </div>
           <div
@@ -432,14 +431,14 @@ Licensed under the Elastic License 2.0. */
               type="button"
               icon="pi pi-check"
               @click="save(slotProps.data, slotProps.index)"
-            ></Button>
+            />
             <span class="mr-1.5"></span>
             <Button
               type="button"
               icon="pi pi-times"
               class="btn-gray"
               @click="cancel(slotProps.data, slotProps.index)"
-            ></Button>
+            />
           </div>
         </template>
       </Column>
@@ -468,7 +467,7 @@ Licensed under the Elastic License 2.0. */
         option-label="label"
         option-value="value"
         icon="pi pi-plus"
-        placeholder="enter"
+        :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
         :disabled="!editable"
         @change="changeNextGroupCondition()"
       />

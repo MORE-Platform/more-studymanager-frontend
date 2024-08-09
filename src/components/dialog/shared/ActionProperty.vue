@@ -8,7 +8,7 @@ Licensed under the Elastic License 2.0. */
   import { Action, ComponentFactory } from '../../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../../models/InputModels';
-  import PropertyInputs from './ProprtyInputs.vue';
+  import PropertyInputs from './PropertyInputs.vue';
   import { Context } from '../../../models/ContextModel';
 
   const { t } = useI18n();
@@ -36,50 +36,53 @@ Licensed under the Elastic License 2.0. */
     (e: 'onActionPropChange', action: Action): void;
   }>();
 
-  function getActionDescription(actionType?: string) {
+  function getActionDescription(): string {
     return (
       props.actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
+        (cf: ComponentFactory) => cf.componentId === props.action.type,
       )?.description || t('intervention.placeholder.noDescription')
     );
   }
 
-  function getActionTitle(actionType?: string) {
+  function getActionTitle(): string {
     return (
       props.actionFactories.find(
-        (a: ComponentFactory) => a.componentId === actionType
+        (cf: ComponentFactory) => cf.componentId === props.action.type,
       )?.title || t('intervention.placeholder.noDescription')
     );
   }
 
-  function getActionProperties(action: Action): any {
-    const properties: Property<any>[] | undefined = props.actionFactories
-      .find((factory: ComponentFactory) => factory.componentId === action.type)
-      ?.properties?.map((json: any) => Property.fromJson(json))
-      .map((p: Property<any>) => p.setValue(action.properties?.[p.id]));
-    return properties;
+  function getActionProperties(action: Action): Property<any>[] {
+    let actionProperties: Property<any>[] = [];
+
+    const foundElm = props.actionFactories.find(
+      (cf: ComponentFactory) => cf.componentId === action.type,
+    );
+
+    if (foundElm && foundElm.properties) {
+      actionProperties = foundElm.properties
+        .map((json: any) => Property.fromJson(json))
+        .map((p: Property<any>) => p.setValue(action.properties?.[p.id]));
+    }
+
+    return actionProperties;
   }
 
-  const actionObj: Ref<Action> = ref(props.action);
-  const actionProperties: Ref<Property<any>[] | undefined> = ref(
-    getActionProperties(props.action)
+  const actionProperties: Ref<Property<any>[]> = ref(
+    getActionProperties(props.action),
   );
 
   function getActionPropsParsed(actionProps: Property<any>[]): any {
     return Property.toJson(actionProps);
   }
 
-  function updateProperty(prop: Property<any>, i: number) {
-    //@ts-ignore
+  function updateProperty(prop: Property<any>, i: number): void {
     actionProperties.value[i].value = prop;
 
     if (actionProperties.value) {
-      const returnAction: Ref<Action> = ref(props.action);
-      returnAction.value.properties = getActionPropsParsed(
-        actionProperties.value
-      );
-
-      emit('onActionPropChange', returnAction.value);
+      const returnAction: Action = { ...props.action };
+      returnAction.properties = getActionPropsParsed(actionProperties.value);
+      emit('onActionPropChange', returnAction);
     }
   }
 </script>
@@ -88,9 +91,9 @@ Licensed under the Elastic License 2.0. */
   <div class="action-property-input grid grid-cols-5 gap-4">
     <div class="col-span-5">
       <h6 class="color-primary font-bold">
-        {{ $t(getActionTitle(actionObj.type)) }}
+        {{ $t(getActionTitle()) }}
       </h6>
-      <div>{{ $t(getActionDescription(actionObj.type)) }}</div>
+      <div>{{ $t(getActionDescription()) }}</div>
     </div>
 
     <div v-if="actionProperties" class="col-span-5">

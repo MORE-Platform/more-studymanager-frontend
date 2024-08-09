@@ -1,22 +1,19 @@
-import path from 'path';
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import vueI18n from '@intlify/vite-plugin-vue-i18n';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueI18n({
-      runtimeOnly: false,
-      compositionOnly: true,
-      defaultSFCLang: 'json',
-      include: path.resolve(__dirname, './src/i18n/**'),
-    }),
-  ],
+  plugins: [vue()],
   build: {
     //TODO maybe remove on cleanup session
     target: 'esnext',
+  },
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+    __BUILD_BRANCH__: JSON.stringify(process.env.VITE_GIT_BRANCH),
+    __BUILD_REVISION__: JSON.stringify(process.env.VITE_GIT_REVISION),
   },
   server: {
     port: 3000,
@@ -31,6 +28,15 @@ export default defineConfig({
           return path.replace(/^\/api/, '');
         },
       },
+    },
+  },
+  test: {
+    include: ['tests/**/*.spec.ts'],
+    environment: 'jsdom',
+    coverage: {
+      provider: 'v8',
+      reportsDirectory: 'tests/coverage',
+      exclude: ['src/generated-sources/**'],
     },
   },
 });

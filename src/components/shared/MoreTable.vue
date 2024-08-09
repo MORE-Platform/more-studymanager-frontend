@@ -4,278 +4,199 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { onBeforeMount, onUpdated, PropType, Ref, ref } from 'vue';
+  import { Ref, ref, watch } from 'vue';
   import {
     MoreTableAction,
-    MoreTableActionOption,
     MoreTableChoice,
-    MoreTableChoiceOptions,
     MoreTableColumn,
-    MoreTableEditableChoiceProperties,
+    MoreTableEditable,
     MoreTableFieldType,
+    MoreTableRowActionResult,
     MoreTableSortOptions,
+    RowSelectionMode,
   } from '../../models/MoreTableModel';
-  import DataTable, { DataTableFilterMeta } from 'primevue/datatable';
+  import DataTable, {
+    DataTableFilterMeta,
+    DataTableFilterMetaData,
+    DataTableRowClickEvent,
+  } from 'primevue/datatable';
   import Column from 'primevue/column';
   import Button from 'primevue/button';
-  import SplitButton from 'primevue/splitbutton';
-  import Menu from 'primevue/menu';
   import InputText from 'primevue/inputtext';
+  import InputNumber from 'primevue/inputnumber';
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
-  import { useConfirm } from 'primevue/useconfirm';
-  import FileUpload from 'primevue/fileupload';
-  import dayjs from 'dayjs';
+  import Checkbox from 'primevue/checkbox';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import {
     ComponentFactory,
     StudyRole,
     StudyStatus,
+    Visibility,
   } from '../../generated-sources/openapi';
-  import Checkbox from 'primevue/checkbox';
+  import { shortenText } from '../../utils/commonUtils';
+  import { useGlobalStore } from '../../stores/globalStore';
+  const dateFormat = useGlobalStore().getDateFormat;
 
-  const props = defineProps({
-    title: {
-      type: String,
-      default: undefined,
-    },
-    subtitle: {
-      type: String,
-      default: undefined,
-    },
-    rowId: {
-      type: String,
-      required: true,
-    },
-    columns: {
-      type: Array as PropType<Array<MoreTableColumn>>,
-      required: true,
-    },
-    rows: {
-      type: Array as PropType<Array<any>>,
-      required: true,
-    },
-    rowActions: {
-      type: Array as PropType<Array<MoreTableAction>>,
-      default: () => [],
-    },
-    frontRowActions: {
-      type: Array as PropType<Array<MoreTableAction>>,
-      default: () => [],
-    },
-    rowEndActions: {
-      type: Array as PropType<Array<MoreTableAction>>,
-      default: () => [],
-    },
-    tableActions: {
-      type: Array as PropType<Array<MoreTableAction>>,
-      default: () => [],
-    },
-    sortOptions: {
-      type: Object as PropType<MoreTableSortOptions>,
-      default: () => undefined,
-    },
-    editable: {
-      type: Function,
-      // eslint-disable-next-line
-      default: (data: any) => true,
-    },
-    editableAccess: {
-      type: Boolean,
-      default: true,
-    },
-    rowEditBtn: {
-      type: Boolean,
-      default: true,
-    },
-    emptyMessage: {
-      type: String,
-      default: 'No records',
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-    editAccessRoles: {
-      type: Array as PropType<Array<StudyRole>>,
-      default: () => [],
-    },
-    userStudyRoles: {
-      type: Array as PropType<Array<StudyRole>>,
-      default: () => [],
-    },
-    paginator: {
-      type: Boolean,
-      default: false,
-    },
-    paginatorRows: {
-      type: Number,
-      default: 10,
-    },
-    rowTooltipMsg: {
-      type: String,
-      default: undefined,
-    },
-    rowEndIcon: {
-      type: String,
-      default: undefined,
-    },
-    componentFactory: {
-      type: Array as PropType<Array<ComponentFactory>>,
-      default: undefined,
-    },
+  interface MoreTableProps {
+    title?: string;
+    subtitle?: string;
+    rowId: string;
+    columns: MoreTableColumn[];
+    rows: any[];
+    rowActions?: MoreTableAction[];
+    frontRowActions?: MoreTableAction[];
+    endRowActions?: MoreTableAction[];
+    sortOptions?: MoreTableSortOptions;
+    editable?: (data: any) => boolean;
+    editableAccess?: boolean;
+    rowEditBtn?: boolean;
+    emptyMessage?: string;
+    loading?: boolean;
+    editAccessRoles?: StudyRole[];
+    paginatorRows?: number;
+    componentFactory?: ComponentFactory[];
+    enableRowSelection?: RowSelectionMode;
+  }
+
+  const props = withDefaults(defineProps<MoreTableProps>(), {
+    title: undefined,
+    subtitle: undefined,
+    rowActions: (): MoreTableAction[] => [],
+    frontRowActions: (): MoreTableAction[] => [],
+    endRowActions: (): MoreTableAction[] => [],
+    sortOptions: undefined,
+    // eslint-disable-next-line
+    editable: (data: any) => true,
+    editableAccess: true,
+    rowEditBtn: true,
+    emptyMessage: undefined,
+    loading: false,
+    editAccessRoles: (): StudyRole[] => [],
+    paginatorRows: undefined,
+    componentFactory: undefined,
+    enableRowSelection: undefined,
   });
 
-  const tableFilter = createTableFilter();
+  const emit = defineEmits<{
+    (e: 'onSelect', row: any): void;
+    (e: 'onAction', result: MoreTableRowActionResult): void;
+    (e: 'onChange', row: any): void;
+  }>();
 
-  function createTableFilter(): Ref<DataTableFilterMeta> {
-    const filterObject = {} as DataTableFilterMeta;
+  const tableFilter: Ref<DataTableFilterMeta> = ref(createTableFilter());
+
+  function createTableFilter(): DataTableFilterMeta {
+    const filterObject: DataTableFilterMeta = {};
+
     props.columns.forEach((column) => {
       if (column.filterable) {
         filterObject[column.field] = {
           value: null,
           matchMode: FilterMatchMode.CONTAINS,
-        };
+        } as DataTableFilterMetaData;
       }
     });
-    return ref(filterObject);
+
+    return filterObject;
   }
 
-  function filterMatchMode(column: MoreTableColumn): boolean {
-    if (
-      typeof column.filterable === 'object' &&
-      column.filterable !== undefined
-    ) {
-      return column.filterable.showFilterMatchModes as boolean;
+  const enableEditMode = ref(false);
+  updateEditableStatus();
+  function updateEditableStatus(): void {
+    if (props.editableAccess) {
+      enableEditMode.value = props.columns.some((c) => c.editable);
     } else {
-      return false;
+      enableEditMode.value = false;
     }
   }
+  watch(
+    () => props.editableAccess,
+    () => {
+      updateEditableStatus();
+    },
+  );
 
-  const _editable = ref(false);
-  onBeforeMount(() => {
-    if (props.editableAccess) {
-      _editable.value = !!props.columns.find((c) => c.editable);
-    }
-  });
-  onUpdated(() => {
-    if (props.editableAccess) {
-      _editable.value = !!props.columns.find((c) => c.editable);
-    }
-  });
-
-  const confirm = useConfirm();
-
-  const editingRows = ref([]);
-  const editMode = ref([]);
-
-  const emit = defineEmits<{
-    (e: 'onselect', row: any): void;
-    //use MoreTableRowActionResult<any> or MoreTableActionResult
-    (e: 'onaction', result: any): void;
-    (e: 'onchange', row: any): void;
-  }>();
-
-  function selectHandler(rowKey: string) {
-    emit('onselect', rowKey);
-  }
-
-  function actionHandler(action: MoreTableAction, properties?: any) {
-    emit('onaction', { id: action.id, properties });
-  }
-
-  function rowActionHandler(action: MoreTableAction, row: any) {
-    if (action.confirm) {
-      confirm.require({
-        header: action.confirm.header,
-        message: action.confirm.message,
-        accept: () => {
-          emit('onaction', { id: action.id, row });
-        },
-      });
-    } else if (action.confirmDeleteDialog) {
+  function rowActionHandler(action: MoreTableAction, row: any): void {
+    if (action.confirmDeleteDialog) {
       action.confirmDeleteDialog.dialog(row);
     } else {
-      emit('onaction', { id: action.id, row });
+      emit('onAction', { id: action.id, row });
     }
   }
 
-  function isVisible(action: MoreTableAction, row: any = undefined) {
+  function isVisible(action: MoreTableAction, row: any = undefined): boolean {
     return action.visible === undefined || action.visible(row);
   }
 
-  function isEditMode(row: any) {
+  const rowIDsInEditMode: Ref<any[]> = ref([]);
+  function isRowInEditMode(row: any): boolean {
     if (row[props.rowId]) {
-      // @ts-expect-error: cannot really fix
-      return editMode.value.includes(row[props.rowId]);
-    } else if (row.uid) {
-      // @ts-expect-error: cannot really fix
-      return editMode.value.includes(row.uid);
+      return rowIDsInEditMode.value.includes(row[props.rowId]);
     }
+    return false;
   }
 
-  function edit(row: any) {
-    editMode.value = [];
+  const editingRows: Ref<any[]> = ref([]);
+  function setRowToEditMode(row: any): void {
+    rowIDsInEditMode.value = [];
     editingRows.value = [];
 
     if (row[props.rowId]) {
-      // @ts-expect-error: cannot really fix
-      editMode.value.push(row[props.rowId]);
-    } else if (row.uid) {
-      // @ts-expect-error: cannot really fix
-      editMode.value.push(row.uid);
+      rowIDsInEditMode.value.push(row[props.rowId]);
     }
-    // @ts-expect-error: cannot really fix
+
     editingRows.value.push(row);
   }
 
-  function cancel(row: any) {
+  function cancelEditMode(row: any): void {
     editingRows.value.splice(
-      editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId])
+      editingRows.value.findIndex((r) => r[props.rowId] === row[props.rowId]),
     );
-    editMode.value.splice(
-      editMode.value.findIndex((r) => r === row[props.rowId])
+    rowIDsInEditMode.value.splice(
+      rowIDsInEditMode.value.findIndex((r) => r === row[props.rowId]),
     );
   }
 
-  function save(row: any) {
-    emit('onchange', clean(row));
-    cancel(row);
+  function saveEditChanges(row: any): void {
+    emit('onChange', cleanRow(row));
+    cancelEditMode(row);
   }
-  function isEditable(row: any) {
-    if (props.editableAccess) {
-      if (row.userRoles) {
-        return (
-          (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r)
-          ) &&
-            row.status === StudyStatus.Draft) ||
-          (row.userRoles.some((r: StudyRole) =>
-            props.editAccessRoles.includes(r)
-          ) &&
-            row.status === StudyStatus.Paused)
-        );
-      } else {
-        return props.editable(row);
-      }
-    } else {
+
+  function isRowEditable(row: any): boolean {
+    if (!props.editableAccess) {
       return false;
     }
+
+    if (row.userRoles) {
+      return (
+        row.userRoles.some((r: StudyRole) =>
+          props.editAccessRoles.includes(r),
+        ) &&
+        [
+          StudyStatus.Draft,
+          StudyStatus.Paused,
+          StudyStatus.PausedPreview,
+        ].includes(row.status)
+      );
+    }
+
+    return props.editable(row);
   }
 
-  function onRowClick($event: any) {
-    if (editMode.value.length === 0) {
-      selectHandler($event.data[props.rowId]);
+  function onRowClick(event: DataTableRowClickEvent): void {
+    if (rowIDsInEditMode.value.length === 0) {
+      emit('onSelect', event.data[props.rowId]);
     }
   }
 
-  function prepare(rows: any) {
+  function prepareRows(rows: any): any {
     return rows.map((row: any) => {
       props.columns.forEach((column) => {
         if (column.type === MoreTableFieldType.calendar) {
-          row['__internalValue_' + column.field] = column.field
+          row[`__internalValue_${column.field}`] = column.field
             ? new Date(row[column.field])
             : undefined;
         }
@@ -284,64 +205,21 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
-  const menus: any = {};
-
-  const searchActionsMap = ref(new Map<number, MoreTableActionOption[]>());
-
-  props.tableActions.forEach((action, index) => {
-    if (
-      action.options &&
-      action.options.values &&
-      action.options.type !== 'fileUpload' &&
-      action.options.type !== 'search'
-    ) {
-      action.options.values?.forEach((option) => {
-        (option as any)['command'] = () => {
-          actionHandler(action, option.value);
-        };
-      });
-      if (action.options && action.options.type === 'menu') {
-        menus[action.id] = ref();
-      }
-    } else if (action.options && action.options.type === 'fileUpload') {
-      actionHandler(action, action.options?.uploadOptions);
-    }
-
-    if (
-      action.options &&
-      action.options.valuesCallback &&
-      action.options.type === 'search'
-    ) {
-      searchActionsMap.value.set(index, action.options.values);
-    }
-  });
-
-  function toggle(action: MoreTableAction, event: any) {
-    menus[action.id].value[0].toggle(event);
-  }
-
-  function clean(row: any) {
+  function cleanRow(row: any): any {
     props.columns.forEach((column) => {
       if (column.type === MoreTableFieldType.calendar) {
-        const date = row['__internalValue_' + column.field];
+        const date = row[`__internalValue_${column.field}`];
         row[column.field] = dateToDateString(date);
-        delete row['__internalValue_' + column.field];
+        delete row[`__internalValue_${column.field}`];
       }
     });
     return row;
   }
 
-  function toClassName(value: string): string {
-    if (value) {
-      return value
-        .toString()
-        .toLowerCase()
-        .replace(/\.|%[0-9a-z]{2}/gi, '');
-    }
-    return value;
-  }
-
-  function getLabelForChoiceValue(value: any, values: MoreTableChoice[]) {
+  function getLabelForChoiceValue(
+    value: any,
+    values: MoreTableChoice[],
+  ): string {
     return (
       values.find((s: any) => s.value === value?.toString())?.label || value
     );
@@ -349,76 +227,40 @@ Licensed under the Elastic License 2.0. */
 
   function getLabelForMultiSelectValue(
     setValues: any,
-    valueChoices?: MoreTableChoice[]
-  ) {
+    valueChoices?: MoreTableChoice[],
+  ): string[] {
     if (valueChoices) {
-      const labels: Ref<string[]> = ref([]);
+      const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
         const valueLabel = valueChoices.find((vc) => vc.value === v);
         if (valueLabel) {
-          labels.value.push(valueLabel.label);
+          labels.push(valueLabel.label);
         }
       });
-      return labels.value;
-    } else {
-      return setValues.map((v: MoreTableChoice) => v.label);
+      return labels;
     }
+
+    return setValues.map((c: MoreTableChoice) => c.label);
   }
 
-  function shortenFieldText(text: string) {
-    if (text) {
-      if (text.length > 180) {
-        return text.substring(0, 185) + '...';
-      }
-    } else {
-      return undefined;
-    }
-    return text;
-  }
-
-  async function filterActionHandler(properties: any) {
-    if (properties.query && properties.callback) {
-      searchActionsMap.value.set(
-        properties.index,
-        await properties.callback(properties.query)
-      );
-    }
-  }
-
-  function isEditableWithValues(
-    editable:
-      | boolean
-      | MoreTableChoiceOptions
-      | MoreTableEditableChoiceProperties
-      | ((data?: any) => boolean)
-      | undefined
+  function getColumnEditableValues(
+    editable: boolean | MoreTableEditable | undefined,
   ): MoreTableChoice[] {
-    if (
-      typeof editable !== 'undefined' &&
-      typeof editable !== 'boolean' &&
-      typeof editable !== 'function'
-    ) {
-      if (Object.prototype.hasOwnProperty.call(editable, 'values')) {
-        const editableWithValues = editable as MoreTableChoiceOptions;
-        return editableWithValues.values as MoreTableChoice[];
-      }
-    }
+    if (editable === undefined || typeof editable === 'boolean') return [];
 
-    return [] as MoreTableChoice[];
+    return editable.values;
   }
 
-  function getNestedField(data: any, field: string) {
-    const f = field.split('.')[0];
-    const p = field.split('.')[1];
-    return data[f][p];
+  function isColumnEditable(
+    editable: boolean | MoreTableEditable | undefined,
+  ): boolean {
+    if (editable === undefined) return false;
+    if (typeof editable === 'boolean') return editable;
+    return editable.enabled;
   }
 
-  function getMoreTableChoiceValues(array: MoreTableChoiceOptions) {
-    return array.values;
-  }
-
-  function getObservationVisibility(type?: string) {
-    return props.componentFactory?.find((f) => f.componentId === type)
+  function getObservationVisibility(type: string): Visibility | undefined {
+    return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
   }
 </script>
@@ -427,166 +269,51 @@ Licensed under the Elastic License 2.0. */
   <div class="more-table">
     <div class="mb-8 flex">
       <div class="title w-full">
-        <h3 v-if="title">{{ title }}</h3>
-        <h4 v-if="subtitle">
+        <h3 v-if="title" class="font-semibold">{{ title }}</h3>
+        <h4 v-if="subtitle" class="text-base">
           <!-- eslint-disable vue/no-v-html -->
           <span v-html="subtitle" />
         </h4>
       </div>
-      <div class="actions table-actions flex flex-1 justify-end">
-        <div
-          v-for="(action, actionIndex) in tableActions"
-          :key="action.id"
-          class="action"
-        >
-          <Button
-            v-if="!action.options"
-            type="button"
-            :label="action.label"
-            :icon="action.icon"
-            :disabled="isVisible(action) === false"
-            @click="actionHandler(action)"
-          ></Button>
-          <SplitButton
-            v-if="!!action.options && action.options.type === 'split'"
-            type="button"
-            :label="action.label"
-            :icon="action.icon"
-            :model="action.options.values"
-            :disabled="isVisible(action) === false"
-            @click="actionHandler(action)"
-          ></SplitButton>
-
-          <Dropdown
-            v-if="
-              action.options &&
-              action.options.type === 'search' &&
-              action.options.valuesCallback
-            "
-            class="button p-button dropdown-search"
-            :filter="true"
-            :options="searchActionsMap.get(actionIndex)"
-            option-label="label"
-            option-value="value"
-            :icon="action.icon"
-            :disabled="isVisible(action) === false"
-            panel-class="dropdown-search-panel"
-            :empty-message="
-              action.options.valuesCallback.filterPlaceholder
-                ? action.options.valuesCallback.filterPlaceholder
-                : ''
-            "
-            :empty-filter-message="
-              action.options.valuesCallback.noResultsPlaceholder
-                ? action.options.valuesCallback.noResultsPlaceholder
-                : ''
-            "
-            @filter="
-              filterActionHandler({
-                query: $event.value,
-                index: actionIndex,
-                callback: action.options?.valuesCallback?.callback,
-              })
-            "
-          >
-            <template #value>
-              <span class="pi pi-search ml-1 mr-2 text-white"></span>
-              <span
-                v-if="action.options.valuesCallback.placeholder"
-                class="text-white"
-              >
-                {{ action.options.valuesCallback.placeholder }}
-              </span>
-              <span :class="action.icon" class="ml-2 text-white"></span>
-            </template>
-            <template #option="slotProps">
-              <div
-                v-for="(item, index) in slotProps"
-                :key="index"
-                :value="item.value"
-                class="p-dropdown-item"
-                @click="actionHandler(action, slotProps.option)"
-              >
-                <span class="color-primary mr-1 inline-block font-medium">
-                  {{ item.label }}
-                </span>
-                <span v-if="item.institution" class="block">
-                  ({{ item.institution }})
-                </span>
-              </div>
-            </template>
-          </Dropdown>
-
-          <div v-if="!!action.options && action.options.type === 'menu'">
-            <Button
-              type="button"
-              :disabled="editMode.length ? true : isVisible(action) === false"
-              @click="toggle(action, $event)"
-              >{{ action.label }} <span class="ml-3" :class="action.icon"></span
-            ></Button>
-            <Menu
-              :ref="menus[action.id]"
-              :model="action.options.values"
-              :popup="true"
-            />
-          </div>
-          <FileUpload
-            v-if="!!action.options && action.options.type === 'fileUpload'"
-            :mode="action.options.uploadOptions?.mode || 'basic'"
-            :choose-label="action.label"
-            :icon="action.icon"
-            :multiple="action.options.uploadOptions?.multiple || false"
-            :custom-upload="true"
-            :auto="true"
-            :disabled="isVisible(action) === false"
-            @uploader="actionHandler(action, $event)"
-          ></FileUpload>
-        </div>
+      <div class="actions table-actions ml-2.5 flex flex-1 justify-end">
+        <slot
+          name="tableActions"
+          :is-in-edit-mode="rowIDsInEditMode.length"
+        ></slot>
       </div>
     </div>
 
     <DataTable
       v-model:editingRows="editingRows"
       v-model:filters="tableFilter"
-      :value="prepare(rows)"
+      :value="prepareRows(rows)"
       :sort-field="sortOptions?.sortField"
       :sort-order="sortOptions?.sortOrder"
-      :edit-mode="_editable ? 'row' : undefined"
+      :edit-mode="enableEditMode ? 'row' : undefined"
       :loading="loading"
       filter-display="menu"
-      selection-mode="single"
+      :selection-mode="enableRowSelection"
       :scrolable="false"
-      responsive-layout="scroll"
       :frozen-columns="2"
-      :paginator="
-        paginatorRows
-          ? paginator && rows.length >= paginatorRows
-          : paginator && rows.length >= 5
-      "
-      :rows="paginator ? paginatorRows : 5"
+      :paginator="!!paginatorRows && rows.length > paginatorRows"
+      :rows="paginatorRows"
       @row-click="onRowClick($event)"
     >
       <Column
         v-if="frontRowActions.length"
         key="actions"
-        :row-hover="true"
         class="row-actions"
         :frozen="true"
       >
         <template #body="slotProps">
-          <div
-            v-for="action in frontRowActions"
-            :key="action.id"
-            class="inline"
-          >
+          <div v-for="action in frontRowActions" :key="action.id">
             <Button
               v-if="isVisible(action, slotProps.data)"
-              v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
+              v-tooltip.bottom="action.tooltip ?? undefined"
               type="button"
-              :title="action.label"
               :icon="action.icon"
               @click="rowActionHandler(action, slotProps.data)"
-            ></Button>
+            />
           </div>
         </template>
       </Column>
@@ -597,15 +324,34 @@ Licensed under the Elastic License 2.0. */
         :field="column.field"
         :header="column.header"
         :data-key="column.field"
-        :row-hover="true"
         :sortable="column.sortable"
         :filter="tableFilter"
-        :show-filter-match-modes="filterMatchMode(column)"
+        :show-filter-match-modes="false"
         :header-style="
-          column.columnWidth ? 'width: ' + column.columnWidth : undefined
+          column.columnWidth ? `width: ${column.columnWidth}` : undefined
         "
       >
-        <template v-if="column.editable" #editor="{ data, field }">
+        <template #filterclear="{ filterCallback }">
+          <Button
+            type="button"
+            outlined
+            severity="cancel"
+            :label="$t('global.labels.cancel')"
+            @click="filterCallback()"
+          />
+        </template>
+        <template #filterapply="{ filterCallback }">
+          <Button
+            type="button"
+            severity="info"
+            :label="$t('global.labels.apply')"
+            @click="filterCallback()"
+          />
+        </template>
+        <template
+          v-if="isColumnEditable(column.editable)"
+          #editor="{ data, field }"
+        >
           <InputText
             v-if="
               column.type === MoreTableFieldType.string ||
@@ -616,45 +362,60 @@ Licensed under the Elastic License 2.0. */
             style="width: 100%"
             autofocus
           />
+          <InputNumber
+            v-if="column.type === MoreTableFieldType.number"
+            v-model="data[field]"
+            style="width: 100%"
+            :placeholder="column.placeholder"
+          />
           <Calendar
             v-if="column.type === MoreTableFieldType.calendar"
-            v-model="data['__internalValue_' + field]"
+            v-model="data[`__internalValue_${field}`]"
             style="width: 100%"
             input-id="dateformat"
             autocomplete="off"
-            date-format="dd/mm/yy"
+            :date-format="dateFormat"
           />
-          <Dropdown
-            v-if="column.type === MoreTableFieldType.choice"
-            v-model="data[field]"
-            class="w-full"
-            :options="isEditableWithValues(column.editable)"
-            option-label="label"
-            option-value="value"
-            :class="data[field] ? 'dropdown-has-value' : ''"
-            :placeholder="
-              data[field]
-                ? getLabelForChoiceValue(data[field], getMoreTableChoiceValues(column.editable as MoreTableChoiceOptions))
-                : column.placeholder
-                ? column.placeholder
-                : $t('global.placeholder.chooseDropdownOptionDefault')
-            "
-          />
+          <div v-if="column.type === MoreTableFieldType.choice">
+            <Dropdown
+              v-if="isColumnEditable(column.editable)"
+              v-model="data[field]"
+              class="w-full"
+              :options="getColumnEditableValues(column.editable)"
+              option-label="label"
+              option-value="value"
+              :class="{ 'dropdown-has-value': data[field] }"
+              :placeholder="
+                data[field]
+                  ? getLabelForChoiceValue(
+                      data[field],
+                      getColumnEditableValues(column.editable),
+                    )
+                  : column.placeholder ??
+                    $t('global.placeholder.chooseDropdownOptionDefault')
+              "
+            />
+            <span v-else>{{
+              getLabelForChoiceValue(
+                data[field],
+                getColumnEditableValues(column.editable),
+              )
+            }}</span>
+          </div>
           <MultiSelect
             v-if="
               column.type === MoreTableFieldType.multiselect ||
               column.type === MoreTableFieldType.singleselect
             "
             v-model="data[field]"
-            :options="isEditableWithValues(column.editable)"
+            :options="getColumnEditableValues(column.editable)"
             option-label="label"
             :selection-limit="
               column.type === MoreTableFieldType.singleselect ? 1 : undefined
             "
             :placeholder="
-              column.placeholder
-                ? column.placeholder
-                : $t('global.labels.chooseDropdownOptionDefault')
+              column.placeholder ??
+              $t('global.placeholder.chooseDropdownOptionDefault')
             "
             :show-toggle-all="false"
             class="z-top"
@@ -666,6 +427,11 @@ Licensed under the Elastic License 2.0. */
               :binary="true"
               class="icon-checkbox show-icon"
             >
+              <template #icon>
+                <div class="p-checkbox-box">
+                  <span class="p-checkbox-icon pi pi-check"></span>
+                </div>
+              </template>
             </Checkbox>
             <div v-else class="icon-box eye">
               <span
@@ -684,44 +450,28 @@ Licensed under the Elastic License 2.0. */
             v-model="filterModel.value"
             type="text"
             class="p-column-filter"
-            :placeholder="
-              $t('moreTable.filterBy') + ` ` + column.header.toLowerCase()
-            "
+            :placeholder="`${$t('moreTable.filterBy')} ${column.header.toLowerCase()}`"
             @keydown.enter="filterCallback()"
           />
         </template>
         <template #body="{ data, field }">
-          <div v-if="column.type === MoreTableFieldType.nested">
-            {{ getNestedField(data, field) }}
+          <div v-if="data[field] === null" class="placeholder">
+            {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
-          <div v-if="column.type === MoreTableFieldType.nestedDatetime">
-            {{ dayjs(getNestedField(data, field)).format('DD/MM/YYYY, HH:mm') }}
-          </div>
-          <div
-            v-if="data[field] === null"
-            v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
-            class="placeholder"
-          >
-            {{ column.placeholder || $t('global.labels.no-value') }}
-          </div>
-          <div
-            v-else
-            v-tooltip.bottom="rowTooltipMsg ? rowTooltipMsg : undefined"
-          >
+          <div v-else>
             <span
-              v-if="column.type === MoreTableFieldType.string || !column.type"
-              :class="
-                'table-value table-value-' +
-                field +
-                '-' +
-                toClassName(data[field])
+              v-if="
+                column.type === MoreTableFieldType.string ||
+                column.type === MoreTableFieldType.number ||
+                !column.type
               "
+              class="table-value"
             >
               <span v-if="column.arrayLabels">
                 <span
                   v-for="(value, index) in getLabelForMultiSelectValue(
                     data[field],
-                    column.arrayLabels
+                    column.arrayLabels,
                   )"
                   :key="index"
                   class="multiselect-item"
@@ -731,27 +481,28 @@ Licensed under the Elastic License 2.0. */
               <span v-else>{{ data[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.statusString">
-              {{ $t('study.statusStrings.' + data[field]) }}
+              {{ $t(`study.statusStrings.${data[field]}`) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(
                 data[field],
-                isEditableWithValues(column.editable)
+                getColumnEditableValues(column.editable),
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
-              {{ dayjs(data['__internalValue_' + field]).format('DD/MM/YYYY') }}
+              {{ $d(new Date(data[`__internalValue_${field}`]), 'short') }}
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
-              <span v-if="data[field] !== '-'">
-                {{ dayjs(data[field]).format('DD/MM/YYYY, HH:mm') }}
+              <span v-if="!data[field]"> - </span>
+              <span v-else-if="data[field] && data[field] !== '-'">
+                {{ $d(new Date(data[field]), 'long') }}
               </span>
               <span v-else>
                 {{ data[field] }}
               </span>
             </span>
             <span v-if="column.type === MoreTableFieldType.longtext"
-              >{{ shortenFieldText(data[field]) }}
+              >{{ shortenText(data[field]) }}
             </span>
             <span
               v-if="
@@ -761,7 +512,7 @@ Licensed under the Elastic License 2.0. */
             >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field]
+                  data[field],
                 )"
                 :key="index"
                 class="multiselect-item"
@@ -778,30 +529,31 @@ Licensed under the Elastic License 2.0. */
               />
               <span v-else class="pi pi-eye color-approved" />
             </span>
+            <span
+              v-if="column.type === MoreTableFieldType.binaryIcon"
+              class="icon-box eye"
+            >
+              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-else class="pi pi-times color-important" />
+            </span>
           </div>
         </template>
       </Column>
 
-      <Column
-        key="actions"
-        :row-hover="true"
-        class="row-actions"
-        :frozen="true"
-      >
+      <Column key="actions" class="row-actions" :frozen="true">
         <template #body="slotProps">
-          <div v-if="!isEditMode(slotProps.data)">
-            <div v-for="action in rowActions" :key="action.id" class="inline">
+          <div v-if="!isRowInEditMode(slotProps.data)">
+            <div v-for="action in rowActions" :key="action.id">
               <Button
-                v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
+                v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :title="action.label"
                 :icon="action.icon"
                 :disabled="
-                  editMode.length
+                  rowIDsInEditMode.length
                     ? true
-                    : isVisible(action, slotProps.data) === false
+                    : !isVisible(action, slotProps.data)
                 "
-                :class="action.id === 'delete' ? 'btn-important' : ''"
+                :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
@@ -813,60 +565,48 @@ Licensed under the Elastic License 2.0. */
               type="button"
               icon="pi pi-pencil"
               :disabled="
-                editMode.length ? true : isEditable(slotProps.data) === false
+                rowIDsInEditMode.length ? true : !isRowEditable(slotProps.data)
               "
-              @click="edit(slotProps.data)"
-            >
-            </Button>
-            <div
-              v-for="action in rowEndActions"
-              :key="action.id"
-              class="inline"
-            >
+              @click="setRowToEditMode(slotProps.data)"
+            />
+            <div v-for="action in endRowActions" :key="action.id">
               <Button
-                v-tooltip.bottom="action.tooltip ? action.tooltip : undefined"
+                v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :title="action.label"
                 :icon="action.icon"
                 :disabled="
-                  editMode.length
+                  rowIDsInEditMode.length
                     ? true
-                    : isVisible(action, slotProps.data) === false
+                    : !isVisible(action, slotProps.data)
                 "
-                :class="action.id === 'delete' ? 'btn-important' : ''"
+                :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
               </Button>
             </div>
-            <div v-if="rowEndIcon" class="ml-2 self-center">
-              <span :class="rowEndIcon" style="font-size: 1.3rem" />
-            </div>
           </div>
-          <div v-else-if="isEditMode(slotProps.data)" class="items-center">
+          <div v-else-if="isRowInEditMode(slotProps.data)" class="items-center">
             <div class="error pi pi-exclamation-circle big" />
             <div class="error mx-2">{{ $t('moreTable.saveLine') }}</div>
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
               type="button"
               icon="pi pi-check"
-              @click="save(slotProps.data)"
-            ></Button>
+              @click="saveEditChanges(slotProps.data)"
+            />
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.cancelAction')"
               type="button"
               icon="pi pi-times"
               class="btn-gray"
-              @click="cancel(slotProps.data)"
-            ></Button>
-            <div v-if="rowEndIcon" class="ml-2 self-center">
-              <span :class="rowEndIcon" style="font-size: 1.3rem" />
-            </div>
+              @click="cancelEditMode(slotProps.data)"
+            />
           </div>
         </template>
       </Column>
       <template #empty>
-        {{ emptyMessage }}
+        {{ emptyMessage ?? $t('moreTable.defaultEmptyMsg') }}
       </template>
       <template #loading> </template>
     </DataTable>
@@ -884,49 +624,22 @@ Licensed under the Elastic License 2.0. */
     color: var(--text-color) !important;
   }
 
-  :deep(.more-table .row-actions) {
-    pointer-events: none;
-  }
-  :deep(.more-table td.row-actions div) {
-    justify-content: flex-end;
-  }
   .more-table {
     :deep(.p-datatable-loading-overlay) {
       filter: blur(5px);
       background-color: #ffffff99;
     }
 
+    :deep(.p-datatable .p-datatable-tbody > tr:focus) {
+      outline: none;
+    }
+
     :deep(.pi-exclamation-circle.big:before) {
       font-size: 30px;
     }
 
-    h3 {
-      font-weight: 600;
-    }
-
-    h4 {
-      font-size: 1rem;
-    }
-
-    .row-actions {
-      pointer-events: none;
-      button {
-        margin: 0 0.188rem;
-      }
-      div {
-        display: flex;
-      }
-    }
-
-    .actions {
-      .action {
-        margin-left: 0.625rem;
-      }
-    }
-
     table tbody tr {
       font-size: 0.906rem !important;
-
       td:last-child {
         width: 1%;
         white-space: nowrap;
@@ -936,7 +649,11 @@ Licensed under the Elastic License 2.0. */
     :deep(td.row-actions) {
       pointer-events: none;
       div {
-        place-content: end;
+        display: flex;
+        justify-content: flex-end;
+      }
+      button {
+        margin: 0 0.188rem;
       }
       .p-button {
         pointer-events: all;
@@ -968,50 +685,6 @@ Licensed under the Elastic License 2.0. */
         content: '';
       }
     }
-
-    .p-dropdown .p-dropdown-label.p-placeholder {
-      color: var(--surface-a) !important;
-    }
-    .p-dropdown-trigger {
-      display: none !important;
-    }
-    .dropdown-search {
-      padding: 0 !important;
-
-      &:hover,
-      &:active,
-      &:focus {
-        border: var(--border-weight) var(--border-style)
-          var(--primary-color--secondary);
-        background-color: var(--primary-color--secondary);
-      }
-    }
-  }
-  .dropdown-search-panel {
-    min-width: 350px !important;
-    width: 450px;
-    left: 705px;
-    min-height: 250px;
-    line-break: normal;
-
-    .p-dropdown-item:nth-child(2) {
-      display: none;
-    }
-    .p-dropdown-item:nth-child(1) {
-      width: 100%;
-    }
-
-    ul li {
-      display: flex;
-      line-break: normal;
-    }
-
-    :deep(.p-tooltip-text) {
-      text-align: center;
-    }
-  }
-  .table-btn-min-height .table-actions button {
-    min-height: 60px;
   }
 
   .table-title-width .title {

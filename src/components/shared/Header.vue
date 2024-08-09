@@ -9,32 +9,30 @@ Licensed under the Elastic License 2.0. */
   import ProgressBar from 'primevue/progressbar';
   import useLoader from '../../composable/useLoader';
   import { useRoute } from 'vue-router';
+  import { useStudyStore } from '../../stores/studyStore';
 
+  const studyStore = useStudyStore();
   const route = useRoute();
   const auth = inject('authService') as AuthService;
 
   const loading = useLoader().isLoading;
-  function logout() {
+  function logout(): void {
     auth.logout();
   }
 
-  /* eslint-disable */
-  function manageAccount() {
-    auth.manageAccount();
-  }
-  /* eslint-enable */
-
-  function checkRoute(routeName: string) {
+  function checkRoute(routeName: string): boolean {
     return routeName === route.meta.title;
   }
 </script>
-A
 
 <template>
-  <header class="more-header py-5 shadow-md">
+  <header
+    class="more-header py-2 shadow-md"
+    :class="[{ [studyStore.studyStatus]: !checkRoute('Dashboard') }]"
+  >
     <div class="container m-auto flex justify-between px-10">
       <router-link to="/">
-        <div class="logo">
+        <div class="logo cursor-pointer">
           <svg
             id="Liniengrafik"
             xmlns="http://www.w3.org/2000/svg"
@@ -108,7 +106,7 @@ A
       <div class="flex items-center justify-between">
         <div
           class="back-to-dashboard"
-          :class="checkRoute('Dashboard') ? 'active' : ''"
+          :class="{ active: checkRoute('Dashboard') }"
         >
           <router-link to="/">
             <div class="border-0 bg-transparent font-bold">
@@ -124,7 +122,7 @@ A
       </div>
     </div>
     <div v-if="loading" class="loader">
-      <ProgressBar mode="indeterminate" style="height: 0.5em" />
+      <ProgressBar mode="indeterminate" class="!h-2 !rounded-none" />
     </div>
   </header>
 </template>
@@ -138,19 +136,44 @@ A
     background-color: white;
     z-index: 1000;
 
+    &.draft,
+    &.preview,
+    &.paused-preview,
+    &.active,
+    &.paused,
+    &.closed {
+      border-bottom: 2px solid;
+    }
+
+    &.draft {
+      border-color: var(--gray-400);
+    }
+    &.preview {
+      border-color: var(--green-400);
+      border-style: dashed;
+    }
+    &.paused-preview {
+      border-color: var(--red-400);
+      border-style: dashed;
+    }
+    &.active {
+      border-color: var(--green-400);
+    }
+    &.paused {
+      border-color: var(--red-400);
+    }
+    &.closed {
+      border-color: var(--blue-400);
+    }
+
     .loader {
       position: fixed;
       z-index: 1000;
       width: 100%;
-      top: 78px;
-    }
-
-    .p-progressbar {
-      border-radius: 0 !important;
+      top: 62px;
     }
 
     .logo {
-      cursor: pointer;
       svg {
         transition: ease-in-out 0.2s;
         fill: var(--primary-color);

@@ -45,9 +45,9 @@ Licensed under the Elastic License 2.0. */
       });
       // set current observation
       observation.value = observationList.value.find(
-        (o) =>
-          props.property?.value?.id === o.observationId &&
-          props.property?.value?.factory === o.type
+        (observation) =>
+          props.property?.value?.id === observation.observationId &&
+          props.property?.value?.factory === observation.type,
       );
     });
 
@@ -57,7 +57,7 @@ Licensed under the Elastic License 2.0. */
       observationProperty: {
         factory: string;
         id: number;
-      }
+      },
     ): void;
   }>();
 
@@ -79,7 +79,7 @@ Licensed under the Elastic License 2.0. */
       :options="observationList"
       option-label="title"
       class="w-full"
-      :aria-describedby="property.id + '-help'"
+      :aria-describedby="`${property.id}-help`"
       :disabled="!editable"
       :placeholder="$t(props.property.description)"
     />

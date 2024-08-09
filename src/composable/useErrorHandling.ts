@@ -9,22 +9,30 @@
 import axios, { AxiosError } from 'axios';
 import useLoader from './useLoader';
 
-export function useErrorHandling() {
+type UseErrorHandlingReturnType = {
+  handleIndividualError: (
+    error: AxiosError & { globallyHandled?: boolean },
+    messageKey?: string,
+  ) => void;
+  activateGlobalErrorHandlingInterceptor: () => void;
+};
+
+export function useErrorHandling(): UseErrorHandlingReturnType {
   const loader = useLoader();
   const handleIndividualError = (
     error: AxiosError & { globallyHandled?: boolean },
-    messageKey?: string
-  ) => {
+    messageKey?: string,
+  ): void => {
     if (!error.globallyHandled) {
       console.error(
         error.config?.url
           ? `CALL ERROR HANDLING: ${error.config.url} - ${messageKey}`
-          : `ERROR CONFIG IS UNDEFINED - ${messageKey}`
+          : `ERROR CONFIG IS UNDEFINED - ${messageKey}`,
       );
       loader.reset();
     }
   };
-  const activateGlobalErrorHandlingInterceptor = () => {
+  const activateGlobalErrorHandlingInterceptor = (): void => {
     axios.interceptors.response.use(
       (response) => response,
       (error: AxiosError) => {
@@ -37,13 +45,13 @@ export function useErrorHandling() {
         ) {
           console.error(
             'GLOBAL ERROR HANDLING: Request was rejected',
-            (error as AxiosError).config?.url
+            (error as AxiosError).config?.url,
           );
           globallyHandled = true;
           loader.reset();
         }
         return Promise.reject({ ...error, globallyHandled });
-      }
+      },
     );
   };
   return {

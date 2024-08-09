@@ -6,40 +6,32 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { Action, Trigger } from '../generated-sources/openapi';
+
+import {
+  Intervention,
+  Observation,
+  Participant,
+  Study,
+  StudyGroup,
+} from '../generated-sources/openapi';
 
 export interface MoreTableColumn {
   field: string;
   header: string;
-  type?: MoreTableFieldType; //default is string
-  editable?:
-    | MoreTableChoiceOptions
-    | MoreTableEditableChoiceProperties
-    | boolean
-    | ((data?: any) => boolean);
+  type?: MoreTableFieldType;
+  editable?: boolean | MoreTableEditable;
   sortable?: boolean;
-  filterable?: boolean | MoreTableFilterOption;
+  filterable?: boolean;
   placeholder?: string;
   arrayLabels?: MoreTableChoice[];
   columnWidth?: string;
 }
 
-// filter
-export interface MoreTableFilters {
-  [key: string]: MoreTableFilterOption;
-}
-
-export interface MoreTableFilterOption {
-  value?: unknown;
-  showFilterMatchModes?: boolean;
-  matchMode?: string;
-}
-
-// actions
-export interface MoreTableChoiceOptions {
+export interface MoreTableEditable {
+  enabled: boolean;
   values: MoreTableChoice[];
-  placeholder?: string;
 }
+
 export interface MoreTableChoice {
   label: string;
   value: string | null;
@@ -54,54 +46,26 @@ export interface MoreTableAction {
   id: string;
   label: string;
   icon?: string;
-  options?: MoreTableActionOptions;
-  confirm?: MoreTableActionConfirm;
+  tooltip?: string;
   confirmDeleteDialog?: MoreTableActionConfirmDialog;
   visible?: (data?: any) => boolean;
-  tooltip?: string;
 }
 
-export interface MoreTableRowActionResult<D> {
+export interface MoreTableRowActionResult {
   id: string;
-  row: D;
+  row: ActionResult;
 }
 
-export interface MoreTableActionResult {
-  id: string;
-  properties?: any;
-}
+type ActionResult =
+  | Participant
+  | MoreIntegrationTableMap
+  | StudyGroup
+  | Study
+  | Intervention
+  | Observation
+  | MoreTableCollaboratorItem
+  | MoreStudyGroupTableMap;
 
-export interface MoreTableActionOptions {
-  type: 'menu' | 'split' | 'search' | 'fileUpload';
-  values: MoreTableActionOption[];
-  valuesCallback?: MoreTableActionOptionCallback;
-  uploadOptions?: MoreTableActionFileUpload;
-}
-
-export interface MoreTableActionFileUpload {
-  mode?: FileUploadModeType;
-  multiple?: boolean;
-  acceptType?: string;
-  maxFileSize?: number;
-}
-
-export interface MoreTableActionOption {
-  label: string;
-  value?: any;
-  icon?: string;
-}
-
-export interface MoreTableActionOptionCallback {
-  callback: (query: string) => Promise<Array<MoreTableActionOption[]>>;
-  placeholder?: string;
-  filterPlaceholder?: string;
-  noResultsPlaceholder?: string;
-}
-
-export interface MoreTableActionConfirm {
-  header: string;
-  message: string;
-}
 export interface MoreTableActionConfirmDialog {
   header: string;
   message: string;
@@ -110,6 +74,7 @@ export interface MoreTableActionConfirmDialog {
 
 export enum MoreTableFieldType {
   string,
+  number,
   choice,
   calendar,
   multiselect,
@@ -120,30 +85,7 @@ export enum MoreTableFieldType {
   showIcon,
   nested,
   nestedDatetime,
-}
-
-export enum FileUploadModeType {
-  advanced = 'advanced',
-  basic = 'basic',
-}
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface MoreTableEditableProperties {}
-
-export interface MoreTableEditableChoiceProperties
-  extends MoreTableEditableProperties {
-  values: MoreTableEditableChoicePropertyValues[];
-}
-
-export interface MoreTableEditableChoicePropertyValues {
-  label?: string;
-  value: string;
-}
-
-export enum MoreTableRoleTypes {
-  STUDY_ADMIN = 'Study Administrator',
-  STUDY_OPERATOR = 'Study Operator',
-  STUDY_VIEWER = 'Study Viewer',
+  binaryIcon,
 }
 
 export interface MoreTableCollaboratorItem {
@@ -152,6 +94,12 @@ export interface MoreTableCollaboratorItem {
   institution: string;
   email?: string;
   roles: Array<MoreTableChoice>;
+}
+
+export interface MoreTableCollaboratorItemOption {
+  label: string; // name
+  value: string; // uid
+  institution: string;
 }
 
 export interface MoreIntegrationTableMap {
@@ -167,17 +115,19 @@ export interface MoreIntegrationLink {
   tokenLabel: string;
 }
 
-export interface MoreInterventionTableMap {
-  studyId: number;
-  interventionId: number;
+export interface MoreStudyGroupTableMap {
+  studyId?: number;
   studyGroupId?: number;
-  title: string;
-  purpose: string;
-  schdeule?: string;
-  trigger?: Trigger;
-  actions?: Action;
-  created: string;
-  modified: string;
-  cronTime?: string;
-  cronRepetition?: string;
+  title?: string;
+  purpose?: string;
+  durationValue?: number;
+  durationUnit?: string;
+  numberOfParticipants?: number;
+  created?: string;
+  modified?: string;
+}
+
+export enum RowSelectionMode {
+  Single = 'single',
+  Multiple = 'multiple',
 }

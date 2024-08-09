@@ -15,17 +15,17 @@ Licensed under the Elastic License 2.0. */
   const confirmMsg: string = dialogRef?.value?.data?.confirmMsg;
   const participant: Participant = dialogRef?.value?.data?.participant;
 
-  function deleteParticipant(withData: boolean) {
+  function deleteParticipant(withData: boolean): void {
     dialogRef.value.close({ participant, withData });
   }
 
-  function closeDialog() {
+  function closeDialog(): void {
     dialogRef.value.close();
   }
 </script>
 
 <template>
-  <div class="dialog delete-confirm-dialog">
+  <div class="dialog text-base">
     <div class="mb-6">{{ introMsg }}</div>
     <h3 class="mb-7 font-medium">
       <span class="text-color">Id {{ participant.participantId }}: </span>
@@ -36,38 +36,26 @@ Licensed under the Elastic License 2.0. */
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
     <div class="flex justify-end">
-      <Button type="button" class="p-button btn-gray mr-3" @click="closeDialog">
-        {{ $t('global.labels.close') }}
-      </Button>
+      <Button
+        type="button"
+        class="p-button btn-gray !mr-3"
+        :label="$t('global.labels.close')"
+        @click="closeDialog"
+      />
 
       <Button
         type="button"
-        class="p-button p-button-danger mr-3"
+        class="p-button p-button-danger !mr-3"
+        :label="$t('participants.dialog.deleteMsg.deleteWithoutData')"
         @click="deleteParticipant(false)"
-      >
-        {{ $t('participants.dialog.deleteMsg.deleteWithoutData') }}
-      </Button>
+      />
 
       <Button
         type="button"
         class="p-button p-button-danger"
+        :label="$t('participants.dialog.deleteMsg.deleteWithData')"
         @click="deleteParticipant(true)"
-      >
-        {{ $t('participants.dialog.deleteMsg.deleteWithData') }}
-      </Button>
+      />
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .delete-confirm-dialog {
-    font-size: 1rem;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-  .mr-3 {
-    margin-right: 0.5rem;
-  }
-</style>

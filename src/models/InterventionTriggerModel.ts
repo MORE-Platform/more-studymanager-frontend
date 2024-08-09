@@ -30,11 +30,6 @@ export interface InterventionTriggerUpdateData {
   rowIndex: number;
 }
 
-export interface TriggerConditionGroup {
-  nextGroupCondition: string | null;
-  parameter: Array<QueryObjectInner>;
-}
-
 export interface GroupConditionChange {
   groupIndex: number;
   value: string;

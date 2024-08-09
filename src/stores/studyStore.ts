@@ -34,19 +34,22 @@ export const useStudyStore = defineStore('study', () => {
         return study.value;
       });
   }
-  async function updateStudy(studyResponse: Study) {
+  async function updateStudy(studyResponse: Study): Promise<void> {
     if (study.value.studyId) {
       study.value = await studiesApi
         .updateStudy(study.value.studyId, studyResponse)
         .then((response) => response.data)
         .catch((e: AxiosError) => {
-          handleIndividualError(e, 'cannot update study' + study.value.studyId);
+          handleIndividualError(
+            e,
+            `cannot update study ${study.value.studyId}`,
+          );
           return study.value;
         });
     }
   }
 
-  async function updateStudyStatus(status: StudyStatus) {
+  async function updateStudyStatus(status: StudyStatus): Promise<void> {
     if (study.value.studyId) {
       await studiesApi
         .setStatus(study.value.studyId, { status })
@@ -54,10 +57,14 @@ export const useStudyStore = defineStore('study', () => {
           study.value.status = status;
         })
         .catch((e: AxiosError) => {
-          alert('Could not update study status');
+          alert(
+            `Could not update study status: ${
+              (e.response?.data as any)?.message
+            }`,
+          );
           handleIndividualError(
             e,
-            'Could not update study status' + study.value.studyId
+            `Could not update study status ${study.value.studyId}`,
           );
         });
     }
@@ -71,22 +78,22 @@ export const useStudyStore = defineStore('study', () => {
         studyGroupStore.studyGroups = [];
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot create study')
+        handleIndividualError(e, 'cannot create study'),
       );
   }
 
-  async function deleteStudy(studyId: number | undefined) {
+  async function deleteStudy(studyId: number | undefined): Promise<void> {
     if (studyId) {
       await studiesApi
         .deleteStudy(studyId)
         .then(() => {
           const position = studies.value.findIndex(
-            (studyItem) => studyItem.studyId === studyId
+            (studyItem) => studyItem.studyId === studyId,
           );
           studies.value.splice(position, 1);
         })
         .catch((e: AxiosError) =>
-          handleIndividualError(e, 'cannot delete study')
+          handleIndividualError(e, 'cannot delete study'),
         );
     }
   }
@@ -99,21 +106,21 @@ export const useStudyStore = defineStore('study', () => {
         return studies.value;
       });
   }
-  async function updateStudyInStudies(changedStudy: Study) {
+  async function updateStudyInStudies(changedStudy: Study): Promise<void> {
     const i = studies.value.findIndex(
-      (studyItem) => studyItem.studyId === changedStudy.studyId
+      (studyItem) => studyItem.studyId === changedStudy.studyId,
     );
     if (i > -1) {
       await studiesApi
         .updateStudy(changedStudy.studyId as number, changedStudy)
         .then(() => studies.value.splice(i, 1, changedStudy))
         .catch((e: AxiosError) =>
-          handleIndividualError(e, 'cannot update study in studies')
+          handleIndividualError(e, 'cannot update study in studies'),
         );
     }
   }
 
-  async function importStudy(importedStudy: File) {
+  async function importStudy(importedStudy: File): Promise<void> {
     await importExportApi
       .importStudy(importedStudy, {
         headers: {
@@ -126,7 +133,7 @@ export const useStudyStore = defineStore('study', () => {
         }, 100);
       })
       .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot import study')
+        handleIndividualError(e, 'cannot import study'),
       );
   }
 
@@ -134,7 +141,7 @@ export const useStudyStore = defineStore('study', () => {
     await importExportApi
       .exportStudy(studyId)
       .then((response: AxiosResponse) => {
-        const filename: string = 'study_config_' + studyId + '.json';
+        const filename: string = `study_config_${studyId}.json`;
         downloadJSON(filename, response.data);
       })
       .catch((e: AxiosError) => {
@@ -147,15 +154,19 @@ export const useStudyStore = defineStore('study', () => {
       .generateDownloadToken(studyId)
       .then((token) => {
         window.open(
-          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`
+          `api/v1/studies/${studyId}/export/studydata/${token.data.token}`,
         );
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
           e,
-          'cannot generate download token to export study data'
+          'cannot generate download token to export study data',
         );
       });
+  }
+
+  function exportStudyCalendar(studyId: number): void {
+    window.open(`api/v1/studies/${studyId}/calendar.ics`);
   }
 
   function downloadJSON(filename: string, file: File): void {
@@ -164,7 +175,7 @@ export const useStudyStore = defineStore('study', () => {
     if (link) {
       link.setAttribute(
         'href',
-        'data:application/json; charset=utf-8,' + encodeURIComponent(fileJSON)
+        `data:application/json; charset=utf-8,${encodeURIComponent(fileJSON)}`,
       );
       link.setAttribute('download', filename);
       link.style.display = 'hidden';
@@ -179,7 +190,7 @@ export const useStudyStore = defineStore('study', () => {
     ...(study.value.userRoles || []),
   ]);
   const studyStatus: ComputedRef<StudyStatus> = computed(
-    () => study.value.status || StudyStatus.Draft
+    () => study.value.status || StudyStatus.Draft,
   );
   const studyId: ComputedRef<number> = computed(() => study.value.studyId || 0);
 
@@ -196,6 +207,7 @@ export const useStudyStore = defineStore('study', () => {
     importStudy,
     exportStudyConfig,
     exportStudyData,
+    exportStudyCalendar,
     studyUserRoles,
     studyStatus,
     studyId,

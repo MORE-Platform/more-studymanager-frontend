@@ -52,7 +52,7 @@ Since downgrading to Vue 2 wouldn't bring any benefits and Vue 3 was declared th
 
 ### 1.3. Vue CLI or Vite
 
-[Vite](https://vitejs.dev/) is a build tool for Vue and was developed by Vue's creator Evan You to improve on Vue's developement workflow and work with native ES modules of modern browsers. Vue and Vites functioinalities and in project workflow are very similar. As for now, due to its good community feedback and integration, it was extended for other Frameworks too.
+[Vite](https://vitejs.dev/) is a build tool for Vue and was developed by Vue's creator Evan You to improve on Vue's development workflow and work with native ES modules of modern browsers. Vue and Vites functionalities and in project workflow are very similar. As for now, due to its good community feedback and integration, it was extended for other Frameworks too.
 
 [Vue CLI](https://cli.vuejs.org/) is a tool for quickly setting up a Vue-based project with standard build tools and best-practice configuration. Its main features include project scaffolding, dev server with hot-module reloading, plugin system and a user interface. It is built on top of Webpack and the development server, build functionality and performance will be a superset of Webpack.
 
@@ -169,7 +169,7 @@ Web Accessibility can help to provide access to Websites for (partially) disable
 
 Provider O-Auth. will be used for the authentication process. Here the user will be connected to a login site, which checks the session status or offers to enter the login data. After successfully logging in the user will be redirected to the More landing page.
 
-For the specific authentication server the backend will use [Keycloak](https://www.psimms.de/keycloak-integration-in-vuejs-3/) or [Logto](https://docs.logto.io/docs/recipes/integrate-logto/vue/). Though Logto is more often used with Vue, both can be integrated with Vue. After the backend has prepered the authentication server with its tool of joice, the Vue for the specific tool can be implemented.
+For the specific authentication server the backend will use [Keycloak](https://www.psimms.de/keycloak-integration-in-vuejs-3/) or [Logto](https://docs.logto.io/docs/recipes/integrate-logto/). Though Logto is more often used with Vue, both can be integrated with Vue. After the backend has prepered the authentication server with its tool of joice, the Vue for the specific tool can be implemented.
 
 ### 3.6. API Calls
 

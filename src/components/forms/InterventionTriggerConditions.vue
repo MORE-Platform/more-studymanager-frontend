@@ -39,28 +39,30 @@ Licensed under the Elastic License 2.0. */
     },
   });
   const triggerConditionObj: Ref<DataCheckProperty> = ref(
-    props.triggerConditions
+    props.triggerConditions,
   );
 
   const triggerConditionColumns: Ref<MoreTableColumn[]> = ref([
     {
       field: 'observationId',
-      header: 'Observation',
+      header: t('observation.singular'),
       editable: true,
     },
     {
       field: 'observationProperty',
-      header: 'Observation Property',
+      header: t(
+        'intervention.dialog.label.triggerConditionObservationProperty',
+      ),
       editable: true,
     },
     {
       field: 'operator',
-      header: 'Operator',
+      header: t('intervention.dialog.label.triggerConditionOperator'),
       editable: true,
     },
     {
       field: 'propertyValue',
-      header: 'Property Value',
+      header: t('intervention.dialog.label.triggerConditionPropertyValue'),
       editable: true,
     },
   ]);
@@ -70,10 +72,9 @@ Licensed under the Elastic License 2.0. */
     (e: 'onError', error: string): void;
   }>();
 
-  const triggerConditionError: Ref<string | undefined> = ref('');
   const rowOpenError: Ref<string | undefined> = ref('');
 
-  function setRowOpenError(error: boolean | string) {
+  function setRowOpenError(error: boolean | string): void {
     if (error) {
       rowOpenError.value = t('intervention.error.interventionRowIsOpen');
       emit('onError', rowOpenError.value);
@@ -82,12 +83,11 @@ Licensed under the Elastic License 2.0. */
       emit('onError', rowOpenError.value);
     }
   }
-  function setTriggerConditionError(triggerTableE?: string) {
-    triggerConditionError.value = triggerTableE;
+  function setTriggerConditionError(triggerTableE?: string): void {
     emit('onError', triggerTableE ? triggerTableE : '');
   }
 
-  function emitTriggerConditions() {
+  function emitTriggerConditions(): void {
     if (
       !rowOpenError.value &&
       typeof triggerConditionObj.value.value !== 'undefined'
@@ -99,7 +99,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function addTriggerGroup(groupIndex?: number) {
+  function addTriggerGroup(groupIndex?: number): void {
     setRowOpenError(true);
     if (
       (groupIndex as number) >= 0 &&
@@ -128,17 +128,17 @@ Licensed under the Elastic License 2.0. */
     checkTriggerConditionErrors();
   }
 
-  function setEditModeFalse() {
+  function setEditModeFalse(): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value.forEach((item: QueryObject) =>
-        item.parameter.forEach((param) => (param.editMode = false))
+        item.parameter.forEach((param) => (param.editMode = false)),
       );
       emitTriggerConditions();
     }
     checkTriggerConditionErrors();
   }
 
-  function toggleRowEdit(item: InterventionTriggerUpdateItem) {
+  function toggleRowEdit(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter[
         item.rowIndex
@@ -153,7 +153,7 @@ Licensed under the Elastic License 2.0. */
         !validateEditedRow(
           triggerConditionObj.value.value[item.groupIndex].parameter[
             item.rowIndex
-          ]
+          ],
         )
       ) {
         if (
@@ -161,7 +161,7 @@ Licensed under the Elastic License 2.0. */
         ) {
           triggerConditionObj.value.value[item.groupIndex].parameter.splice(
             item.rowIndex,
-            1
+            1,
           );
         } else if (
           triggerConditionObj.value.value[item.groupIndex].parameter.length ===
@@ -182,45 +182,47 @@ Licensed under the Elastic License 2.0. */
   }
 
   function validateEditedRow(triggerConfig: QueryObjectInner): boolean {
-    if (
+    return !!(
       triggerConfig.observationId &&
       triggerConfig.observationType &&
       triggerConfig.observationProperty &&
       triggerConfig.operator &&
       triggerConfig.propertyValue
+    );
+  }
+
+  function updateRowData(item: InterventionTriggerUpdateData): void {
+    if (!validateEditedRow(item.data)) {
+      return;
+    }
+
+    item.data.error = false;
+
+    if (typeof triggerConditionObj.value.value === 'undefined') {
+      return;
+    }
+
+    triggerConditionObj.value.value[item.groupIndex].parameter[item.rowIndex] =
+      item.data;
+
+    if (
+      triggerConditionObj.value.value[item.groupIndex].parameter[item.rowIndex]
+        .observationType === 'gps-mobile-observation'
     ) {
-      return true;
-    } else {
-      return false;
+      triggerConditionObj.value.value[item.groupIndex].parameter[
+        item.rowIndex
+      ].propertyValue = triggerConditionObj.value.value[item.groupIndex]
+        .parameter[item.rowIndex].propertyValue as number;
     }
+
+    triggerConditionObj.value.value[item.groupIndex].parameter[
+      item.rowIndex
+    ].editMode = false;
+
+    emitTriggerConditions();
   }
 
-  function updateRowData(item: InterventionTriggerUpdateData) {
-    if (validateEditedRow(item.data)) {
-      item.data.error = false;
-      if (typeof triggerConditionObj.value.value !== 'undefined') {
-        triggerConditionObj.value.value[item.groupIndex].parameter[
-          item.rowIndex
-        ] = item.data;
-        if (
-          triggerConditionObj.value.value[item.groupIndex].parameter[
-            item.rowIndex
-          ].observationType === 'gps-mobile-observation'
-        ) {
-          triggerConditionObj.value.value[item.groupIndex].parameter[
-            item.rowIndex
-          ].propertyValue = triggerConditionObj.value.value[item.groupIndex]
-            .parameter[item.rowIndex].propertyValue as number;
-        }
-        triggerConditionObj.value.value[item.groupIndex].parameter[
-          item.rowIndex
-        ].editMode = false;
-        emitTriggerConditions();
-      }
-    }
-  }
-
-  function addRow(item: InterventionTriggerUpdateItem) {
+  function addRow(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       setEditModeFalse();
       triggerConditionObj.value.value[item.groupIndex].parameter.push({
@@ -235,11 +237,11 @@ Licensed under the Elastic License 2.0. */
     }
     checkTriggerConditionErrors();
   }
-  function deleteRow(item: InterventionTriggerUpdateItem) {
+  function deleteRow(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter.splice(
         item.rowIndex,
-        1
+        1,
       );
       triggerConditionObj.value.value.forEach((item, index) => {
         if (!item.parameter.length) {
@@ -253,7 +255,7 @@ Licensed under the Elastic License 2.0. */
     checkTriggerConditionErrors();
   }
 
-  function changeGroupCondition(item: GroupConditionChange) {
+  function changeGroupCondition(item: GroupConditionChange): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].nextGroupCondition =
         item.value;
@@ -261,15 +263,10 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function checkTriggerConditionErrors() {
-    let hasErrors = false;
-    triggerConditionObj.value?.value?.forEach((item: QueryObject) => {
-      item.parameter.forEach((p) => {
-        if (p.error) {
-          hasErrors = true;
-        }
-      });
-    });
+  function checkTriggerConditionErrors(): void {
+    const hasErrors = triggerConditionObj.value?.value?.some(
+      (item: QueryObject) => item.parameter.some((p) => p.error),
+    );
 
     if (hasErrors) {
       emit('onError', 'Trigger Condition Table is not saved.');
@@ -289,12 +286,9 @@ Licensed under the Elastic License 2.0. */
         v-if="
           triggerConditionObj.value && triggerConditionObj.value.length === 0
         "
-        class="mt-6 mb-6 w-full text-center"
+        class="my-6 w-full text-center"
       >
-        <Button
-          type="button"
-          class="p-button mt-6 mb-6"
-          @click="addTriggerGroup()"
+        <Button type="button" class="p-button my-6" @click="addTriggerGroup()"
           ><span class="pi pi-plus mr-2"></span>
           {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
         >
@@ -319,7 +313,7 @@ Licensed under the Elastic License 2.0. */
           :columns="triggerConditionColumns"
           class="mt-6"
           :editable="editable"
-          :row-open-error="rowOpenError ? rowOpenError : ''"
+          :row-open-error="rowOpenError ?? ''"
           @on-add-trigger-group="addTriggerGroup($event)"
           @on-toggle-row-edit="toggleRowEdit($event)"
           @on-update-row-data="updateRowData($event)"
@@ -330,13 +324,7 @@ Licensed under the Elastic License 2.0. */
         />
       </div>
       <div v-else>
-        <div
-          v-if="
-            triggerConditionObj.value !== null ||
-            triggerConditionObj.value !== undefined
-          "
-          class="error mt-2 mb-4"
-        >
+        <div class="error mb-4 mt-2">
           {{ $t('intervention.error.emptyTriggerConditions') }}
         </div>
         <div class="flex justify-center">
@@ -353,5 +341,3 @@ Licensed under the Elastic License 2.0. */
     </Suspense>
   </div>
 </template>
-
-<style scoped lang="postcss"></style>

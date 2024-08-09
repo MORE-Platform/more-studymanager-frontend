@@ -36,7 +36,7 @@ Licensed under the Elastic License 2.0. */
       >
     </h5>
 
-    <div v-if="props.property.description" :id="property.id + '-help'">
+    <div v-if="props.property.description" :id="`${property.id}-help`">
       {{ $t(props.property.description) }}
     </div>
 
@@ -48,7 +48,7 @@ Licensed under the Elastic License 2.0. */
       :min="property.min"
       :disabled="!editable"
       class="mt-1 w-full"
-      :aria-describedby="property.id + '-help'"
+      :aria-describedby="`${property.id}-help`"
     />
   </div>
 </template>

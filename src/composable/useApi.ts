@@ -19,6 +19,7 @@ import {
   ImportExportApi,
   DataApi,
   ConfigurationApi,
+  CalendarApi,
 } from '../generated-sources/openapi';
 
 const apiConfig = {
@@ -36,6 +37,7 @@ let observationsApi: ObservationsApi;
 let componentsApi: ComponentsApi;
 let interventionsApi: InterventionsApi;
 let collaboratorsApi: CollaboratorsApi;
+let calendarApi: CalendarApi;
 let importExportApi: ImportExportApi;
 let dataApi: DataApi;
 let uiConfigApi: ConfigurationApi;
@@ -100,6 +102,15 @@ export function useComponentsApi(): {
   componentsApi = componentsApi || new ComponentsApi(apiConfig);
   return {
     componentsApi,
+  };
+}
+
+export function useCalendarApi(): {
+  calendarApi: CalendarApi;
+} {
+  calendarApi = calendarApi || new CalendarApi(apiConfig);
+  return {
+    calendarApi,
   };
 }
 

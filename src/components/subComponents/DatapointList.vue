@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     useParticipantsApi,
   } from '../../composable/useApi';
   import { onBeforeRouteLeave } from 'vue-router';
-  import dayjs from 'dayjs';
+  import { useI18n } from 'vue-i18n';
 
   interface Option {
     name: string;
@@ -25,6 +25,7 @@ Licensed under the Elastic License 2.0. */
   const { dataApi } = useDataApi();
   const { observationsApi } = useObservationsApi();
   const { participantsApi } = useParticipantsApi();
+  const { t } = useI18n();
 
   const props = defineProps({
     studyId: {
@@ -38,13 +39,16 @@ Licensed under the Elastic License 2.0. */
 
   const dataPoints: Ref<DataPoint[]> = ref([]);
   const size: Ref<number> = ref(10);
-  const emptyOption: Option = { name: 'All', value: undefined };
+  const emptyOption: Option = {
+    name: t('global.placeholder.all'),
+    value: undefined,
+  };
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timer;
+  let timer: NodeJS.Timeout | number;
 
-  function loadData() {
+  function loadData(): void {
     timer ??= setInterval(function () {
       listDataPoints();
     }, 10000);
@@ -54,19 +58,15 @@ Licensed under the Elastic License 2.0. */
   onBeforeRouteLeave(() => {
     clearInterval(timer);
   });
-  function listDataPoints() {
+  function listDataPoints(): void {
     dataApi
       .getDataPoints(
         props.studyId,
         size.value,
         observation.value.value,
-        participant.value.value
+        participant.value.value,
       )
       .then((r) => (dataPoints.value = r.data));
-  }
-
-  function formatTime(property: string): string {
-    return dayjs(property).format('DD/MM/YYYY, HH:mm:ss');
   }
 
   function formatDataPoints(property: any): string {
@@ -81,20 +81,32 @@ Licensed under the Elastic License 2.0. */
     return string;
   }
 
-  function listObservations() {
+  function listObservations(): void {
     observationsApi
       .listObservations(props.studyId)
-      .then((r) =>
-        r.data.map((r) => ({ name: r.title, value: r.observationId } as Option))
+      .then((observation) =>
+        observation.data.map(
+          (observation) =>
+            ({
+              name: observation.title,
+              value: observation.observationId,
+            }) as Option,
+        ),
       )
       .then((options) => (observations.value = [emptyOption, ...options]));
   }
 
-  function listParticipants() {
+  function listParticipants(): void {
     participantsApi
       .listParticipants(props.studyId)
-      .then((r) =>
-        r.data.map((r) => ({ name: r.alias, value: r.participantId } as Option))
+      .then((participant) =>
+        participant.data.map(
+          (participant) =>
+            ({
+              name: participant.alias,
+              value: participant.participantId,
+            }) as Option,
+        ),
       )
       .then((options) => (participants.value = [emptyOption, ...options]));
   }
@@ -115,7 +127,7 @@ Licensed under the Elastic License 2.0. */
         <Dropdown
           v-model="size"
           :options="[1, 3, 10, 100]"
-          placeholder="Select a size"
+          :placeholder="$t('data.placeholder.chooseSize')"
           class="small ml-1"
           @change="listDataPoints()"
         />
@@ -126,7 +138,7 @@ Licensed under the Elastic License 2.0. */
           v-model="participant"
           option-label="name"
           :options="participants"
-          placeholder="Select a participant"
+          :placeholder="$t('participants.placeholder.chooseParticipant')"
           class="ml-1"
           filter
           @change="listDataPoints()"
@@ -138,7 +150,7 @@ Licensed under the Elastic License 2.0. */
           v-model="observation"
           option-label="name"
           :options="observations"
-          placeholder="Select an observation"
+          :placeholder="$t('observation.placeholder.chooseObservation')"
           class="ml-1"
           filter
           @change="listDataPoints()"
@@ -155,7 +167,7 @@ Licensed under the Elastic License 2.0. */
       ></Column>
       <Column field="time" :header="$t('global.labels.time')" sortable>
         <template #body="slotProps">
-          {{ formatTime(slotProps['data']['time']) }}
+          {{ $d(new Date(slotProps['data']['time']), 'longSec') }}
         </template>
       </Column>
       <Column field="data" :header="$t('global.labels.data')">

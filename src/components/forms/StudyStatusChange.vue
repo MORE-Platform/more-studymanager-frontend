@@ -6,65 +6,80 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import Button from 'primevue/button';
   import { StudyStatus } from '../../generated-sources/openapi';
-  defineProps({
+  import { computed } from 'vue';
+
+  const props = defineProps({
     status: {
       type: String,
       required: true,
     },
   });
-  const emit = defineEmits<{ (e: 'onchange', status: StudyStatus): void }>();
+  const emit = defineEmits<{ (e: 'onChange', status: StudyStatus): void }>();
+
+  interface StatusButton {
+    textKey: string;
+    status: StudyStatus;
+  }
+  type StudyStatusWithoutClosed = Exclude<
+    StudyStatus,
+    typeof StudyStatus.Closed
+  >;
+
+  const buttonConfig: Record<StudyStatusWithoutClosed, StatusButton[]> = {
+    [StudyStatus.Draft]: [
+      {
+        textKey: 'study.statusChange.start-preview',
+        status: StudyStatus.Preview,
+      },
+      {
+        textKey: 'study.statusChange.start',
+        status: StudyStatus.Active,
+      },
+    ],
+    [StudyStatus.Preview]: [
+      {
+        textKey: 'study.statusChange.pause-preview',
+        status: StudyStatus.PausedPreview,
+      },
+      {
+        textKey: 'study.statusChange.complete-preview',
+        status: StudyStatus.Draft,
+      },
+    ],
+    [StudyStatus.Active]: [
+      { textKey: 'study.statusChange.pause', status: StudyStatus.Paused },
+      { textKey: 'study.statusChange.complete', status: StudyStatus.Closed },
+    ],
+    [StudyStatus.PausedPreview]: [
+      {
+        textKey: 'study.statusChange.resume-preview',
+        status: StudyStatus.Preview,
+      },
+      {
+        textKey: 'study.statusChange.complete-preview',
+        status: StudyStatus.Draft,
+      },
+    ],
+    [StudyStatus.Paused]: [
+      { textKey: 'study.statusChange.resume', status: StudyStatus.Active },
+      { textKey: 'study.statusChange.complete', status: StudyStatus.Closed },
+    ],
+  };
+
+  const filteredButtons = computed(() => {
+    return buttonConfig[props.status as StudyStatusWithoutClosed] || [];
+  });
 </script>
 <template>
-  <div v-if="status === StudyStatus.Draft" class="buttons">
+  <div v-if="filteredButtons.length" class="flex items-baseline">
     <Button
+      v-for="button in filteredButtons"
+      :key="button.textKey"
+      class="!mr-2.5"
       type="button"
-      title="Start"
-      @click="emit('onchange', StudyStatus.Active)"
-      >{{ $t('study.statusChange.start') }}</Button
-    >
-    <!--icon="pi pi-play"-->
-  </div>
-  <div v-if="status === StudyStatus.Active" class="buttons">
-    <Button
-      type="button"
-      title="Pause"
-      @click="emit('onchange', StudyStatus.Paused)"
-      >{{ $t('global.labels.setPause') }}</Button
-    >
-    <!--icon="pi pi-pause"-->
-    <Button
-      type="button"
-      title="Close"
-      @click="emit('onchange', StudyStatus.Closed)"
-      >{{ $t('study.statusChange.complete') }}</Button
-    >
-    <!--icon="pi pi-stop-circle"-->
-  </div>
-  <div v-if="status === StudyStatus.Paused" class="buttons">
-    <Button
-      type="button"
-      title="Resume"
-      @click="emit('onchange', StudyStatus.Active)"
-      >{{ $t('study.statusChange.resume') }}</Button
-    >
-    <!--icon="pi pi-play"-->
-    <Button
-      type="button"
-      title="Close"
-      @click="emit('onchange', StudyStatus.Closed)"
-      >{{ $t('study.statusChange.complete') }}</Button
-    >
-    <!-- icon="pi pi-stop-circle"-->
+      :title="$t(button.textKey)"
+      :label="$t(button.textKey)"
+      @click="emit('onChange', button.status)"
+    />
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .buttons {
-    display: flex;
-    margin-right: 10px;
-
-    :deep(button:first-of-type) {
-      margin-right: 10px;
-    }
-  }
-</style>

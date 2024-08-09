@@ -1,0 +1,67 @@
+openapi: "3.0.3"
+info:
+  title: TimeRange Model for Relative Events
+  version: "1.0"
+
+components:
+  schemas:
+    Duration:
+      type: object
+      description: A duration of time
+      properties:
+        value:
+          type: integer
+          description: number of units
+        unit:
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
+        
+    RelativeDate:
+      type: object
+      description: A date relative to a specific base date (e.g study start)
+      properties:
+        offset:
+          $ref: '#/components/schemas/Duration'
+        time:
+          type: string
+          format: time
+          description: Follows ISO 8601 format for time
+        timezone:
+          type: string
+          description: Time Zone string for relative event
+
+    RelativeRecurrenceRule:
+      type: object
+      description: A recurrence rule relative to dtstart
+      properties:
+        frequency:
+          $ref: '#/components/schemas/Duration'
+          description: How often to repeat
+        endAfter:
+          $ref: '#/components/schemas/Duration'
+          description: How long to repeat
+
+    RelativeEvent:
+      type: object
+      description: An event that occurs at a relative time
+      required:
+        - type
+        - dtstart
+        - dtend
+      properties:
+        type:
+          type: string
+          default: RelativeEvent
+        dtstart:
+          $ref: '#/components/schemas/RelativeDate'
+          description: When the event starts
+        dtend:
+          $ref: '#/components/schemas/RelativeDate'
+          description: When the event ends
+        rrrule:
+          $ref: '#/components/schemas/RelativeRecurrenceRule'
+          description: How to repeat the event

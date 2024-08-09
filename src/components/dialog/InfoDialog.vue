@@ -10,28 +10,21 @@ Licensed under the Elastic License 2.0. */
   const infoDialogRef: any = inject('dialogRef');
   const message: number = infoDialogRef?.value?.data?.message;
 
-  function closeDialog() {
+  function closeDialog(): void {
     infoDialogRef.value.close();
   }
 </script>
 
 <template>
-  <div class="info-dialog">
+  <div class="text-base">
     <div class="mb-8">{{ message }}</div>
     <div class="flex justify-end">
-      <Button type="button" class="btn-gray" @click="closeDialog">{{
-        $t('global.labels.close')
-      }}</Button>
+      <Button
+        type="button"
+        class="btn-gray"
+        :label="$t('global.labels.close')"
+        @click="closeDialog"
+      />
     </div>
   </div>
 </template>
-
-<style scoped lang="postcss">
-  .info-dialog {
-    font-size: 1rem;
-  }
-  h5 {
-    font-size: 18px;
-    font-weight: bold;
-  }
-</style>

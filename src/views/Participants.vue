@@ -18,18 +18,18 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="participant-view container m-auto mt-10">
-    <StudyHeader :study="studyStore.study"></StudyHeader>
+    <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
       :study-roles="studyStore.studyUserRoles"
-    ></MoreTabNav>
+    />
     <div
       v-if="studyStore.studyUserRoles.some((r) => accessRoles.includes(r))"
       class="container rounded-lg bg-white p-10"
     >
       <ParticipantList
         :study-groups="studyGroupStore.studyGroups"
-        :status-status="studyStore.studyStatus"
+        :study-status="studyStore.studyStatus"
         :study-id="studyStore.studyId"
       ></ParticipantList>
     </div>
