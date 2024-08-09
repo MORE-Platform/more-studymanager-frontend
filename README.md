@@ -8,11 +8,18 @@ Mainly, Vue 3, vite, TS, tailwindCSS and PrimeVue are used.
 ```
 npm i
 npm run dev
+npm run generate:api
 ```
 go to http://localhost:3000
 
 To have a consistent code style and quality, we use Eslint in combination with prettier.
 
+### Selecting backend 
+
+You can modify which backend you want to connect to by modifying the `package.json` file. E.g. to point to a remote backend:
+- Look for the following parameter `scripts->dev:local`
+- Change `VITE_LOCAL_BACKEND=true` to `VITE_LOCAL_BACKEND=false`
+- Change the backend in the vite.config.ts file by replacing `https://studymanager.platform-test.more.redlink.io/api` with your URL path.
 
 ### Intellij, Webstorm ESLint configuration
 Set the EsLint settings for Webstorm in Preferences --> Languages & Frameworks --> Javascript --> Code Quality Tools --> ESLint
