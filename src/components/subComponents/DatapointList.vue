@@ -38,7 +38,7 @@ Licensed under the Elastic License 2.0. */
   const participants: Ref<Option[]> = ref([]);
 
   const dataPoints: Ref<DataPoint[]> = ref([]);
-  const size: Ref<number> = ref(10);
+  const size: Ref<number> = ref(3);
   const emptyOption: Option = {
     name: t('global.placeholder.all'),
     value: undefined,
@@ -46,13 +46,14 @@ Licensed under the Elastic License 2.0. */
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timeout | number;
+  let timer: NodeJS.Timeout;
+  const refreshTimeInSeconds = 10;
 
   function loadData(): void {
-    timer ??= setInterval(function () {
+    timer ??= ((): NodeJS.Timeout => {
       listDataPoints();
-    }, 10000);
-    listDataPoints();
+      return setInterval(listDataPoints, refreshTimeInSeconds * 1000);
+    })();
   }
 
   onBeforeRouteLeave(() => {
@@ -117,17 +118,23 @@ Licensed under the Elastic License 2.0. */
 </script>
 
 <template>
-  <div class="title w-full">
-    <h3 class="mb-1 font-bold">
-      {{ $t('data.dataPointsList.lastDatapoints') }}
-    </h3>
+  <div>
+    <div class="title mb-8">
+      <h3 class="mb-1 font-bold">
+        {{ $t('monitoring.dataPointsList.lastDatapoints') }}
+      </h3>
+      <div>
+        {{ $t('monitoring.description', { duration: refreshTimeInSeconds }) }}
+      </div>
+    </div>
+
     <div class="datapoint-selection mb-3 flex gap-5">
       <div>
-        {{ $t('data.dataPointsList.resultSize') }}:
+        {{ $t('monitoring.dataPointsList.resultSize') }}:
         <Dropdown
           v-model="size"
           :options="[1, 3, 10, 100]"
-          :placeholder="$t('data.placeholder.chooseSize')"
+          :placeholder="$t('monitoring.placeholder.chooseSize')"
           class="small ml-1"
           @change="listDataPoints()"
         />

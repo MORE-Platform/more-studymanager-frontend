@@ -36,7 +36,8 @@
       "message": "Message",
       "option": "Option {value}",
       "data": "Data",
-      "scheduleType": "Schedule Type"
+      "scheduleType": "Schedule Type",
+      "filter": "Filter"
     },
     "placeholder": {
       "entireStudy": "Entire study",
@@ -54,6 +55,17 @@
     },
     "footer": {
       "aboutMore": "About More"
+    },
+    "error": {
+      "type": {
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      },
+      "general": "A General error occurred.",
+      "required": "Required value '{value}' missing.",
+      "immutable": "The value '{value}' is immutable and cannot be changed.",
+      "inComponentTitle": "In Observation '{title}': "
     }
   },
 
@@ -65,21 +77,12 @@
     },
     "tabs": {
       "overview": "Study",
-      "data": "Monitoring",
       "participants": "Participants",
       "observations": "Observations",
-      "interventions": "Interventions",
       "integration": "Integrations",
-      "timeline": "Timeline"
-    },
-    "tabLink": {
-      "overview": "Overview",
-      "data": "Monitoring",
-      "participants": "Participants",
-      "observations": "Observations",
       "interventions": "Interventions",
-      "integration": "Integrations",
-      "timeline": "Timeline"
+      "timeline": "Timeline",
+      "monitoringAndData": "Monitoring & Data"
     }
   },
 
@@ -337,19 +340,68 @@
     }
   },
 
-  "data": {
+  "monitoringData": {
+    "tabs": {
+      "lastDataPoints": "Latest Data Points",
+      "recordedObservation": "Recorded Observations",
+      "dataDownload": "Export study data"
+    }
+  },
+
+  "monitoring": {
     "title": "Monitoring",
-    "description": "You can view the live data of your study here. Data will be updated every 10 seconds.",
+    "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
     "dataList": {
       "emptyListMsg": "Currently there are no observations to track.",
-      "title": "Received data points per observation"
+      "title": "Recorded observations",
+      "description": "The most recently collected data points are displayed here in tabular form and the entire data points can be displayed in various visualizations."
     },
     "dataPointsList": {
       "lastDatapoints": "Last data points",
-      "resultSize": "Size of result"
+      "resultSize": "Size of result",
+      "filterInfo": "Filtering is only possible for visualization."
     },
     "placeholder": {
       "chooseSize": "Choose a size"
+    },
+    "labels": {
+      "latestDataPoints": "Latest Data Points",
+      "visualization": "Visualization",
+      "dateRange": "Date range",
+      "noDataAvailable": "No data available"
+    },
+    "charts": {
+      "simpleQuestion": {
+        "responseDistribution": {
+          "label": "All Responses",
+          "title": "Distribution of Participant Responses",
+          "description": "Each segment represents the frequency of a particular answer and shows how many participants selected the respective option."
+        },
+        "responseDistributionStudyGroup": {
+          "label": "Responses by Group",
+          "title": "Response Distribution Across Study Groups",
+          "description": "Each column in the bar chart represents the number of responses per study group."
+        },
+        "responseDistributionResponse": {
+          "label": "Groups by Response",
+          "title": "Response Distribution Across Study Groups",
+          "description": "Each column in the bar chart represents the number of responses per study group."
+        }
+      },
+      "polarVerity": {
+        "avgHeartRate": {
+          "label": "Heart rate",
+          "title": "Average heart rate per participant over time",
+          "description": "Compares the average heart rate of all participants over time, with a time interval of 1 minute."
+        }
+      }
+    }
+  },
+
+  "data": {
+    "dataDownload": {
+      "title": "Download study data",
+      "description": "Here you can download the study data based on various filters."
     }
   },
 
@@ -922,7 +974,7 @@
       "openScheduler": "Add absolute schedule",
       "editScheduler": "Edit absolute schedule",
       "openRelativeScheduler": "Add relative Schedule",
-      "editRelativeScheduler": "Edit relative Schdule",
+      "editRelativeScheduler": "Edit relative Schedule",
       "removeScheduler": "Remove scheduler",
       "frequency": "Frequency",
       "repetitionEnd": "Repetition ends",

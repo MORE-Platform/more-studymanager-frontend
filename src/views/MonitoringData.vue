@@ -8,14 +8,18 @@ Licensed under the Elastic License 2.0. */
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '../generated-sources/openapi';
   import { useStudyStore } from '../stores/studyStore';
+  import DataDownload from '../components/subComponents/DataDownload.vue';
+  import TabView from 'primevue/tabview';
+  import TabPanel from 'primevue/tabpanel';
+  import DatapointList from '../components/subComponents/DatapointList.vue';
   import ParticipationDataList from '../components/ParticipationDataList.vue';
 
   const studyStore = useStudyStore();
-  const accessRoles: StudyRole[] = [StudyRole.Viewer, StudyRole.Admin];
+  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Viewer];
 </script>
 
 <template>
-  <div class="data-view container m-auto mt-10">
+  <div class="monitoring-data-view container m-auto mt-10">
     <StudyHeader :study="studyStore.study" />
     <MoreTabNav
       :study-id="studyStore.studyId"
@@ -29,7 +33,19 @@ Licensed under the Elastic License 2.0. */
       "
       class="container rounded-lg bg-white p-10"
     >
-      <ParticipationDataList :study-id="studyStore.studyId" />
+      <TabView>
+        <TabPanel :header="$t('monitoringData.tabs.lastDataPoints')">
+          <DatapointList :study-id="studyStore.studyId" class="mb-14" />
+        </TabPanel>
+        <TabPanel :header="$t('monitoringData.tabs.recordedObservation')">
+          <ParticipationDataList :study-id="studyStore.studyId" />
+        </TabPanel>
+        <TabPanel :header="$t('monitoringData.tabs.dataDownload')">
+          <Suspense>
+            <DataDownload />
+          </Suspense>
+        </TabPanel>
+      </TabView>
     </div>
   </div>
 </template>

@@ -14,7 +14,7 @@ import NotFound from '../views/NotFound.vue';
 import Interventions from '../views/Interventions.vue';
 import Participants from '../views/Participants.vue';
 import Observations from '../views/Observations.vue';
-import Data from '../views/Data.vue';
+import MonitoringData from '../views/MonitoringData.vue';
 import StudyOverview from '../views/StudyOverview.vue';
 import { useStudyStore } from '../stores/studyStore';
 import { useStudyGroupStore } from '../stores/studyGroupStore';
@@ -62,28 +62,28 @@ const routes = [
         component: Observations,
       },
       {
-        path: 'interventions',
-        meta: { title: 'Interventions' },
-        name: 'Interventions',
-        component: Interventions,
-      },
-      {
-        path: 'monitoring',
-        meta: { title: 'Monitoring' },
-        name: 'Monitoring',
-        component: Data,
-      },
-      {
         path: 'integrations',
         meta: { title: 'Integrations' },
         name: 'Integrations',
         component: Integrations,
       },
       {
+        path: 'interventions',
+        meta: { title: 'Interventions' },
+        name: 'Interventions',
+        component: Interventions,
+      },
+      {
         path: 'timeline',
         meta: { title: 'Timeline' },
         name: 'Timeline',
         component: Timeline,
+      },
+      {
+        path: 'monitoring-data',
+        meta: { title: 'Monitoring & Data' },
+        name: 'Monitoring & Data',
+        component: MonitoringData,
       },
     ],
   },

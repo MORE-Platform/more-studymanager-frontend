@@ -41,45 +41,45 @@ Licensed under the Elastic License 2.0. */
   const tabs: Tab[] = [
     {
       title: t('studyNavigation.tabs.overview'),
-      name: t('studyNavigation.tabLink.overview'),
+      name: 'Overview',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer],
     },
     {
       title: t('studyNavigation.tabs.participants'),
-      name: t('studyNavigation.tabLink.participants'),
+      name: 'Participants',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.observations'),
-      name: t('studyNavigation.tabLink.observations'),
+      name: 'Observations',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.integration'),
-      name: t('studyNavigation.tabLink.integration'),
+      name: 'Integrations',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.interventions'),
-      name: t('studyNavigation.tabLink.interventions'),
+      name: 'Interventions',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
       title: t('studyNavigation.tabs.timeline'),
-      name: t('studyNavigation.tabLink.timeline'),
+      name: 'Timeline',
       params: { studyId: props.studyId },
       access: [StudyRole.Admin, StudyRole.Operator],
     },
     {
-      title: t('studyNavigation.tabs.data'),
-      name: t('studyNavigation.tabLink.data'),
+      title: t('studyNavigation.tabs.monitoringAndData'),
+      name: 'Monitoring & Data',
       params: { studyId: props.studyId },
-      access: [StudyRole.Viewer, StudyRole.Admin],
+      access: [StudyRole.Admin, StudyRole.Viewer],
     },
   ] as Tab[];
 

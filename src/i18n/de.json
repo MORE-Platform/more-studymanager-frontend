@@ -36,7 +36,8 @@
       "message": "Nachricht",
       "option": "Option {value}",
       "data": "Daten",
-      "scheduleType": "Zeitplan-Typ"
+      "scheduleType": "Zeitplan-Typ",
+      "filter": "Filter"
     },
     "placeholder": {
       "entireStudy": "Gesamte Studie",
@@ -54,6 +55,17 @@
     },
     "footer": {
       "aboutMore": "Über More"
+    },
+    "error": {
+      "type": {
+        "error": "Fehler",
+        "warning": "Warnung",
+        "info": "Info"
+      },
+      "general": "Ein allgemeiner Fehler ist aufgetreten.",
+      "required": "Erforderlicher Wert '{value}' fehlt.",
+      "immutable": "Der Wert von '{value}' darf nicht geändert werden.",
+      "inComponentTitle": "In Aufzeichnung '{title}': "
     }
   },
 
@@ -65,21 +77,12 @@
     },
     "tabs": {
       "overview": "Studie",
-      "data": "Monitoring",
       "participants": "Teilnehmer:innen",
       "observations": "Datenerhebungen",
-      "interventions": "Interventionen",
       "integration": "Integrationen",
-      "timeline": "Kalender"
-    },
-    "tabLink": {
-      "overview": "Overview",
-      "data": "Monitoring",
-      "participants": "Participants",
-      "observations": "Observations",
-      "interventions": "Interventions",
-      "integration": "Integrations",
-      "timeline": "Timeline"
+      "interventions": "Interventionen",
+      "timeline": "Kalender",
+      "monitoringAndData": "Monitoring & Data"
     }
   },
 
@@ -337,19 +340,68 @@
     }
   },
 
-  "data": {
+  "monitoringData": {
+    "tabs": {
+      "lastDataPoints": "Letzte Datenpunkte",
+      "recordedObservation": "Erhobene Daten",
+      "dataDownload": "Studiendaten herunterladen"
+    }
+  },
+
+  "monitoring": {
     "title": "Monitoring",
-    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle 10 Sekunden aktualisiert.",
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
     "dataList": {
       "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhaltene Datenpunkte pro Datenerhebung"
+      "title": "Erhobene Daten",
+      "description": "Hier werden die zuletzt gesammelten Datenpunkte in tabellarischer Form angezeigt und die gesamten Datenpunkte können in verschiedenen Visualisierungen dargestellt werden."
     },
     "dataPointsList": {
       "lastDatapoints": "Letzte Datenpunkte",
-      "resultSize": "Anzahl der Datenpunkte"
+      "resultSize": "Anzahl der Datenpunkte",
+      "filterInfo": "Die Filterung ist nur für die Visualisierung möglich."
     },
     "placeholder": {
       "chooseSize": "Größe auswählen"
+    },
+    "labels": {
+      "latestDataPoints": "Letzte Datenpunkte",
+      "visualization": "Visualisierung",
+      "dateRange": "Datumsbereich",
+      "noDataAvailable": "Keine Daten verfügbar"
+    },
+    "charts": {
+      "simpleQuestion": {
+        "responseDistribution": {
+          "label": "Alle Antworten",
+          "title": "Verteilung der Antworten der Teilnehmer:innen",
+          "description": "Jedes Segment stellt die Häufigkeit einer bestimmten Antwort dar und zeigt, wie viele Teilnehmer:innen die jeweilige Option gewählt haben."
+        },
+        "responseDistributionStudyGroup": {
+          "label": "Antworten per Gruppe",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
+        },
+        "responseDistributionResponse": {
+          "label": "Gruppierung nach Antwort",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
+        }
+      },
+      "polarVerity": {
+        "avgHeartRate": {
+          "label": "Herzfrequenz",
+          "title": "Durchschnittliche Herzfrequenz pro Teilnehmer im Zeitverlauf",
+          "description": "Vergleicht die durchschnittliche Herzfrequenz aller Teilnehmer über die Zeit mit einem Zeitintervall von 1 Minute."
+        }
+      }
+    }
+  },
+
+  "data": {
+    "dataDownload": {
+      "title": "Studiendaten herunterladen",
+      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
     }
   },
 

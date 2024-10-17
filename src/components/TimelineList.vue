@@ -33,13 +33,9 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import { dateToDateString } from '../utils/dateUtils';
   import TimelineDialog from './dialog/TimelineDialog.vue';
-  import {
-    DropdownOption,
-    GroupOption,
-    EventDetail,
-    EventOptions,
-  } from '../models/Timeline';
+  import { GroupOption, EventDetail, EventOptions } from '../models/Timeline';
   import { useGlobalStore } from '../stores/globalStore';
+  import { DropdownOption } from '../models/Common';
   const dialog = useDialog();
   const dateFormat = useGlobalStore().getDateFormat;
   const { t, locale } = useI18n();
@@ -284,7 +280,7 @@ Licensed under the Elastic License 2.0. */
     const filteredParticipants: Participant[] = [];
 
     filteredOptions.push({
-      label: t('global.placeholder.entireStudy'),
+      label: t('participants.placeholder.allParticipants'),
       value: undefined,
     } as DropdownOption);
 
@@ -434,7 +430,6 @@ Licensed under the Elastic License 2.0. */
         setupObservationAndInterventionFilterOptions(response.data);
       })
       .catch((e: AxiosError) => {
-        console.log(e);
         handleIndividualError(e, 'cannot list studyTimeline');
       });
   }
@@ -480,7 +475,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="title w-full">
     <div class="flex flex-row justify-between">
-      <h3 class="mb-1 font-bold">Filter</h3>
+      <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
       <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
     </div>
     <div class="mb-3 flex gap-5">

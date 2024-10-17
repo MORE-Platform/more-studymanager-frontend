@@ -11,21 +11,13 @@ servers:
     description: Local Test Server
 paths:
   /components/{componentType}:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
     get:
       tags:
         - components
       operationId: listComponents
       description: List component of certain type
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
       responses:
         '200':
           description: Components successfully returned
@@ -37,26 +29,18 @@ paths:
                   $ref: '#/components/schemas/ComponentFactory'
 
   /components/{componentType}/{componentId}/validate:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
     post:
       tags:
         - components
       description: check if properties are valid for component
       operationId: validateProperties
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         content:
           application/json:
@@ -73,31 +57,23 @@ paths:
           description: Not found
 
   /components/{componentType}/{componentId}/api/{slug}:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
+      - name: slug
+        in: path
+        schema:
+          type: string
+        required: true
     post:
       tags:
         - components
       operationId: accessModuleSpecificEndpoint
       description: access module specific endpoint
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
-        - name: slug
-          in: path
-          schema:
-            type: string
-          required: true
       requestBody:
         required: true
         content:
@@ -117,26 +93,18 @@ paths:
           description: Error
 
   /components/{componentType}/{componentId}/web-component.js:
+    parameters:
+      - $ref: '#/components/parameters/ComponentType'
+      - name: componentId
+        in: path
+        schema:
+          type: string
+        required: true
     get:
       tags:
         - components
       operationId: getWebComponentScript
       description: Get web component script
-      parameters:
-        - name: componentType
-          in: path
-          schema:
-            type: string
-            enum:
-              - action
-              - trigger
-              - observation
-          required: true
-        - name: componentId
-          in: path
-          schema:
-            type: string
-          required: true
       responses:
         '200':
           description: Returned script successfully
@@ -253,10 +221,20 @@ paths:
             schema:
               $ref: '#/components/schemas/StatusChange'
       responses:
-        '202':
-          description: Status changed deleted
+        '200':
+          description: Study status changed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Study'
         '400':
-          description: Bad request
+          description: The requested transition is not allowed
+        '409':
+          description: Could not update status due to configuration error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationReport'
 
   /studies/{studyId}/collaborators:
     parameters:
@@ -1095,7 +1073,7 @@ paths:
       operationId: exportStudy
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             application/json:
               schema:
@@ -1110,10 +1088,31 @@ paths:
       tags:
         - importExport
       operationId: generateDownloadToken
-      description: generate a download token that can be used once for download and is valid for 10 minutes
+      description: Generate a download token that can be used once for download and is valid for 10 minutes
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: participantId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: observationId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             application/json:
               schema:
@@ -1121,6 +1120,50 @@ paths:
                 properties:
                   token:
                     type: string
+        '404':
+          description: study not found
+
+  /studies/{studyId}/export/studydata/{token}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - name: token
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - importExport
+      description: Download Study data
+      operationId: exportStudyData
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: participantId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: observationId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExport'
         '404':
           description: study not found
 
@@ -1157,7 +1200,7 @@ paths:
       operationId: exportParticipants
       responses:
         '200':
-          description: foo
+          description: Operation successful
           content:
             text/csv:
               schema:
@@ -1167,13 +1210,13 @@ paths:
           description: bad request
 
   /studies/{studyId}/data:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
     get:
       tags:
         - data
       description: Get Study Participation Data
       operationId: getParticipationData
-      parameters:
-        - $ref: '#/components/parameters/StudyId'
       responses:
         '200':
           description: Operation successful
@@ -1186,14 +1229,71 @@ paths:
         '404':
           description: not found
 
+  /studies/{studyId}/observations/{observationId}/views:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+    get:
+      operationId: listObservationViews
+      description: "Get a list of available views"
+      tags:
+        - data
+      responses:
+        200:
+          description: List of available Views
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationDataView'
+
+  /studies/{studyId}/observations/{observationId}/views/{viewName}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ObservationId'
+      - name: viewName
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - data
+      description: "Get observation view data"
+      operationId: getObservationViewData
+      parameters:
+        - name: studyGroupId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: participantId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - $ref: '#/components/parameters/From'
+        - $ref: '#/components/parameters/To'
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationDataViewData'
+        '404':
+          description: not found
+
   /studies/{studyId}/datapoints:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
     get:
       tags:
         - data
       description: Get Data Points
       operationId: getDataPoints
       parameters:
-        - $ref: '#/components/parameters/StudyId'
         - name: observationId
           in: query
           schema:
@@ -1209,7 +1309,6 @@ paths:
           schema:
             type: string
             format: date-time
-            readOnly: true
         - name: size
           in: query
           schema:
@@ -1283,6 +1382,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FrontendConfiguration'
+
   /config/buildInfo:
     get:
       tags:
@@ -1359,6 +1459,8 @@ components:
         message:
           type: string
         propertyId:
+          type: string
+        componentTitle:
           type: string
         type:
           type: string
@@ -1443,7 +1545,6 @@ components:
         - active
         - paused
         - closed
-      readOnly: true
       default: draft
 
     StudyGroup:
@@ -1669,6 +1770,52 @@ components:
           type: string
           format: date-time
           readOnly: true
+
+    ObservationDataView:
+      type: object
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - name
+
+    ObservationDataViewData:
+      type: object
+      properties:
+        view:
+          $ref: '#/components/schemas/ObservationDataView'
+        chartType:
+          type: string
+          enum:
+            - line
+            - bar
+            - pie
+        labels:
+          type: array
+          items:
+            type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationDataViewDataRow'
+
+    ObservationDataViewDataRow:
+      type: object
+      properties:
+        label:
+          type: string
+        values:
+          type: array
+          items:
+            type: number
+            format: double
+
     DataPoint:
       type: object
       properties:
@@ -1795,6 +1942,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Intervention'
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantInfo'
+        integrations:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntegrationInfo'
+
+    ParticipantInfo:
+      type: object
+      properties:
+        studyGroup:
+          type: integer
+
+    IntegrationInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        observationId:
+          $ref: '#/components/schemas/Id'
 
     UserSearchResultList:
       type: object
@@ -1992,6 +2161,7 @@ components:
       required:
         - auth
       readOnly: true
+
     BuildInfo:
       type: object
       properties:
@@ -2008,8 +2178,43 @@ components:
       required:
         - version
         - date
+    DataExport:
+      type: array
+      items:
+        type: object
+        properties:
+          datapoint_id:
+            type: string
+          participant_id:
+            type: string
+          study_id:
+            type: string
+          study_group_id:
+            type: string
+            nullable: true
+          observation_id:
+            type: string
+          observation_type:
+            type: string
+          data_type:
+            type: string
+          storage_date:
+            type: string
+          effective_time_frame:
+            type: string
+        additionalProperties: true
 
   parameters:
+    ComponentType:
+      name: componentType
+      in: path
+      schema:
+        type: string
+        enum:
+          - action
+          - trigger
+          - observation
+      required: true
     StudyId:
       name: studyId
       in: path
@@ -2058,6 +2263,24 @@ components:
         type: integer
         format: int32
       required: true
+    DateTime:
+      name: dateTime
+      in: query
+      schema:
+        type: string
+        format: date-time
+    From:
+      name: from
+      in: query
+      schema:
+        type: string
+        format: date-time
+    To:
+      name: to
+      in: query
+      schema:
+        type: string
+        format: date-time
 
   securitySchemes:
     OAuth:

@@ -15,6 +15,7 @@ import PrimeVue from 'primevue/config';
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
+import ToastService from 'primevue/toastservice';
 // Router
 import { Router } from './router';
 import AuthService from './service/AuthService';
@@ -106,6 +107,7 @@ app.use(Router);
 app.use(PrimeVue);
 app.use(ConfirmationService);
 app.use(DialogService);
+app.use(ToastService);
 app.use(pinia);
 
 app.mount('#app');

@@ -7,11 +7,7 @@
  Licensed under the Elastic License 2.0.
  */
 import { Event } from 'vue-cal';
-
-export interface DropdownOption {
-  label: string;
-  value: string | undefined;
-}
+import { DropdownOption } from './Common';
 
 export interface GroupOption {
   label: string;
