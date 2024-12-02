@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref, Ref, watch } from 'vue';
+  import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import Checkbox from 'primevue/checkbox';
@@ -22,6 +22,18 @@ Licensed under the Elastic License 2.0. */
 
   const studyStore = useStudyStore();
 
+  const minDate = computed(() => {
+    const date = new Date(studyStore.study.plannedStart!);
+    date.setHours(0, 0, 0);
+    return date;
+  });
+
+  const maxDate = computed(() => {
+    const date = new Date(studyStore.study.plannedEnd!);
+    date.setHours(23, 59, 59);
+    return date;
+  });
+
   const scheduler: any = dialogRef.value.data.scheduler;
   const returnSchedule: Ref<Event> = ref({
     type: scheduler.type ?? ScheduleType.Event,
@@ -33,9 +45,11 @@ Licensed under the Elastic License 2.0. */
   const calendarStart: Ref<Date> = ref(
     new Date(returnSchedule.value.dtstart as string),
   );
+  calendarStart.value.setHours(0, 0, 0);
   const calendarEnd: Ref<Date> = ref(
     new Date(returnSchedule.value.dtend as string),
   );
+  calendarEnd.value.setHours(23, 59, 59);
   let calendarEndChangedWithStart: boolean = false;
 
   watch(calendarStart, (newValue, oldValue) => {
@@ -293,8 +307,8 @@ Licensed under the Elastic License 2.0. */
         v-model="calendarStart"
         :date-format="dateFormat"
         :placeholder="dateFormat"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         :manual-input="false"
         autocomplete="off"
         class="start-date col-span-2 col-start-2 w-full"
@@ -303,8 +317,8 @@ Licensed under the Elastic License 2.0. */
       <Calendar
         v-if="!entireDayCheckbox"
         v-model="calendarStart"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         :manual-input="false"
         placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
@@ -322,7 +336,7 @@ Licensed under the Elastic License 2.0. */
         v-if="!singleDayEventCheckbox"
         v-model="calendarEnd"
         :min-date="calendarStart"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :max-date="maxDate"
         :manual-input="false"
         :date-format="dateFormat"
         :placeholder="dateFormat"
@@ -340,8 +354,8 @@ Licensed under the Elastic License 2.0. */
         v-if="!entireDayCheckbox"
         v-model="calendarEnd"
         :manual-input="false"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
         :class="{
