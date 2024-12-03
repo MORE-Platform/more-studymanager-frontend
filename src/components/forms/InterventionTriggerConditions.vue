@@ -142,7 +142,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   function toggleRowEdit(item: InterventionTriggerUpdateItem): void {
-    console.log(item);
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter[
         item.rowIndex
