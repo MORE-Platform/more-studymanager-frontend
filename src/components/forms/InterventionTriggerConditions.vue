@@ -20,6 +20,8 @@ Licensed under the Elastic License 2.0. */
     QueryObjectInner,
   } from '../../models/InputModels';
   import { useI18n } from 'vue-i18n';
+  import { hasData } from '../../utils/dataUtils';
+
   const studyStore = useStudyStore();
 
   const { t } = useI18n();
@@ -83,6 +85,7 @@ Licensed under the Elastic License 2.0. */
       emit('onError', rowOpenError.value);
     }
   }
+
   function setTriggerConditionError(triggerTableE?: string): void {
     emit('onError', triggerTableE ? triggerTableE : '');
   }
@@ -139,6 +142,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function toggleRowEdit(item: InterventionTriggerUpdateItem): void {
+    console.log(item);
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter[
         item.rowIndex
@@ -183,11 +187,11 @@ Licensed under the Elastic License 2.0. */
 
   function validateEditedRow(triggerConfig: QueryObjectInner): boolean {
     return !!(
-      triggerConfig.observationId &&
+      triggerConfig.observationId !== undefined &&
       triggerConfig.observationType &&
       triggerConfig.observationProperty &&
       triggerConfig.operator &&
-      triggerConfig.propertyValue
+      hasData(triggerConfig.propertyValue)
     );
   }
 
@@ -237,6 +241,7 @@ Licensed under the Elastic License 2.0. */
     }
     checkTriggerConditionErrors();
   }
+
   function deleteRow(item: InterventionTriggerUpdateItem): void {
     if (typeof triggerConditionObj.value.value !== 'undefined') {
       triggerConditionObj.value.value[item.groupIndex].parameter.splice(
@@ -288,10 +293,10 @@ Licensed under the Elastic License 2.0. */
         "
         class="my-6 w-full text-center"
       >
-        <Button type="button" class="p-button my-6" @click="addTriggerGroup()"
-          ><span class="pi pi-plus mr-2"></span>
-          {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
-        >
+        <Button type="button" class="p-button my-6" @click="addTriggerGroup()">
+          <span class="pi pi-plus mr-2" />
+          {{ $t('intervention.dialog.label.addTriggerGroup') }}
+        </Button>
       </div>
     </Suspense>
 
@@ -334,8 +339,8 @@ Licensed under the Elastic License 2.0. */
             :disabled="!editable"
             @click="addTriggerGroup(-1)"
             ><span class="pi pi-plus mr-2"></span>
-            {{ $t('intervention.dialog.label.addTriggerGroup') }}</Button
-          >
+            {{ $t('intervention.dialog.label.addTriggerGroup') }}
+          </Button>
         </div>
       </div>
     </Suspense>
