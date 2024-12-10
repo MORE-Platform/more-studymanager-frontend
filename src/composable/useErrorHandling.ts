@@ -8,6 +8,7 @@
  */
 import axios, { AxiosError } from 'axios';
 import useLoader from './useLoader';
+import { computed, ComputedRef, Ref, ref } from 'vue';
 
 type UseErrorHandlingReturnType = {
   handleIndividualError: (
@@ -59,3 +60,60 @@ export function useErrorHandling(): UseErrorHandlingReturnType {
     activateGlobalErrorHandlingInterceptor,
   };
 }
+
+export type ErrorValue = {
+  label: string;
+  value: string;
+};
+
+export const useErrorQueue = (): {
+  errors: Ref<ErrorValue[]>;
+  addError: (error: ErrorValue) => void;
+  clearError: (label: string | string[]) => void;
+  clearAllErrors: () => void;
+  getError: ComputedRef<
+    (label: string | string[]) => string | null | undefined
+  >;
+} => {
+  const errors = ref<ErrorValue[]>([]);
+
+  const addError = (error: ErrorValue): void => {
+    errors.value.push(error);
+  };
+
+  const clearError = (label: string | string[]): void => {
+    if (Array.isArray(label)) {
+      errors.value = errors.value.filter((el) => !label.includes(el.label));
+    } else {
+      errors.value = errors.value.filter((el) => el.label !== label);
+    }
+  };
+
+  const clearAllErrors = (): void => {
+    errors.value = [];
+  };
+
+  const getError = computed(
+    () =>
+      (label: string | string[]): string | null | undefined => {
+        if (Array.isArray(label)) {
+          for (const lbl of label) {
+            const error = errors.value.find((el) => el.label === lbl)?.value;
+            if (error !== null && error !== undefined) {
+              return error;
+            }
+          }
+        } else {
+          return errors.value.find((el) => el.label === label)?.value;
+        }
+      },
+  );
+
+  return {
+    errors,
+    addError,
+    clearError,
+    clearAllErrors,
+    getError,
+  };
+};
