@@ -44,10 +44,12 @@ Licensed under the Elastic License 2.0. */
     message: '',
     showMessage: false,
   });
+
   function setAlertMessage(message: string): void {
     alert.message = message;
     alert.showMessage = true;
   }
+
   function clearAlertMessage(): void {
     alert.message = '';
     alert.showMessage = false;
@@ -324,7 +326,7 @@ Licensed under the Elastic License 2.0. */
           <Button
             type="button"
             icon="pi pi-plus"
-            :label="t('study.studyList.action.addStudy')"
+            :label="$t('study.studyList.action.addStudy')"
             @click="openCreateDialog()"
           />
         </div>
@@ -332,16 +334,16 @@ Licensed under the Elastic License 2.0. */
           <FileUpload
             mode="basic"
             upload-icon="pi pi-upload"
-            :choose-label="t('study.studyList.action.importStudy')"
+            :choose-label="$t('study.studyList.action.importStudy')"
             :custom-upload="true"
             :auto="true"
             accept=".json"
             @uploader="onImportStudy($event)"
-          ></FileUpload>
+          />
         </div>
       </template>
     </MoreTable>
-    <ConfirmDialog></ConfirmDialog>
+    <ConfirmDialog />
     <DynamicDialog />
 
     <AlertMsg

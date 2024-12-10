@@ -68,7 +68,6 @@
       "inComponentTitle": "In Aufzeichnung '{title}': "
     }
   },
-
   "studyNavigation": {
     "accessDialog": {
       "header": "Zugriff verweigert",
@@ -85,7 +84,6 @@
       "monitoringAndData": "Monitoring & Data"
     }
   },
-
   "study": {
     "singular": "Studie",
     "plural": "Studien",
@@ -184,6 +182,7 @@
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addDuration": "Bitte fügen Sie einen Wert und eine Einheit im Feld hinzu.",
+      "durationSmallerThanStudySpan": "Die angegebene Dauer darf {maxDuration} Tag(e) nicht überschreiten.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
@@ -194,6 +193,7 @@
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
       "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
       "durationInput": "Bitte geben Sie eine Studiendauer ein.",
+      "durationUnitDropdown": "Einheit der Dauer",
       "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer:innen bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
       "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
       "selectLanguage": "Sprache auswählen",
@@ -264,7 +264,6 @@
       }
     }
   },
-
   "studyGroup": {
     "singular": "Studiengruppe",
     "plural": "Studiengruppen",
@@ -300,7 +299,6 @@
       "chooseGroup": "Studiengruppe auswählen"
     }
   },
-
   "studyCollaborator": {
     "dialog": {
       "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
@@ -339,7 +337,6 @@
       "defaultEmptyMsg": "Noch keine Mitarbeiter hinzugefügt."
     }
   },
-
   "monitoringData": {
     "tabs": {
       "lastDataPoints": "Letzte Datenpunkte",
@@ -347,7 +344,6 @@
       "dataDownload": "Studiendaten herunterladen"
     }
   },
-
   "monitoring": {
     "title": "Monitoring",
     "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
@@ -397,14 +393,12 @@
       }
     }
   },
-
   "data": {
     "dataDownload": {
       "title": "Studiendaten herunterladen",
       "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
     }
   },
-
   "participants": {
     "singular": "Teilnehmer",
     "plural": "Teilnehmer",
@@ -466,7 +460,6 @@
       "chooseParticipant": "Teilnehmer:in auswählen"
     }
   },
-
   "observation": {
     "singular": "Aufzeichnung",
     "plural": "Aufzeichnungen",
@@ -564,7 +557,6 @@
       "chooseObservation": "Aufzeichnung auswählen"
     }
   },
-
   "integration": {
     "singular": "Integration",
     "plural": "Integrationen",
@@ -627,7 +619,6 @@
       "selectObservation": "Wählen Sie bitte ein Datenerhebungsmodul aus, an das sie Ihr Integrationsmodul verlinken wollen."
     }
   },
-
   "intervention": {
     "singular": "Intervention",
     "plural": "Interventionen",
@@ -761,7 +752,6 @@
       "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
     }
   },
-
   "timeline": {
     "labels": {
       "relativeDate": "Registrierungsdatum",
@@ -776,13 +766,11 @@
       "participantJoined": "Teilnehmer:in beigetreten"
     }
   },
-
   "moreTable": {
     "defaultEmptyMsg": "Keine Einträge vorhanden",
     "filterBy": "Filtern",
     "saveLine": "Bitte speichern"
   },
-
   "cronSchedule": {
     "singular": "Cron Scheduler",
     "placeholders": {
@@ -841,7 +829,6 @@
     "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
     "limitDescription": ""
   },
-
   "scheduler": {
     "singular": "Planer",
     "type": {
@@ -1052,12 +1039,11 @@
         "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein/e Teilnehmer:in meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
-          "repeated": "Wiederholung",
-          "times": "Mal"
+          "runTime": "Das Event wird {repetitionNum} Mal ausgeführt."
         },
         "placeholder": {
           "dtstartOffset": "Offset in Tage(n)",
-          "dtstartTime": "Strat Zeit",
+          "dtstartTime": "Start Zeit",
           "dtendOffset": "Offset in Tage(n)",
           "dtendTime": "End Zeit",
           "enterNumber": "Nummer eingeben"
@@ -1070,11 +1056,16 @@
             "addOffset": "Befülle den Offset des relativen Endzeitraum.",
             "EndBeforeStart": "Bitte setzen Sie den relativen Startzeitpunkt vor dem Endzeitpunkt"
           },
+          "scheduleTooLong": "Das Datenerhebungs-Event darf den Studienzeitraum von maximal {maxDuration} Tagen nicht überschreiten.",
+          "startTimeBeforeEnd": "Startzeit muss vor der Endzeit liegen.",
           "rrrule": {
-            "frequency": "Fülle die Widerholungsrate ein.",
-            "endAfter": "Fulle den Offset zum Enddatum ein.",
-            "notValid": "Die eingegebenen Werte sind ungültig."
-          }
+            "frequency": "Fülle die Wiederholungsrate ein.",
+            "endAfter": "Bitte geben Sie den Offset zum Enddatum ein.",
+            "notValid": "Die eingegebenen Werte sind ungültig.",
+            "repetitionTooLong": "Wiederholungen dürfen das Studienende nicht überschreiten. Das maximale Intervall beträgt {repValue} {repUnit}.",
+            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die Studiendauer von {durValue} {durUnit} nicht überschreiten."
+          },
+          "cannotRepeat": "Das Datenerhebungs-Event kann nicht erneut stattfinden, da dies über das Ende der Studie hinausgehen würde."
         }
       }
     },
@@ -1085,7 +1076,6 @@
       "rruleEndIsEmpty": "Bitte legen Sie einen Endpunkt für Ihren Wiederholungszeitraum fest."
     }
   },
-
   "tooltips": {
     "deleteBtn": "Löschen",
     "editBtn": "Bearbeiten",
@@ -1112,7 +1102,6 @@
       "relativeDateInfo": "Damit wird der Zeitpunkt simuliert, an dem ein Teilnehmer in die Studie eintritt."
     }
   },
-
   "userstatus": {
     "active": "aktiv",
     "approved": "genehmigt",
@@ -1125,7 +1114,6 @@
   "inputModel": {
     "enterValue": "Bitte geben Sie einen Wert hinzu."
   },
-
   "title": "Titel",
   "message": "Nachricht"
 }
