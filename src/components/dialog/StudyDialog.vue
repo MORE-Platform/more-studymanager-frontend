@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { computed, inject, reactive, ref, Ref, watch } from 'vue';
+  import { inject, reactive, ref, Ref, watch } from 'vue';
   import InputText from 'primevue/inputtext';
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
@@ -15,13 +15,12 @@ Licensed under the Elastic License 2.0. */
     DurationUnitEnum,
     Study,
   } from '../../generated-sources/openapi';
-  import { dateToDateString } from '../../utils/dateUtils';
+  import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
-  import { MoreTableChoice } from '../../models/MoreTableModel';
   import { useGlobalStore } from '../../stores/globalStore';
-  import { DateTime, DurationLikeObject } from 'luxon';
   import ErrorLabel from '../forms/ErrorLabel.vue';
-  import { roundAndCeil } from '../../utils/dataUtils';
+  import { useErrorQueue } from '../../composable/useErrorHandling';
+  import { calcStudyDuration } from '../../utils/studyUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -57,40 +56,6 @@ Licensed under the Elastic License 2.0. */
 
   const maxStudyDuration = ref<number>(0);
 
-  const calcMaxStudyDuration = (
-    duration: Duration,
-    start: Date,
-    end: Date,
-  ): number => {
-    if (duration.unit) {
-      const startDateTime = DateTime.fromJSDate(start).set({
-        hour: 0,
-        minute: 0,
-      });
-      const endDateTime = DateTime.fromJSDate(end).set({
-        hour: 23,
-        minute: 59,
-      });
-      if (
-        !startDateTime.isValid ||
-        !endDateTime.isValid ||
-        startDateTime > endDateTime
-      ) {
-        return 0;
-      }
-      return roundAndCeil(
-        startDateTime
-          .diff(endDateTime)
-          .as(
-            duration.unit
-              ?.toString()
-              ?.toLowerCase() as keyof DurationLikeObject,
-          ),
-      );
-    }
-    return -1;
-  };
-
   const contactInstitute: Ref<string> = ref(study.contact?.institute ?? '');
   const contactPerson: Ref<string> = ref(
     study.contact?.person && study.contact?.person !== 'pending'
@@ -121,90 +86,67 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  const errors = ref<MoreTableChoice[]>([]);
+  const { errors, clearError, getError, addError } = useErrorQueue();
 
   function checkRequiredFields(): void {
     errors.value = [];
     if (!returnStudy.title) {
-      errors.value.push({ label: 'title', value: t('study.error.addTitle') });
+      addError({ label: 'title', value: t('study.error.addTitle') });
     }
     if (!returnStudy.consentInfo) {
-      errors.value.push({
+      addError({
         label: 'consentInfo',
         value: t('study.error.addConsentInfo'),
       });
     }
     if (!returnStudy.participantInfo) {
-      errors.value.push({
+      addError({
         label: 'participantInfo',
         value: t('study.error.addParticipantInfo'),
       });
     }
     if (!contactPerson.value && !contactEmail.value) {
-      errors.value.push({
+      addError({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
       });
     } else if (!contactPerson.value) {
-      errors.value.push({
+      addError({
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
     } else if (!contactEmail.value) {
-      errors.value.push({
+      addError({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
       });
     }
   }
 
-  const getError = computed(
-    () =>
-      (label: string | string[]): string | null | undefined => {
-        if (Array.isArray(label)) {
-          for (const lbl of label) {
-            const error = errors.value.find((el) => el.label === lbl)?.value;
-            if (error !== null && error !== undefined) {
-              return error;
-            }
-          }
-        } else {
-          return errors.value.find((el) => el.label === label)?.value;
-        }
-        return null;
-      },
-  );
-
-  const clearError = (label: string | string[]): void => {
-    if (Array.isArray(label)) {
-      errors.value = errors.value.filter((el) => !label.includes(el.label));
-    } else {
-      errors.value = errors.value.filter((el) => el.label !== label);
-    }
-  };
-
-  watch([start, end], ([newStart, newEnd]) => {
-    if (newEnd < newStart) {
-      end.value = newStart;
-    }
-  });
-
   watch(
     [studyDuration, start, end],
     ([newDuration, newStart, newEnd]) => {
-      const maxDuration = calcMaxStudyDuration(newDuration, newStart, newEnd);
-      if (maxDuration < 0) {
+      if (newEnd < newStart) {
+        end.value = newStart;
+      }
+      const maxDuration = calcStudyDuration(
+        createLuxonDateTime(newStart),
+        createLuxonDateTime(newEnd),
+        newDuration,
+      );
+      if (!maxDuration?.value) {
         return;
       } else {
-        maxStudyDuration.value = maxDuration;
+        maxStudyDuration.value = maxDuration.value;
       }
 
       if (studyDuration.value && studyDuration.value > maxStudyDuration.value) {
-        studyDuration.value = maxStudyDuration.value;
-        errors.value = errors.value.filter((err) => err.label !== 'duration');
-        errors.value.push({
+        clearError('duration');
+        addError({
           label: 'duration',
-          value: t('study.error.durationSmallerThanStudySpan'),
+          value: t('study.error.durationSmallerThanStudySpan', {
+            maxDuration: maxStudyDuration.value,
+          }),
         });
       }
     },
@@ -455,6 +397,7 @@ Licensed under the Elastic License 2.0. */
           class="!ml-2"
           type="submit"
           :label="$t('global.labels.save')"
+          :disabled="errors.length > 0"
           @click="checkRequiredFields"
         />
       </div>

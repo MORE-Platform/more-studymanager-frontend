@@ -1,7 +1,5 @@
 import { Duration, DurationUnitEnum } from '../generated-sources/openapi';
-
-const minutesInDay = 1440;
-const minutesInHour = 60;
+import { minutesInDay, minutesInHour } from '../constants';
 
 export function valueToMinutes(duration: Duration): number {
   const value = duration.value || 0;

@@ -182,7 +182,7 @@
     "error": {
       "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
       "addDuration": "Bitte fügen Sie einen Wert und eine Einheit im Feld hinzu.",
-      "durationSmallerThanStudySpan": "Die angegebene Dauer muss kleiner oder gleich der gesamten Studienzeit sein.",
+      "durationSmallerThanStudySpan": "Die angegebene Dauer darf {maxDuration} Tag(e) nicht überschreiten.",
       "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
@@ -1039,8 +1039,7 @@
         "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein/e Teilnehmer:in meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
-          "repeated": "Wiederholung",
-          "times": "Mal"
+          "runTime": "Das Event wird {repetitionNum} Mal ausgeführt."
         },
         "placeholder": {
           "dtstartOffset": "Offset in Tage(n)",
@@ -1057,14 +1056,14 @@
             "addOffset": "Befülle den Offset des relativen Endzeitraum.",
             "EndBeforeStart": "Bitte setzen Sie den relativen Startzeitpunkt vor dem Endzeitpunkt"
           },
-          "scheduleTooLong": "Das Datenerhebungs-Event darf nicht länger als die Studiendauer dauern.",
+          "scheduleTooLong": "Das Datenerhebungs-Event darf den Studienzeitraum von maximal {maxDuration} Tagen nicht überschreiten.",
           "startTimeBeforeEnd": "Startzeit muss vor der Endzeit liegen.",
           "rrrule": {
             "frequency": "Fülle die Wiederholungsrate ein.",
             "endAfter": "Bitte geben Sie den Offset zum Enddatum ein.",
             "notValid": "Die eingegebenen Werte sind ungültig.",
-            "repetitionTooLong": "Wiederholungen können nicht über das Ende der Studie hinausgehen.",
-            "repetitionEndTooLong": "Das Ende der Wiederholungen darf das Studienende nicht überschreiten."
+            "repetitionTooLong": "Wiederholungen dürfen das Studienende nicht überschreiten. Das maximale Intervall beträgt {repValue} {repUnit}.",
+            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die Studiendauer von {durValue} {durUnit} nicht überschreiten."
           },
           "cannotRepeat": "Das Datenerhebungs-Event kann nicht erneut stattfinden, da dies über das Ende der Studie hinausgehen würde."
         }

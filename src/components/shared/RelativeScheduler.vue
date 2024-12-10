@@ -20,7 +20,7 @@
     correctEvent,
     correctEventRepetition,
   } from '../../utils/relativeScheduleUtils';
-  import { studyDuration } from '../../utils/studyUtils';
+  import { calcStudyDurationFromStudy } from '../../utils/studyUtils';
   import ErrorLabel from '../forms/ErrorLabel.vue';
   import { useErrorQueue } from '../../composable/useErrorHandling';
   import { valueToMinutes } from '../../utils/durationUtils';
@@ -30,7 +30,7 @@
   const studyStore = useStudyStore();
   const { study } = storeToRefs(studyStore);
   const maxDuration = computed((): Duration | undefined =>
-    studyDuration(study.value),
+    calcStudyDurationFromStudy(study.value),
   );
 
   const schedule: RelativeEvent = dialogRef.value.data.scheduler;
@@ -292,33 +292,17 @@
       newFrequency,
       newEndRep,
     ]) => {
-      const correctedEvent = correctEvent(
-        newStartOffset,
-        newEndOffset,
-        newStartTime,
-        newEndTime,
-        maxDuration.value,
-      );
-      if (correctedEvent.offsetCorrected) {
-        addError({
-          label: 'scheduleTooLong',
-          value: t('scheduler.dialog.relativeSchedule.error.scheduleTooLong'),
-        });
-      }
-      if (
-        startTime.value !== (correctedEvent.correctStart ?? startTime.value) ||
-        endTime.value !== (correctedEvent.correctEnd ?? endTime.value)
-      ) {
-        startTime.value = correctedEvent.correctStart ?? startTime.value;
-        endTime.value = correctedEvent.correctEnd ?? endTime.value;
-        addError({
-          label: 'startTimeBeforeEnd',
-          value: t(
-            'scheduler.dialog.relativeSchedule.error.startTimeBeforeEnd',
-          ),
-        });
-      }
       if (maxDuration.value) {
+        const errorInEvent = correctEvent(
+          newStartOffset,
+          newEndOffset,
+          newStartTime,
+          newEndTime,
+          maxDuration.value,
+        );
+        if (errorInEvent) {
+          addError(errorInEvent);
+        }
         const correctedRepetition = correctEventRepetition(
           startOffset.value,
           startTime.value,
@@ -327,30 +311,20 @@
           newFrequency,
           newEndRep,
           maxDuration.value,
+          !repeatChecked.value,
         );
         repetitionEnabled.value = correctedRepetition.repetitionEnabled;
         frequencyXTimes.value = correctedRepetition.numberOfRepetitions;
         if (!correctedRepetition.repetitionEnabled) {
           repeatChecked.value = false;
-        } else {
-          calcRepetition();
         }
+        calcRepetition();
         if (repeatChecked.value) {
-          if (correctedRepetition.frequencyCorrected) {
-            addError({
-              label: 'repetitionTooLong',
-              value: t(
-                'scheduler.dialog.relativeSchedule.error.rrrule.repetitionTooLong',
-              ),
-            });
+          if (correctedRepetition.frequencyError) {
+            addError(correctedRepetition.frequencyError);
           }
-          if (correctedRepetition.frequencyEndCorrected) {
-            addError({
-              label: 'repetitionEndTooLong',
-              value: t(
-                'scheduler.dialog.relativeSchedule.error.rrrule.repetitionEndTooLong',
-              ),
-            });
+          if (correctedRepetition.frequencyEndError) {
+            addError(correctedRepetition.frequencyEndError);
           }
         }
       }
@@ -410,7 +384,7 @@
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
                 startTime = createLuxonDateTime(dateVal) || startTime;
-                clearError(['startTimeBeforeEnd']);
+                clearError(['offsetCorrection']);
               }
             "
           />
@@ -434,7 +408,7 @@
             :min="1"
             @blur="calcRepetition()"
             @input="
-              clearError(['dtend', 'scheduleTooLong', 'startTimeBeforeEnd'])
+              clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection'])
             "
           />
         </div>
@@ -450,14 +424,14 @@
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
                 endTime = createLuxonDateTime(dateVal) || endTime;
-                clearError(['startTimeBeforeEnd']);
+                clearError(['startTimeBeforeEnd', 'offsetCorrection']);
               }
             "
           />
         </div>
       </div>
       <ErrorLabel
-        :error="getError(['dtend', 'scheduleTooLong', 'startTimeBeforeEnd'])"
+        :error="getError(['dtend', 'offsetCorrection'])"
         class="col-span-5 col-start-2 border-l-2 pl-3"
       />
     </div>
@@ -501,7 +475,7 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
             :min="1"
-            @input="clearError(['rrruleFreq', 'repetitionTooLong'])"
+            @input="clearError(['rrruleFreq', 'frequencyError'])"
           />
           <Dropdown
             v-model="frequency.unit"
@@ -509,20 +483,18 @@
             :option-label="'label'"
             :option-value="'value'"
             class="col-span-3 ml-4"
-            @change="clearError(['rrruleFreq', 'repetitionTooLong'])"
+            @change="clearError(['rrruleFreq', 'frequencyError'])"
           />
         </div>
         <div v-if="frequencyXTimes !== undefined" class="col-span-2">
           {{
-            `${$t(
-              'scheduler.dialog.relativeSchedule.rrrule.repeated',
-            )}: ${frequencyXTimes} ${$t(
-              'scheduler.dialog.relativeSchedule.rrrule.times',
-            )}`
+            $t('scheduler.dialog.relativeSchedule.rrrule.runTime', {
+              repetitionNum: frequencyXTimes,
+            })
           }}
         </div>
         <ErrorLabel
-          :error="getError(['rrruleFreq', 'repetitionTooLong'])"
+          :error="getError(['rrruleFreq', 'frequencyError'])"
           class="col-span-5 col-start-2 border-l-2 pl-3"
         />
 
@@ -537,7 +509,7 @@
             "
             class="z-10"
             :min="1"
-            @input="clearError(['rrruleEndAfter', 'repetitionEndTooLong'])"
+            @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
           <Dropdown
             v-model="endRep.unit"
@@ -545,7 +517,7 @@
             option-label="label"
             option-value="value"
             class="z-10 col-span-3 ml-4"
-            @change="clearError(['rrruleEndAfter', 'repetitionEndTooLong'])"
+            @change="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
         </div>
         <div v-if="totalDays && totalDays > 0" class="col-span-2">
@@ -554,7 +526,7 @@
           }}
         </div>
         <ErrorLabel
-          :error="getError(['rrruleEndAfter', 'repetitionEndTooLong'])"
+          :error="getError(['rrruleEndAfter', 'frequencyEndError'])"
           class="col-span-5 col-start-2 border-l-2 pl-3"
         />
       </div>
@@ -571,7 +543,11 @@
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
-        <Button :label="$t('global.labels.save')" @click="save()" />
+        <Button
+          :disabled="errors.length > 0"
+          :label="$t('global.labels.save')"
+          @click="save()"
+        />
       </div>
     </div>
   </div>

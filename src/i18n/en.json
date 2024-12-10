@@ -182,7 +182,7 @@
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
       "addDuration": "Please enter both a duration and a unit.",
-      "durationSmallerThanStudySpan": "The specified duration must be less than or equal to the total study time.",
+      "durationSmallerThanStudySpan": "The specified duration must not exceed {maxDuration} day(s).",
       "addConsentInfo": "The consent information is required. Please enter a description.",
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
@@ -1039,8 +1039,7 @@
         "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
         "rrrule": {
           "endsAfter": "Ends {days} day after individual study start | Ends {days} day after individual study start | Ends {days} days after individual study start",
-          "repeated": "Repeated",
-          "times": "times"
+          "runTime": "The observation will run {repetitionNum} times."
         },
         "placeholder": {
           "dtstartOffset": "Enter offset in day(s)",
@@ -1057,14 +1056,14 @@
             "addOffset": "Fill in the offset of the relative end period.",
             "EndBeforeStart": "Please Set the relative start period before the end period"
           },
-          "scheduleTooLong": "The observation must not last longer than the study duration.",
+          "scheduleTooLong": "The observation must not exceed the study period of {maxDuration} days.",
           "startTimeBeforeEnd": "Start time must be before the end time.",
           "rrrule": {
             "frequency": "Fill in the repetition rate.",
             "endAfter": "Fill in the offset to the end date.",
             "notValid": "Values entered are not valid",
-            "repetitionTooLong": "Repetitions cannot extend beyond the end of the study.",
-            "repetitionEndTooLong": "The end of the repetitions must not exceed the study end."
+            "repetitionTooLong": "Repetitions must not exceed the end of the study. The maximum interval is {repValue} {repUnit}.",
+            "repetitionEndTooLong": "The end of repetitions must not exceed the study duration of {durValue} {durUnit}."
           },
           "cannotRepeat": "The observation cannot occur again as it would exceed the end of the study."
         }
