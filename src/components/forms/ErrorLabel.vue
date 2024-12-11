@@ -1,5 +1,5 @@
 <template>
-  <div v-if="error" class="error mt-2">
+  <div v-if="error" class="error-label error mt-2">
     {{ Array.isArray(error) ? error.find((e) => !!e) : error }}
   </div>
 </template>

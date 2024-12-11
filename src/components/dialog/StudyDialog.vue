@@ -21,6 +21,7 @@ Licensed under the Elastic License 2.0. */
   import ErrorLabel from '../forms/ErrorLabel.vue';
   import { useErrorQueue } from '../../composable/useErrorHandling';
   import { calcStudyDuration } from '../../utils/studyUtils';
+  import { scrollToFirstError } from '../../utils/componentUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -121,6 +122,7 @@ Licensed under the Elastic License 2.0. */
         value: t('study.error.addContactEmail'),
       });
     }
+    scrollToFirstError();
   }
 
   watch(
@@ -132,7 +134,6 @@ Licensed under the Elastic License 2.0. */
       const maxDuration = calcStudyDuration(
         createLuxonDateTime(newStart),
         createLuxonDateTime(newEnd),
-        newDuration,
       );
       if (!maxDuration?.value) {
         return;
@@ -140,7 +141,7 @@ Licensed under the Elastic License 2.0. */
         maxStudyDuration.value = maxDuration.value;
       }
 
-      if (studyDuration.value && studyDuration.value > maxStudyDuration.value) {
+      if (newDuration.value && newDuration.value > maxStudyDuration.value) {
         clearError('duration');
         addError({
           label: 'duration',
@@ -149,6 +150,7 @@ Licensed under the Elastic License 2.0. */
           }),
         });
       }
+      scrollToFirstError();
     },
     { deep: true },
   );
@@ -243,7 +245,12 @@ Licensed under the Elastic License 2.0. */
             :placeholder="$t('study.placeholder.durationInput')"
             :auto-resize="true"
             :min="0"
-            @input="clearError('duration')"
+            @input="
+              (event) => {
+                console.log(event);
+                clearError('duration');
+              }
+            "
           />
           <span class="w-fit">
             {{ $t('scheduler.frequency.days') }}

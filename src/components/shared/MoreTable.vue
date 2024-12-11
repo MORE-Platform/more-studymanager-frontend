@@ -305,7 +305,7 @@ Licensed under the Elastic License 2.0. */
       @row-click="onRowClick($event)"
     >
       <Column
-        v-if="frontRowActions.length"
+        v-if="frontRowActions?.length"
         key="actions"
         class="row-actions"
         :frozen="true"

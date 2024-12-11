@@ -24,6 +24,7 @@
   import ErrorLabel from '../forms/ErrorLabel.vue';
   import { useErrorQueue } from '../../composable/useErrorHandling';
   import { valueToMinutes } from '../../utils/durationUtils';
+  import { scrollToFirstError } from '../../utils/componentUtils';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -208,6 +209,7 @@
         });
       }
     }
+    scrollToFirstError();
   }
 
   function calcRepetition(): void {
@@ -327,6 +329,7 @@
             addError(correctedRepetition.frequencyEndError);
           }
         }
+        scrollToFirstError();
       }
     },
     { deep: true, immediate: true },
