@@ -18,8 +18,8 @@ Licensed under the Elastic License 2.0. */
   import {
     Participant,
     StudyGroup,
-    StudyStatus,
     StudyRole,
+    StudyStatus,
   } from '../generated-sources/openapi';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
@@ -364,6 +364,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const menu = ref();
+
   function toggleButtonMenu(event: MouseEvent): void {
     menu.value.toggle(event);
   }

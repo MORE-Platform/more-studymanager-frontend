@@ -1063,7 +1063,7 @@
             "endAfter": "Fill in the offset to the end date.",
             "notValid": "Values entered are not valid",
             "repetitionTooLong": "Repetitions must not exceed the end of the study. The maximum interval is {repValue} {repUnit}.",
-            "repetitionEndTooLong": "The end of repetitions must not exceed the study duration of {durValue} {durUnit}."
+            "repetitionEndTooLong": "The end of repetitions must not exceed the remaining study duration of {durValue} {durUnit}."
           },
           "cannotRepeat": "The observation cannot occur again as it would exceed the end of the study."
         }

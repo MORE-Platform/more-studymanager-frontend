@@ -114,7 +114,7 @@ export const correctEventRepetition = (
   let frequencyEndError: ErrorValue | undefined;
 
   const timeRemaining =
-    maxDurationInMinutes - (valueToMinutes(offsetStart) - minutesInDay);
+    maxDurationInMinutes - (valueToMinutes(offsetEnd) - minutesInDay);
   if (frequencyEndInMinutes > timeRemaining) {
     correctedFrequencyEnd = minutesToDuration(timeRemaining, frequencyEnd.unit);
     frequencyEndInMinutes = timeRemaining;

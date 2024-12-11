@@ -45,7 +45,7 @@
   );
 
   const endOffset = ref<Duration>({
-    value: schedule.dtend?.offset?.value ?? 2,
+    value: schedule.dtend?.offset?.value ?? 1,
     unit: DurationUnitEnum.Day,
   });
   const endTime = ref<DateTime>(

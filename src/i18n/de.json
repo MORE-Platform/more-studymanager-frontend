@@ -1063,7 +1063,7 @@
             "endAfter": "Bitte geben Sie den Offset zum Enddatum ein.",
             "notValid": "Die eingegebenen Werte sind ungültig.",
             "repetitionTooLong": "Wiederholungen dürfen das Studienende nicht überschreiten. Das maximale Intervall beträgt {repValue} {repUnit}.",
-            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die Studiendauer von {durValue} {durUnit} nicht überschreiten."
+            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die verbleibende Studiendauer von {durValue} {durUnit} nicht überschreiten."
           },
           "cannotRepeat": "Das Datenerhebungs-Event kann nicht erneut stattfinden, da dies über das Ende der Studie hinausgehen würde."
         }
