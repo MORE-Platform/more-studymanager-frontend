@@ -245,12 +245,7 @@ Licensed under the Elastic License 2.0. */
             :placeholder="$t('study.placeholder.durationInput')"
             :auto-resize="true"
             :min="0"
-            @input="
-              (event) => {
-                console.log(event);
-                clearError('duration');
-              }
-            "
+            @input="clearError('duration')"
           />
           <span class="w-fit">
             {{ $t('scheduler.frequency.days') }}
