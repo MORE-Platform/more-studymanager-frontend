@@ -36,6 +36,7 @@ export const useStudyStore = defineStore('study', () => {
         return study.value;
       });
   }
+
   async function updateStudy(studyResponse: Study): Promise<void> {
     if (study.value.studyId) {
       study.value = await studiesApi
@@ -95,6 +96,7 @@ export const useStudyStore = defineStore('study', () => {
         );
     }
   }
+
   async function listStudies(): Promise<void> {
     studies.value = await studiesApi
       .listStudies()
@@ -104,6 +106,7 @@ export const useStudyStore = defineStore('study', () => {
         return studies.value;
       });
   }
+
   async function updateStudyInStudies(changedStudy: Study): Promise<void> {
     const i = studies.value.findIndex(
       (studyItem) => studyItem.studyId === changedStudy.studyId,
@@ -175,10 +178,6 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  function exportStudyCalendar(studyId: number): void {
-    window.open(`api/v1/studies/${studyId}/calendar.ics`);
-  }
-
   function downloadJSON(filename: string, file: File): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
@@ -217,7 +216,6 @@ export const useStudyStore = defineStore('study', () => {
     importStudy,
     exportStudyConfig,
     exportStudyData,
-    exportStudyCalendar,
     studyUserRoles,
     studyStatus,
     studyId,
