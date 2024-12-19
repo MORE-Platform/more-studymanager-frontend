@@ -14,6 +14,9 @@ go to http://localhost:3000
 
 To have a consistent code style and quality, we use Eslint in combination with prettier.
 
+Node.js version known to work well as of 2024-12: v20.14.0
+NPM version known to work well as of 2024-12: v10.7.0
+
 ### Selecting backend 
 
 You can modify which backend you want to connect to by modifying the `package.json` file. E.g. to point to a remote backend:

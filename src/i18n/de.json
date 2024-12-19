@@ -402,6 +402,12 @@
     "dataDownload": {
       "title": "Studiendaten herunterladen",
       "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
+    },
+    "AISenseMaking": {
+      "title": "AI Data Sense Making",
+      "filterForAI": "Daten filtern für KI-gestützte Analyse",
+      "customPrompt": "Benutzerdefinierter Prompt",
+      "customPromptDescription": "Geben Sie einen benutzerdefinierten Prompt ein, um z. B. eine bestimmte Analyse oder Visualisierung zu erwirken."
     }
   },
 

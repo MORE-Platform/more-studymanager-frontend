@@ -402,6 +402,12 @@
     "dataDownload": {
       "title": "Download study data",
       "description": "Here you can download the study data based on various filters."
+    },
+    "AISenseMaking": {
+        "title": "AI Data Sense Making",
+        "filterForAI": "Filter data to pass to AI-enabled sense-making",
+        "customPrompt": "Custom Prompt",
+        "customPromptDescription": "Enter a custom prompt to describe desired analysis or visualization approach(es)."
     }
   },
 

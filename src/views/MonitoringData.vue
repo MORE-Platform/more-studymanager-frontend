@@ -13,6 +13,7 @@ Licensed under the Elastic License 2.0. */
   import TabPanel from 'primevue/tabpanel';
   import DatapointList from '../components/subComponents/DatapointList.vue';
   import ParticipationDataList from '../components/ParticipationDataList.vue';
+  import ParticipationDataAISenseMaking from '../components/subComponents/ParticipationDataAISenseMaking.vue';
 
   const studyStore = useStudyStore();
   const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Viewer];
@@ -43,6 +44,11 @@ Licensed under the Elastic License 2.0. */
         <TabPanel :header="$t('monitoringData.tabs.dataDownload')">
           <Suspense>
             <DataDownload />
+          </Suspense>
+        </TabPanel>
+        <TabPanel header="AI Data SenseMaking">
+          <Suspense>
+            <ParticipationDataAISenseMaking />
           </Suspense>
         </TabPanel>
       </TabView>
