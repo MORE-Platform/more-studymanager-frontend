@@ -70,15 +70,6 @@ export function timeToHourMinuteString(
   return time;
 }
 
-export const dateIsValid = (date?: Date | string): boolean => {
-  if (!date) {
-    return false;
-  } else if (typeof date === 'string') {
-    return !!dateTimeFromString(date);
-  }
-  return DateTime.fromJSDate(date).isValid;
-};
-
 export type DateString = 'iso' | 'sql' | 'http';
 
 export const dateTimeFromString = (
