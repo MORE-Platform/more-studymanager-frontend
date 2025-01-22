@@ -11,9 +11,9 @@ Licensed under the Elastic License 2.0. */
   import Dropdown from 'primevue/dropdown';
   import {
     Observation,
-    ValidationReport,
-    StudyStatus,
     ObservationSchedule,
+    StudyStatus,
+    ValidationReport,
   } from '../../generated-sources/openapi';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import RelativeScheduler from '../shared/RelativeScheduler.vue';
@@ -112,6 +112,7 @@ Licensed under the Elastic License 2.0. */
       },
     );
   }
+
   function validate(): void {
     let parsedProps: any;
     try {
@@ -138,18 +139,31 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
+  const minDate = (date: Date): Date => {
+    date.setHours(0, 0, 0);
+    return date;
+  };
+
+  const maxDate = (date: Date): Date => {
+    date.setHours(23, 59, 59);
+    return date;
+  };
+
   function save(props: any): void {
     if (isObjectEmpty(scheduler.value)) {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
           type: ScheduleType.Event,
-          dtstart: new Date(studyStore.study.plannedStart).toISOString(),
-          dtend: new Date(studyStore.study.plannedEnd).toISOString(),
+          dtstart: minDate(
+            new Date(studyStore.study.plannedStart),
+          ).toISOString(),
+          dtend: maxDate(new Date(studyStore.study.plannedEnd)).toISOString(),
         };
       } else {
+        const date = new Date();
         scheduler.value = {
-          dtstart: new Date().toISOString(),
-          dtend: new Date().toISOString(),
+          dtstart: minDate(date).toISOString(),
+          dtend: maxDate(date).toISOString(),
         };
       }
     }
@@ -391,6 +405,7 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   @import '../../styles/components/moreTable-dialogs.pcss';
   @import '../../styles/components/eye-checkbox.pcss';
+
   .dialog {
     :deep(.dropdown-has-value .p-dropdown-label) {
       color: var(--text-color);
@@ -400,6 +415,7 @@ Licensed under the Elastic License 2.0. */
       &:after {
         content: ', ';
       }
+
       &:last-of-type:after {
         content: '';
       }
