@@ -1,5 +1,5 @@
 # build stage
-FROM node:lts-alpine as build-stage
+FROM node:18-alpine as build-stage
 RUN apk add openjdk11-jre-headless
 WORKDIR /app
 COPY package*.json ./
