@@ -2,9 +2,19 @@
   import { useErrorQueue } from '../../../composable/useErrorHandling';
   import { Contact } from '../../../generated-sources/openapi';
   import ErrorLabel from '../../forms/ErrorLabel.vue';
+  import InputText from 'primevue/inputtext';
+  import { computed } from 'vue';
 
-  const { clearError, getError } = useErrorQueue();
+  const { clearError, errors } = useErrorQueue();
   const contact = defineModel<Contact>({ required: true });
+  const contactLabels = ['contactInfo', 'contactEmail', 'contactPerson'];
+  const contactErrors = computed<string>(
+    () =>
+      errors.value?.find((error) => contactLabels.includes(error.label))
+        ?.value || '',
+  );
+
+  const clearContactErrors = (): void => clearError(contactLabels);
 </script>
 
 <template>
@@ -37,7 +47,7 @@
           type="text"
           class="w-full"
           :placeholder="$t('study.placeholder.contactPerson')"
-          @input="clearError(['contactInfo', 'contactPerson', 'contactEmail'])"
+          @input="clearContactErrors"
         />
       </div>
       <div class="col-span-3">
@@ -45,12 +55,12 @@
           {{ $t('study.dialog.label.contactEmail') }}*
         </h6>
         <InputText
-          v-model="contact.phoneNumber"
+          v-model="contact.email"
           class="w-full"
           required
           type="email"
           :placeholder="$t('study.placeholder.contactEmail')"
-          @input="clearError(['contactInfo', 'contactPerson', 'contactEmail'])"
+          @input="clearContactErrors"
         />
       </div>
       <div class="col-span-3">
@@ -58,16 +68,13 @@
           {{ $t('study.dialog.label.contactTel') }}
         </h6>
         <InputText
-          v-model="contact.email"
+          v-model="contact.phoneNumber"
           class="w-full"
           type="tel"
           :placeholder="$t('study.placeholder.contactTel')"
         />
       </div>
     </div>
-    <ErrorLabel
-      :error="getError(['contactInfo', 'contactPerson', 'contactEmail'])"
-      class="col-span-8"
-    />
+    <ErrorLabel :error="contactErrors" class="col-span-8" />
   </div>
 </template>

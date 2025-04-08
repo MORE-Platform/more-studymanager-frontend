@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, reactive, ref, Ref, watch } from 'vue';
+  import { inject, reactive, ref, watch } from 'vue';
   import InputText from 'primevue/inputtext';
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
@@ -24,6 +24,7 @@ Licensed under the Elastic License 2.0. */
   import { calcStudyDuration } from '../../utils/studyUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
   import ContactInformation from './shared/ContactInformation.vue';
+  import { validateEmail } from '../../utils/stringUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
   const dialogRef: any = inject('dialogRef');
@@ -65,7 +66,8 @@ Licensed under the Elastic License 2.0. */
     study?.plannedStart ? new Date(study.plannedStart) : new Date(),
   );
   const end = ref(study?.plannedEnd ? new Date(study.plannedEnd) : new Date());
-  const { errors, clearError, getError, addError } = useErrorQueue();
+  const { errors, clearError, getError, addError, clearAllErrors } =
+    useErrorQueue();
   const maxStudyDuration = ref<number>(0);
 
   function save(): void {
@@ -81,7 +83,8 @@ Licensed under the Elastic License 2.0. */
   }
 
   function checkRequiredFields(): void {
-    errors.value = [];
+    clearAllErrors();
+
     if (!returnStudy.title) {
       addError({ label: 'title', value: t('study.error.addTitle') });
     }
@@ -97,7 +100,10 @@ Licensed under the Elastic License 2.0. */
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (!contact.value?.person && !contact.value?.email) {
+
+    const isEmailValid = validateEmail(contact.value?.email);
+
+    if (!contact.value?.person && !isEmailValid) {
       addError({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
@@ -107,12 +113,13 @@ Licensed under the Elastic License 2.0. */
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
-    } else if (!contact.value?.email) {
+    } else if (!isEmailValid) {
       addError({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
       });
     }
+
     scrollToFirstError();
   }
 
@@ -156,7 +163,7 @@ Licensed under the Elastic License 2.0. */
     <form
       id="studyDialogForm"
       class="grid grid-cols-6 items-center gap-4"
-      @submit.prevent="save()"
+      @submit.prevent="save"
     >
       <div class="col-start-0 col-span-6">
         <h5 class="text-lg font-bold" :class="{ 'mb-2': !getError('title') }">

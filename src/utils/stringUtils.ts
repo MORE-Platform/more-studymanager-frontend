@@ -1,5 +1,6 @@
-export const flatJoin = (...classes: (string | string[])[]): string =>
-  classes.flat().join(' ');
-
-export const safeString = (value?: unknown): string =>
-  value === undefined || value === null ? '' : String(value).trim();
+// Source https://emailregex.com/
+export const validateEmail = (email: string | undefined | null): boolean =>
+  !!email &&
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    email,
+  );
