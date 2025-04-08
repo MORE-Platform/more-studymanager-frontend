@@ -1,6 +1,6 @@
 # build stage
-FROM node:lts-alpine as build-stage
-RUN apk add openjdk11-jre-headless
+FROM node:18-alpine as build-stage
+RUN apk add openjdk17-jre-headless
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
