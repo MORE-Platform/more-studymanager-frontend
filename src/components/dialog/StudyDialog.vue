@@ -11,6 +11,7 @@ Licensed under the Elastic License 2.0. */
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
   import {
+    Contact,
     Duration,
     DurationUnitEnum,
     Study,
@@ -22,13 +23,12 @@ Licensed under the Elastic License 2.0. */
   import { useErrorQueue } from '../../composable/useErrorHandling';
   import { calcStudyDuration } from '../../utils/studyUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
+  import ContactInformation from './shared/ContactInformation.vue';
 
   const dateFormat = useGlobalStore().getDateFormat;
-
   const dialogRef: any = inject('dialogRef');
-  const study: Study = dialogRef.value.data?.study || {};
   const { t } = useI18n();
-
+  const study: Study = dialogRef.value.data?.study || {};
   const returnStudy: Study = reactive({
     studyId: study.studyId,
     title: study.title,
@@ -44,50 +44,41 @@ Licensed under the Elastic License 2.0. */
     contact: undefined,
     finishText: study.finishText,
   });
+  const contact = ref<Contact>({
+    person:
+      study.contact?.person && study.contact?.person !== 'pending'
+        ? study.contact.person
+        : '',
+    email:
+      study.contact?.email && study.contact?.email !== 'pending'
+        ? study.contact.email
+        : '',
+    phoneNumber: study.contact?.phoneNumber ?? '',
+    institute: study.contact?.institute ?? '',
+  });
 
   const studyDuration: Duration = reactive({
     value: study.duration?.value,
     unit: study.duration?.unit ?? DurationUnitEnum.Day,
   });
-
   const start = ref(
     study?.plannedStart ? new Date(study.plannedStart) : new Date(),
   );
   const end = ref(study?.plannedEnd ? new Date(study.plannedEnd) : new Date());
-
+  const { errors, clearError, getError, addError } = useErrorQueue();
   const maxStudyDuration = ref<number>(0);
-
-  const contactInstitute: Ref<string> = ref(study.contact?.institute ?? '');
-  const contactPerson: Ref<string> = ref(
-    study.contact?.person && study.contact?.person !== 'pending'
-      ? study.contact.person
-      : '',
-  );
-  const contactEmail: Ref<string> = ref(
-    study.contact?.email && study.contact?.email !== 'pending'
-      ? study.contact.email
-      : '',
-  );
-  const contactPhoneNumber: Ref<string> = ref(study.contact?.phoneNumber ?? '');
 
   function save(): void {
     returnStudy.plannedStart = dateToDateString(start.value);
     returnStudy.plannedEnd = dateToDateString(end.value);
     returnStudy.duration =
       studyDuration.value && studyDuration.unit ? studyDuration : undefined;
+    returnStudy.contact = contact.value;
 
-    returnStudy.contact = {
-      institute: contactInstitute.value,
-      person: contactPerson.value,
-      email: contactEmail.value,
-      phoneNumber: contactPhoneNumber.value,
-    };
     if (!errors.value.length) {
       dialogRef.value.close(returnStudy);
     }
   }
-
-  const { errors, clearError, getError, addError } = useErrorQueue();
 
   function checkRequiredFields(): void {
     errors.value = [];
@@ -106,17 +97,17 @@ Licensed under the Elastic License 2.0. */
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (!contactPerson.value && !contactEmail.value) {
+    if (!contact.value?.person && !contact.value?.email) {
       addError({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
       });
-    } else if (!contactPerson.value) {
+    } else if (!contact.value?.person) {
       addError({
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
-    } else if (!contactEmail.value) {
+    } else if (!contact.value?.email) {
       addError({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
@@ -323,72 +314,7 @@ Licensed under the Elastic License 2.0. */
           auto-rezise="true"
         />
       </div>
-      <div class="col-span-6 mb-4 mt-2">
-        <h5 class="mb-2 text-lg font-bold">
-          {{ $t('study.dialog.label.contactInfo') }}*
-        </h5>
-        <div class="mb-3">
-          {{ $t('study.dialog.description.contactData') }}
-        </div>
-        <div class="grid grid-cols-6 gap-4">
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.institute') }}
-            </h6>
-            <InputText
-              v-model="contactInstitute"
-              class="w-full"
-              type="text"
-              :placeholder="t('study.placeholder.institute')"
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactPerson') }}*
-            </h6>
-            <InputText
-              v-model="contactPerson"
-              required
-              type="text"
-              class="w-full"
-              :placeholder="t('study.placeholder.contactPerson')"
-              @input="
-                clearError(['contactInfo', 'contactPerson', 'contactEmail'])
-              "
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactEmail') }}*
-            </h6>
-            <InputText
-              v-model="contactEmail"
-              class="w-full"
-              required
-              type="email"
-              :placeholder="t('study.placeholder.contactEmail')"
-              @input="
-                clearError(['contactInfo', 'contactPerson', 'contactEmail'])
-              "
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactTel') }}
-            </h6>
-            <InputText
-              v-model="contactPhoneNumber"
-              class="w-full"
-              type="tel"
-              :placeholder="t('study.placeholder.contactTel')"
-            />
-          </div>
-        </div>
-        <ErrorLabel
-          :error="getError(['contactInfo', 'contactPerson', 'contactEmail'])"
-          class="col-span-8"
-        />
-      </div>
+      <ContactInformation v-model="contact" />
       <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
         <Button
           class="btn-gray"
