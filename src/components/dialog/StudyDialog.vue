@@ -24,7 +24,7 @@ Licensed under the Elastic License 2.0. */
   import { calcStudyDuration } from '../../utils/studyUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
   import ContactInformation from './shared/ContactInformation.vue';
-  import { validateEmail } from '../../utils/stringUtils';
+  import { validateEmail, validateTel } from '../../utils/stringUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
   const dialogRef: any = inject('dialogRef');
@@ -117,6 +117,16 @@ Licensed under the Elastic License 2.0. */
       addError({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
+      });
+    }
+
+    if (
+      contact.value?.phoneNumber &&
+      !validateTel(contact.value?.phoneNumber)
+    ) {
+      addError({
+        label: 'contactTel',
+        value: t('study.error.addContactTel'),
       });
     }
 

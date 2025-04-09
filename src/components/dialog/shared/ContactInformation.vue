@@ -7,7 +7,12 @@
 
   const { clearError, errors } = useErrorQueue();
   const contact = defineModel<Contact>({ required: true });
-  const contactLabels = ['contactInfo', 'contactEmail', 'contactPerson'];
+  const contactLabels = [
+    'contactInfo',
+    'contactEmail',
+    'contactPerson',
+    'contactTel',
+  ];
   const contactErrors = computed<string>(
     () =>
       errors.value?.find((error) => contactLabels.includes(error.label))

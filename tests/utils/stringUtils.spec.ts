@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateEmail } from '../../src/utils/stringUtils';
+import { validateEmail, validateTel } from '../../src/utils/stringUtils';
 
 describe('The validateEmail method', () => {
   it('should return true for valid email addresses', () => {
@@ -31,5 +31,34 @@ describe('The validateEmail method', () => {
   it('should handle input with spaces as invalid', () => {
     expect(validateEmail(' user@example.com ')).toBe(false);
     expect(validateEmail('user @example.com')).toBe(false);
+  });
+});
+
+describe('The validateTel method', () => {
+  it('should return true for valid telephone numbers', () => {
+    expect(validateTel('1234567890')).toBe(true);
+    expect(validateTel('+1234567890')).toBe(true);
+    expect(validateTel('(123) 456-7890')).toBe(true);
+    expect(validateTel('123-456-7890')).toBe(true);
+    expect(validateTel('123.456.7890')).toBe(true);
+    expect(validateTel('123/456 7890')).toBe(true);
+    expect(validateTel('123/4567890')).toBe(true);
+    expect(validateTel('0664 / 456 789 0')).toBe(true);
+    expect(validateTel('12345')).toBe(true);
+    expect(validateTel('123-456')).toBe(true);
+    expect(validateTel(' 1234567890 ')).toBe(true);
+    expect(validateTel('123 456 7890')).toBe(true);
+    expect(validateTel('(123)456-7890')).toBe(true);
+    expect(validateTel('+1234567890')).toBe(true);
+    expect(validateTel('+123 (456) 7890')).toBe(true);
+  });
+
+  it('should return false for invalid telephone numbers', () => {
+    expect(validateTel('')).toBe(false);
+    expect(validateTel('0')).toBe(false);
+    expect(validateTel('12')).toBe(false);
+    expect(validateTel('abcdef')).toBe(false);
+    expect(validateTel('123 456 7890 abc')).toBe(false);
+    expect(validateTel('abc 123 456 7890')).toBe(false);
   });
 });

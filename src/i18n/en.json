@@ -187,7 +187,8 @@
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
       "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
-      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
+      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactTel": "Please add a valid contact telephone number, which participants can use to contact your institute when they encounter problems."
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
