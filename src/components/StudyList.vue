@@ -28,12 +28,14 @@ Licensed under the Elastic License 2.0. */
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import Button from 'primevue/button';
   import { DownloadData } from '../models/DataDownloadModel';
+  import { useToastService } from '../composable/toastService';
 
   const studyStore = useStudyStore();
   const router = useRouter();
   const dialog = useDialog();
   const loader = useLoader();
   const { t } = useI18n();
+  const { showErrorToast } = useToastService();
 
   const sortOptions: MoreTableSortOptions = {
     sortField: 'studyId',
@@ -264,12 +266,19 @@ Licensed under the Elastic License 2.0. */
     studyStore.exportStudyData({ studyId } as DownloadData);
   }
 
-  function onImportStudy(event: FileUploadUploaderEvent): void {
+  const onImportStudy = (event: FileUploadUploaderEvent): void => {
     const file: File = Array.isArray(event.files)
       ? event.files[0]
       : event.files;
-    studyStore.importStudy(file);
-  }
+
+    studyStore.importStudy(file).catch((): void => {
+      showErrorToast(
+        t('study.studyList.error.studyImportFailed', {
+          filename: file?.name ? `"${file.name}"` : '',
+        }),
+      );
+    });
+  };
 
   studyStore.listStudies();
 </script>

@@ -262,6 +262,9 @@
         "addStudy": "Neue Studie hinzufügen",
         "importStudy": "Studie importieren",
         "copyUrl": "Studie teilen"
+      },
+      "error": {
+        "studyImportFailed": "Die Studie {filename} konnte nicht importiert werden"
       }
     }
   },
