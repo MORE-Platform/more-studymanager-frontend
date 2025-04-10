@@ -187,7 +187,8 @@
       "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
       "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
       "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer:innen bei Problemen kontaktieren können.",
-      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer:innen bei Problemen anschreiben können."
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer:innen bei Problemen anschreiben können.",
+      "addContactTel": "Bitte fügen Sie eine Kontakttelefonnummer ein, welche die Teilnehmer:innen bei Problemen anrufen können."
     },
     "placeholder": {
       "titleInput": "Bitte geben Sie einen kurzen Titel ein.",

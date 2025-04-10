@@ -66,6 +66,8 @@ export type ErrorValue = {
   value: string;
 };
 
+const errors = ref<ErrorValue[]>([]);
+
 export const useErrorQueue = (): {
   errors: Ref<ErrorValue[]>;
   addError: (error: ErrorValue) => void;
@@ -75,8 +77,6 @@ export const useErrorQueue = (): {
     (label: string | string[]) => string | null | undefined
   >;
 } => {
-  const errors = ref<ErrorValue[]>([]);
-
   const addError = (error: ErrorValue): void => {
     errors.value.push(error);
   };
@@ -93,16 +93,18 @@ export const useErrorQueue = (): {
     errors.value = [];
   };
 
+  // TODO If used across different components, it is only valid on the first run, after which reactivity is broken
   const getError = computed(
     () =>
       (label: string | string[]): string | null | undefined => {
         if (Array.isArray(label)) {
           for (const lbl of label) {
             const error = errors.value.find((el) => el.label === lbl)?.value;
-            if (error !== null && error !== undefined) {
+            if (!error) {
               return error;
             }
           }
+          return undefined;
         } else {
           return errors.value.find((el) => el.label === label)?.value;
         }
