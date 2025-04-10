@@ -24,7 +24,10 @@ Licensed under the Elastic License 2.0. */
   import { calcStudyDuration } from '../../utils/studyUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
   import ContactInformation from './shared/ContactInformation.vue';
-  import { validateEmail, validateTel } from '../../utils/stringUtils';
+  import {
+    validateEmail,
+    validateTelephoneNumber,
+  } from '../../utils/stringUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
   const dialogRef: any = inject('dialogRef');
@@ -47,13 +50,9 @@ Licensed under the Elastic License 2.0. */
   });
   const contact = ref<Contact>({
     person:
-      study.contact?.person && study.contact?.person !== 'pending'
-        ? study.contact.person
-        : '',
+      study?.contact?.person !== 'pending' ? study?.contact?.person || '' : '',
     email:
-      study.contact?.email && study.contact?.email !== 'pending'
-        ? study.contact.email
-        : '',
+      study.contact?.email !== 'pending' ? study?.contact?.email || '' : '',
     phoneNumber: study.contact?.phoneNumber ?? '',
     institute: study.contact?.institute ?? '',
   });
@@ -122,7 +121,7 @@ Licensed under the Elastic License 2.0. */
 
     if (
       contact.value?.phoneNumber &&
-      !validateTel(contact.value?.phoneNumber)
+      !validateTelephoneNumber(contact.value?.phoneNumber)
     ) {
       addError({
         label: 'contactTel',
