@@ -77,6 +77,7 @@
           class="w-full"
           type="tel"
           :placeholder="$t('study.placeholder.contactTel')"
+          @input="clearContactErrors"
         />
       </div>
     </div>
