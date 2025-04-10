@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { validateEmail, validateTel } from '../../src/utils/stringUtils';
+import {
+  validateEmail,
+  validateTelephoneNumber,
+} from '../../src/utils/stringUtils';
 
 describe('The validateEmail method', () => {
   it('should return true for valid email addresses', () => {
@@ -34,31 +37,31 @@ describe('The validateEmail method', () => {
   });
 });
 
-describe('The validateTel method', () => {
+describe('The validateTelephoneNumber method', () => {
   it('should return true for valid telephone numbers', () => {
-    expect(validateTel('1234567890')).toBe(true);
-    expect(validateTel('+1234567890')).toBe(true);
-    expect(validateTel('(123) 456-7890')).toBe(true);
-    expect(validateTel('123-456-7890')).toBe(true);
-    expect(validateTel('123.456.7890')).toBe(true);
-    expect(validateTel('123/456 7890')).toBe(true);
-    expect(validateTel('123/4567890')).toBe(true);
-    expect(validateTel('0664 / 456 789 0')).toBe(true);
-    expect(validateTel('12345')).toBe(true);
-    expect(validateTel('123-456')).toBe(true);
-    expect(validateTel(' 1234567890 ')).toBe(true);
-    expect(validateTel('123 456 7890')).toBe(true);
-    expect(validateTel('(123)456-7890')).toBe(true);
-    expect(validateTel('+1234567890')).toBe(true);
-    expect(validateTel('+123 (456) 7890')).toBe(true);
+    expect(validateTelephoneNumber('1234567890')).toBe(true);
+    expect(validateTelephoneNumber('+1234567890')).toBe(true);
+    expect(validateTelephoneNumber('(123) 456-7890')).toBe(true);
+    expect(validateTelephoneNumber('123-456-7890')).toBe(true);
+    expect(validateTelephoneNumber('123.456.7890')).toBe(true);
+    expect(validateTelephoneNumber('123/456 7890')).toBe(true);
+    expect(validateTelephoneNumber('123/4567890')).toBe(true);
+    expect(validateTelephoneNumber('0664 / 456 789 0')).toBe(true);
+    expect(validateTelephoneNumber('12345')).toBe(true);
+    expect(validateTelephoneNumber('123-456')).toBe(true);
+    expect(validateTelephoneNumber(' 1234567890 ')).toBe(true);
+    expect(validateTelephoneNumber('123 456 7890')).toBe(true);
+    expect(validateTelephoneNumber('(123)456-7890')).toBe(true);
+    expect(validateTelephoneNumber('+1234567890')).toBe(true);
+    expect(validateTelephoneNumber('+123 (456) 7890')).toBe(true);
   });
 
   it('should return false for invalid telephone numbers', () => {
-    expect(validateTel('')).toBe(false);
-    expect(validateTel('0')).toBe(false);
-    expect(validateTel('12')).toBe(false);
-    expect(validateTel('abcdef')).toBe(false);
-    expect(validateTel('123 456 7890 abc')).toBe(false);
-    expect(validateTel('abc 123 456 7890')).toBe(false);
+    expect(validateTelephoneNumber('')).toBe(false);
+    expect(validateTelephoneNumber('0')).toBe(false);
+    expect(validateTelephoneNumber('12')).toBe(false);
+    expect(validateTelephoneNumber('abcdef')).toBe(false);
+    expect(validateTelephoneNumber('123 456 7890 abc')).toBe(false);
+    expect(validateTelephoneNumber('abc 123 456 7890')).toBe(false);
   });
 });

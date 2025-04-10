@@ -5,5 +5,6 @@ export const validateEmail = (email: string | undefined | null): boolean =>
     email,
   );
 
-export const validateTel = (tel: string | undefined | null): boolean =>
-  !!tel && tel.length >= 3 && /^[^a-z]*$/gi.test(tel);
+export const validateTelephoneNumber = (
+  tel: string | undefined | null,
+): boolean => !!tel && tel.length >= 3 && /^[^a-z]*$/gi.test(tel);

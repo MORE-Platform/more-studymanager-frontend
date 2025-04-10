@@ -93,7 +93,7 @@ export const useErrorQueue = (): {
     errors.value = [];
   };
 
-  // TODO if used across different components, only valibe on first run, then reactivty is broken
+  // TODO If used across different components, it is only valid on the first run, after which reactivity is broken
   const getError = computed(
     () =>
       (label: string | string[]): string | null | undefined => {
