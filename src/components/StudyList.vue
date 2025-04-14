@@ -274,7 +274,7 @@ Licensed under the Elastic License 2.0. */
     studyStore.importStudy(file).catch((): void => {
       showErrorToast(
         t('study.studyList.error.studyImportFailed', {
-          filename: file?.name ? `"${file.name} COPY"` : '',
+          filename: file?.name ? `"${file.name}"` : '',
         }),
       );
     });
