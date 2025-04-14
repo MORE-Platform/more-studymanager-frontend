@@ -13,7 +13,7 @@ Licensed under the Elastic License 2.0. */
   import {
     Contact,
     Duration,
-    DurationUnitEnum,
+    UnitEnum,
     Study,
   } from '../../generated-sources/openapi';
   import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
@@ -59,7 +59,7 @@ Licensed under the Elastic License 2.0. */
 
   const studyDuration: Duration = reactive({
     value: study.duration?.value,
-    unit: study.duration?.unit ?? DurationUnitEnum.Day,
+    unit: study.duration?.unit ?? UnitEnum.Day,
   });
   const start = ref(
     study?.plannedStart ? new Date(study.plannedStart) : new Date(),

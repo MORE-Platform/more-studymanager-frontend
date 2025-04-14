@@ -464,7 +464,7 @@ Licensed under the Elastic License 2.0. */
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
       :enable-row-selection="RowSelectionMode.Single"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('intervention.interventionList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
       @on-select="openEditIntervention($event)"

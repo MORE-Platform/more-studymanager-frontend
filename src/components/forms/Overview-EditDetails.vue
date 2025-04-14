@@ -88,8 +88,8 @@ Licensed under the Elastic License 2.0. */
   }
 
   const accessEditDetailsRoles: StudyRole[] = [
-    StudyRole.Admin,
-    StudyRole.Operator,
+    StudyRole.StudyAdmin,
+    StudyRole.StudyOperator,
   ];
 
   function hasAccessToEdit(): boolean {
@@ -166,7 +166,7 @@ Licensed under the Elastic License 2.0. */
       </div>
       <div class="flex justify-items-end">
         <StudyStatusChange
-          v-if="props.userRoles.find((r) => r === StudyRole.Admin)"
+          v-if="props.userRoles.find((r) => r === StudyRole.StudyAdmin)"
           :status="study.status || ''"
           @on-change="updateStudyStatus"
         ></StudyStatusChange>

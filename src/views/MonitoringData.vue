@@ -15,7 +15,10 @@ Licensed under the Elastic License 2.0. */
   import ParticipationDataList from '../components/ParticipationDataList.vue';
 
   const studyStore = useStudyStore();
-  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Viewer];
+  const accessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyViewer,
+  ];
 </script>
 
 <template>

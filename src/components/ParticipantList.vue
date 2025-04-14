@@ -385,7 +385,7 @@ Licensed under the Elastic License 2.0. */
       :loading="loader.isLoading.value"
       :editable-access="props.studyStatus !== StudyStatus.Closed"
       :editable="checkEditablePermissions"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-50"
       @on-action="executeAction($event)"

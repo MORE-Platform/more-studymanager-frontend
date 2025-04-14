@@ -12,8 +12,10 @@
           "supportsES6": true,
           "withSeparateModelsAndApi": true,
           "withInterfaces": true,
+          "withoutPrefixEnums": true,
           "apiPackage": "api",
-          "modelPackage": "models"
+          "modelPackage": "models",
+          "enumPropertyNaming": "PascalCase"
         },
         "typeMappings": {
           "set": "Array"

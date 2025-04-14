@@ -87,9 +87,9 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       columnWidth: '40vw',
       arrayLabels: [
-        { label: t('study.roles.admin'), value: StudyRole.Admin },
-        { label: t('study.roles.operator'), value: StudyRole.Operator },
-        { label: t('study.roles.viewer'), value: StudyRole.Viewer },
+        { label: t('study.roles.admin'), value: StudyRole.StudyAdmin },
+        { label: t('study.roles.operator'), value: StudyRole.StudyOperator },
+        { label: t('study.roles.viewer'), value: StudyRole.StudyViewer },
       ],
     },
     {
@@ -142,11 +142,11 @@ Licensed under the Elastic License 2.0. */
       visible: (study: Study) =>
         (study.status === StudyStatus.Draft &&
           !!study.userRoles?.some((r: any) =>
-            [StudyRole.Admin, StudyRole.Operator].includes(r),
+            [StudyRole.StudyAdmin, StudyRole.StudyOperator].includes(r),
           )) ||
         (study.status === StudyStatus.Closed &&
           !!study.userRoles?.some((r: any) =>
-            [StudyRole.Admin, StudyRole.Operator].includes(r),
+            [StudyRole.StudyAdmin, StudyRole.StudyOperator].includes(r),
           )),
     },
     {
@@ -156,7 +156,7 @@ Licensed under the Elastic License 2.0. */
       tooltip: t('study.studyList.labels.exportStudyConfig'),
       visible: (study: Study) =>
         !!study.userRoles?.some((r: any) =>
-          [StudyRole.Admin, StudyRole.Operator].includes(r),
+          [StudyRole.StudyAdmin, StudyRole.StudyOperator].includes(r),
         ),
     },
     {
@@ -165,7 +165,7 @@ Licensed under the Elastic License 2.0. */
       icon: 'pi pi-chart-bar',
       tooltip: t('study.studyList.labels.exportStudyData'),
       visible: (study: Study) =>
-        !!study.userRoles?.some((r: any) => [StudyRole.Admin].includes(r)),
+        !!study.userRoles?.some((r: any) => [StudyRole.StudyAdmin].includes(r)),
     },
   ];
 
@@ -186,7 +186,10 @@ Licensed under the Elastic License 2.0. */
       tooltip: t('tooltips.moreTable.copyStudyUrl'),
     },
   ];
-  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const editableRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyOperator,
+  ];
 
   function goToStudy(id: string): void {
     router.push({
@@ -314,30 +317,28 @@ Licensed under the Elastic License 2.0. */
       @on-change="updateStudyInPlace($event)"
     >
       <template #tableActions>
-        <div>
-          <Button
-            type="button"
-            icon="pi pi-plus"
-            :label="$t('study.studyList.action.addStudy')"
-            @click="openCreateDialog()"
-          />
-        </div>
-        <div class="ml-2.5">
-          <FileUpload
-            mode="basic"
-            upload-icon="pi pi-upload"
-            :choose-label="$t('study.studyList.action.importStudy')"
-            :custom-upload="true"
-            :auto="true"
-            accept=".json"
-            @uploader="onImportStudy($event)"
-          />
-        </div>
+        <Button
+          type="button"
+          icon="pi pi-plus"
+          class="text-nowrap p-2.5"
+          :label="$t('study.studyList.action.addStudy')"
+          @click="openCreateDialog()"
+        />
+        <FileUpload
+          class="ml-2"
+          mode="basic"
+          :multiple="false"
+          upload-icon="pi pi-upload"
+          :choose-label="$t('study.studyList.action.importStudy')"
+          :custom-upload="true"
+          :auto="true"
+          accept=".json"
+          @uploader="onImportStudy($event)"
+        />
       </template>
     </MoreTable>
     <ConfirmDialog />
     <DynamicDialog />
-
     <AlertMsg
       :show-msg="alert.showMessage"
       :message="alert.message"

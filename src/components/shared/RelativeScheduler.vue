@@ -7,7 +7,7 @@
   import Checkbox from 'primevue/checkbox';
   import {
     Duration,
-    DurationUnitEnum,
+    UnitEnum,
     RelativeEvent,
   } from '../../generated-sources/openapi';
   import { useI18n } from 'vue-i18n';
@@ -38,7 +38,7 @@
 
   const startOffset = ref<Duration>({
     value: schedule.dtstart?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: UnitEnum.Day,
   });
   const startTime = ref<DateTime>(
     DateTime.now().set({ hour: 10, minute: 30, second: 0 }),
@@ -46,7 +46,7 @@
 
   const endOffset = ref<Duration>({
     value: schedule.dtend?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: UnitEnum.Day,
   });
   const endTime = ref<DateTime>(
     DateTime.now().set({ hour: 18, minute: 30, second: 0 }),
@@ -97,12 +97,12 @@
 
   const frequency = ref<Duration>({
     value: schedule.rrrule?.frequency?.value ?? 1,
-    unit: schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
+    unit: schedule.rrrule?.frequency?.unit ?? UnitEnum.Day,
   });
 
   const endRep = ref<Duration>({
     value: schedule.rrrule?.endAfter?.value ?? 4,
-    unit: schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
+    unit: schedule.rrrule?.endAfter?.unit ?? UnitEnum.Day,
   });
 
   const repeatChecked: Ref<boolean> = ref(!!schedule.rrrule?.frequency);
@@ -118,19 +118,19 @@
   const repetitionUnit = [
     {
       label: t('scheduler.frequency.minute'),
-      value: DurationUnitEnum.Minute,
-      unit: DurationUnitEnum.Minute,
+      value: UnitEnum.Minute,
+      unit: UnitEnum.Minute,
     },
     {
       label: t('scheduler.frequency.hour'),
-      value: DurationUnitEnum.Hour,
-      unit: DurationUnitEnum.Hour,
+      value: UnitEnum.Hour,
+      unit: UnitEnum.Hour,
     },
     {
       label: t('scheduler.frequency.day'),
-      value: DurationUnitEnum.Day,
+      value: UnitEnum.Day,
       active: true,
-      unit: DurationUnitEnum.Day,
+      unit: UnitEnum.Day,
     },
   ];
 
@@ -386,7 +386,7 @@
             @update:model-value="
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                startTime = createLuxonDateTime(dateVal) || startTime;
+                startTime = createLuxonDateTime(dateVal || '') || startTime;
                 clearError(['offsetCorrection']);
               }
             "
@@ -426,7 +426,7 @@
             @update:model-value="
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                endTime = createLuxonDateTime(dateVal) || endTime;
+                endTime = createLuxonDateTime(dateVal || '') || endTime;
                 clearError(['startTimeBeforeEnd', 'offsetCorrection']);
               }
             "

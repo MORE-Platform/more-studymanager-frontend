@@ -208,6 +208,8 @@
   --red-700:#804646;
   --red-800:#552f2f;
   --red-900:#2b1717;
+
+  --button-size: 2.357rem;
 }
 
 * {
@@ -813,7 +815,7 @@
 .p-dropdown .p-dropdown-trigger {
   background: transparent;
   color: var(--text-color-secondary);
-  width: 2.357rem;
+  width: 1.5rem;
   border-top-right-radius: var(--border-radius);
   border-bottom-right-radius: var(--border-radius);
 }
@@ -1068,7 +1070,12 @@
   width: auto;
 }
 .p-fluid .p-inputgroup .p-button.p-button-icon-only {
-  width: 2.357rem;
+  width: var(--button-size);
+  height: var(--button-size);
+}
+
+.p-button.p-button-icon-only .p-button-label {
+  display: none;
 }
 
 .p-inputnumber.p-invalid.p-component > .p-inputtext {
@@ -1466,13 +1473,7 @@
   height: 20px;
 }
 .p-radiobutton .p-radiobutton-box {
-  border: calc(var(--border-weight)*2) var(--border-style) var(--bluegray-100);
-  background: var(--surface-a);
-  width: 20px;
-  height: 20px;
-  color: var(--text-color);
-  border-radius: var(--border-radius--rounded);
-  transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+  display: none;
 }
 .p-radiobutton .p-radiobutton-box:not(.p-disabled):not(.p-highlight):hover {
   border-color: var(--primary-color--secondary);
@@ -1844,7 +1845,8 @@
   border-radius: calc((var(--border-radius)/3)*2);
 }
 .p-button.p-button-icon-only {
-  width: 2.357rem;
+  width: var(--button-size);
+  height: var(--button-size);
   padding: calc(var(--content-padding) / 2) 0;
 }
 .p-button.p-button-icon-only .p-button-icon-left,
@@ -2718,6 +2720,9 @@
 .p-datatable .p-datatable-scrollable-header,
 .p-datatable .p-datatable-scrollable-footer {
   background: var(--surface-b);
+}
+.p-datatable-table {
+  width: 100%;
 }
 .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-datatable-table > .p-datatable-thead,
 .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-datatable-table > .p-datatable-tfoot, .p-datatable.p-datatable-scrollable > .p-datatable-wrapper > .p-virtualscroller > .p-datatable-table > .p-datatable-thead,
@@ -4145,6 +4150,7 @@
   border: 0 none;
 }
 .p-dialog .p-dialog-header {
+  @apply flex flex-row items-center justify-between;
   border-bottom: 0 none;
   background: var(--surface-a);
   color: var(--text-color);
@@ -4324,6 +4330,12 @@
   outline: 0 none;
   outline-offset: 0;
   box-shadow: var(--focus-ring);
+}
+.p-fileupload-choose {
+  @apply px-4 py-2 block;
+}
+.p-fileupload-choose input[type=file] {
+  display: none;
 }
 .p-fileupload .p-fileupload-content {
   background: var(--surface-a);
@@ -5353,6 +5365,9 @@
   margin: 0 0 1rem 0;
   box-shadow: 0 2px 4px -1px var(--surface-400--alpha), 0 4px 5px 0 var(--surface-300--alpha), 0 1px 10px 0 var(--surface-280--alpha);
   border-radius: var(--border-radius);
+}
+.p-toast-message-content {
+ @apply flex flex-row items-start;
 }
 .p-toast .p-toast-message .p-toast-message-content {
   padding: var(--content-padding);

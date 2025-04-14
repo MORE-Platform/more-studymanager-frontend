@@ -12,7 +12,10 @@ Licensed under the Elastic License 2.0. */
 
   const studyStore = useStudyStore();
 
-  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const accessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyOperator,
+  ];
 </script>
 
 <template>

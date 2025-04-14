@@ -61,14 +61,14 @@ Licensed under the Elastic License 2.0. */
   });
 
   const roleList: MoreTableChoice[] = [
-    { label: t('study.roles.admin'), value: StudyRole.Admin },
-    { label: t('study.roles.operator'), value: StudyRole.Operator },
-    { label: t('study.roles.viewer'), value: StudyRole.Viewer },
+    { label: t('study.roles.admin'), value: StudyRole.StudyAdmin },
+    { label: t('study.roles.operator'), value: StudyRole.StudyOperator },
+    { label: t('study.roles.viewer'), value: StudyRole.StudyViewer },
   ];
 
   const collaboratorsList: Ref<MoreTableCollaboratorItem[]> = ref([]);
 
-  const editableRoles: StudyRole[] = [StudyRole.Admin];
+  const editableRoles: StudyRole[] = [StudyRole.StudyAdmin];
 
   const editAccess: boolean = props.userRoles.some(
     (r: StudyRole) =>
@@ -210,22 +210,22 @@ Licensed under the Elastic License 2.0. */
   function getRoleChoices(roles: StudyRole[]): MoreTableChoice[] {
     const roleChoices: MoreTableChoice[] = [];
     roles.forEach((item) => {
-      if (item === StudyRole.Admin) {
+      if (item === StudyRole.StudyAdmin) {
         roleChoices.push({
           label: t('study.roles.admin'),
-          value: StudyRole.Admin,
+          value: StudyRole.StudyAdmin,
         } as MoreTableChoice);
       }
-      if (item === StudyRole.Operator) {
+      if (item === StudyRole.StudyOperator) {
         roleChoices.push({
           label: t('study.roles.operator'),
-          value: StudyRole.Operator,
+          value: StudyRole.StudyOperator,
         } as MoreTableChoice);
       }
-      if (item === StudyRole.Viewer) {
+      if (item === StudyRole.StudyViewer) {
         roleChoices.push({
           label: t('study.roles.viewer'),
-          value: StudyRole.Viewer,
+          value: StudyRole.StudyViewer,
         } as MoreTableChoice);
       }
     });
@@ -347,13 +347,14 @@ Licensed under the Elastic License 2.0. */
       <template #tableActions>
         <div>
           <Dropdown
-            class="button p-button dropdown-search !p-0"
+            class="button p-button dropdown-search flex items-center text-nowrap !p-0"
             :filter="true"
+            auto-filter-focus
             :options="collaboratorList"
             option-label="label"
             option-value="value"
             :disabled="!editAccess"
-            panel-class="dropdown-search-panel"
+            panel-class="dropdown-search-panel "
             :empty-message="
               t('studyCollaborator.placeholder.searchCollaborators')
             "

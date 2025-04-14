@@ -124,7 +124,7 @@ export const timeFromString = (
     if (hour === undefined && minute === undefined && second === undefined) {
       return undefined;
     }
-    return { hour: hour ?? 0, minute: minute ?? 0, second: second ?? 0 };
+    return { hour: hour || 0, minute: minute || 0, second: second || 0 };
   }
   return undefined;
 };

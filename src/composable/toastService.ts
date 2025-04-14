@@ -13,6 +13,7 @@ import {
   ValidationReportItem,
 } from '../generated-sources/openapi';
 import { useToast } from 'primevue/usetoast';
+import { TOAST_ERROR_DURATION } from '../constants';
 
 /**
  * This composable is responsible for showing errors from Backend to the Client with a Toast popup.
@@ -93,7 +94,7 @@ export function useToastService(): any {
     if (toast) {
       const severity: ToastMessageOptions['severity'] = 'error';
       const summary = t('global.error.type.error');
-      const life: ToastMessageOptions['life'] = 5000;
+      const life: ToastMessageOptions['life'] = TOAST_ERROR_DURATION;
 
       toast.add({ severity, summary, detail, life });
     } else {
@@ -105,7 +106,7 @@ export function useToastService(): any {
     if (toast) {
       const severity: ToastMessageOptions['severity'] = 'warn';
       const summary = t('global.error.type.warning');
-      const life: ToastMessageOptions['life'] = 5000;
+      const life: ToastMessageOptions['life'] = TOAST_ERROR_DURATION;
 
       toast.add({ severity, summary, detail, life });
     } else {
