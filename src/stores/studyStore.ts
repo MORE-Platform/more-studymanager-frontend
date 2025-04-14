@@ -121,22 +121,14 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function importStudy(importedStudy: File): Promise<void> {
-    await importExportApi
+  const importStudy = (importedStudy: File): Promise<void> =>
+    importExportApi
       .importStudy(importedStudy, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(() => {
-        setTimeout(function () {
-          listStudies();
-        }, 100);
-      })
-      .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot import study'),
-      );
-  }
+      .then(listStudies);
 
   async function exportStudyConfig(studyId: number): Promise<void> {
     await importExportApi
