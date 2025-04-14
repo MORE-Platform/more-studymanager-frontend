@@ -262,6 +262,9 @@
         "addStudy": "Add new study",
         "copyUrl": "Copy URL",
         "importStudy": "Import study"
+      },
+      "error": {
+        "studyImportFailed": "The study {filename} could not be imported"
       }
     }
   },

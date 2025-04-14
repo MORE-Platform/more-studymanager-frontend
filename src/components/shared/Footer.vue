@@ -10,6 +10,7 @@ Licensed under the Elastic License 2.0. */
     FrontendConfiguration,
   } from '../../generated-sources/openapi';
   import OverlayPanel from 'primevue/overlaypanel';
+  import { useI18n } from 'vue-i18n';
 
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
   const buildInfo = inject('buildInfo') as {
@@ -17,6 +18,7 @@ Licensed under the Elastic License 2.0. */
     backend: BuildInfo;
   };
   const buildInfoPanel = ref();
+  const { locale } = useI18n();
 </script>
 
 <template>
@@ -46,7 +48,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        href="https://dhp.lbg.ac.at/more/"
+        :href="`https://dhp.lbg.ac.at/more/${locale === 'en' ? '?lang=en' : ''}`"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
