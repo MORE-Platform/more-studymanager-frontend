@@ -36,6 +36,7 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
+  import { PARTICIPANT_COUNTS } from '../constants';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -161,34 +162,13 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const addParticipantOptions: MenuOptions[] = [
-    {
-      label: t('participants.participantsList.labels.add1'),
-      value: 1,
-      command: (): void => createParticipant(1),
-    },
-    {
-      label: t('participants.participantsList.labels.add3'),
-      value: 3,
-      command: (): void => createParticipant(3),
-    },
-    {
-      label: t('participants.participantsList.labels.add10'),
-      value: 10,
-      command: (): void => createParticipant(10),
-    },
-    {
-      label: t('participants.participantsList.labels.add25'),
-      value: 25,
-      command: (): void => createParticipant(25),
-    },
-    {
-      label: t('participants.participantsList.labels.add50'),
-      value: 50,
-      command: (): void => createParticipant(50),
-    },
-  ];
-
+  const addParticipantOptions: MenuOptions[] = PARTICIPANT_COUNTS.map(
+    (count) => ({
+      label: t(`participants.participantsList.labels.add${count}`),
+      value: count,
+      command: (): void => createParticipant(count),
+    }),
+  );
   async function listParticipant(): Promise<void> {
     participantsList.value = await participantsApi
       .listParticipants(props.studyId)
@@ -270,15 +250,38 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function createParticipant(amount: number): void {
+  const createParticipant = (amount: number): void => {
     const i = amount || 1;
-    const participants = starWarsNames
-      .random(i)
-      .map((alias: string) => ({ alias, studyId: props.studyId }));
+    const newParticipants: Participant[] = [];
+    // starWarsNames.all.length = 93
+    const openNames: string[] = starWarsNames.all.filter(
+      (n) => !participantsList.value.find((p) => p.alias === n),
+    );
+
+    const addNew = (alias: string): number =>
+      newParticipants.push({
+        alias,
+        studyId: props.studyId,
+      });
+
+    // Try to avoid duplicates as long as possible
+    if (openNames.length === 0) {
+      starWarsNames
+        .random(i)
+        .map((a, i) => `${a} ${i}`)
+        .map(addNew);
+    } else {
+      openNames.forEach((n) => {
+        if (newParticipants.length < i) {
+          addNew(n);
+        }
+      });
+    }
+
     participantsApi
-      .createParticipants(props.studyId, participants)
+      .createParticipants(props.studyId, newParticipants)
       .then(listParticipant);
-  }
+  };
 
   function changeValue(participant: Participant): void {
     const i = participantsList.value.findIndex(
