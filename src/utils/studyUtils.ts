@@ -1,4 +1,4 @@
-import { Duration, UnitEnum, Study } from '../generated-sources/openapi';
+import { Duration, UnitEnum, Study } from '../generated-sources';
 import { createLuxonDateTime } from './dateUtils';
 import { roundAndCeil } from './dataUtils';
 import { DateTime } from 'luxon';

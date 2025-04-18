@@ -1,6 +1,8 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
+
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +16,11 @@ export default defineConfig({
     __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
     __BUILD_BRANCH__: JSON.stringify(process.env.VITE_GIT_BRANCH),
     __BUILD_REVISION__: JSON.stringify(process.env.VITE_GIT_REVISION),
+  },
+  resolve: {
+    alias: {
+      '@/gs': resolve(__dirname, './src/generated-sources'),
+    }
   },
   server: {
     port: 3000,

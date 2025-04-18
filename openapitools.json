@@ -7,7 +7,7 @@
       "StudyManagerAPI": {
         "inputSpec": "openapi/StudyManagerAPI.yaml",
         "generatorName": "typescript-axios",
-        "output": "src/generated-sources/openapi",
+        "output": "src/generated-sources",
         "additionalProperties": {
           "supportsES6": true,
           "withSeparateModelsAndApi": true,

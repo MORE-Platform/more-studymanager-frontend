@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
     StudyRole,
     StudyStatus,
     Visibility,
-  } from '../../generated-sources/openapi';
+  } from '../../generated-sources';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
 

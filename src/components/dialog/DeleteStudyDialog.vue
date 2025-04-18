@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import { inject } from 'vue';
   import Button from 'primevue/button';
   import { useStudyStore } from '../../stores/studyStore';
-  import { Study } from '../../generated-sources/openapi';
+  import { Study } from '../../generated-sources';
   import WarningSection from './shared/WarningSection.vue';
   import StudyStatusPill from '../study/StudyStatusPill.vue';
 

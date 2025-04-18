@@ -8,7 +8,7 @@ Licensed under the Elastic License 2.0. */
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import Checkbox from 'primevue/checkbox';
-  import { Event, RecurrenceRule } from '../../generated-sources/openapi';
+  import { Event, RecurrenceRule } from '../../generated-sources';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
   import { MoreTableChoice } from '../../models/MoreTableModel';

@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
-  import { Frequency, RecurrenceRule } from '../../generated-sources/openapi';
+  import { Frequency, RecurrenceRule } from '../../generated-sources';
   import { PropType, reactive, ref, Ref, watch } from 'vue';
   import Checkbox from 'primevue/checkbox';
   import InputNumber from 'primevue/inputnumber';
@@ -45,7 +45,7 @@
   const previewCount: Ref<number | undefined> = ref(
     returnRrule.count && returnRrule.byday?.length
       ? returnRrule.count / returnRrule.byday.length
-      : returnRrule.count ?? undefined,
+      : (returnRrule.count ?? undefined),
   );
 
   const rruleEventCheckbox: Ref<boolean> = ref(props.rruleChecked);

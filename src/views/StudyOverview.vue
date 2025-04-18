@@ -12,7 +12,7 @@ Licensed under the Elastic License 2.0. */
   import StudyCollaboratorList from '../components/StudyCollaboratorList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
-  import { StudyStatus } from '../generated-sources/openapi';
+  import { StudyStatus } from '../generated-sources';
   import { AxiosError } from 'axios';
   import { useToastService } from '../composable/toastService';
 

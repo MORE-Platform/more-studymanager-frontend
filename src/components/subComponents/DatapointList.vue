@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import Column from 'primevue/column';
   import Dropdown from 'primevue/dropdown';
   import DataTable from 'primevue/datatable';
-  import { DataPoint } from '../../generated-sources/openapi';
+  import { DataPoint } from '@/gs/models';
   import { Ref, ref } from 'vue';
   import {
     useDataApi,
@@ -46,11 +46,11 @@ Licensed under the Elastic License 2.0. */
   const participant: Ref<Option> = ref(emptyOption);
   const observation: Ref<Option> = ref(emptyOption);
 
-  let timer: NodeJS.Timeout;
+  let timer: ReturnType<typeof setInterval>;
   const refreshTimeInSeconds = 10;
 
   function loadData(): void {
-    timer ??= ((): NodeJS.Timeout => {
+    timer ??= ((): ReturnType<typeof setInterval> => {
       listDataPoints();
       return setInterval(listDataPoints, refreshTimeInSeconds * 1000);
     })();

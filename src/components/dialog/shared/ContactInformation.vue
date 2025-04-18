@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useErrorQueue } from '../../../composable/useErrorHandling';
-  import { Contact } from '../../../generated-sources/openapi';
+  import { Contact } from '../../../generated-sources';
   import ErrorLabel from '../../forms/ErrorLabel.vue';
   import InputText from 'primevue/inputtext';
   import { computed } from 'vue';

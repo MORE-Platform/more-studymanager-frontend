@@ -20,7 +20,7 @@ import {
   DataApi,
   ConfigurationApi,
   CalendarApi,
-} from '../generated-sources/openapi';
+} from '../generated-sources';
 
 const apiConfig = {
   basePath: '/api/v1',

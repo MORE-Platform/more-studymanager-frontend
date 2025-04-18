@@ -183,12 +183,9 @@ declare module 'vue-cal' {
      If it does not fit in the calendar body, the overflow will be scrollable.
      If minCellWidth is also set, minSplitWidth will override it on week view. */
     minSplitWidth?: number; //default?: 0 // In pixels.
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    onEventClick?: Function; //default?: null
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    onEventCreate?: Function; //default?: null
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    onEventDblclick?: Function; //default?: null
+    onEventClick?: (...args: any[]) => any; //default?: null
+    onEventCreate?: (...args: any[]) => any; //default?: null
+    onEventDblclick?: (...args: any[]) => any; //default?: null
     overlapsPerTimeStep?: boolean; //default?: false
     resizeX?: boolean; //default?: false
     selectedDate?: string | Date; //default?: ''

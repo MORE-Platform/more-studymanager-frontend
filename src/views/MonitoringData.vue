@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { StudyRole } from '../generated-sources/openapi';
+  import { StudyRole } from '../generated-sources';
   import { useStudyStore } from '../stores/studyStore';
   import DataDownload from '../components/subComponents/DataDownload.vue';
   import TabView from 'primevue/tabview';

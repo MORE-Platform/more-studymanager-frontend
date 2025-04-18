@@ -14,7 +14,7 @@ Licensed under the Elastic License 2.0. */
     ObservationSchedule,
     StudyStatus,
     ValidationReport,
-  } from '../../generated-sources/openapi';
+  } from '@/gs/models';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
@@ -135,6 +135,7 @@ Licensed under the Elastic License 2.0. */
           handleIndividualError(e, 'cannot fetch study');
         });
     } catch (e: any) {
+      console.error(e);
       showErrorToast(t('global.error.general'));
     }
   }

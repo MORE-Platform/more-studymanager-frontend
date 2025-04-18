@@ -8,7 +8,7 @@ Licensed under the Elastic License 2.0. */
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { useStudyStore } from '../stores/studyStore';
   import IntegrationList from '../components/IntegrationList.vue';
-  import { StudyRole } from '../generated-sources/openapi';
+  import { StudyRole } from '../generated-sources';
 
   const studyStore = useStudyStore();
 

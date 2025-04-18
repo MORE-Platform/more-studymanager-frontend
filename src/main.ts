@@ -25,7 +25,7 @@ import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
 import { useUiConfigApi } from './composable/useApi';
-import { BuildInfo, FrontendConfiguration } from './generated-sources/openapi';
+import { BuildInfo, FrontendConfiguration } from './generated-sources';
 
 const { uiConfigApi } = useUiConfigApi();
 

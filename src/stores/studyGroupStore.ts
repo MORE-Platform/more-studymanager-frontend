@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { Duration, StudyGroup } from '../generated-sources/openapi';
+import { Duration, StudyGroup } from '../generated-sources';
 import { useStudyGroupsApi } from '../composable/useApi';
 import i18n from '../i18n/i18n';
 import { useErrorHandling } from '../composable/useErrorHandling';

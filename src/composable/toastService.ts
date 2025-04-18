@@ -8,10 +8,7 @@
  */
 import { ToastMessageOptions } from 'primevue/toast';
 import { useI18n } from 'vue-i18n';
-import {
-  ValidationReport,
-  ValidationReportItem,
-} from '../generated-sources/openapi';
+import { ValidationReport, ValidationReportItem } from '../generated-sources';
 import { useToast } from 'primevue/usetoast';
 import { TOAST_ERROR_DURATION } from '../constants';
 

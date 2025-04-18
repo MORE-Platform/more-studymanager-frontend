@@ -1,4 +1,4 @@
-import { Duration, UnitEnum } from '../generated-sources/openapi';
+import { Duration, UnitEnum } from '../generated-sources';
 import { minutesInDay, minutesInHour } from '../constants';
 
 export function valueToMinutes(duration: Duration): number {

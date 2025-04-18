@@ -18,7 +18,7 @@ Licensed under the Elastic License 2.0. */
     StudyGroup,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources/openapi';
+  } from '../generated-sources';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import { useStudyGroupStore } from '../stores/studyGroupStore';

@@ -19,7 +19,7 @@ Licensed under the Elastic License 2.0. */
     ValidationReport,
     StudyStatus,
     ListComponentsComponentTypeEnum,
-  } from '../../generated-sources/openapi';
+  } from '../../generated-sources';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';

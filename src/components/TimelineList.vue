@@ -22,7 +22,7 @@ Licensed under the Elastic License 2.0. */
     Participant,
     StudyGroup,
     StudyTimeline,
-  } from '../generated-sources/openapi';
+  } from '../generated-sources';
   import { useStudyStore } from '../stores/studyStore';
   import {
     useCalendarApi,
