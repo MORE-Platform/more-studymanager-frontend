@@ -782,7 +782,9 @@
 .p-colorpicker-overlay-panel {
   box-shadow: 0 2px 4px -1px var(--surface-400--alpha), 0 4px 5px 0 var(--surface-300--alpha), 0 1px 10px 0 var(--surface-280--alpha);
 }
-
+.p-dropdown.p-component.p-inputwrapper {
+  @apply flex flex-row items-center justify-between;
+}
 .p-dropdown {
   background: var(--surface-a);
   border: var(--border-weight) var(--border-style) var(--bluegray-100);
@@ -4293,7 +4295,10 @@
 .p-sidebar .p-sidebar-content {
   padding: var(--content-padding);
 }
-
+.p-tooltip {
+  position: absolute;
+  @apply mt-1;
+}
 .p-tooltip .p-tooltip-text {
   background: var(--text-color);
   color: var(--surface-a);

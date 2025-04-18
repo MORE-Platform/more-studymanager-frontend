@@ -98,6 +98,8 @@ useLoader().activateLoadingInterceptor();
 const pinia = createPinia();
 
 const app = createApp(App);
+app.directive('tooltip', Tooltip);
+
 app.provide('buildInfo', buildInfo);
 app.provide('uiConfig', uiConfig);
 app.provide('authService', authService);
@@ -111,5 +113,3 @@ app.use(ToastService);
 app.use(pinia);
 
 app.mount('#app');
-
-app.directive('tooltip', Tooltip);
