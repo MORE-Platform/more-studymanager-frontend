@@ -370,7 +370,8 @@
             "
             :min="1"
             @input="
-              clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd'])
+              clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd']);
+              startOffset.value = ($event?.value || 1) as number;
             "
           />
         </div>
@@ -409,7 +410,8 @@
             "
             :min="1"
             @input="
-              clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection'])
+              clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection']);
+              endOffset.value = ($event?.value || 1) as number;
             "
           />
         </div>
