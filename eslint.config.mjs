@@ -36,8 +36,8 @@ export default tseslint.config(
       },
       globals: {
         ...globals.browser,
-        ...globals.node
-      }
+        ...globals.node,
+      },
     },
     plugins: {
       vue: eslintPluginVue,
@@ -45,6 +45,7 @@ export default tseslint.config(
     },
     linterOptions: {
       reportUnusedDisableDirectives: true,
+      maxWarnings: 0,
     },
     // Custom rules
     rules: {
