@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, inject, ref, Ref, watch } from 'vue';
+  import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
@@ -25,6 +25,7 @@
   import { useErrorQueue } from '../../composable/useErrorHandling';
   import { valueToMinutes } from '../../utils/durationUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
+  import { ONE_DAY_IN_MINUTES } from '../../constants';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
@@ -95,25 +96,21 @@
     },
   };
 
-  const frequency = ref<Duration>({
-    value: schedule.rrrule?.frequency?.value ?? 1,
-    unit: schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
-  });
+  const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
+  const frequencyUnit = ref<DurationUnitEnum>(
+    schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
+  );
 
-  const endRep = ref<Duration>({
-    value: schedule.rrrule?.endAfter?.value ?? 4,
-    unit: schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
-  });
+  const endRep = ref<number>(schedule.rrrule?.endAfter?.value || 4);
+  const endRepUnit = ref<DurationUnitEnum>(
+    schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
+  );
 
   const repeatChecked: Ref<boolean> = ref(!!schedule.rrrule?.frequency);
   const repetitionEnabled = ref(false);
 
   const frequencyXTimes: Ref<number | undefined> = ref();
   const totalDays: Ref<number | undefined> = ref();
-
-  if (schedule.rrrule?.frequency && schedule.rrrule?.endAfter) {
-    calcRepetition();
-  }
 
   const repetitionUnit = [
     {
@@ -212,37 +209,23 @@
     scrollToFirstError();
   }
 
-  function calcRepetition(): void {
-    if (!repeatChecked.value) {
-      return;
-    }
+  const calcRepetition = (): void => {
+    const rDtstartOffsetMin = valueToMinutes({
+      value: startOffset.value.value,
+      unit: startOffset.value.unit,
+    });
+    const rEndAfterMin = valueToMinutes({
+      value: endRep.value || maxDuration.value?.value,
+      unit: endRep.value ? endRepUnit.value : maxDuration.value?.unit,
+    });
 
-    const startValue = startOffset.value.value;
-    const endRepValue = endRep.value.value || maxDuration.value?.value;
-    const endRepUnit = endRep.value.value
-      ? endRep.value.unit
-      : maxDuration.value?.unit;
-    const frequencyValue = frequency.value.value;
+    const endOfIndividualStudy =
+      rDtstartOffsetMin + rEndAfterMin - ONE_DAY_IN_MINUTES;
 
-    if (
-      startValue &&
-      (endRepValue || maxDuration.value?.value) &&
-      frequencyValue
-    ) {
-      const rDtstartOffsetMin = valueToMinutes({
-        value: startValue,
-        unit: startOffset.value.unit,
-      });
-      const rEndAfterMin = valueToMinutes({
-        value: endRepValue,
-        unit: endRepUnit,
-      });
+    totalDays.value = Math.round(endOfIndividualStudy / ONE_DAY_IN_MINUTES);
 
-      const endOfIndividualStudy = rDtstartOffsetMin + rEndAfterMin - 1440;
-
-      totalDays.value = Math.round(endOfIndividualStudy / 1440);
-    }
-  }
+    console.log('calcRepetition', totalDays.value);
+  };
 
   function cancel(): void {
     dialogRef.value.close();
@@ -265,8 +248,14 @@
 
     if (repeatChecked.value) {
       returnSchedule.rrrule = {
-        frequency: frequency.value,
-        endAfter: endRep.value,
+        frequency: {
+          value: frequency.value,
+          unit: frequencyUnit.value,
+        },
+        endAfter: {
+          value: endRep.value,
+          unit: endRepUnit.value,
+        },
       };
     } else {
       returnSchedule.rrrule = undefined;
@@ -284,56 +273,67 @@
     }
   }
 
-  watch(
-    [startOffset, endOffset, startTime, endTime, frequency, endRep],
-    ([
-      newStartOffset,
-      newEndOffset,
-      newStartTime,
-      newEndTime,
-      newFrequency,
-      newEndRep,
-    ]) => {
-      if (maxDuration.value) {
-        const errorInEvent = correctEvent(
-          newStartOffset,
-          newEndOffset,
-          newStartTime,
-          newEndTime,
-          maxDuration.value,
-        );
-        if (errorInEvent) {
-          addError(errorInEvent);
-        }
-        const correctedRepetition = correctEventRepetition(
-          startOffset.value,
-          startTime.value,
-          endOffset.value,
-          endTime.value,
-          newFrequency,
-          newEndRep,
-          maxDuration.value,
-          !repeatChecked.value,
-        );
-        repetitionEnabled.value = correctedRepetition.repetitionEnabled;
-        frequencyXTimes.value = correctedRepetition.numberOfRepetitions;
-        if (!correctedRepetition.repetitionEnabled) {
-          repeatChecked.value = false;
-        }
-        calcRepetition();
-        if (repeatChecked.value) {
-          if (correctedRepetition.frequencyError) {
-            addError(correctedRepetition.frequencyError);
-          }
-          if (correctedRepetition.frequencyEndError) {
-            addError(correctedRepetition.frequencyEndError);
-          }
-        }
-        scrollToFirstError();
+  const onChange = (): void => {
+    if (maxDuration.value) {
+      const errorInEvent = correctEvent(
+        startOffset.value,
+        endOffset.value,
+        startTime.value,
+        endTime.value,
+        maxDuration.value,
+      );
+      if (errorInEvent) {
+        addError(errorInEvent);
       }
-    },
+      const correctedRepetition = correctEventRepetition(
+        startOffset.value,
+        startTime.value,
+        endOffset.value,
+        endTime.value,
+        {
+          value: frequency.value,
+          unit: frequencyUnit.value,
+        },
+        {
+          value: endRep.value,
+          unit: endRepUnit.value,
+        },
+        maxDuration.value,
+        !repeatChecked.value,
+      );
+      repetitionEnabled.value = correctedRepetition.repetitionEnabled;
+      frequencyXTimes.value = correctedRepetition.numberOfRepetitions;
+      if (!correctedRepetition.repetitionEnabled) {
+        repeatChecked.value = false;
+      }
+      if (repeatChecked.value) {
+        if (correctedRepetition.frequencyError) {
+          addError(correctedRepetition.frequencyError);
+        }
+        if (correctedRepetition.frequencyEndError) {
+          addError(correctedRepetition.frequencyEndError);
+        }
+      }
+      scrollToFirstError();
+    }
+    calcRepetition();
+  };
+
+  watch(
+    [
+      startOffset,
+      startTime,
+      endOffset,
+      endTime,
+      frequency,
+      frequencyUnit,
+      endRep,
+      endRepUnit,
+    ],
+    onChange,
     { deep: true, immediate: true },
   );
+  onMounted(onChange);
 </script>
 
 <template>
@@ -369,7 +369,6 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
             :min="1"
-            @blur="calcRepetition()"
             @input="
               clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd'])
             "
@@ -409,7 +408,6 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
             :min="1"
-            @blur="calcRepetition()"
             @input="
               clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection'])
             "
@@ -473,20 +471,23 @@
         </div>
         <div class="col-span-3 flex border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="frequency.value"
+            v-model="frequency"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
             :min="1"
-            @input="clearError(['rrruleFreq', 'frequencyError'])"
+            @input="
+              clearError(['rrruleFreq', 'frequencyError']);
+              frequency = ($event?.value || 1) as number;
+            "
           />
           <Dropdown
-            v-model="frequency.unit"
+            v-model="frequencyUnit"
             :options="repetitionUnit"
             :option-label="'label'"
             :option-value="'value'"
             class="col-span-3 ml-4"
-            @change="clearError(['rrruleFreq', 'frequencyError'])"
+            @input="clearError(['rrruleFreq', 'frequencyError'])"
           />
         </div>
         <div v-if="frequencyXTimes !== undefined" class="col-span-2">
@@ -506,24 +507,27 @@
         </div>
         <div class="col-span-3 flex border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="endRep.value"
+            v-model="endRep"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
             class="z-10"
             :min="1"
-            @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
+            @input="
+              clearError(['rrruleEndAfter', 'frequencyEndError']);
+              endRep = ($event?.value || 1) as number;
+            "
           />
           <Dropdown
-            v-model="endRep.unit"
+            v-model="endRepUnit"
             :options="repetitionUnit"
             option-label="label"
             option-value="value"
             class="z-10 col-span-3 ml-4"
-            @change="clearError(['rrruleEndAfter', 'frequencyEndError'])"
+            @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
         </div>
-        <div v-if="totalDays && totalDays > 0" class="col-span-2">
+        <div v-if="totalDays" class="col-span-2">
           {{
             `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)} `
           }}
