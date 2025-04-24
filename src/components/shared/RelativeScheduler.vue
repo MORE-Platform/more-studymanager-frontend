@@ -223,8 +223,6 @@
       rDtstartOffsetMin + rEndAfterMin - ONE_DAY_IN_MINUTES;
 
     totalDays.value = Math.round(endOfIndividualStudy / ONE_DAY_IN_MINUTES);
-
-    console.log('calcRepetition', totalDays.value);
   };
 
   function cancel(): void {
