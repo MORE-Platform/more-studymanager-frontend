@@ -9,7 +9,7 @@ Licensed under the Elastic License 2.0. */
     Study,
     StudyRole,
     StudyStatus,
-  } from '@/gs/models';
+  } from '@gs/models';
   import StudyDialog from '../../components/dialog/StudyDialog.vue';
   import { useDialog } from 'primevue/usedialog';
   import Button from 'primevue/button';

@@ -17,7 +17,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableCollaboratorItemOption,
   } from '../models/MoreTableModel';
-  import { Collaborator, StudyRole, StudyStatus } from '../generated-sources';
+  import { Collaborator, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import { AxiosError, AxiosResponse } from 'axios';

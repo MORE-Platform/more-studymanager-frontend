@@ -10,7 +10,7 @@ Licensed under the Elastic License 2.0. */
     RelativeEvent,
     Event,
     Frequency,
-  } from '@/gs/models';
+  } from '@gs/models';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
   import { isObjectEmpty } from '../../utils/commonUtils';

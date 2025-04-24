@@ -20,7 +20,7 @@ Licensed under the Elastic License 2.0. */
     StudyGroup,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources';
+  } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';

@@ -13,7 +13,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableSortOptions,
     RowSelectionMode,
   } from '../models/MoreTableModel';
-  import { Study, StudyRole, StudyStatus } from '../generated-sources';
+  import { Study, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';

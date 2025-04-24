@@ -16,7 +16,7 @@ Licensed under the Elastic License 2.0. */
     StudyRole,
     StudyStatus,
     ListComponentsComponentTypeEnum,
-  } from '../generated-sources';
+  } from '@gs';
   import {
     MoreTableAction,
     MoreTableColumn,

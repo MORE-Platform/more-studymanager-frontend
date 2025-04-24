@@ -19,7 +19,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@/gs': resolve(__dirname, './src/generated-sources'),
+      '@gs': resolve(__dirname, './src/generated-sources'),
     }
   },
   server: {

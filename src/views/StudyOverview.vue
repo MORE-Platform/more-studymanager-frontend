@@ -14,7 +14,7 @@ Licensed under the Elastic License 2.0. */
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { AxiosError } from 'axios';
   import { useToastService } from '../composable/toastService';
-  import { StudyStatus } from '@/gs';
+  import { StudyStatus } from '@gs';
 
   const { handleToastErrors } = useToastService();
   const route = useRoute();

@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     StudyGroup,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources';
+  } from '@gs';
   import {
     MoreTableAction,
     MoreTableChoice,

@@ -46,7 +46,7 @@ Licensed under the Elastic License 2.0. */
   import { DropdownOption } from '../models/Common';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import useLoader from '../composable/useLoader';
-  import { ComponentFactory, Participant } from '@/gs/models';
+  import { ComponentFactory, Participant } from '@gs/models';
 
   const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();

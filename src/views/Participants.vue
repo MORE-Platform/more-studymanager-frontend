@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import ParticipantList from '../components/ParticipantList.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { StudyRole } from '../generated-sources';
+  import { StudyRole } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   const studyStore = useStudyStore();

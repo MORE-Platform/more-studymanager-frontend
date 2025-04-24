@@ -1,4 +1,4 @@
-import { Duration } from '../generated-sources';
+import { Duration } from '@gs';
 import { DateTime } from 'luxon';
 import { roundAndCeil } from './dataUtils';
 import { minutesToDuration, valueToMinutes } from './durationUtils';

@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import Column from 'primevue/column';
   import Dropdown from 'primevue/dropdown';
   import DataTable from 'primevue/datatable';
-  import { DataPoint } from '@/gs/models';
+  import { DataPoint } from '@gs/models';
   import { Ref, ref } from 'vue';
   import {
     useDataApi,

@@ -11,7 +11,7 @@ Licensed under the Elastic License 2.0. */
     Observation,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources';
+  } from '@gs';
   import { PropType, ref, Ref } from 'vue';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../composable/useErrorHandling';

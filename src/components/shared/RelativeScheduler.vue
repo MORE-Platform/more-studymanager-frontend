@@ -93,12 +93,12 @@
   };
 
   const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
-  const frequencyUnit = ref<DurationUnitEnum>(
+  const frequencyUnit = ref<UnitEnum>(
     schedule.rrrule?.frequency?.unit ?? UnitEnum.Day,
   );
 
   const endRep = ref<number>(schedule.rrrule?.endAfter?.value || 4);
-  const endRepUnit = ref<DurationUnitEnum>(
+  const endRepUnit = ref<UnitEnum>(
     schedule.rrrule?.endAfter?.unit ?? UnitEnum.Day,
   );
 

@@ -1,4 +1,4 @@
-import { Duration, UnitEnum } from '../generated-sources';
+import { Duration, UnitEnum } from '@gs';
 import { ONE_DAY_IN_MINUTES, ONE_HOUR_IN_MINUTES } from '../constants';
 
 export function valueToMinutes(duration: Duration): number {

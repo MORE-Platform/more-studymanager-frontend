@@ -9,7 +9,7 @@
 import { computed, Ref, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useUsersApi } from '../composable/useApi';
-import { CurrentUser } from '../generated-sources';
+import { CurrentUser } from '@gs';
 import { AxiosError } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 

@@ -17,7 +17,8 @@
     "types": ["vite/client", "node"],
     "typeRoots": ["src/types", "node_modules/@types"],
     "paths": {
-      "@/gs/*": ["./src/generated-sources/*"]
+      "@gs": ["./src/generated-sources"],
+      "@gs/*": ["./src/generated-sources/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
