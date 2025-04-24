@@ -471,7 +471,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.repeatEvery') }}
         </div>
-        <div class="col-span-3 flex border-l-2 py-3 pl-3">
+        <div class="col-span-5 flex border-l-2 py-3 pl-3">
           <InputNumber
             v-model="frequency"
             :placeholder="
@@ -492,13 +492,6 @@
             @input="clearError(['rrruleFreq', 'frequencyError'])"
           />
         </div>
-        <div v-if="frequencyXTimes !== undefined" class="col-span-2">
-          {{
-            $t('scheduler.dialog.relativeSchedule.rrrule.runTime', {
-              repetitionNum: frequencyXTimes,
-            })
-          }}
-        </div>
         <ErrorLabel
           :error="getError(['rrruleFreq', 'frequencyError'])"
           class="col-span-5 col-start-2 border-l-2 pl-3"
@@ -507,7 +500,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.endAfter') }}
         </div>
-        <div class="col-span-3 flex border-l-2 py-3 pl-3">
+        <div class="col-span-5 flex border-l-2 py-3 pl-3">
           <InputNumber
             v-model="endRep"
             :placeholder="
@@ -529,15 +522,20 @@
             @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
         </div>
-        <div v-if="totalDays" class="col-span-2">
-          {{
-            `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)} `
-          }}
-        </div>
         <ErrorLabel
           :error="getError(['rrruleEndAfter', 'frequencyEndError'])"
           class="col-span-5 col-start-2 border-l-2 pl-3"
         />
+      </div>
+      <div class="col-span-6 pt-6">
+        {{
+          `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)}.`
+        }}
+        {{
+          $t('scheduler.dialog.relativeSchedule.rrrule.runTime', {
+            repetitionNum: frequencyXTimes,
+          })
+        }}
       </div>
     </div>
     <div v-else-if="!repetitionEnabled" class="flex items-center gap-1">
