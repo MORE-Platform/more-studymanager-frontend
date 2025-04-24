@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { RouteParamsRaw, useRoute, useRouter } from 'vue-router';
-  import { StudyRole } from '../../generated-sources';
+  import { StudyRole } from '@gs';
   import { PropType, ref, Ref } from 'vue';
   import InfoDialog from '../dialog/InfoDialog.vue';
   import { useDialog } from 'primevue/usedialog';

@@ -5,7 +5,7 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import { Duration, UnitEnum, RelativeEvent } from '../../generated-sources';
+  import { Duration, UnitEnum, RelativeEvent } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '../../models/Scheduler';
   import { DateTime } from 'luxon';
@@ -438,7 +438,7 @@
     </h6>
     <div
       :class="[
-        'col-span-6 mb-4',
+        'col-span-6 mb-4 flex flex-row items-center',
         {
           'cursor-not-allowed': !repetitionEnabled,
           'cursor-pointer': repetitionEnabled,
@@ -448,13 +448,12 @@
     >
       <Checkbox
         v-model="repeatChecked"
-        class="ml-2"
         :disabled="!repetitionEnabled"
         binary
         @input="calcRepetition()"
         @click.stop
       />
-      <span class="ml-4">{{ $t('scheduler.dialog.repeatEvent') }}</span>
+      <span class="ms-2">{{ $t('scheduler.dialog.repeatEvent') }}</span>
     </div>
     <div v-if="repeatChecked" class="col-span-6 pb-5">
       <div class="mb-5">

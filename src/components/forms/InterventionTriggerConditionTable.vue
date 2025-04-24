@@ -19,7 +19,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     ComponentFactoryMeasurementsInner,
     Observation,
-  } from '../../generated-sources';
+  } from '@gs';
   import {
     useComponentsApi,
     useObservationsApi,

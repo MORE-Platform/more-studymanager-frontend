@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { Study, StudyStatus } from '../../generated-sources';
+  import { Study, StudyStatus } from '@gs';
   import { useI18n } from 'vue-i18n';
   import StudyStatusPill from '../study/StudyStatusPill.vue';
 

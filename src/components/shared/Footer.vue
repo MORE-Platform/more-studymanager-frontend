@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject, ref } from 'vue';
-  import { BuildInfo, FrontendConfiguration } from '../../generated-sources';
+  import { BuildInfo, FrontendConfiguration } from '@gs';
   import OverlayPanel from 'primevue/overlaypanel';
   import { useI18n } from 'vue-i18n';
 

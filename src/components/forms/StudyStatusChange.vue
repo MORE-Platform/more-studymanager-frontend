@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import Button from 'primevue/button';
-  import { StudyStatus } from '../../generated-sources';
+  import { StudyStatus } from '@gs';
   import { computed } from 'vue';
 
   const props = defineProps({

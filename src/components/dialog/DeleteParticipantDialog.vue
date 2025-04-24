@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { Participant } from '../../generated-sources';
+  import { Participant } from '@gs';
   import WarningSection from './shared/WarningSection.vue';
 
   const dialogRef: any = inject('dialogRef');

@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { StudyGroup } from '../../generated-sources';
+  import { StudyGroup } from '@gs';
   import { MoreTableColumn } from '../../models/MoreTableModel';
   import { useI18n } from 'vue-i18n';
   import MoreTable from '../shared/MoreTable.vue';

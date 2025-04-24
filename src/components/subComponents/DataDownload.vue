@@ -7,7 +7,7 @@
     ComponentFactory,
     Observation,
     Participant,
-  } from '../../generated-sources';
+  } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
   import {
     useComponentsApi,

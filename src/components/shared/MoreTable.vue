@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
     StudyRole,
     StudyStatus,
     Visibility,
-  } from '../../generated-sources';
+  } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
 

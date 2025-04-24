@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { useI18n } from 'vue-i18n';
-  import { Frequency, RecurrenceRule } from '../../generated-sources';
+  import { Frequency, RecurrenceRule } from '@gs';
   import { PropType, reactive, ref, Ref, watch } from 'vue';
   import Checkbox from 'primevue/checkbox';
   import InputNumber from 'primevue/inputnumber';

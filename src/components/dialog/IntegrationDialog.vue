@@ -9,7 +9,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     Observation,
     StudyStatus,
-  } from '../../generated-sources';
+  } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import { useStudyStore } from '../../stores/studyStore';
