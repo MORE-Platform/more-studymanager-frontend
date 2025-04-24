@@ -1,13 +1,13 @@
 import { Duration, DurationUnitEnum } from '../generated-sources/openapi';
-import { minutesInDay, minutesInHour } from '../constants';
+import { ONE_DAY_IN_MINUTES, ONE_HOUR_IN_MINUTES } from '../constants';
 
 export function valueToMinutes(duration: Duration): number {
   const value = duration.value || 0;
   switch (duration.unit) {
     case DurationUnitEnum.Day:
-      return value * minutesInDay;
+      return value * ONE_DAY_IN_MINUTES;
     case DurationUnitEnum.Hour:
-      return value * minutesInHour;
+      return value * ONE_HOUR_IN_MINUTES;
     case DurationUnitEnum.Minute:
       return value;
     default:
@@ -24,14 +24,14 @@ export function minutesToDuration(
 
   switch (unit) {
     case DurationUnitEnum.Day:
-      value = minutes / minutesInDay;
+      value = minutes / ONE_DAY_IN_MINUTES;
       if (value >= 1) {
         break;
       }
       unit = DurationUnitEnum.Hour;
     // eslint-disable-next-line no-fallthrough
     case DurationUnitEnum.Hour:
-      value = minutes / minutesInHour;
+      value = minutes / ONE_HOUR_IN_MINUTES;
       if (value >= 1) {
         break;
       }

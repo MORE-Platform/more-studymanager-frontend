@@ -4,7 +4,7 @@ import { roundAndCeil } from './dataUtils';
 import { minutesToDuration, valueToMinutes } from './durationUtils';
 import { ErrorValue } from '../composable/useErrorHandling';
 import i18n from '../i18n/i18n';
-import { minutesInDay } from '../constants';
+import { ONE_DAY_IN_MINUTES } from '../constants';
 
 /**
  * Validates the given event offsets and timestamps against a maximum duration constraint.
@@ -114,7 +114,7 @@ export const correctEventRepetition = (
   let frequencyEndError: ErrorValue | undefined;
 
   const timeRemaining =
-    maxDurationInMinutes - (valueToMinutes(offsetEnd) - minutesInDay);
+    maxDurationInMinutes - (valueToMinutes(offsetEnd) - ONE_DAY_IN_MINUTES);
   if (frequencyEndInMinutes > timeRemaining) {
     correctedFrequencyEnd = minutesToDuration(timeRemaining, frequencyEnd.unit);
     frequencyEndInMinutes = timeRemaining;
