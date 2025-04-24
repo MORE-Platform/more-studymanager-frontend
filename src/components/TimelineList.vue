@@ -474,12 +474,12 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="title w-full">
-    <div class="flex flex-row justify-between">
+    <div class="flex-row-center justify-between">
       <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
       <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
     </div>
-    <div class="mb-3 flex gap-5">
-      <div>
+    <div class="flex-row-center mb-3 justify-start gap-5">
+      <div class="flex-row-center">
         <span>{{ $t('timeline.labels.relativeDate') }}:</span>
         <span
           v-tooltip.bottom="$t('tooltips.timeline.relativeDateInfo')"
@@ -495,7 +495,7 @@ Licensed under the Elastic License 2.0. */
           @date-select="listTimeline"
         />
       </div>
-      <div>
+      <div class="flex-row-center">
         {{ $t('studyGroup.singular') }}:
         <Dropdown
           v-model="filterStudyGroup"
@@ -508,7 +508,7 @@ Licensed under the Elastic License 2.0. */
           @change="onStudyGroupFilterChange"
         />
       </div>
-      <div>
+      <div class="flex-row-center">
         {{ $t('participants.singular') }}:
         <Dropdown
           v-model="filterParticipant"
@@ -521,7 +521,7 @@ Licensed under the Elastic License 2.0. */
           @change="onParticipantFilterChange"
         />
       </div>
-      <div>
+      <div class="flex-row-center">
         {{ $t('timeline.labels.type') }}:
         <MultiSelect
           v-model="filterObservationAndIntervention"
@@ -536,7 +536,7 @@ Licensed under the Elastic License 2.0. */
           :selected-items-label="`{0} ${$t(
             'global.placeholder.optionsSelected',
           )}`"
-        ></MultiSelect>
+        />
       </div>
     </div>
   </div>
@@ -602,6 +602,10 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
+  .flex-row-center {
+    @apply flex flex-row items-center;
+  }
+
   .vuecal :deep(.vuecal__event) {
     &.observation {
       background-color: var(--green-100);
