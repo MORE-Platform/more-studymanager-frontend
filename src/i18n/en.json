@@ -1042,7 +1042,7 @@
         "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
         "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
         "rrrule": {
-          "endsAfter": "Ends {days} day after individual study start | Ends {days} day after individual study start | Ends {days} days after individual study start",
+          "endsAfter": "Ends 0 day after individual study start | Ends 1 day after individual study start | Ends {n} days after individual study start",
           "runTime": "The observation will run {repetitionNum} times."
         },
         "placeholder": {
