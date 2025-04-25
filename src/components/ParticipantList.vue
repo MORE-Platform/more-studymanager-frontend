@@ -250,7 +250,6 @@ Licensed under the Elastic License 2.0. */
   }
 
   const createParticipant = (amount: number): void => {
-    const i = amount || 1;
     const newParticipants: Participant[] = [];
 
     const maxId = participantsList.value.reduce(
@@ -260,7 +259,7 @@ Licensed under the Elastic License 2.0. */
       },
       participantsList.value?.length || 0,
     );
-    Array.from({ length: amount }).forEach((_, i) => {
+    Array.from({ length: amount || 1 }).forEach((_, i) => {
       newParticipants.push({
         alias: `P ${maxId + i + 1}`,
         studyId: props.studyId,
