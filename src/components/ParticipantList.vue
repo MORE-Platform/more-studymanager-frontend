@@ -24,7 +24,6 @@ Licensed under the Elastic License 2.0. */
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import * as starWarsNames from 'starwars-names';
   import useLoader from '../composable/useLoader';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
@@ -253,30 +252,20 @@ Licensed under the Elastic License 2.0. */
   const createParticipant = (amount: number): void => {
     const i = amount || 1;
     const newParticipants: Participant[] = [];
-    // starWarsNames.all.length = 93
-    const openNames: string[] = starWarsNames.all.filter(
-      (n) => !participantsList.value.find((p) => p.alias === n),
-    );
 
-    const addNew = (alias: string): number =>
+    const maxId = participantsList.value.reduce(
+      (max: number, current: Participant | undefined): number => {
+        const pId = current?.participantId || 0;
+        return pId > max ? pId : max;
+      },
+      participantsList.value?.length || 0,
+    );
+    Array.from({ length: amount }).forEach((_, i) => {
       newParticipants.push({
-        alias,
+        alias: `P ${maxId + i + 1}`,
         studyId: props.studyId,
       });
-
-    // Try to avoid duplicates as long as possible
-    if (openNames.length === 0) {
-      starWarsNames
-        .random(i)
-        .map((a, i) => `${a} ${i}`)
-        .map(addNew);
-    } else {
-      openNames.forEach((n) => {
-        if (newParticipants.length < i) {
-          addNew(n);
-        }
-      });
-    }
+    });
 
     participantsApi
       .createParticipants(props.studyId, newParticipants)
