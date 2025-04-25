@@ -272,7 +272,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="more-table">
-    <div class="mb-8 flex">
+    <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
         <h3 v-if="title" class="font-semibold">{{ title }}</h3>
         <h4 v-if="subtitle" class="text-base">

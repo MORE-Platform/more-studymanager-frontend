@@ -557,6 +557,7 @@ Licensed under the Elastic License 2.0. */
           option-label="label"
           option-value="value"
           :disabled="!editable"
+          class="w-fit"
           :class="{ 'dropdown-has-value': studyGroupId }"
           :placeholder="
             studyGroupId

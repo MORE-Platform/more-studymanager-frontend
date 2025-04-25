@@ -39,16 +39,20 @@
 }
 
 .icon-box.eye {
-  .color-approved,
-  .color-important {
+  .pi {
+    background: var(--bluegray-50);
     padding: 6px;
     font-size: 22px;
     border-radius: var(--border-radius);
+    color: var(--primary-color);
+
   }
-  .color-approved {
+  .pi.color-approved {
+    background: transparent;
     color: var(--green-600);
   }
-  .color-important {
+  .pi.color-important {
+    background: transparent;
     color: var(--red-600);
   }
 }
