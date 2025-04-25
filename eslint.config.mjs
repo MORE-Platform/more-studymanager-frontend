@@ -44,8 +44,7 @@ export default tseslint.config(
       vitest,
     },
     linterOptions: {
-      reportUnusedDisableDirectives: true,
-      maxWarnings: 0,
+      reportUnusedDisableDirectives: true
     },
     // Custom rules
     rules: {

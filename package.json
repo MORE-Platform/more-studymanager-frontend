@@ -9,7 +9,7 @@
     "package": "npm run generate:api && vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "prettier": "prettier --config .prettierrc --write \"src/**/*.{ts,vue,json}\" \"tests/**/*.ts\"",
-    "lint": "eslint .",
+    "lint": "eslint --max-warnings=0 .",
     "lint:fix": "eslint --fix .",
     "coverage": "vitest --environment jsdom --coverage",
     "test:unit": "vitest --environment jsdom",

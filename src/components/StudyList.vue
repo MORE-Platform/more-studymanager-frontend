@@ -320,7 +320,7 @@ Licensed under the Elastic License 2.0. */
         <Button
           type="button"
           icon="pi pi-plus"
-          class="text-nowrap p-2.5"
+          class="p-2.5"
           :label="$t('study.studyList.action.addStudy')"
           @click="openCreateDialog()"
         />

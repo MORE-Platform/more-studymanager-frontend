@@ -22,7 +22,6 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../models/InputModels';
-  import Checkbox from 'primevue/checkbox';
   import PropertyInputs from './shared/PropertyInputs.vue';
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';

@@ -1758,6 +1758,7 @@
   font-size: var(--default-font-size);
   transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
   border-radius: var(--border-radius);
+  @apply flex flex-row items-center justify-center;
 }
 .p-button:enabled:hover {
   background: var(--primary-color--secondary);
@@ -4332,7 +4333,6 @@
 .p-tooltip.p-tooltip-bottom .p-tooltip-arrow {
   border-bottom-color: var(--text-color);
 }
-
 .p-fileupload .p-fileupload-buttonbar {
   background: var(--surface-b);
   padding: var(--content-padding);
@@ -4351,7 +4351,7 @@
   box-shadow: var(--focus-ring);
 }
 .p-fileupload-choose {
-  @apply px-4 py-2 block;
+  @apply flex flex-row items-center justify-center px-4 py-2 block;
 }
 .p-fileupload-choose input[type=file] {
   display: none;
@@ -4682,11 +4682,13 @@
   width: 12.5rem;
 }
 .p-menu .p-menuitem-link {
-  padding: calc(var(--content-padding) * 0.75) var(--content-padding);
+  padding: calc(var(--content-padding) * 0.5) var(--content-padding);
   color: var(--text-color);
   border-radius: 0;
   transition: box-shadow 0.2s;
   user-select: none;
+  display: block;
+  line-height: 1.5rem;
 }
 .p-menu .p-menuitem-link .p-menuitem-text {
   color: var(--text-color);
