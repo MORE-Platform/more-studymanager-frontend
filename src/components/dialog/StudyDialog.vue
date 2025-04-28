@@ -192,7 +192,6 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="start"
-          class="w-full"
           :name="'start'"
           :min-date="
             study.plannedStart && new Date(study.plannedStart) < new Date()
@@ -202,6 +201,11 @@ Licensed under the Elastic License 2.0. */
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
+          :pt="{
+           input: {
+              class: ['w-full']
+            }
+          }"
         />
       </div>
       <div class="col-start-0 col-span-3">
@@ -210,12 +214,16 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="end"
-          class="w-full"
           :name="'end'"
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
           :min-date="start"
+          :pt="{
+           input: {
+              class: ['w-full']
+            }
+          }"
         />
       </div>
       <div class="ol-start-0 col-span-6">
@@ -326,7 +334,7 @@ Licensed under the Elastic License 2.0. */
         />
       </div>
       <ContactInformation v-model="contact" />
-      <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
+      <div class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right">
         <Button
           class="btn-gray"
           :label="$t('global.labels.cancel')"

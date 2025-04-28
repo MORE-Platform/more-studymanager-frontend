@@ -374,7 +374,7 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-span-7 col-start-2 grid grid-cols-2">
-        <div class="col-start-1">
+        <div class="flex flex-row items-center justify-start">
           {{ $t('scheduler.labels.event.oneDayObservation') }}:
           <Checkbox
             v-model="singleDayEventCheckbox"
@@ -383,7 +383,7 @@ Licensed under the Elastic License 2.0. */
             @change="onChangeSingleDayEventCheckbox()"
           />
         </div>
-        <div>
+        <div class="flex flex-row items-center justify-start">
           <span>{{ $t('scheduler.labels.event.allDay') }}</span>
           <Checkbox
             v-model="entireDayCheckbox"
@@ -408,7 +408,7 @@ Licensed under the Elastic License 2.0. */
 
     <div class="h-24"></div>
     <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
-      <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
+      <div class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right">
         <Button
           class="btn-gray !mr-3"
           :label="$t('global.labels.cancel')"

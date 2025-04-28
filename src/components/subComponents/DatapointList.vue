@@ -128,8 +128,8 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
 
-    <div class="datapoint-selection mb-3 flex gap-5">
-      <div>
+    <div class="datapoint-selection mb-3 flex flex-row items-center gap-5">
+      <div class="flex flex-row items-center">
         {{ $t('monitoring.dataPointsList.resultSize') }}:
         <Dropdown
           v-model="size"
@@ -139,7 +139,7 @@ Licensed under the Elastic License 2.0. */
           @change="listDataPoints()"
         />
       </div>
-      <div>
+      <div class="flex flex-row items-center">
         {{ $t('participants.plural') }}:
         <Dropdown
           v-model="participant"
@@ -151,7 +151,7 @@ Licensed under the Elastic License 2.0. */
           @change="listDataPoints()"
         />
       </div>
-      <div>
+      <div class="flex flex-row items-center">
         {{ $t('observation.plural') }}:
         <Dropdown
           v-model="observation"

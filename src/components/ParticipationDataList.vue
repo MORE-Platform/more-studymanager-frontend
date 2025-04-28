@@ -655,7 +655,7 @@ Licensed under the Elastic License 2.0. */
 
       <div class="mb-3 flex items-center justify-between gap-5">
         <div class="flex gap-5">
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('monitoring.labels.dateRange') }}:
             <Calendar
               v-model="filterDateRange"
@@ -668,7 +668,7 @@ Licensed under the Elastic License 2.0. */
               :disabled="disableVisualizationFilter"
             />
           </div>
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('studyGroup.singular') }}:
             <Dropdown
               v-model="filterStudyGroup"
@@ -683,7 +683,7 @@ Licensed under the Elastic License 2.0. */
               @change="onStudyGroupFilterChange"
             />
           </div>
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('participants.singular') }}:
             <Dropdown
               v-model="filterParticipant"
@@ -719,7 +719,7 @@ Licensed under the Elastic License 2.0. */
           :header="observationData[0].observationTitle"
           headerClass="mt-2.5"
         >
-          <TabView @update:active-index="onTabChange(observationId, $event)">
+          <TabView class="pt-8" @update:active-index="onTabChange(observationId, $event)">
             <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"

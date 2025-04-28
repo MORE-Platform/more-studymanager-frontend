@@ -130,7 +130,7 @@ Licensed under the Elastic License 2.0. */
         </div>
 
         <div
-          class="buttons col-start-0 col-span-8 mt-1 justify-end text-right align-bottom"
+          class="buttons col-start-0 col-span-8 mt-1 flex flex-row items-center justify-end"
         >
           <Button
             class="btn-gray"

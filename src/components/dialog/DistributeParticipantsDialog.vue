@@ -57,7 +57,7 @@ Licensed under the Elastic License 2.0. */
       :warning-msg="t('participants.participantsList.distributeMsg.warning')"
     />
 
-    <div class="flex justify-end">
+    <div class="flex flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray"

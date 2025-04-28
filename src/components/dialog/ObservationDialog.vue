@@ -362,7 +362,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
+      <div class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right">
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>

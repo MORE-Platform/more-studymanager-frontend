@@ -63,7 +63,7 @@ Licensed under the Elastic License 2.0. */
       <label :for="role.value!" class="-mt-1">{{ role.label }}</label>
     </div>
 
-    <div class="buttons mt-1 justify-end text-right">
+    <div class="buttons mt-1 flex flex-row items-center justify-end">
       <Button
         class="btn-gray"
         :label="$t('global.labels.cancel')"
