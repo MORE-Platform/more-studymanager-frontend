@@ -28,8 +28,8 @@ export default class AuthService {
               console.log(`Token refreshed: ${refreshed}, ${new Date()}`);
             }
           })
-          .catch(() => {
-            console.error('Failed to refresh token');
+          .catch((e) => {
+            console.error('Failed to refresh token', e);
           });
       }, 6000);
       return true;
