@@ -251,20 +251,17 @@ Licensed under the Elastic License 2.0. */
 
   const createParticipant = (amount: number): void => {
     const newParticipants: Participant[] = [];
-
-    const maxId = participantsList.value.reduce(
-      (max: number, current: Participant | undefined): number => {
-        const pId = current?.participantId || 0;
-        return pId > max ? pId : max;
-      },
-      participantsList.value?.length || 0,
+    const maxId = Math.max(
+      0,
+      ...participantsList.value.map((p) => p?.participantId || 0),
     );
-    Array.from({ length: amount || 1 }).forEach((_, i) => {
+
+    for (let i = 1; i <= amount; i++) {
       newParticipants.push({
-        alias: `P ${maxId + i + 1}`,
+        alias: `P ${maxId + i}`,
         studyId: props.studyId,
       });
-    });
+    }
 
     participantsApi
       .createParticipants(props.studyId, newParticipants)
