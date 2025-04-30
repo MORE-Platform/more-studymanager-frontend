@@ -322,6 +322,9 @@
   background: var(--bluegray-100);
   color: var(--text-color);
 }
+.p-inputtext {
+  @apply w-full;
+}
 .p-autocomplete.p-invalid.p-component > .p-inputtext {
   border-color: var(--red-500);
 }
@@ -2672,6 +2675,7 @@
   background: var(--surface-a);
   color: var(--text-color);
   transition: box-shadow 0.2s;
+  cursor: pointer;
 }
 .p-datatable .p-datatable-tbody > tr > td {
   text-align: left;
@@ -4074,7 +4078,7 @@
   border: var(--border-weight) var(--border-style) var(--surface-d);
   border-width: 0 0 2px 0;
   display: flex;
-  height: 32px;
+  height: calc(var(--content-padding) * 2 + 5px);
 }
 .p-tabview .p-tabview-nav li {
   margin-right: 0;
@@ -4374,7 +4378,10 @@
   box-shadow: var(--focus-ring);
 }
 .p-fileupload-choose {
-  @apply flex flex-row items-center justify-center px-4 py-2 block;
+  @apply flex flex-row items-center justify-center px-4 py-2;
+}
+.p-fileupload-choose .p-button-label {
+  @apply text-center;
 }
 .p-fileupload-choose input[type=file] {
   display: none;

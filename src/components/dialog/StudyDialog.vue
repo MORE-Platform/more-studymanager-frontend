@@ -250,11 +250,11 @@ Licensed under the Elastic License 2.0. */
         <div class="flex w-full flex-nowrap items-center gap-2">
           <InputNumber
             v-model="studyDuration.value"
-            class="w-full"
             :name="'duration_input'"
             :placeholder="$t('study.placeholder.durationInput')"
             :auto-resize="true"
             :min="0"
+            class="w-full"
             @input="clearError('duration')"
           />
           <span class="w-fit">

@@ -647,6 +647,7 @@ Licensed under the Elastic License 2.0. */
 
     table tbody tr {
       font-size: 0.906rem !important;
+      @apply cursor-pointer;
 
       td:last-child {
         width: 1%;
