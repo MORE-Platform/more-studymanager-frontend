@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
+import { Study, StudyRole, StudyStatus } from '@gs';
 import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';

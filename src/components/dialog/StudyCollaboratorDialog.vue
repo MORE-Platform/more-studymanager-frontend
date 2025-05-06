@@ -53,17 +53,17 @@ Licensed under the Elastic License 2.0. */
 
     <h6 class="mb-2">{{ $t('studyCollaborator.dialog.chooseRoles') }}</h6>
     <div v-if="warning" class="error mb-3">{{ warning }}</div>
-    <div v-for="role in roleList" :key="role.value!">
+    <div v-for="role in roleList" :key="role.value!" class="flex">
       <RadioButton
         v-model="roleValue"
         name="roles"
         :input-id="role.value!"
         :value="role"
       ></RadioButton>
-      <label :for="role.value!" class="ml-2">{{ role.label }}</label>
+      <label :for="role.value!" class="-mt-1">{{ role.label }}</label>
     </div>
 
-    <div class="buttons mt-1 justify-end text-right">
+    <div class="buttons mt-1 flex flex-row items-center justify-end">
       <Button
         class="btn-gray"
         :label="$t('global.labels.cancel')"

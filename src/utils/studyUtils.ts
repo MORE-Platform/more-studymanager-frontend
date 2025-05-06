@@ -1,8 +1,4 @@
-import {
-  Duration,
-  DurationUnitEnum,
-  Study,
-} from '../generated-sources/openapi';
+import { Duration, UnitEnum, Study } from '@gs';
 import { createLuxonDateTime } from './dateUtils';
 import { roundAndCeil } from './dataUtils';
 import { DateTime } from 'luxon';
@@ -26,7 +22,7 @@ export const calcStudyDuration = (
   if (start?.isValid && end?.isValid) {
     return {
       value: roundAndCeil(end.diff(start, 'day').days),
-      unit: DurationUnitEnum.Day,
+      unit: UnitEnum.Day,
     };
   }
 };

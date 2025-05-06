@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
     StudyRole,
     StudyStatus,
     Visibility,
-  } from '../../generated-sources/openapi';
+  } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
 
@@ -272,7 +272,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="more-table">
-    <div class="mb-8 flex">
+    <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
         <h3 v-if="title" class="font-semibold">{{ title }}</h3>
         <h4 v-if="subtitle" class="text-base">
@@ -280,7 +280,9 @@ Licensed under the Elastic License 2.0. */
           <span v-html="subtitle" />
         </h4>
       </div>
-      <div class="actions table-actions ml-2.5 flex flex-1 justify-end">
+      <div
+        class="actions table-actions ml-2.5 flex flex-row items-center justify-end"
+      >
         <slot
           name="tableActions"
           :is-in-edit-mode="rowIDsInEditMode.length"
@@ -289,7 +291,7 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <DataTable
-      v-model:editingRows="editingRows"
+      v-model:editing-rows="editingRows"
       v-model:filters="tableFilter"
       :value="prepareRows(rows)"
       :sort-field="sortOptions?.sortField"
@@ -396,8 +398,8 @@ Licensed under the Elastic License 2.0. */
                       data[field],
                       getColumnEditableValues(column.editable),
                     )
-                  : column.placeholder ??
-                    $t('global.placeholder.chooseDropdownOptionDefault')
+                  : (column.placeholder ??
+                    $t('global.placeholder.chooseDropdownOptionDefault'))
               "
             />
             <span v-else>{{
@@ -645,6 +647,7 @@ Licensed under the Elastic License 2.0. */
 
     table tbody tr {
       font-size: 0.906rem !important;
+      @apply cursor-pointer;
 
       td:last-child {
         width: 1%;

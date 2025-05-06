@@ -10,12 +10,7 @@ Licensed under the Elastic License 2.0. */
   import Textarea from 'primevue/textarea';
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
-  import {
-    Contact,
-    Duration,
-    DurationUnitEnum,
-    Study,
-  } from '../../generated-sources/openapi';
+  import { Contact, Duration, UnitEnum, Study } from '@gs';
   import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
   import { useGlobalStore } from '../../stores/globalStore';
@@ -59,7 +54,7 @@ Licensed under the Elastic License 2.0. */
 
   const studyDuration: Duration = reactive({
     value: study.duration?.value,
-    unit: study.duration?.unit ?? DurationUnitEnum.Day,
+    unit: study.duration?.unit ?? UnitEnum.Day,
   });
   const start = ref(
     study?.plannedStart ? new Date(study.plannedStart) : new Date(),
@@ -197,7 +192,6 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="start"
-          class="w-full"
           :name="'start'"
           :min-date="
             study.plannedStart && new Date(study.plannedStart) < new Date()
@@ -207,6 +201,11 @@ Licensed under the Elastic License 2.0. */
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
+          :pt="{
+           input: {
+              class: ['w-full']
+            }
+          }"
         />
       </div>
       <div class="col-start-0 col-span-3">
@@ -215,12 +214,16 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="end"
-          class="w-full"
           :name="'end'"
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
           :min-date="start"
+          :pt="{
+           input: {
+              class: ['w-full']
+            }
+          }"
         />
       </div>
       <div class="ol-start-0 col-span-6">
@@ -247,11 +250,11 @@ Licensed under the Elastic License 2.0. */
         <div class="flex w-full flex-nowrap items-center gap-2">
           <InputNumber
             v-model="studyDuration.value"
-            class="w-full"
             :name="'duration_input'"
             :placeholder="$t('study.placeholder.durationInput')"
             :auto-resize="true"
             :min="0"
+            class="w-full"
             @input="clearError('duration')"
           />
           <span class="w-fit">
@@ -331,7 +334,7 @@ Licensed under the Elastic License 2.0. */
         />
       </div>
       <ContactInformation v-model="contact" />
-      <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
+      <div class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right">
         <Button
           class="btn-gray"
           :label="$t('global.labels.cancel')"

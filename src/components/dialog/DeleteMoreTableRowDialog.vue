@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
 
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
-    <div class="flex justify-end">
+    <div class="flex flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray !mr-3"

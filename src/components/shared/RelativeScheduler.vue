@@ -5,11 +5,7 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import {
-    Duration,
-    DurationUnitEnum,
-    RelativeEvent,
-  } from '../../generated-sources/openapi';
+  import { Duration, UnitEnum, RelativeEvent } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '../../models/Scheduler';
   import { DateTime } from 'luxon';
@@ -39,7 +35,7 @@
 
   const startOffset = ref<Duration>({
     value: schedule.dtstart?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: UnitEnum.Day,
   });
   const startTime = ref<DateTime>(
     DateTime.now().set({ hour: 10, minute: 30, second: 0 }),
@@ -47,7 +43,7 @@
 
   const endOffset = ref<Duration>({
     value: schedule.dtend?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: UnitEnum.Day,
   });
   const endTime = ref<DateTime>(
     DateTime.now().set({ hour: 18, minute: 30, second: 0 }),
@@ -97,13 +93,13 @@
   };
 
   const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
-  const frequencyUnit = ref<DurationUnitEnum>(
-    schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
+  const frequencyUnit = ref<UnitEnum>(
+    schedule.rrrule?.frequency?.unit ?? UnitEnum.Day,
   );
 
   const endRep = ref<number>(schedule.rrrule?.endAfter?.value || 4);
-  const endRepUnit = ref<DurationUnitEnum>(
-    schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
+  const endRepUnit = ref<UnitEnum>(
+    schedule.rrrule?.endAfter?.unit ?? UnitEnum.Day,
   );
 
   const repeatChecked: Ref<boolean> = ref(!!schedule.rrrule?.frequency);
@@ -115,19 +111,19 @@
   const repetitionUnit = [
     {
       label: t('scheduler.frequency.minute'),
-      value: DurationUnitEnum.Minute,
-      unit: DurationUnitEnum.Minute,
+      value: UnitEnum.Minute,
+      unit: UnitEnum.Minute,
     },
     {
       label: t('scheduler.frequency.hour'),
-      value: DurationUnitEnum.Hour,
-      unit: DurationUnitEnum.Hour,
+      value: UnitEnum.Hour,
+      unit: UnitEnum.Hour,
     },
     {
       label: t('scheduler.frequency.day'),
-      value: DurationUnitEnum.Day,
+      value: UnitEnum.Day,
       active: true,
-      unit: DurationUnitEnum.Day,
+      unit: UnitEnum.Day,
     },
   ];
 
@@ -384,7 +380,7 @@
             @update:model-value="
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                startTime = createLuxonDateTime(dateVal) || startTime;
+                startTime = createLuxonDateTime(dateVal || '') || startTime;
                 clearError(['offsetCorrection']);
               }
             "
@@ -424,7 +420,7 @@
             @update:model-value="
               (newVal) => {
                 const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                endTime = createLuxonDateTime(dateVal) || endTime;
+                endTime = createLuxonDateTime(dateVal || '') || endTime;
                 clearError(['startTimeBeforeEnd', 'offsetCorrection']);
               }
             "
@@ -442,7 +438,7 @@
     </h6>
     <div
       :class="[
-        'col-span-6 mb-4',
+        'col-span-6 mb-4 flex flex-row items-center',
         {
           'cursor-not-allowed': !repetitionEnabled,
           'cursor-pointer': repetitionEnabled,
@@ -452,13 +448,12 @@
     >
       <Checkbox
         v-model="repeatChecked"
-        class="ml-2"
         :disabled="!repetitionEnabled"
         binary
         @input="calcRepetition()"
         @click.stop
       />
-      <span class="ml-4">{{ $t('scheduler.dialog.repeatEvent') }}</span>
+      <span class="ms-2">{{ $t('scheduler.dialog.repeatEvent') }}</span>
     </div>
     <div v-if="repeatChecked" class="col-span-6 pb-5">
       <div class="mb-5">
@@ -541,7 +536,7 @@
     </div>
 
     <div class="grid w-full grid-cols-6">
-      <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
+      <div class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right">
         <Button
           class="btn-gray !mr-3"
           :label="$t('global.labels.cancel')"

@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     StudyGroup,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources/openapi';
+  } from '@gs';
   import {
     MoreTableAction,
     MoreTableChoice,
@@ -470,7 +470,7 @@ Licensed under the Elastic License 2.0. */
       :sort-options="sortOptions"
       :editable-access="actionsVisible"
       :loading="loader.isLoading.value"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('observation.observationList.emptyListMsg')"
       :component-factory="factories"
       :enable-row-selection="RowSelectionMode.Single"

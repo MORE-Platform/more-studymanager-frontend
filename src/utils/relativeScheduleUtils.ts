@@ -1,4 +1,4 @@
-import { Duration } from '../generated-sources/openapi';
+import { Duration } from '@gs';
 import { DateTime } from 'luxon';
 import { roundAndCeil } from './dataUtils';
 import { minutesToDuration, valueToMinutes } from './durationUtils';
