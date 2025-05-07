@@ -288,19 +288,18 @@
           />
           <div
             v-if="getError('rruleWeeklyIsMissingByDay')"
-            class="error col-span-5 col-start-2 mb-4"
+            class="error col-span-5 col-start-2"
           >
             {{ getError('rruleWeeklyIsMissingByDay') }}
           </div>
         </div>
-
-        <hr class="col-start-0 col-span-6 my-4" />
 
         <!-- repetition ending options -->
         <div
           v-if="rruleEventCheckbox && returnRrule.freq"
           class="col-span-6 grid grid-cols-6 gap-4"
         >
+          <hr class="col-start-0 col-span-6 my-4" />
           <div class="col-span-1 self-center font-medium">
             {{ $t('scheduler.labels.repetitionEnd') }}
           </div>
