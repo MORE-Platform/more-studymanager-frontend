@@ -389,9 +389,12 @@
 }
 .p-datepicker:not(.p-datepicker-inline) .p-datepicker-header {
   background: var(--surface-a);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .p-datepicker .p-datepicker-header {
-  padding: calc(var(--content-padding) / 2);
+  //padding: calc(var(--content-padding) / 2);
   color: var(--text-color);
   background: var(--surface-a);
   font-weight: 600;
@@ -421,6 +424,10 @@
   outline: 0 none;
   outline-offset: 0;
   box-shadow: var(--focus-ring);
+}
+.p-datepicker:not(.p-datepicker-inline) .p-datepicker-calendar {
+  width: 100%;
+  padding: calc(var(--content-padding) / 2);
 }
 .p-datepicker .p-datepicker-header .p-datepicker-title {
   line-height: 2rem;
@@ -452,6 +459,8 @@
 }
 .p-datepicker table td {
   padding: calc(var(--content-padding) / 2);
+  cursor: pointer;
+  text-align: center;
 }
 .p-datepicker table td > span {
   width: 2.5rem;
@@ -459,10 +468,11 @@
   border-radius: var(--border-radius--rounded);
   transition: box-shadow 0.2s;
   border: var(--border-weight) var(--border-style) transparent;
+  padding: 2.5px 3.5px 4px;
 }
 .p-datepicker table td > span.p-highlight {
-  color: var(--text-color);
-  background: var(--primary-100);
+  color: white;
+  background: var(--primary-500);
 }
 .p-datepicker table td > span:focus {
   outline: 0 none;
@@ -475,8 +485,8 @@
   border-color: transparent;
 }
 .p-datepicker table td.p-datepicker-today > span.p-highlight {
-  color: var(--text-color);
-  background: var(--primary-100);
+  color: white;
+  background: var(--primary-500);
 }
 .p-datepicker .p-datepicker-buttonbar {
   padding: var(--content-padding) 0;
@@ -4079,6 +4089,9 @@
   border-width: 0 0 2px 0;
   display: flex;
   height: calc(var(--content-padding) * 2 + 5px);
+}
+.p-tabview .p-tabview-header:not(.p-highlight) {
+  cursor: pointer;
 }
 .p-tabview .p-tabview-nav li {
   margin-right: 0;

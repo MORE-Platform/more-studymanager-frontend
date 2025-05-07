@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
       {{ $t(props.property.description) }}
     </div>
 
-    <div>
+    <div class="flex items-center">
       <Checkbox
         v-model="booleanChecked"
         :label="property.name"

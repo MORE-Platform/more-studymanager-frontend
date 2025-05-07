@@ -447,7 +447,7 @@ Licensed under the Elastic License 2.0. */
     <div v-if="rowOpenError" class="error my-4">
       {{ rowOpenError }}
     </div>
-    <div class="mt-5 text-center">
+    <div class="mt-5 text-center flex justify-center">
       <Button
         v-if="!nextGroupCondition"
         type="button"
