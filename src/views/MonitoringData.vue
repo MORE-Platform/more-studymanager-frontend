@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { StudyRole } from '../generated-sources/openapi';
+  import { StudyRole } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
   import DataDownload from '../components/subComponents/DataDownload.vue';
   import TabView from 'primevue/tabview';
@@ -15,7 +15,10 @@ Licensed under the Elastic License 2.0. */
   import ParticipationDataList from '../components/ParticipationDataList.vue';
 
   const studyStore = useStudyStore();
-  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Viewer];
+  const accessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyViewer,
+  ];
 </script>
 
 <template>

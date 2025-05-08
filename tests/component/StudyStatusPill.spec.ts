@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { expect, describe, it } from 'vitest';
 import StudyStatusPill from '../../src/components/study/StudyStatusPill.vue';
-import { StudyStatus } from '../../src/generated-sources/openapi';
+import { StudyStatus } from '../../src/generated-sources';
 
 describe('StudyStatusPill', () => {
   it('renders the class property correctly for different statuses', () => {

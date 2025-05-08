@@ -11,7 +11,7 @@ Licensed under the Elastic License 2.0. */
     Observation,
     StudyRole,
     StudyStatus,
-  } from '../generated-sources/openapi';
+  } from '@gs';
   import { PropType, ref, Ref } from 'vue';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useErrorHandling } from '../composable/useErrorHandling';
@@ -340,7 +340,7 @@ Licensed under the Elastic License 2.0. */
       :row-actions="rowActions"
       :loading="loader.isLoading.value"
       :editable-access="actionsVisible"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('integration.integrationList.emptyListMsg')"
       class="table-title-width table-btn-min-height"
       @on-action="executeAction($event)"

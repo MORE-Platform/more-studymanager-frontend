@@ -8,7 +8,6 @@ dist-ssr
 target/
 more-configuration-api-client-ts*
 ConfiguratorAPI.yaml
-openapitools.json
 src/generated-sources
 tests/coverage
 .env

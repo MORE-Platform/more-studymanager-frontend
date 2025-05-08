@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { Study, StudyStatus } from '../../generated-sources/openapi';
+  import { Study, StudyStatus } from '@gs';
   import { useI18n } from 'vue-i18n';
   import StudyStatusPill from '../study/StudyStatusPill.vue';
 
@@ -94,7 +94,7 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray"

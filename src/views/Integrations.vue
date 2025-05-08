@@ -8,11 +8,14 @@ Licensed under the Elastic License 2.0. */
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { useStudyStore } from '../stores/studyStore';
   import IntegrationList from '../components/IntegrationList.vue';
-  import { StudyRole } from '../generated-sources/openapi';
+  import { StudyRole } from '@gs';
 
   const studyStore = useStudyStore();
 
-  const accessRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const accessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyOperator,
+  ];
 </script>
 
 <template>

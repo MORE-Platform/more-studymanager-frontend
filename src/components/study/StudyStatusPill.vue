@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import { StudyStatus } from '../../generated-sources/openapi';
+  import { StudyStatus } from '@gs';
 
   defineProps({
     status: {

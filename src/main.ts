@@ -25,7 +25,7 @@ import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
 import { useUiConfigApi } from './composable/useApi';
-import { BuildInfo, FrontendConfiguration } from './generated-sources/openapi';
+import { BuildInfo, FrontendConfiguration } from './generated-sources';
 
 const { uiConfigApi } = useUiConfigApi();
 
@@ -98,6 +98,8 @@ useLoader().activateLoadingInterceptor();
 const pinia = createPinia();
 
 const app = createApp(App);
+app.directive('tooltip', Tooltip);
+
 app.provide('buildInfo', buildInfo);
 app.provide('uiConfig', uiConfig);
 app.provide('authService', authService);
@@ -111,5 +113,3 @@ app.use(ToastService);
 app.use(pinia);
 
 app.mount('#app');
-
-app.directive('tooltip', Tooltip);

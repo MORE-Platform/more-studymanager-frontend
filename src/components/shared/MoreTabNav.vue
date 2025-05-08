@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { RouteParamsRaw, useRoute, useRouter } from 'vue-router';
-  import { StudyRole } from '../../generated-sources/openapi';
+  import { StudyRole } from '@gs';
   import { PropType, ref, Ref } from 'vue';
   import InfoDialog from '../dialog/InfoDialog.vue';
   import { useDialog } from 'primevue/usedialog';
@@ -43,50 +43,54 @@ Licensed under the Elastic License 2.0. */
       title: t('studyNavigation.tabs.overview'),
       name: 'Overview',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator, StudyRole.Viewer],
+      access: [
+        StudyRole.StudyAdmin,
+        StudyRole.StudyOperator,
+        StudyRole.StudyViewer,
+      ],
     },
     {
       title: t('studyNavigation.tabs.participants'),
       name: 'Participants',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
       title: t('studyNavigation.tabs.observations'),
       name: 'Observations',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
       title: t('studyNavigation.tabs.integration'),
       name: 'Integrations',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
       title: t('studyNavigation.tabs.interventions'),
       name: 'Interventions',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
       title: t('studyNavigation.tabs.timeline'),
       name: 'Timeline',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Operator],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
       title: t('studyNavigation.tabs.monitoringAndData'),
       name: 'Monitoring & Data',
       params: { studyId: props.studyId },
-      access: [StudyRole.Admin, StudyRole.Viewer],
+      access: [StudyRole.StudyAdmin, StudyRole.StudyViewer],
     },
   ] as Tab[];
 
   const studyRoleValues: MoreTableChoice[] = [
-    { label: t('study.roles.admin'), value: StudyRole.Admin },
-    { label: t('study.roles.operator'), value: StudyRole.Operator },
-    { label: t('study.roles.viewer'), value: StudyRole.Viewer },
+    { label: t('study.roles.admin'), value: StudyRole.StudyAdmin },
+    { label: t('study.roles.operator'), value: StudyRole.StudyOperator },
+    { label: t('study.roles.viewer'), value: StudyRole.StudyViewer },
   ];
 
   const activeTab = tabs.find((t) => t.name === route.name);

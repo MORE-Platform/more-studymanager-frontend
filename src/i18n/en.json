@@ -68,7 +68,6 @@
       "inComponentTitle": "In Observation '{title}': "
     }
   },
-
   "studyNavigation": {
     "accessDialog": {
       "header": "Access denied",
@@ -85,7 +84,6 @@
       "monitoringAndData": "Monitoring & Data"
     }
   },
-
   "study": {
     "singular": "Study",
     "plural": "Studies",
@@ -184,15 +182,18 @@
     "error": {
       "addTitle": "The study title is required. Please enter a study title.",
       "addDuration": "Please enter both a duration and a unit.",
+      "durationSmallerThanStudySpan": "The specified duration must not exceed {maxDuration} day(s).",
       "addConsentInfo": "The consent information is required. Please enter a description.",
       "addParticipantInfo": "The participant information is required. Please enter a description.",
       "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
       "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
-      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
+      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactTel": "Please add a valid contact telephone number, which participants can use to contact your institute when they encounter problems."
     },
     "placeholder": {
       "titleInput": "Please provide a short title.",
       "durationInput": "Please provide the duration of the study",
+      "durationUnitDropdown": "Duration unit",
       "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
       "participantInfoInput": "Please provide information for your studies participants. This description will be visible on the participant's app.",
       "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
@@ -261,10 +262,12 @@
         "addStudy": "Add new study",
         "copyUrl": "Copy URL",
         "importStudy": "Import study"
+      },
+      "error": {
+        "studyImportFailed": "The study {filename} could not be imported"
       }
     }
   },
-
   "studyGroup": {
     "singular": "Study group",
     "plural": "Study groups",
@@ -300,7 +303,6 @@
       "chooseGroup": "Choose a group"
     }
   },
-
   "studyCollaborator": {
     "dialog": {
       "addRole": "Please choose at least one role to continue.",
@@ -339,7 +341,6 @@
       "defaultEmptyMsg": "No collaborators added yet."
     }
   },
-
   "monitoringData": {
     "tabs": {
       "lastDataPoints": "Latest Data Points",
@@ -347,7 +348,6 @@
       "dataDownload": "Export study data"
     }
   },
-
   "monitoring": {
     "title": "Monitoring",
     "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
@@ -397,14 +397,12 @@
       }
     }
   },
-
   "data": {
     "dataDownload": {
       "title": "Download study data",
       "description": "Here you can download the study data based on various filters."
     }
   },
-
   "participants": {
     "singular": "Participant",
     "plural": "Participants",
@@ -466,7 +464,6 @@
       "chooseParticipant": "Choose a participant"
     }
   },
-
   "observation": {
     "singular": "Observation",
     "plural": "Observations",
@@ -564,7 +561,6 @@
       "chooseObservation": "Choose an observation"
     }
   },
-
   "integration": {
     "singular": "Integration",
     "plural": "Integrations",
@@ -627,7 +623,6 @@
       "selectObservation": "Please select an observation you want to link to."
     }
   },
-
   "intervention": {
     "singular": "Intervention",
     "plural": "Interventions",
@@ -761,7 +756,6 @@
       "provideActionConfig": "Enter the config for the action"
     }
   },
-
   "timeline": {
     "labels": {
       "relativeDate": "Enrollment date",
@@ -776,13 +770,11 @@
       "participantJoined": "Participant joined"
     }
   },
-
   "moreTable": {
     "defaultEmptyMsg": "No records",
     "filterBy": "Filter by",
     "saveLine": "Please save"
   },
-
   "cronSchedule": {
     "singular": "Cron Scheduler",
     "placeholders": {
@@ -841,7 +833,6 @@
     "quickStartNote": "Seconds and years are handled automatically.",
     "limitDescription": "This version of the More Cron Scheduler only supports whole numbers, * or ?. Expressions like 0/1 or 3-20 are not supported for the time being."
   },
-
   "scheduler": {
     "singular": "Scheduler",
     "type": {
@@ -1051,9 +1042,8 @@
         "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
         "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
         "rrrule": {
-          "endsAfter": "Ends {days} day after individual study start | Ends {days} day after individual study start | Ends {days} days after individual study start",
-          "repeated": "Repeated",
-          "times": "times"
+          "endsAfter": "Ends 0 days after individual study start | Ends 1 day after individual study start | Ends {n} days after individual study start",
+          "runTime": "The observation will run {repetitionNum} times."
         },
         "placeholder": {
           "dtstartOffset": "Enter offset in day(s)",
@@ -1070,11 +1060,16 @@
             "addOffset": "Fill in the offset of the relative end period.",
             "EndBeforeStart": "Please Set the relative start period before the end period"
           },
+          "scheduleTooLong": "The observation must not exceed the study period of {maxDuration} days.",
+          "startTimeBeforeEnd": "Start time must be before the end time.",
           "rrrule": {
             "frequency": "Fill in the repetition rate.",
             "endAfter": "Fill in the offset to the end date.",
-            "notValid": "Values entered are not valid"
-          }
+            "notValid": "Values entered are not valid",
+            "repetitionTooLong": "Repetitions must not exceed the end of the study. The maximum interval is {repValue} {repUnit}.",
+            "repetitionEndTooLong": "The end of repetitions must not exceed the remaining study duration of {durValue} {durUnit}."
+          },
+          "cannotRepeat": "The observation cannot occur again as it would exceed the end of the study."
         }
       }
     },
@@ -1085,7 +1080,6 @@
       "rruleEndIsEmpty": "Please set and end point for your repetition period."
     }
   },
-
   "tooltips": {
     "deleteBtn": "Delete",
     "editBtn": "Edit",
@@ -1112,7 +1106,6 @@
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."
     }
   },
-
   "userstatus": {
     "active": "active",
     "approved": "approved",
@@ -1122,7 +1115,6 @@
     "droppedOut": "dropped out",
     "kickedOut": "kicked out"
   },
-
   "inputModel": {
     "enterValue": "Please enter a value."
   },
