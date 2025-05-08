@@ -117,14 +117,3 @@ Licensed under the Elastic License 2.0. */
     />
   </div>
 </template>
-
-<style scoped lang="postcss">
-  @media print {
-    .p-dialog-mask {
-      background-color: black;
-    }
-    .p-dialog-header-icons {
-      display: none;
-    }
-  }
-</style>
