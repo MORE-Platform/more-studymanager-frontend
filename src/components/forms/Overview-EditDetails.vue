@@ -5,11 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType } from 'vue';
-  import {
-    Study,
-    StudyRole,
-    StudyStatus,
-  } from '@gs/models';
+  import { Study, StudyRole, StudyStatus } from '@gs/models';
   import StudyDialog from '../../components/dialog/StudyDialog.vue';
   import { useDialog } from 'primevue/usedialog';
   import Button from 'primevue/button';

@@ -5,11 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject, ref, Ref } from 'vue';
-  import {
-    ComponentFactory,
-    Observation,
-    StudyStatus,
-  } from '@gs';
+  import { ComponentFactory, Observation, StudyStatus } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import { useStudyStore } from '../../stores/studyStore';

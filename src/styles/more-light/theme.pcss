@@ -1911,7 +1911,18 @@
 .p-fluid .p-buttonset .p-button {
   flex: 1;
 }
-
+.p-splitbutton {
+  @apply flex flex-row items-center justify-center;
+}
+.p-splitbutton .p-splitbutton-menubutton {
+ @apply -ms-3 h-[34px];
+}
+.p-menuitem-content {
+  @apply h-[34px];
+}
+.p-menuitem-content .p-menuitem-link {
+  @apply block w-full;
+}
 .p-button.p-button-secondary, .p-buttonset.p-button-secondary > .p-button, .p-splitbutton.p-button-secondary > .p-button {
   color: var(--surface-a);
   background: var(--bluegray-500);
@@ -4204,6 +4215,7 @@
 .p-dialog .p-dialog-header .p-dialog-title {
   font-weight: 600;
   font-size: calc(var(--default-font-size)*1.25);
+  @apply me-3;
 }
 .p-dialog .p-dialog-header .p-dialog-header-icon {
   width: 2rem;
@@ -5841,3 +5853,4 @@
 .p-datatable .p-datatable-tbody > tr.p-datatable-dragpoint-bottom > td {
   box-shadow: inset 0 -2px 0 0 var(--primary-color);
 }
+

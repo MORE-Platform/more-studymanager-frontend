@@ -1,0 +1,35 @@
+@media print {
+  @page {
+    size: A4;
+    margin: 0; /* Hides native print view header + footer*/
+  }
+
+
+  html, body, .p-dialog-mask, .p-dialog-header, .p-dialog-content {
+    color: black;
+    background-color: white;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .p-dialog-header {
+    margin-bottom: 5px !important;
+  }
+
+  .qr-code-container {
+    align-items: start;
+  }
+
+  .p-dialog-header-icons, .p-button, .p-splitbutton, .p-tieredmenu, .qr-info {
+    display: none;
+  }
+
+   .p-dialog {
+     box-shadow: none;
+     border: none;
+     position: absolute;
+     top: 10px;
+     left: 10px;
+  }
+}

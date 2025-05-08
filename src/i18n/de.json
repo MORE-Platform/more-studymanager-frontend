@@ -491,7 +491,9 @@
   "participants": {
     "dialog": {
       "btn": {
-        "distributeBtn": "Zuweisen"
+        "copyLink": "Link kopieren",
+        "distributeBtn": "Zuweisen",
+        "downloadQr": "JPG herunterladen"
       },
       "deleteMsg": {
         "confirm": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
@@ -500,16 +502,21 @@
         "intro": "Sie sind kurz davor eine Teilnehmer:in zu löschen:",
         "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen."
       },
+      "error": {
+        "qrcode": "Fehler bei der QR Codeerstellung"
+      },
       "header": {
         "create": "Teilnehmer:in hinzufügen",
         "delete": "Teilnehmer:in löschen",
         "deleteWithData": "Daten löschen",
         "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen",
-        "edit": "Teilnehmer:in bearbeiten"
+        "edit": "Teilnehmer:in bearbeiten",
+        "qrCode": "QR Code für"
       },
       "msg": {
         "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
-        "deleteWithData": "Sollen alle Daten gelöscht werden?"
+        "deleteWithData": "Sollen alle Daten gelöscht werden?",
+        "qrCode": "Mit diesem QR Code kann sich der Teilnehmer {part} mittels der More Handy App anmelden."
       }
     },
     "participantsList": {

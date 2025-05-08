@@ -94,7 +94,7 @@ Licensed under the Elastic License 2.0. */
       </div>
     </div>
 
-    <div class="flex flex flex-row items-center justify-end">
+    <div class="flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray"

@@ -240,7 +240,7 @@
         {{ $t('scheduler.labels.event.repeatDesc') }}
       </div>
       <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
-        <div class="flex flex-row- items-center justify-start">
+        <div class="flex-row- flex items-center justify-start">
           {{ $t('scheduler.labels.repeat') }}:
           <Checkbox
             v-model="rruleEventCheckbox"

@@ -15,12 +15,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableSortOptions,
   } from '../models/MoreTableModel';
-  import {
-    Participant,
-    StudyGroup,
-    StudyRole,
-    StudyStatus,
-  } from '@gs';
+  import { Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -35,7 +30,12 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
-  import { ACTION_ID_DELETE, ACTION_ID_QR_CODE, PARTICIPANT_COUNTS } from '../constants';
+  import {
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+    PARTICIPANT_COUNTS,
+  } from '../constants';
+  import QrCodeDialog from './dialog/QrCodeDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -164,8 +164,8 @@ Licensed under the Elastic License 2.0. */
       label: t('global.labels.qr'),
       icon: 'pi pi-qrcode',
       tooltip: t('tooltips.moreTable.showQrCode'),
-      visible: () => actionsVisible
-    }
+      visible: () => props.studyStatus !== StudyStatus.Closed,
+    },
   ];
 
   const addParticipantOptions: MenuOptions[] = PARTICIPANT_COUNTS.map(
@@ -243,22 +243,37 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  const onAction = (action: MoreTableRowActionResult, withData?: boolean): void => {
+  const onAction = (
+    action: MoreTableRowActionResult,
+    withData?: boolean,
+  ): void => {
     switch (action.id) {
       case ACTION_ID_DELETE:
         deleteParticipant(action.row as Participant, !!withData);
         break;
       case ACTION_ID_QR_CODE:
-        showQrCode(action.row as Participant);
+        openQrCodeDialog(action.row as Participant);
         break;
       default:
         console.error('no handler for action', action);
     }
-  }
+  };
 
-  const showQrCode = (participant: Participant): void => {
-    console.log(participant);
-  }
+  const openQrCodeDialog = (participant: Participant): void => {
+    dialog.open(QrCodeDialog, {
+      data: {
+        participant,
+      },
+      props: {
+        header: `${t('participants.dialog.header.qrCode')} ${participant.alias}`,
+        style: {
+          width: 'fit-content',
+        },
+        modal: true,
+        draggable: false,
+      },
+    });
+  };
 
   const createParticipant = (amount: number): void => {
     const newParticipants: Participant[] = [];
@@ -436,7 +451,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </template>
     </MoreTable>
-    <ConfirmDialog></ConfirmDialog>
+    <ConfirmDialog />
     <DynamicDialog />
   </div>
 </template>

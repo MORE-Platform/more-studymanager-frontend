@@ -30,12 +30,7 @@ Licensed under the Elastic License 2.0. */
   import Checkbox from 'primevue/checkbox';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import {
-    ComponentFactory,
-    StudyRole,
-    StudyStatus,
-    Visibility,
-  } from '@gs';
+  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
 
