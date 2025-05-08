@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
-  import { PARTICIPANT_COUNTS } from '../constants';
+  import { ACTION_ID_DELETE, ACTION_ID_QR_CODE, PARTICIPANT_COUNTS } from '../constants';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -117,7 +117,7 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
-      id: 'delete',
+      id: ACTION_ID_DELETE,
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteParticipantBtn'),
@@ -147,9 +147,9 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                executeAction(
+                onAction(
                   {
-                    id: 'delete',
+                    id: ACTION_ID_DELETE,
                     row: options.data.participant,
                   } as MoreTableRowActionResult,
                   options.data.withData,
@@ -159,6 +159,13 @@ Licensed under the Elastic License 2.0. */
           }),
       },
     },
+    {
+      id: ACTION_ID_QR_CODE,
+      label: t('global.labels.qr'),
+      icon: 'pi pi-qrcode',
+      tooltip: t('tooltips.moreTable.showQrCode'),
+      visible: () => actionsVisible
+    }
   ];
 
   const addParticipantOptions: MenuOptions[] = PARTICIPANT_COUNTS.map(
@@ -236,17 +243,21 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  function executeAction(
-    action: MoreTableRowActionResult,
-    withData?: boolean,
-  ): void {
+  const onAction = (action: MoreTableRowActionResult, withData?: boolean): void => {
     switch (action.id) {
-      case 'delete':
+      case ACTION_ID_DELETE:
         deleteParticipant(action.row as Participant, !!withData);
+        break;
+      case ACTION_ID_QR_CODE:
+        showQrCode(action.row as Participant);
         break;
       default:
         console.error('no handler for action', action);
     }
+  }
+
+  const showQrCode = (participant: Participant): void => {
+    console.log(participant);
   }
 
   const createParticipant = (amount: number): void => {
@@ -376,7 +387,7 @@ Licensed under the Elastic License 2.0. */
       :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-50"
-      @on-action="executeAction($event)"
+      @on-action="onAction($event)"
       @on-change="changeValue($event)"
     >
       <template #tableActions="{ isInEditMode }">
