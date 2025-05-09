@@ -33,7 +33,6 @@ Licensed under the Elastic License 2.0. */
     if (registrationUrl.value && navigator?.clipboard) {
       navigator.clipboard
         .writeText(registrationUrl.value)
-        .then(() => {})
         .catch(console.error);
     }
   };
