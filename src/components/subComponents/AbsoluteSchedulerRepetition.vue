@@ -240,7 +240,7 @@
         {{ $t('scheduler.labels.event.repeatDesc') }}
       </div>
       <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
-        <div class="flex-row- flex items-center justify-start">
+        <div class="flex flex-row items-center justify-start col-span-1">
           {{ $t('scheduler.labels.repeat') }}:
           <Checkbox
             v-model="rruleEventCheckbox"
@@ -252,7 +252,7 @@
 
         <div
           v-if="rruleEventCheckbox"
-          class="col-span-5 col-start-2 grid grid-cols-5 gap-4"
+          class="col-span-5 col-start-2"
         >
           <!-- choose daily or weekly repeat option -->
           <SelectButton
@@ -260,7 +260,7 @@
             :options="rruleFrequencyOptions"
             option-label="label"
             option-value="value"
-            class="col-span-5 w-full"
+            class="flex"
             @click="setRruleCountLabel(returnRrule.freq)"
             @change="onChangeRrule()"
           />
@@ -275,47 +275,47 @@
         <!-- frequency: weekly repeat option (Mo to Su) -->
         <div
           v-if="rruleEventCheckbox && returnRrule.freq === Frequency.Weekly"
-          class="col-span-6 grid grid-cols-6"
+          class="col-span-5 col-start-2"
         >
           <SelectButton
             v-model="returnRrule.byday"
             :options="rruleWeekdayOptions"
             option-label="label"
             option-value="value"
-            class="col-span-5 col-start-2 w-full"
+            class="flex"
             :multiple="true"
             @change="onChangeRrule('byday')"
           />
           <div
             v-if="getError('rruleWeeklyIsMissingByDay')"
-            class="error col-span-5 col-start-2 mb-4"
+            class="error col-span-5 col-start-2"
           >
             {{ getError('rruleWeeklyIsMissingByDay') }}
           </div>
-          <hr class="col-start-0 col-span-6 my-4" />
         </div>
 
         <!-- repetition ending options -->
         <div
           v-if="rruleEventCheckbox && returnRrule.freq"
-          class="col-span-6 grid grid-cols-6"
+          class="col-span-6 grid grid-cols-6 gap-4"
         >
+          <hr class="col-start-0 col-span-6 my-4" />
           <div class="col-span-1 self-center font-medium">
             {{ $t('scheduler.labels.repetitionEnd') }}
           </div>
-          <div class="col-span-5">
+          <div class="col-span-5 flex gap-1">
             <SelectButton
               v-model="rruleEndOptionValue"
               :options="rruleEndOptions"
               option-label="label"
               option-value="value"
-              class="mr-4 inline w-full"
+              class="mr-4 flex"
               @change="setRepetitionEnd($event.value)"
             />
             <!-- selected repeat end option: after -->
             <div
               v-if="rruleEndOptionValue === RRuleEndOptions.after"
-              class="col-span-5 col-start-2 inline gap-4"
+              class="flex items-center"
             >
               <InputNumber
                 v-model="previewCount"

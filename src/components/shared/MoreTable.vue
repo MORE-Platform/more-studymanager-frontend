@@ -374,6 +374,7 @@ Licensed under the Elastic License 2.0. */
             v-if="column.type === MoreTableFieldType.calendar"
             v-model="data[`__internalValue_${field}`]"
             style="width: 100%"
+            class="min-w-[90px]"
             input-id="dateformat"
             autocomplete="off"
             :date-format="dateFormat"

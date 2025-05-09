@@ -430,6 +430,7 @@ Licensed under the Elastic License 2.0. */
         </div>
         <div class="ml-2.5">
           <FileUpload
+            class="cursor-pointer"
             mode="basic"
             upload-icon="pi pi-upload"
             :choose-label="t('participants.participantsList.action.import')"

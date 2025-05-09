@@ -325,7 +325,7 @@ Licensed under the Elastic License 2.0. */
           @click="openCreateDialog()"
         />
         <FileUpload
-          class="ml-2"
+          class="ml-2 cursor-pointer"
           mode="basic"
           :multiple="false"
           upload-icon="pi pi-upload"
