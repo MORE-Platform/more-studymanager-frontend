@@ -77,6 +77,7 @@ Licensed under the Elastic License 2.0. */
     <QrcodeVue
       v-if="registrationUrl"
       :id="id"
+      class="my-4"
       :value="registrationUrl"
       :level="level"
       :render-as="renderAs"
@@ -92,7 +93,7 @@ Licensed under the Elastic License 2.0. */
       v-tooltip.top="$t('participants.dialog.btn.copyLink')"
       :href="registrationUrl"
       target="_blank"
-      class="max-w-[300px] text-wrap"
+      class="max-w-[300px] text-wrap break-all"
       @click.prevent="copy"
       >{{ registrationUrl }}</a
     >
