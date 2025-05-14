@@ -40,13 +40,13 @@ Licensed under the Elastic License 2.0. */
     MoreTableSortOptions,
   } from '../models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
-  import { ComponentFactory, Participant } from '../generated-sources/openapi';
   import { onBeforeRouteLeave } from 'vue-router';
   import { useStudyStore } from '../stores/studyStore';
   import { useGlobalStore } from '../stores/globalStore';
   import { DropdownOption } from '../models/Common';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import useLoader from '../composable/useLoader';
+  import { ComponentFactory, Participant } from '@gs/models';
 
   const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
@@ -518,10 +518,9 @@ Licensed under the Elastic License 2.0. */
             participantId: item.participantNamedId?.id,
             participantAlias: item.participantNamedId?.title || '-',
             observationId: item.observationNamedId?.id || -1,
-            observationTitle:
-              `${item.observationNamedId?.title} ${getObservationTypeLabel(
-                item.observationType as string,
-              )}` || '-',
+            observationTitle: `${item.observationNamedId?.title} ${getObservationTypeLabel(
+              item.observationType as string,
+            )}`,
             studyGroupTitle:
               item.studyGroupNamedId?.title ||
               t('global.placeholder.entireStudy'),
@@ -610,7 +609,7 @@ Licensed under the Elastic License 2.0. */
       });
   }
 
-  let timer: NodeJS.Timeout;
+  let timer: ReturnType<typeof setInterval>;
   const refreshTimeInSeconds = 10;
 
   function loadData(): void {
@@ -656,7 +655,7 @@ Licensed under the Elastic License 2.0. */
 
       <div class="mb-3 flex items-center justify-between gap-5">
         <div class="flex gap-5">
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('monitoring.labels.dateRange') }}:
             <Calendar
               v-model="filterDateRange"
@@ -669,7 +668,7 @@ Licensed under the Elastic License 2.0. */
               :disabled="disableVisualizationFilter"
             />
           </div>
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('studyGroup.singular') }}:
             <Dropdown
               v-model="filterStudyGroup"
@@ -684,7 +683,7 @@ Licensed under the Elastic License 2.0. */
               @change="onStudyGroupFilterChange"
             />
           </div>
-          <div>
+          <div class="flex flex-row items-center">
             {{ $t('participants.singular') }}:
             <Dropdown
               v-model="filterParticipant"
@@ -720,7 +719,7 @@ Licensed under the Elastic License 2.0. */
           :header="observationData[0].observationTitle"
           headerClass="mt-2.5"
         >
-          <TabView @update:active-index="onTabChange(observationId, $event)">
+          <TabView class="pt-8" @update:active-index="onTabChange(observationId, $event)">
             <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"

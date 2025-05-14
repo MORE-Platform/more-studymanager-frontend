@@ -1,24 +1,66 @@
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import {
-    RelativeEvent,
-    RelativeRecurrenceRule,
-    Duration,
-    DurationUnitEnum,
-  } from '../../generated-sources/openapi';
+  import { Duration, UnitEnum, RelativeEvent } from '@gs';
   import { useI18n } from 'vue-i18n';
-  import { MoreTableChoice } from '../../models/MoreTableModel';
   import { ScheduleType } from '../../models/Scheduler';
+  import { DateTime } from 'luxon';
+  import { createLuxonDateTime, timeFromString } from '../../utils/dateUtils';
+  import { useStudyStore } from '../../stores/studyStore';
+  import { storeToRefs } from 'pinia';
+  import {
+    correctEvent,
+    correctEventRepetition,
+  } from '../../utils/relativeScheduleUtils';
+  import { calcStudyDurationFromStudy } from '../../utils/studyUtils';
+  import ErrorLabel from '../forms/ErrorLabel.vue';
+  import { useErrorQueue } from '../../composable/useErrorHandling';
+  import { valueToMinutes } from '../../utils/durationUtils';
+  import { scrollToFirstError } from '../../utils/componentUtils';
+  import { ONE_DAY_IN_MINUTES } from '../../constants';
 
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
+  const studyStore = useStudyStore();
+  const { study } = storeToRefs(studyStore);
+  const maxDuration = computed((): Duration | undefined =>
+    calcStudyDurationFromStudy(study.value),
+  );
 
   const schedule: RelativeEvent = dialogRef.value.data.scheduler;
+
+  const startOffset = ref<Duration>({
+    value: schedule.dtstart?.offset?.value ?? 1,
+    unit: UnitEnum.Day,
+  });
+  const startTime = ref<DateTime>(
+    DateTime.now().set({ hour: 10, minute: 30, second: 0 }),
+  );
+
+  const endOffset = ref<Duration>({
+    value: schedule.dtend?.offset?.value ?? 1,
+    unit: UnitEnum.Day,
+  });
+  const endTime = ref<DateTime>(
+    DateTime.now().set({ hour: 18, minute: 30, second: 0 }),
+  );
+
+  if (schedule.dtstart?.time) {
+    const time = timeFromString(schedule.dtstart.time);
+    if (time) {
+      startTime.value = startTime.value.set(time);
+    }
+  }
+  if (schedule.dtend?.time) {
+    const time = timeFromString(schedule.dtend.time);
+    if (time) {
+      endTime.value = endTime.value.set(time);
+    }
+  }
 
   const returnSchedule: RelativeEvent = {
     type: ScheduleType.RelativeEvent,
@@ -27,7 +69,7 @@
         value: schedule.dtstart?.offset?.value,
         unit: schedule.dtstart?.offset?.unit,
       },
-      time: schedule.dtstart?.time,
+      time: schedule.dtstart?.time ?? startTime.value.toFormat('HH:mm'),
       timezone: schedule.dtstart?.timezone,
     },
     dtend: {
@@ -35,7 +77,7 @@
         value: schedule.dtend?.offset?.value,
         unit: schedule.dtend?.offset?.unit,
       },
-      time: schedule.dtend?.time,
+      time: schedule.dtend?.time ?? endTime.value.toFormat('HH:mm'),
       timezone: schedule.dtend?.timezone,
     },
     rrrule: {
@@ -50,88 +92,51 @@
     },
   };
 
-  const startTime: Ref<Date> = ref(new Date());
-  const endTime: Ref<Date> = ref(new Date());
+  const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
+  const frequencyUnit = ref<UnitEnum>(
+    schedule.rrrule?.frequency?.unit ?? UnitEnum.Day,
+  );
 
-  if (schedule.dtstart && schedule.dtstart.time) {
-    startTime.value.setHours(
-      parseInt(schedule.dtstart.time?.substring(0, 2)),
-      parseInt(schedule.dtstart.time?.substring(3, 5), 0),
-    );
-  } else {
-    startTime.value.setHours(10, 30);
-  }
-  if (schedule.dtend && schedule.dtend.time) {
-    endTime.value.setHours(
-      parseInt(schedule.dtend.time?.substring(0, 2)),
-      parseInt(schedule.dtend.time?.substring(3, 5), 0),
-    );
-  } else {
-    endTime.value.setHours(18, 30);
-  }
-
-  returnSchedule.dtstart.time = returnSchedule.dtstart.time ?? '10:00';
-  returnSchedule.dtend.time = returnSchedule.dtend.time ?? '18:00';
-
-  const rFrequency: Ref<Duration> = ref({
-    value: schedule.rrrule?.frequency?.value ?? 1,
-    unit: schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
-  } as Duration);
-  const rEndAfter: Ref<Duration> = ref({
-    value: schedule.rrrule?.endAfter?.value ?? 4,
-    unit: schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
-  } as Duration);
-
-  const rDtstartOffset: Ref<Duration> = ref({
-    value: schedule.dtstart?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
-  } as Duration);
-  const rDtendOffset: Ref<Duration> = ref({
-    value: schedule.dtend?.offset?.value ?? 2,
-    unit: DurationUnitEnum.Day,
-  } as Duration);
+  const endRep = ref<number>(schedule.rrrule?.endAfter?.value || 4);
+  const endRepUnit = ref<UnitEnum>(
+    schedule.rrrule?.endAfter?.unit ?? UnitEnum.Day,
+  );
 
   const repeatChecked: Ref<boolean> = ref(!!schedule.rrrule?.frequency);
+  const repetitionEnabled = ref(false);
 
   const frequencyXTimes: Ref<number | undefined> = ref();
   const totalDays: Ref<number | undefined> = ref();
 
-  if (schedule.rrrule?.frequency && schedule.rrrule?.endAfter) {
-    calculatedRepeat();
-  }
-
   const repetitionUnit = [
     {
       label: t('scheduler.frequency.minute'),
-      value: DurationUnitEnum.Minute,
-      unit: DurationUnitEnum.Minute,
+      value: UnitEnum.Minute,
+      unit: UnitEnum.Minute,
     },
     {
       label: t('scheduler.frequency.hour'),
-      value: DurationUnitEnum.Hour,
-      unit: DurationUnitEnum.Hour,
+      value: UnitEnum.Hour,
+      unit: UnitEnum.Hour,
     },
     {
       label: t('scheduler.frequency.day'),
-      value: DurationUnitEnum.Day,
+      value: UnitEnum.Day,
       active: true,
-      unit: DurationUnitEnum.Day,
+      unit: UnitEnum.Day,
     },
   ];
 
-  let errors: MoreTableChoice[] = [];
-
-  function getError(label: string): string | null | undefined {
-    return errors.find((el) => el.label === label)?.value;
-  }
+  const { errors, addError, clearAllErrors, clearError, getError } =
+    useErrorQueue();
 
   function checkErrors(): void {
-    errors = [];
+    clearAllErrors();
     if (
       !returnSchedule.dtstart.offset?.value ||
       !returnSchedule.dtstart.offset?.unit
     ) {
-      errors.push({
+      addError({
         label: 'dtstart',
         value: t('scheduler.dialog.relativeSchedule.error.dtstart.addOffset'),
       });
@@ -140,7 +145,7 @@
       !returnSchedule.dtend.offset?.value ||
       !returnSchedule.dtend.offset?.unit
     ) {
-      errors.push({
+      addError({
         label: 'dtend',
         value: t('scheduler.dialog.relativeSchedule.error.dtend.addOffset'),
       });
@@ -150,7 +155,7 @@
       returnSchedule.dtstart.offset?.value &&
       returnSchedule.dtstart.offset?.value > returnSchedule.dtend.offset?.value
     ) {
-      errors.push({
+      addError({
         label: 'dtend',
         value: t(
           'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart',
@@ -164,7 +169,7 @@
         returnSchedule.dtend.offset?.value &&
       returnSchedule.dtstart.time >= returnSchedule.dtend.time
     ) {
-      errors.push({
+      addError({
         label: 'dtend',
         value: t(
           'scheduler.dialog.relativeSchedule.error.dtend.EndBeforeStart',
@@ -176,7 +181,7 @@
         !returnSchedule.rrrule?.frequency?.value ||
         !returnSchedule.rrrule?.frequency?.unit
       ) {
-        errors.push({
+        addError({
           label: 'rrruleFreq',
           value: t('scheduler.dialog.relativeSchedule.error.rrrule.frequency'),
         });
@@ -185,114 +190,144 @@
         !returnSchedule.rrrule?.endAfter?.value ||
         !returnSchedule.rrrule?.endAfter?.unit
       ) {
-        errors.push({
+        addError({
           label: 'rrruleEndAfter',
           value: t('scheduler.dialog.relativeSchedule.error.rrrule.endAfter'),
         });
       }
       if (frequencyXTimes.value && frequencyXTimes.value <= 0) {
-        errors.push({
+        addError({
           label: 'frequencyXTimes',
           value: 'Repetition Value is not valid',
         });
       }
     }
+    scrollToFirstError();
   }
 
-  function calculatedRepeat(): void {
-    if (!repeatChecked.value) {
-      return;
-    }
+  const calcRepetition = (): void => {
+    const rDtstartOffsetMin = valueToMinutes({
+      value: startOffset.value.value,
+      unit: startOffset.value.unit,
+    });
+    const rEndAfterMin = valueToMinutes({
+      value: endRep.value || maxDuration.value?.value,
+      unit: endRep.value ? endRepUnit.value : maxDuration.value?.unit,
+    });
 
-    if (
-      rDtendOffset.value.value &&
-      rDtstartOffset.value.value &&
-      rFrequency.value.value &&
-      rEndAfter.value.value
-    ) {
-      const rDtstartOffsetMin = valueToMinutes(
-        rDtstartOffset.value.value,
-        rDtstartOffset.value.unit,
-      );
-      const rEndAfterMin = valueToMinutes(
-        rEndAfter.value.value,
-        rEndAfter.value.unit,
-      );
-      const rFrequencyMin = valueToMinutes(
-        rFrequency.value.value,
-        rFrequency.value.unit,
-      );
+    const endOfIndividualStudy =
+      rDtstartOffsetMin + rEndAfterMin - ONE_DAY_IN_MINUTES;
 
-      const endOfIndividualStudy: number =
-        rDtstartOffsetMin + rEndAfterMin - 1440;
-      const totalFrequency = rEndAfterMin / rFrequencyMin;
-
-      frequencyXTimes.value =
-        totalFrequency % 1 !== 0
-          ? totalFrequency - (totalFrequency % 1) + 1
-          : totalFrequency - (totalFrequency % 1);
-      totalDays.value = Math.round(endOfIndividualStudy / 1440);
-    }
-  }
-
-  function valueToMinutes(
-    value: number,
-    unit: DurationUnitEnum | undefined,
-  ): number {
-    // day to minutes  -> 1440 minutes
-    // hour to minutes -> 60
-    switch (unit) {
-      case DurationUnitEnum.Day:
-        return value * 1440;
-      case DurationUnitEnum.Hour:
-        return value * 60;
-      case DurationUnitEnum.Minute:
-        return value;
-      default:
-        return 0;
-    }
-  }
+    totalDays.value = Math.round(endOfIndividualStudy / ONE_DAY_IN_MINUTES);
+  };
 
   function cancel(): void {
     dialogRef.value.close();
   }
 
   function save(): void {
-    returnSchedule.dtstart.time = startTime.value
-      ?.toTimeString()
-      .substring(0, 5);
-    returnSchedule.dtend.time = endTime.value?.toTimeString().substring(0, 5);
+    returnSchedule.dtstart.time = startTime.value.toFormat('HH:mm:ss');
+    returnSchedule.dtend.time = endTime.value.toFormat('HH:mm:ss');
 
-    returnSchedule.dtstart.offset = rDtstartOffset.value;
-    returnSchedule.dtend.offset = rDtendOffset.value;
+    returnSchedule.dtstart.offset = startOffset.value;
+    returnSchedule.dtend.offset = endOffset.value;
 
+    const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (typeof returnSchedule.dtstart.time !== 'undefined') {
-      returnSchedule.dtstart.timezone =
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
+      returnSchedule.dtstart.timezone = currentTimeZone;
     }
     if (typeof returnSchedule.dtend.time !== 'undefined') {
-      returnSchedule.dtend.timezone =
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
+      returnSchedule.dtend.timezone = currentTimeZone;
     }
 
     if (repeatChecked.value) {
       returnSchedule.rrrule = {
-        frequency: rFrequency.value,
-        endAfter: rEndAfter.value,
-      } as RelativeRecurrenceRule;
+        frequency: {
+          value: frequency.value,
+          unit: frequencyUnit.value,
+        },
+        endAfter: {
+          value: endRep.value,
+          unit: endRepUnit.value,
+        },
+      };
     } else {
       returnSchedule.rrrule = undefined;
     }
 
     checkErrors();
 
-    if (errors.length) {
-      returnSchedule.dtstart.time = returnSchedule.dtstart.time ?? '10:00';
-      returnSchedule.dtend.time = returnSchedule.dtend.time ?? '18:00';
+    if (errors.value.length) {
+      returnSchedule.dtstart.time =
+        returnSchedule.dtstart.time ?? startTime.value.toFormat('HH:mm');
+      returnSchedule.dtend.time =
+        returnSchedule.dtend.time ?? endTime.value.toFormat('HH:mm');
     } else {
       dialogRef.value.close(returnSchedule);
     }
   }
+
+  const onChange = (): void => {
+    if (maxDuration.value) {
+      const errorInEvent = correctEvent(
+        startOffset.value,
+        endOffset.value,
+        startTime.value,
+        endTime.value,
+        maxDuration.value,
+      );
+      if (errorInEvent) {
+        addError(errorInEvent);
+      }
+      const correctedRepetition = correctEventRepetition(
+        startOffset.value,
+        startTime.value,
+        endOffset.value,
+        endTime.value,
+        {
+          value: frequency.value,
+          unit: frequencyUnit.value,
+        },
+        {
+          value: endRep.value,
+          unit: endRepUnit.value,
+        },
+        maxDuration.value,
+        !repeatChecked.value,
+      );
+      repetitionEnabled.value = correctedRepetition.repetitionEnabled;
+      frequencyXTimes.value = correctedRepetition.numberOfRepetitions;
+      if (!correctedRepetition.repetitionEnabled) {
+        repeatChecked.value = false;
+      }
+      if (repeatChecked.value) {
+        if (correctedRepetition.frequencyError) {
+          addError(correctedRepetition.frequencyError);
+        }
+        if (correctedRepetition.frequencyEndError) {
+          addError(correctedRepetition.frequencyEndError);
+        }
+      }
+      scrollToFirstError();
+    }
+    calcRepetition();
+  };
+
+  watch(
+    [
+      startOffset,
+      startTime,
+      endOffset,
+      endTime,
+      frequency,
+      frequencyUnit,
+      endRep,
+      endRepUnit,
+    ],
+    onChange,
+    { deep: true, immediate: true },
+  );
+  onMounted(onChange);
 </script>
 
 <template>
@@ -323,173 +358,195 @@
         </div>
         <div class="col-span-2 border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="rDtstartOffset.value"
+            v-model="startOffset.value"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
             :min="1"
-            @blur="calculatedRepeat()"
+            @input="
+              clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd']);
+              startOffset.value = ($event?.value || 1) as number;
+            "
           />
         </div>
         <div class="col-span-3">
           <Calendar
-            v-model="startTime"
+            :model-value="startTime.toJSDate()"
             time-only
             hour-format="24"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartTime')
             "
+            @update:model-value="
+              (newVal) => {
+                const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                startTime = createLuxonDateTime(dateVal || '') || startTime;
+                clearError(['offsetCorrection']);
+              }
+            "
           />
         </div>
       </div>
-      <div
-        v-if="getError('dtstart')"
-        class="error col-span-5 col-start-2 border-l-2 pb-3 pl-3"
-      >
-        {{ getError('dtstart') }}
-      </div>
+      <ErrorLabel
+        :error="getError('dtstart')"
+        class="col-span-5 col-start-2 border-l-2 pl-3"
+      />
 
       <div class="col-span-6 grid grid-cols-6 items-center">
         <div class="col-span-1">
           {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
         </div>
-        <div class="col-span-2 border-l-2 py-3 pl-4">
+        <div class="col-span-2 border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="rDtendOffset.value"
+            v-model="endOffset.value"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
             :min="1"
-            @blur="calculatedRepeat()"
+            @input="
+              clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection']);
+              endOffset.value = ($event?.value || 1) as number;
+            "
           />
         </div>
         <div class="col-span-3">
           <Calendar
-            v-model="endTime"
+            :model-value="endTime.toJSDate()"
             time-only
             hour-format="24"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendTime')
             "
+            @update:model-value="
+              (newVal) => {
+                const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                endTime = createLuxonDateTime(dateVal || '') || endTime;
+                clearError(['startTimeBeforeEnd', 'offsetCorrection']);
+              }
+            "
           />
         </div>
       </div>
-      <div
-        v-if="getError('dtend')"
-        class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
-      >
-        {{ getError('dtend') }}
-      </div>
+      <ErrorLabel
+        :error="getError(['dtend', 'offsetCorrection'])"
+        class="col-span-5 col-start-2 border-l-2 pl-3"
+      />
     </div>
 
     <h6 class="col-span-6 my-4 font-medium">
       {{ $t('scheduler.dialog.repeatEventTitle') }}
     </h6>
-    <div class="col-span-6 mb-4">
+    <div
+      :class="[
+        'col-span-6 mb-4 flex flex-row items-center',
+        {
+          'cursor-not-allowed': !repetitionEnabled,
+          'cursor-pointer': repetitionEnabled,
+        },
+      ]"
+      @click="repeatChecked = !repeatChecked"
+    >
       <Checkbox
         v-model="repeatChecked"
-        class="ml-2"
-        :binary="true"
-        @input="calculatedRepeat()"
+        :disabled="!repetitionEnabled"
+        binary
+        @input="calcRepetition()"
+        @click.stop
       />
-      <span class="ml-4">{{ $t('scheduler.dialog.repeatEvent') }}</span>
+      <span class="ms-2">{{ $t('scheduler.dialog.repeatEvent') }}</span>
     </div>
     <div v-if="repeatChecked" class="col-span-6 pb-5">
-      <div class="mb-7">
+      <div class="mb-5">
         {{ $t('scheduler.dialog.repeatEventDescription') }}
       </div>
-
       <div class="grid grid-cols-6 items-center">
         <div class="col-span-1">
           {{ $t('scheduler.dialog.repeatEvery') }}
         </div>
-        <div class="col-span-3 flex border-l-2 py-3 pl-4">
+        <div class="col-span-5 flex border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="rFrequency.value"
+            v-model="frequency"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
-            @blur="calculatedRepeat()"
+            :min="1"
+            @input="
+              clearError(['rrruleFreq', 'frequencyError']);
+              frequency = ($event?.value || 1) as number;
+            "
           />
           <Dropdown
-            v-model="rFrequency.unit"
+            v-model="frequencyUnit"
             :options="repetitionUnit"
             :option-label="'label'"
             :option-value="'value'"
             class="col-span-3 ml-4"
-            @change="calculatedRepeat()"
+            @input="clearError(['rrruleFreq', 'frequencyError'])"
           />
         </div>
-        <div class="col-span-2">
-          <div v-if="frequencyXTimes">
-            <span v-if="frequencyXTimes <= 0" class="error">
-              {{
-                $t('scheduler.dialog.relativeSchedule.error.rrrule.notValid')
-              }}
-            </span>
-            <span v-else>
-              {{
-                `${$t(
-                  'scheduler.dialog.relativeSchedule.rrrule.repeated',
-                )}: ${frequencyXTimes} ${$t(
-                  'scheduler.dialog.relativeSchedule.rrrule.times',
-                )}`
-              }}</span
-            >
-          </div>
-        </div>
-        <div
-          v-if="getError('rrruleFreq')"
-          class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
-        >
-          {{ getError('rrruleFreq') }}
-        </div>
+        <ErrorLabel
+          :error="getError(['rrruleFreq', 'frequencyError'])"
+          class="col-span-5 col-start-2 border-l-2 pl-3"
+        />
 
         <div class="col-span-1">
           {{ $t('scheduler.dialog.endAfter') }}
         </div>
-        <div class="col-span-3 flex border-l-2 py-3 pl-4">
+        <div class="col-span-5 flex border-l-2 py-3 pl-3">
           <InputNumber
-            v-model="rEndAfter.value"
+            v-model="endRep"
             :placeholder="
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
             class="z-10"
-            @blur="calculatedRepeat()"
+            :min="1"
+            @input="
+              clearError(['rrruleEndAfter', 'frequencyEndError']);
+              endRep = ($event?.value || 1) as number;
+            "
           />
           <Dropdown
-            v-model="rEndAfter.unit"
+            v-model="endRepUnit"
             :options="repetitionUnit"
-            :option-label="'label'"
-            :option-value="'value'"
+            option-label="label"
+            option-value="value"
             class="z-10 col-span-3 ml-4"
-            @change="calculatedRepeat()"
+            @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
         </div>
-        <div class="col-span-2">
-          <div v-if="totalDays">
-            {{
-              `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)} `
-            }}
-          </div>
-        </div>
-        <div
-          v-if="getError('rrruleEndAfter')"
-          class="error col-span-5 col-start-2 border-l-2 pb-3 pl-4"
-        >
-          {{ getError('rrruleEndAfter') }}
-        </div>
+        <ErrorLabel
+          :error="getError(['rrruleEndAfter', 'frequencyEndError'])"
+          class="col-span-5 col-start-2 border-l-2 pl-3"
+        />
       </div>
+      <div class="col-span-6 pt-6">
+        {{
+          `${$t('scheduler.dialog.relativeSchedule.rrrule.endsAfter', totalDays)}.`
+        }}
+        {{
+          $t('scheduler.dialog.relativeSchedule.rrrule.runTime', {
+            repetitionNum: frequencyXTimes,
+          })
+        }}
+      </div>
+    </div>
+    <div v-else-if="!repetitionEnabled" class="flex items-center gap-1">
+      <span class="pi pi-info-circle" />
+      {{ $t('scheduler.dialog.relativeSchedule.error.cannotRepeat') }}
     </div>
 
     <div class="grid w-full grid-cols-6">
-      <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
+      <div class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right">
         <Button
           class="btn-gray !mr-3"
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
-        <Button :label="$t('global.labels.save')" @click="save()" />
+        <Button
+          :disabled="errors.length > 0"
+          :label="$t('global.labels.save')"
+          @click="save()"
+        />
       </div>
     </div>
   </div>

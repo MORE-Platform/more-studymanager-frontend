@@ -10,7 +10,7 @@ Licensed under the Elastic License 2.0. */
     RelativeEvent,
     Event,
     Frequency,
-  } from '../../generated-sources/openapi';
+  } from '@gs/models';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
   import { isObjectEmpty } from '../../utils/commonUtils';
@@ -117,18 +117,20 @@ Licensed under the Elastic License 2.0. */
             case 'weekdays': {
               let string = '';
 
-              schedule.rrule?.byday
-                ? schedule.rrule?.byday.forEach((item, index) => {
-                    string += t(`scheduler.weekday.props.${item}`);
+              if (schedule.rrule?.byday) {
+                schedule.rrule.byday.forEach((item, index) => {
+                  string += t(`scheduler.weekday.props.${item}`);
 
-                    if (
-                      schedule.rrule?.byday &&
-                      index < schedule.rrule.byday.length - 1
-                    ) {
-                      string += ', ';
-                    }
-                  })
-                : (string = '');
+                  if (
+                    schedule.rrule?.byday &&
+                    index < schedule.rrule.byday.length - 1
+                  ) {
+                    string += ', ';
+                  }
+                });
+              } else {
+                string = '';
+              }
 
               return string;
             }

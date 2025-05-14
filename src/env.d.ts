@@ -14,7 +14,10 @@ declare const __BUILD_BRANCH__: string;
 declare const __BUILD_REVISION__: string;
 declare module '*.vue' {
   import { DefineComponent } from 'vue';
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  const component: DefineComponent<{}, {}, any>;
+  const component: DefineComponent<
+    Record<string, unknown>,
+    Record<string, never>,
+    any
+  >;
   export default component;
 }

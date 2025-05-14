@@ -6,6 +6,8 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
+import { DateTime } from 'luxon';
+
 export function dateToDateString(date: Date): string | undefined {
   return dateToDateTimeString(date)?.substring(0, 10);
 }
@@ -67,3 +69,62 @@ export function timeToHourMinuteString(
 
   return time;
 }
+
+export type DateString = 'iso' | 'sql' | 'http';
+
+export const dateTimeFromString = (
+  input: string,
+  timezone?: string,
+  dateStringTypes: DateString[] = ['iso', 'sql', 'http'],
+): DateTime | undefined => {
+  for (const dateStringType of dateStringTypes) {
+    let dateTime: DateTime;
+    switch (dateStringType) {
+      case 'iso':
+        dateTime = DateTime.fromISO(input, { zone: timezone });
+        break;
+      case 'sql':
+        dateTime = DateTime.fromSQL(input, { zone: timezone });
+        break;
+      case 'http':
+        dateTime = DateTime.fromHTTP(input, { zone: timezone });
+        break;
+      default:
+        continue;
+    }
+    if (dateTime.isValid) {
+      return dateTime;
+    }
+  }
+  return undefined;
+};
+
+export const createLuxonDateTime = (
+  input?: Date | string,
+  timezone?: string,
+): DateTime | undefined => {
+  if (!input) {
+    return;
+  }
+  if (input instanceof Date) {
+    return DateTime.fromJSDate(input, { zone: timezone });
+  } else {
+    return dateTimeFromString(input, timezone);
+  }
+};
+
+export const timeFromString = (
+  input: string,
+): { hour?: number; minute?: number; second?: number } | undefined => {
+  if (input) {
+    const [hour, minute, second] = input
+      .split(':')
+      .map((part) => (part ? parseInt(part, 10) : undefined));
+
+    if (hour === undefined && minute === undefined && second === undefined) {
+      return undefined;
+    }
+    return { hour: hour || 0, minute: minute || 0, second: second || 0 };
+  }
+  return undefined;
+};

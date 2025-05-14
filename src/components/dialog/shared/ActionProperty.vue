@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { PropType, Ref, ref } from 'vue';
-  import { Action, ComponentFactory } from '../../../generated-sources/openapi';
+  import { Action, ComponentFactory } from '../../../generated-sources';
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../../models/InputModels';
   import PropertyInputs from './PropertyInputs.vue';

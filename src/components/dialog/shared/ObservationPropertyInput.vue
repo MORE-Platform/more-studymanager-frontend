@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import { ObservationProperty } from '../../../models/InputModels';
   import { PropType, ref, Ref, watch } from 'vue';
   import { useObservationsApi } from '../../../composable/useApi';
-  import { Observation } from '../../../generated-sources/openapi';
+  import { Observation } from '../../../generated-sources';
   import { AxiosResponse } from 'axios';
   import Dropdown from 'primevue/dropdown';
   import { Context } from '../../../models/ContextModel';

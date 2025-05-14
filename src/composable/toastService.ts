@@ -6,21 +6,17 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { inject, Ref } from 'vue';
-import { ToastServiceMethods } from 'primevue/toastservice';
 import { ToastMessageOptions } from 'primevue/toast';
 import { useI18n } from 'vue-i18n';
-import {
-  ValidationReport,
-  ValidationReportItem,
-} from '../generated-sources/openapi';
+import { ValidationReport, ValidationReportItem } from '@gs';
+import { useToast } from 'primevue/usetoast';
+import { TOAST_ERROR_DURATION } from '../constants';
 
 /**
  * This composable is responsible for showing errors from Backend to the Client with a Toast popup.
  */
 export function useToastService(): any {
-  const toast: Ref<ToastServiceMethods> | undefined =
-    inject<Ref<ToastServiceMethods>>('toast');
+  const toast = useToast();
   const { t } = useI18n();
 
   if (!toast) {
@@ -84,32 +80,32 @@ export function useToastService(): any {
     summary: string,
     detail: string,
   ): void => {
-    if (toast.value) {
-      toast.value.add({ severity, summary, detail });
+    if (toast) {
+      toast.add({ severity, summary, detail });
     } else {
       console.error('Toast reference is not set');
     }
   };
 
   const showErrorToast = (detail: string): void => {
-    if (toast.value) {
+    if (toast) {
       const severity: ToastMessageOptions['severity'] = 'error';
       const summary = t('global.error.type.error');
-      const life: ToastMessageOptions['life'] = 5000;
+      const life: ToastMessageOptions['life'] = TOAST_ERROR_DURATION;
 
-      toast.value.add({ severity, summary, detail, life });
+      toast.add({ severity, summary, detail, life });
     } else {
       console.error('Toast reference is not set');
     }
   };
 
   const showWarningToast = (detail: string): void => {
-    if (toast.value) {
+    if (toast) {
       const severity: ToastMessageOptions['severity'] = 'warn';
       const summary = t('global.error.type.warning');
-      const life: ToastMessageOptions['life'] = 5000;
+      const life: ToastMessageOptions['life'] = TOAST_ERROR_DURATION;
 
-      toast.value.add({ severity, summary, detail, life });
+      toast.add({ severity, summary, detail, life });
     } else {
       console.error('Toast reference is not set');
     }

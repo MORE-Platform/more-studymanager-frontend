@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { Participant } from '../../generated-sources/openapi';
+  import { Participant } from '@gs';
   import WarningSection from './shared/WarningSection.vue';
 
   const dialogRef: any = inject('dialogRef');
@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
     </h3>
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
-    <div class="flex justify-end">
+    <div class="flex flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray !mr-3"

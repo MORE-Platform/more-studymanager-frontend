@@ -13,7 +13,7 @@ import {
   Participant,
   Study,
   StudyGroup,
-} from '../generated-sources/openapi';
+} from '@gs';
 
 export interface MoreTableColumn {
   field: string;
