@@ -17,8 +17,9 @@ Licensed under the Elastic License 2.0. */
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
   const id = `qr-code-${participant?.participantId || ''}`;
-  const registrationUrl: string =
-    URL.parse(participant?.registrationUrl || '')?.toString() || '';
+  const registrationUrl = ref<string>(
+    URL.parse(participant?.registrationUrl || '')?.toString() || '',
+  );
   const level = ref<Level>('M');
   const renderAs = ref<RenderAs>('canvas');
   const background = ref('#ffffff');
@@ -42,9 +43,9 @@ Licensed under the Elastic License 2.0. */
   ];
 
   const copy = (): void => {
-    if (registrationUrl && navigator?.clipboard) {
+    if (registrationUrl.value && navigator?.clipboard) {
       navigator.clipboard
-        .writeText(registrationUrl)
+        .writeText(registrationUrl.value)
         .catch(console.error);
     }
   };
