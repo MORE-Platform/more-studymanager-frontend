@@ -1,174 +1,963 @@
 {
-  "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie, indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
-  "welcomeToMore": "Willkommen bei More",
-  "global": {
+  "cronSchedule": {
+    "additionalConfig": "Zusätzliche Konfiguration",
+    "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
+    "error": {
+      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide einen * verwenden. Bitte verwenden Sie ein ? (leerer Wert) in einem der Felder.",
+      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide den Wert ? verwenden. Bitte verwenden Sie einen * (jeden Tag des Monats oder jeden Tag der Woche) in einem der Felder.",
+      "Expected 5 values, but got 1": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 2": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 3": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "Expected 5 values, but got 4": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "blank notation is not allowed in hours field": "Das Stunden Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Stunde) oder einen spezifischen Wert.",
+      "blank notation is not allowed in minutes field": "Das Minuten Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Minute) oder einen spezifischen Wert.",
+      "blank notation is not allowed in months field": "Das Monats Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jedes Monat) oder einen spezifischen Wert.",
+      "daysOfMonth field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "hours field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
+      "months field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus."
+    },
+    "example": {
+      "title": "Cron Scheduler Beispiele",
+      "titles": {
+        "daily": "Täglich um 12:00",
+        "everyFiveMinutes": "Alle 5 Minuten",
+        "everyMinute": "Jede Minute",
+        "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
+        "hourly": "Jede Stunde um xx:30",
+        "specificDayOfMonth": "Jeden 4ten Tag des Monats",
+        "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00",
+        "specificMonth": "Jeden Tag um 8:00 im März"
+      }
+    },
+    "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
+    "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
+    "info": {
+      "asterisk": "Alle Werte (z.B. jede Minute)",
+      "example": "Beispiel: 0 12 ? * * wird jeden Tag um 12:00 ausgelöst.",
+      "generalInfo": "Füge eine Nummer, eine Liste von Nummern (z.B. 1,2,3) oder einen Bereich (z.B. 12-14) ein.",
+      "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)"
+    },
     "labels": {
-      "close": "Schließen",
-      "save": "Speichern",
-      "apply": "Anwenden",
-      "cancel": "Abbrechen",
-      "delete": "Löschen",
-      "new": "Neu",
-      "add": "Hinzufügen",
-      "start": "Start",
-      "end": "Ende",
-      "time": "Zeit",
-      "repetition": "Wiederholung",
-      "confirm": "Bestätigen",
-      "id": "Id",
-      "clone": "Klonen",
-      "description": "Beschreibung",
-      "edit": "Bearbeiten",
-      "setPause": "Pausieren",
-      "lastEdited": "Zuletzt bearbeitet",
-      "isRequired": "Erforderlich",
-      "isNotRequired": "Nicht erforderlich",
-      "modules": "Module",
-      "noValue": "-",
-      "config": "Konfiguration",
-      "notFound": "Nicht gefunden",
-      "noRecords": "Keine Aufzeichnungen",
-      "lastCollected": "Zuletzt geschickt",
-      "dataReceived": "Daten erhalten",
-      "noDataReceived": "Keine Daten erhalten",
-      "lastDataReceived": "Letzte Daten erhalten",
-      "to": "zu",
-      "message": "Nachricht",
-      "option": "Option {value}",
-      "data": "Daten",
-      "scheduleType": "Zeitplan-Typ",
-      "filter": "Filter"
+      "dayOfMonth": "Tag des Monats",
+      "dayOfWeek": "Tag der Woche",
+      "hours": "Stunden",
+      "minutes": "Minuten",
+      "months": "Monate",
+      "seconds": "Sekunden"
     },
-    "placeholder": {
-      "entireStudy": "Gesamte Studie",
-      "chooseDropdownOptionDefault": "Option auswählen",
-      "optionsSelected": "Optionen ausgewählt",
-      "chooseRole": "Rolle(n) auswählen",
-      "nothingSelected": "Nichts ausgewählt",
-      "noGroup": "Keine Gruppe",
-      "all": "Alle",
-      "enterTextValue": "Textwert eingeben"
+    "limitDescription": "",
+    "placeholders": {
+      "dayOfMonth": "1-31",
+      "dayOfWeek": "1-7",
+      "hours": "0-23",
+      "months": "1-12",
+      "secondsAndMinutes": "0-59"
     },
-    "header": {
-      "logout": "Ausloggen",
-      "backToDashboard": "Dashboard"
+    "quickStart": "oder verwenden Sie den <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a>, um schnell starten zu können.",
+    "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
+    "singular": "Cron Scheduler"
+  },
+  "data": {
+    "dataDownload": {
+      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden.",
+      "title": "Studiendaten herunterladen"
+    }
+  },
+  "global": {
+    "error": {
+      "general": "Ein allgemeiner Fehler ist aufgetreten.",
+      "immutable": "Der Wert von '{value}' darf nicht geändert werden.",
+      "inComponentTitle": "In Aufzeichnung '{title}': ",
+      "required": "Erforderlicher Wert '{value}' fehlt.",
+      "type": {
+        "error": "Fehler",
+        "info": "Info",
+        "warning": "Warnung"
+      }
     },
     "footer": {
       "aboutMore": "Über More"
     },
-    "error": {
-      "type": {
-        "error": "Fehler",
-        "warning": "Warnung",
-        "info": "Info"
-      },
-      "general": "Ein allgemeiner Fehler ist aufgetreten.",
-      "required": "Erforderlicher Wert '{value}' fehlt.",
-      "immutable": "Der Wert von '{value}' darf nicht geändert werden.",
-      "inComponentTitle": "In Aufzeichnung '{title}': "
+    "header": {
+      "backToDashboard": "Dashboard",
+      "logout": "Ausloggen"
+    },
+    "labels": {
+      "add": "Hinzufügen",
+      "apply": "Anwenden",
+      "cancel": "Abbrechen",
+      "clone": "Klonen",
+      "close": "Schließen",
+      "config": "Konfiguration",
+      "confirm": "Bestätigen",
+      "data": "Daten",
+      "dataReceived": "Daten erhalten",
+      "delete": "Löschen",
+      "description": "Beschreibung",
+      "edit": "Bearbeiten",
+      "end": "Ende",
+      "filter": "Filter",
+      "id": "Id",
+      "isNotRequired": "Nicht erforderlich",
+      "isRequired": "Erforderlich",
+      "lastCollected": "Zuletzt geschickt",
+      "lastDataReceived": "Letzte Daten erhalten",
+      "lastEdited": "Zuletzt bearbeitet",
+      "message": "Nachricht",
+      "modules": "Module",
+      "new": "Neu",
+      "noDataReceived": "Keine Daten erhalten",
+      "noRecords": "Keine Aufzeichnungen",
+      "noValue": "-",
+      "notFound": "Nicht gefunden",
+      "option": "Option {value}",
+      "qr": "QR Code",
+      "repetition": "Wiederholung",
+      "save": "Speichern",
+      "scheduleType": "Zeitplan-Typ",
+      "setPause": "Pausieren",
+      "start": "Start",
+      "time": "Zeit",
+      "to": "zu"
+    },
+    "placeholder": {
+      "all": "Alle",
+      "chooseDropdownOptionDefault": "Option auswählen",
+      "chooseRole": "Rolle(n) auswählen",
+      "enterTextValue": "Textwert eingeben",
+      "entireStudy": "Gesamte Studie",
+      "noGroup": "Keine Gruppe",
+      "nothingSelected": "Nichts ausgewählt",
+      "optionsSelected": "Optionen ausgewählt"
     }
   },
-  "studyNavigation": {
-    "accessDialog": {
-      "header": "Zugriff verweigert",
-      "permissionWarningMsg": ". Bitte kontaktieren Sie Ihren Studien-Administrator, wenn Sie Zugang zu diesem Abschnitt benötigen.",
-      "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: "
+  "inputModel": {
+    "enterValue": "Bitte geben Sie einen Wert hinzu."
+  },
+  "integration": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?",
+        "intro": "Sie sind im Begriff folgende Integration zu löschen:",
+        "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht."
+      },
+      "example": {
+        "dataTitle": "Senden Sie Daten an die API via token",
+        "filledExample": "Ausgefülltes Beispiel",
+        "participantsTitle": "Rufen Sie Teilnehmer:innen über API ab via token",
+        "title": "Beispiele",
+        "yourData": "DATEN OBJEKT",
+        "yourDomain": "DOMÄNE",
+        "yourToken": "TOKEN"
+      },
+      "header": {
+        "clone": "Integration klonen",
+        "create": "Integration erstellen",
+        "delete": "Integration löschen",
+        "tokenCopy": "Token kopieren"
+      },
+      "label": {
+        "chooseObservation": "Wähle ein Datenerhebungsmodul",
+        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen.",
+        "copySuccess": "Token wurde erfolgreich in die Zwischenablage kopiert.",
+        "copyToken": "Token kopieren",
+        "description": "Ein Integrationsmodule ermöglicht es eine externe API an eine schon existierende Observation zu verlinken. Wähle jenes Datenerhebungsmodul, für welches Sie einen Token erstellen wollen. Über den Token können externe Datenmodule gekoppelt werden.",
+        "integrationTitle": "Integrationstitel"
+      },
+      "msg": {
+        "createdToken": "Bitte kopieren Sie den API-Token und speichern diesen zur Verwendung. Der Token wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren, indem Sie eine neue Integration erstellen.",
+        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?"
+      },
+      "placeholder": {
+        "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul.",
+        "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein."
+      }
     },
+    "error": {
+      "addTokenLabel": "Geben Sie bitte einen Namen für Ihr Integrationsmodul ein.",
+      "selectObservation": "Wählen Sie bitte ein Datenerhebungsmodul aus, an das sie Ihr Integrationsmodul verlinken wollen."
+    },
+    "integrationList": {
+      "action": {
+        "add": "Integration hinzufügen"
+      },
+      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmodul verknüpft werden.",
+      "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
+      "title": "Externe Datenintegration"
+    },
+    "plural": "Integrationen",
+    "props": {
+      "created": "Erstellt",
+      "observationId": "Modul Id",
+      "observationTitle": "Datenerhebungsmodul",
+      "token": "Token",
+      "tokenId": "Token Id",
+      "tokenLabel": "Tokenname"
+    },
+    "singular": "Integration"
+  },
+  "intervention": {
+    "description": {
+      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu.",
+      "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu."
+    },
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie diese Intervention wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Intervention zu löschen:",
+        "warning": "Eine gelöschte Intervention kann nicht wiederhergestellt werden. Wenn Sie diese Intervention löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden."
+      },
+      "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Aktion für Ihre Intervention hinzu.",
+      "header": {
+        "clone": "Intervention klonen",
+        "create": "Intervention erstellen",
+        "delete": "Intervention löschen",
+        "edit": "Intervention bearbeiten",
+        "view": "Interventiondetails"
+      },
+      "label": {
+        "addTriggerGroup": "Konditionsgruppe hinzufügen",
+        "chooseObservation": "Datenerhebung auswählen",
+        "interventionTitle": "Interventionstitel",
+        "triggerConditionObservationProperty": "Aufzeichnungseigenschaft",
+        "triggerConditionOperator": "Operator",
+        "triggerConditionPropertyValue": "Aufzeichnungswert",
+        "triggerConditions": "Auslöserkonditionen",
+        "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: <, >, <=, >=, = oder != (nicht gleich).",
+        "triggerType": "Triggertyp",
+        "window": "Window",
+        "windowInSeconds": "Zeitfenster rückwärts vom Triggerzeitpunkt (in Sekunden) "
+      },
+      "msg": {
+        "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
+      },
+      "placeholder": {
+        "enterNumber": "Numerischen Wert einfügen",
+        "enterValue": "Wert einfügen",
+        "message": "Nachricht einfügen",
+        "title": "Titel einfügen"
+      },
+      "title": "Intervention"
+    },
+    "error": {
+      "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu.",
+      "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "addTriggerConfig": "Bitte fügen sie weitere Konfigurationen zum Datacheck hinzu.",
+      "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
+      "emptyTriggerConditions": "Bitte fügen Sie mindesetens eine Auslöserkondition zu ihrem Trigger hinzu.",
+      "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern.",
+      "triggerProp": "Ein Trigger-Property hat einen Fehler."
+    },
+    "factory": {
+      "actions": {
+        "pushNotification": {
+          "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition.",
+          "title": "Push-Benachrichtigung Aktion"
+        },
+        "triggerObservation": {
+          "description": "Starte eine Beobachtung aktiv",
+          "properties": {
+            "observation": {
+              "description": "Wähle eine Beobachtung aus (zur Zeit sind nur einfache Fragen und Lime Surveys erlaubt)",
+              "name": "Beobachtung"
+            }
+          },
+          "title": "Beobachtung auslösen"
+        }
+      },
+      "trigger": {
+        "relativeTime": {
+          "configProps": {
+            "day": "Tag",
+            "dayDesc": "Tag des Teilnehmers",
+            "hour": "Stunde",
+            "hourDesc": "Die Stunde des jeweiligen Tages"
+          },
+          "description": "Auslösung einer Aktion zu einer bestimmten relativen Zeit (Tag und Stunde)",
+          "title": "Relativer Zeit Trigger"
+        },
+        "scheduled": {
+          "configProps": {
+            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n",
+            "cronName": "Cron Schedule"
+          },
+          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler aus.",
+          "title": "Scheduled Trigger"
+        },
+        "scheduledDatacheck": {
+          "configProps": {
+            "onlyOnceDesc": "Trigger löst nur einmal aus, wenn der Wert übereinstimmt; wenn der Wert nicht mehr übereinstimmt, löst der Trigger beim nächsten mal wieder aus.",
+            "onlyOnceName": "Nur einmal",
+            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
+            "queryName": "Query",
+            "queryObjDesc": "Eine complexere Variante des Scheduled Triggers.",
+            "queryObjName": "Query Objekt",
+            "timeWindowName": "Beobachtungszeitraum in Sekunden",
+            "windowPlaceholder": "Füge eine Nummer in Sekunden ein"
+          },
+          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler und den definierten zusätzlichen Bedingungen (basierend auf Datenerhebungsmodulen) aus.",
+          "title": "Scheduled Datacheck"
+        }
+      }
+    },
+    "interventionList": {
+      "action": {
+        "add": "Intervention hinzufügen"
+      },
+      "description": "Eine Intervention besteht aus einer Auslösungsbedingung und mindestens einer darauf folgenden Aktion.",
+      "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
+      "snippets": {
+        "day": "Tag",
+        "every": "jeder",
+        "month": "Monat",
+        "months": "Monats",
+        "ofEvery": "jedes"
+      },
+      "title": "Interventionen"
+    },
+    "placeholder": {
+      "chooseAction": "Wähle eine Aktion",
+      "emptyScheduler": "Stellen Sie einen Zeitplan für Ihre Intervention bereit.",
+      "noDescription": "Keine Beschreibung verfügbar",
+      "trigger": "Wähle einen Auslösertyp"
+    },
+    "plural": "Interventionen",
+    "props": {
+      "action": "Aktion",
+      "actions": "Aktionen",
+      "trigger": "Auslöser"
+    },
+    "singular": "Intervention"
+  },
+  "message": "Nachricht",
+  "monitoring": {
+    "charts": {
+      "polarVerity": {
+        "avgHeartRate": {
+          "description": "Vergleicht die durchschnittliche Herzfrequenz aller Teilnehmer über die Zeit mit einem Zeitintervall von 1 Minute.",
+          "label": "Herzfrequenz",
+          "title": "Durchschnittliche Herzfrequenz pro Teilnehmer im Zeitverlauf"
+        }
+      },
+      "simpleQuestion": {
+        "responseDistribution": {
+          "description": "Jedes Segment stellt die Häufigkeit einer bestimmten Antwort dar und zeigt, wie viele Teilnehmer:innen die jeweilige Option gewählt haben.",
+          "label": "Alle Antworten",
+          "title": "Verteilung der Antworten der Teilnehmer:innen"
+        },
+        "responseDistributionResponse": {
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an.",
+          "label": "Gruppierung nach Antwort",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen"
+        },
+        "responseDistributionStudyGroup": {
+          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an.",
+          "label": "Antworten per Gruppe",
+          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen"
+        }
+      }
+    },
+    "dataList": {
+      "description": "Hier werden die zuletzt gesammelten Datenpunkte in tabellarischer Form angezeigt und die gesamten Datenpunkte können in verschiedenen Visualisierungen dargestellt werden.",
+      "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
+      "title": "Erhobene Daten"
+    },
+    "dataPointsList": {
+      "filterInfo": "Die Filterung ist nur für die Visualisierung möglich.",
+      "lastDatapoints": "Letzte Datenpunkte",
+      "resultSize": "Anzahl der Datenpunkte"
+    },
+    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
+    "labels": {
+      "dateRange": "Datumsbereich",
+      "latestDataPoints": "Letzte Datenpunkte",
+      "noDataAvailable": "Keine Daten verfügbar",
+      "visualization": "Visualisierung"
+    },
+    "placeholder": {
+      "chooseSize": "Größe auswählen"
+    },
+    "title": "Monitoring"
+  },
+  "monitoringData": {
     "tabs": {
-      "overview": "Studie",
-      "participants": "Teilnehmer:innen",
-      "observations": "Datenerhebungen",
-      "integration": "Integrationen",
-      "interventions": "Interventionen",
-      "timeline": "Kalender",
-      "monitoringAndData": "Monitoring & Data"
+      "dataDownload": "Studiendaten herunterladen",
+      "lastDataPoints": "Letzte Datenpunkte",
+      "recordedObservation": "Erhobene Daten"
+    }
+  },
+  "moreTable": {
+    "defaultEmptyMsg": "Keine Einträge vorhanden",
+    "filterBy": "Filtern",
+    "saveLine": "Bitte speichern"
+  },
+  "observation": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie diese Datenerhebung wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Datenerhebung zu löschen:",
+        "warning": "Eine gelöschte Datenerhebung kann nicht wiederhergestellt werden. Wenn Sie die Datenerhebung löschen, gehen alle Konfigurationen verloren."
+      },
+      "header": {
+        "clone": "Datenerhebung klonen",
+        "create": "Datenerhebung hinzufügen",
+        "delete": "Datenerhebung löschen",
+        "edit": "Datenerhebung bearbeiten",
+        "view": "Details einer Datenerhebung"
+      },
+      "label": {
+        "observationTitle": "Titel"
+      },
+      "msg": {
+        "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
+        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
+      }
+    },
+    "error": {
+      "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
+      "addScheduler": "Planer",
+      "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein.",
+      "addTitle": "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "noValidField": "Fehler im Wert {key}: {message}"
+    },
+    "factory": {
+      "accelerometerMobile": {
+        "description": "Diese Datenerhebung ermöglicht es, Bewegungsdaten über das Smartphone zu sammeln.",
+        "title": "Accelerometer Mobile Sensor"
+      },
+      "external": {
+        "description": "Eine Daterhebung für Daten, die über die externe API Schnittstelle gesammelt werden sollen.",
+        "title": "Externe Datenerhebung"
+      },
+      "gpsMobile": {
+        "configProps": {
+          "measurementDesc": "Messintervall in Millisekunden, 30k bis 600k",
+          "measurementName": "Messintervall"
+        },
+        "description": "Diese Datenerhebung ermöglicht es, Ortsdaten über das Smartphone zu sammeln.",
+        "title": "GPS Mobile Sensor"
+      },
+      "limeSurvey": {
+        "configProps": {
+          "idDesc": "Die ID des Lime Surveys",
+          "idName": "Fragebogen"
+        },
+        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden. Bitte verwenden Sie dafür More <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a> Instanz. Denken Sie daran die Option <b>\"multiple responses or update responses with one access code\"</b> innerhalb ihres Lime Surveys zu aktivieren und das Lime Survey auf aktive zu stellen.",
+        "title": "Lime Survey"
+      },
+      "polarVerity": {
+        "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln.",
+        "title": "Polar Verity Sensor"
+      },
+      "simpleQuestion": {
+        "configProps": {
+          "answerDesc": "Mögliche Antworten (min. 2, max.5)",
+          "answerName": "Antworten",
+          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
+          "questionName": "Frage"
+        },
+        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
+        "title": "Einfache Frage"
+      }
+    },
+    "observationList": {
+      "action": {
+        "add": "Datenerhebung hinzufügen"
+      },
+      "description": "Eine Datenerhebung kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder einem Fragebogen sammeln. Eine Datenerhebung kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt die Datenerhebung für die gesamte Studie.",
+      "emptyListMsg": "Verwalten oder fügen Sie eine Datenerhebung hinzu. Diese werden hier angezeigt.",
+      "title": "Datenerhebung"
+    },
+    "placeholder": {
+      "chooseObservation": "Aufzeichnung auswählen",
+      "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
+      "enterMainPurpose": "Fügen Sie die Ziele der Studie hinzu."
+    },
+    "plural": "Aufzeichnungen",
+    "props": {
+      "hidden": {
+        "false": "Nicht versteckt",
+        "true": "Versteckt"
+      },
+      "noSchedule": "Keine Planzeit",
+      "observationType": {
+        "heartRateMeter": "Herzfrequenzmesser",
+        "smartphoneAccelerometer": "Beschleunigungsmesser"
+      },
+      "type": "Typ"
+    },
+    "singular": "Aufzeichnung"
+  },
+  "participants": {
+    "dialog": {
+      "btn": {
+        "copyLink": "Link kopieren",
+        "distributeBtn": "Zuweisen",
+        "downloadQr": "JPG herunterladen"
+      },
+      "deleteMsg": {
+        "confirm": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
+        "deleteWithData": "Inklusive Daten löschen",
+        "deleteWithoutData": "Löschen",
+        "intro": "Sie sind kurz davor eine Teilnehmer:in zu löschen:",
+        "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen."
+      },
+      "error": {
+        "qrcode": "Fehler bei der QR Codeerstellung"
+      },
+      "header": {
+        "create": "Teilnehmer:in hinzufügen",
+        "delete": "Teilnehmer:in löschen",
+        "deleteWithData": "Daten löschen",
+        "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen",
+        "edit": "Teilnehmer:in bearbeiten",
+        "qrCode": "QR Code für"
+      },
+      "msg": {
+        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
+        "deleteWithData": "Sollen alle Daten gelöscht werden?",
+        "qrCode": "Mit diesem QR Code kann sich der Teilnehmer {part} mittels der More Handy App anmelden."
+      }
+    },
+    "participantsList": {
+      "action": {
+        "add": "Teilnehmer:innen hinzufügen",
+        "distribute": "Automatische Gruppenzuweisung",
+        "export": "CSV exportieren",
+        "import": "Teilnehmer:innen importieren"
+      },
+      "description": "Sie können Teilnehmer:innen hinzufügen durch Import einer Liste mit Alias-Namen, oder Sie erstellen sie manuell. Dann können die Teilnehmer:innen auf Gruppen verteilt werden. Teilnehmer:innen können auch als CSV exportiert werden.",
+      "distributeMsg": {
+        "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer:innen automatisch Studiengruppen zuweisen?",
+        "intro": "Sie können die Studienteilnehmer:innen automatisch auf alle vorhandenen Gruppen aufteilen.",
+        "warning": "Die automatische Zuweisung von Studienteilnehmer:innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Waren Teilnehmer:innen schon Gruppen zugewiesen, werden ALLE Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt."
+      },
+      "emptyListMsg": "Fügen Sie Teilnehmer:innen zu Ihrer Studie hinzu",
+      "labels": {
+        "add1": "1 hinzufügen",
+        "add10": "10 hinzufügen",
+        "add25": "25 hinzufügen",
+        "add3": "3 hinzufügen",
+        "add50": "50 hinzufügen"
+      },
+      "title": "Teilnehmer:innen"
+    },
+    "placeholder": {
+      "allParticipants": "Alle Teilnehmer:innen",
+      "chooseParticipant": "Teilnehmer:in auswählen"
+    },
+    "plural": "Teilnehmer",
+    "props": {
+      "alias": "Alias",
+      "individualStart": "Gestartet am",
+      "participantId": "Teilnehmer ID",
+      "registrationToken": "Registrierungstoken",
+      "token": "Token"
+    },
+    "singular": "Teilnehmer"
+  },
+  "scheduler": {
+    "byMonthDayLabel": {
+      "first": "",
+      "fourth": "",
+      "second": "",
+      "third": ""
+    },
+    "bySetPosLabel": {
+      "first": "erstes",
+      "fourth": "viertes",
+      "last": "letztes",
+      "second": "zweites",
+      "third": "drittes"
+    },
+    "dialog": {
+      "absoluteSchedule": {
+        "description": "Eine absolute Zeitplanung umfasst absolute Datum und Zeit Angaben. Beobachtungen können durch absolute Daten und Zeitfenster zeitlich festgelegt werden."
+      },
+      "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
+      "endAfter": "Ende nach",
+      "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
+      "relativeSchedule": {
+        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein/e Teilnehmer:in meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
+        "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
+        "dialogTitle": "Relativen Zeitplan verwalten",
+        "endValue": "Endet am",
+        "error": {
+          "cannotRepeat": "Das Datenerhebungs-Event kann nicht erneut stattfinden, da dies über das Ende der Studie hinausgehen würde.",
+          "dtend": {
+            "EndBeforeStart": "Bitte setzen Sie den relativen Startzeitpunkt vor dem Endzeitpunkt",
+            "addOffset": "Befülle den Offset des relativen Endzeitraum."
+          },
+          "dtstart": {
+            "addOffset": "Befülle den Offset des relativen Startzeitraum."
+          },
+          "rrrule": {
+            "endAfter": "Bitte geben Sie den Offset zum Enddatum ein.",
+            "frequency": "Fülle die Wiederholungsrate ein.",
+            "notValid": "Die eingegebenen Werte sind ungültig.",
+            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die verbleibende Studiendauer von {durValue} {durUnit} nicht überschreiten.",
+            "repetitionTooLong": "Wiederholungen dürfen das Studienende nicht überschreiten. Das maximale Intervall beträgt {repValue} {repUnit}."
+          },
+          "scheduleTooLong": "Das Datenerhebungs-Event darf den Studienzeitraum von maximal {maxDuration} Tagen nicht überschreiten.",
+          "startTimeBeforeEnd": "Startzeit muss vor der Endzeit liegen."
+        },
+        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer:in (Anmeldung) berechnet.",
+        "placeholder": {
+          "dtendOffset": "Offset in Tage(n)",
+          "dtendTime": "End Zeit",
+          "dtstartOffset": "Offset in Tage(n)",
+          "dtstartTime": "Start Zeit",
+          "enterNumber": "Nummer eingeben"
+        },
+        "rrrule": {
+          "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
+          "runTime": "Das Event wird {repetitionNum} Mal ausgeführt."
+        },
+        "startValue": "Startet am"
+      },
+      "repeatEvent": "Event wiederholen",
+      "repeatEventDescription": "Das oben gezeigte Event wird wiederholt, sobald die aktuelle abgeschlossen ist.",
+      "repeatEventTitle": "Datenerhebungs-Event wiederholen",
+      "repeatEvery": "Wiederholen: Jede",
+      "singleEventTitle": "Einzelnes Datenerhebungs-Event"
+    },
+    "dialogTitle": "Absoluten Zeitplan verwalten",
+    "frequency": {
+      "day": "Tag",
+      "days": "Tag(e)",
+      "hour": "Stunde",
+      "hours": "Stunde(n)",
+      "labels": {
+        "daily": "täglich",
+        "weekly": "wöchentlich"
+      },
+      "minute": "Minute",
+      "minutes": "Minute(n)",
+      "month": "Monat",
+      "months": "Monat(e)",
+      "week": "Woche",
+      "weeks": "Woche(n)",
+      "years": "Jahr(e)"
+    },
+    "info": {
+      "dateOverlapEnd": "Das Startdatum wurde dem Enddatum angepasst.",
+      "dateOverlapStart": "Das Enddatum wurde dem Startdatum angepasst.",
+      "endDateNotWithinRange": "Das Enddatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
+      "startDateNotWithinRange": "Das Startdatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
+      "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet.",
+      "timeOverlapEnd": "Die Startzeit wurde der Endzeit angepasst.",
+      "timeOverlapStart": "Die Endzeit wurde der Startzeit angepasst."
+    },
+    "labels": {
+      "after": "Nach",
+      "date": "Datum",
+      "editRelativeScheduler": "Relativen Zeitplaner bearbeiten",
+      "editScheduler": "Absoluten Zeitplaner bearbeiten",
+      "event": {
+        "allDay": "Ganztags",
+        "example": {
+          "titles": {
+            "fullTimespan": "Fortlaufende Datenerhebung über ganze Zeitspanne von zwei Monaten",
+            "series": "Serie von Datenerhebungen über 10 Tage",
+            "singleDay": "Einmalige Datenerhebung"
+          },
+          "values": {
+            "fullTimespan": "'An einem Tag' nicht auswählen <br>Start: {egStartDate} 08:00, End: {egEndDate} 20:00<br>Optional: ganztägig auswählen",
+            "series": "'An einem Tag' auswählen <br>Zeitspanne: {egDate} 14:00 - 18:00 <br>Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
+            "singleDay": "'An einem Tag' auswählen <br>Start: {egDate} 14:00 - 16:00"
+          }
+        },
+        "first": "Erstes Ereignis",
+        "oneDayObservation": "Mehrfache Datenerhebung",
+        "repeat": "Wiederhole die oben definierte Zeitspanne",
+        "repeatDesc": "Um die gesetzte Zeitspanne zu wiederholen, können Sie dies bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird.",
+        "repetitionEnd": {
+          "after": "Nach",
+          "studyEnd": "Bis Studienende"
+        },
+        "setDates": "Setze den Zeitrahmen",
+        "setDatesDesc": "Mit Start- und Endzeit können Sie eine Zeitspanne für eine Datenerhebung an einem Tag festlegen. Die Datenerhebung kann auch ganztags gesetzt werden. Durch die Angaben von Wiederholdungen könenn Sie eine Serie von Datenerhebungen definieren. Alternativ dazu können Sie einen gesamten Zeitraum definieren."
+      },
+      "every": "Jede(s)",
+      "frequency": "Frequenz",
+      "on": "Am",
+      "openRelativeScheduler": "Relativen Zeitplaner hinzfügen",
+      "openScheduler": "Absoluten Zeitplaner hinzufügen",
+      "removeScheduler": "Zeitplaner entfernen",
+      "repeat": "Wiederholung",
+      "repetitionEnd": "Wiederholungsende",
+      "selection": {
+        "allDaysInWeek": "Alle Tage der Woche",
+        "allWeekdays": "Nur Arbeitstage",
+        "allWeekendDays": "Nur Wochenende",
+        "daysSelected": "Tage ausgewählt",
+        "specificDay": "An einem spezifischen Tag"
+      },
+      "timeframe": "Zeitraum"
+    },
+    "months": {
+      "april": "April",
+      "august": "August",
+      "december": "Dezember",
+      "february": "Februar",
+      "january": "Jänner",
+      "july": "Juli",
+      "june": "Juni",
+      "mai": "Mai",
+      "march": "März",
+      "november": "November",
+      "october": "Oktober",
+      "september": "September",
+      "short": {
+        "april": "Apr",
+        "august": "Aug",
+        "december": "Dez",
+        "february": "Feb",
+        "january": "Jan",
+        "july": "Jul",
+        "june": "Jun",
+        "mai": "Mai",
+        "march": "Mar",
+        "november": "Nov",
+        "october": "Okt",
+        "september": "Sep"
+      }
+    },
+    "placeholder": {
+      "chooseDayInterval": "Wählen Sie ein Tagesintervall",
+      "chooseGeneralInterval": "Wählen Sie ein Intervall",
+      "chooseMonth": "Monat auswählen",
+      "chooseRepetitionEnd": "Wählen Sie das Wiederholungsende",
+      "enterDayOfMonth": "Tag des Monats einfügen",
+      "enterRepeatCount": "Fügen Sie die Anzahl der Wiederholungen ein"
+    },
+    "preview": {
+      "title": {
+        "ends": "Endet",
+        "endsOn": "Endet am",
+        "every": "Jeden",
+        "in": "in",
+        "individualEvent": "Individuelles Event",
+        "on": "am",
+        "repeatEvent": "Event wiederholen",
+        "selectedDays": "Ausgewählte Tages",
+        "startsOn": "Startet am",
+        "timeframe": "Timeframe"
+      },
+      "unit": {
+        "DAILY": "täglich",
+        "DAY": "Tag",
+        "HOUR": "Stunde",
+        "MINUTE": "Minute",
+        "PL-DAY": "Tage",
+        "PL-HOUR": "Stunden",
+        "PL-MINUTE": "Minuten",
+        "WEEKLY": "Wochen",
+        "date": "Datum",
+        "time": "Zeit"
+      },
+      "value": {
+        "DAY": "kein Tag | 1 Tag | {n} Tage",
+        "HOUR": "keine Stunde | 1 Stunde | {n} Stunden",
+        "MINUTE": "keine Minute | 1 Minute | {n} Minuten",
+        "WEEKLY": "keine Woche | 1 Woche | {n} Wochen"
+      }
+    },
+    "relativeDialogTitle": "Relativen Zeitplan verwalten",
+    "singular": "Planer",
+    "type": {
+      "Event": "Absoluter Zeitplan",
+      "RelativeEvent": "Relativer Zeitplan"
+    },
+    "warningsAndErrors": {
+      "endWasChangedWithStartValue": "End Wert wurde mit dem Start Wert geändert.",
+      "rruleEndIsEmpty": "Bitte legen Sie einen Endpunkt für Ihren Wiederholungszeitraum fest.",
+      "rruleFreqIsEmpty": "Bitte legen Sie die Häufigkeit für Ihre Wiederholung fest.",
+      "rruleWeeklyIsMissingByDay": "Bitte legen Sie die Wochentage für Ihre Wiederholung fest."
+    },
+    "weekday": {
+      "friday": "Freitag",
+      "monday": "Montag",
+      "props": {
+        "FR": "Fr",
+        "MO": "Mo",
+        "SA": "Sa",
+        "SO": "So",
+        "TH": "Do",
+        "TU": "Di",
+        "WE": "Mi"
+      },
+      "saturday": "Samstag",
+      "short": {
+        "friday": "FR",
+        "monday": "MO",
+        "saturday": "SA",
+        "sunday": "SO",
+        "thursday": "DO",
+        "tuesday": "DI",
+        "wednesday": "MI"
+      },
+      "sunday": "Sonntag",
+      "thursday": "Donnerstag",
+      "tuesday": "Dientstag",
+      "wednesday": "Mittwoch"
     }
   },
   "study": {
-    "singular": "Studie",
-    "plural": "Studien",
-    "props": {
-      "studyId": "Studien-ID",
-      "title": "Titel",
-      "purpose": "Zielsetzung",
-      "status": "Status",
-      "roles": "Rolle(n)",
-      "duration": "Studiendauer",
-      "plannedStart": "Geplanter Start",
-      "actualStart": "Aktueller Start",
-      "plannedEnd": "Geplantes Ende",
-      "actualEnd": "Aktuelles Ende",
-      "participantInfo": "Teilnehmerinformationen",
-      "consentInfo": "Berechtigungsinformation",
-      "language": "Sprache",
-      "studyGroup": "Studiengruppe {size}",
-      "finishText": "Information nach Studienabschluss"
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie die Studie wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Studie zu löschen:",
+        "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden. Zur Zeit ist es nur möglich eine Studie ohne ihre Daten zu löschen."
+      },
+      "description": {
+        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
+        "contactData": "Diese Kontaktdaten werden in der App den Teilnehmer:innen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Teilnahme an der Studie gibt.",
+        "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer:innen aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet.",
+        "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen. Die aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
+        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
+        "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
+        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird."
+      },
+      "error": {
+        "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
+      },
+      "header": {
+        "create": "Studie erstellen",
+        "delete": "Studie löschen",
+        "edit": "Studie bearbeiten",
+        "urlCopied": "Studien-ID kopieren"
+      },
+      "label": {
+        "contactEmail": "E-mail",
+        "contactInfo": "Kontaktinformationen",
+        "contactPerson": "Name",
+        "contactTel": "Telefon",
+        "durationExample": "Beispiel der Studiendauer",
+        "institute": "Institut",
+        "studyEnd": "Studienende",
+        "studyStart": "Studienstart",
+        "studyTitle": "Studientitel"
+      },
+      "msg": {
+        "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?",
+        "urlCopied": "Der Link zur Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert."
+      }
+    },
+    "error": {
+      "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
+      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer:innen bei Problemen anschreiben können.",
+      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
+      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer:innen bei Problemen kontaktieren können.",
+      "addContactTel": "Bitte fügen Sie eine Kontakttelefonnummer ein, welche die Teilnehmer:innen bei Problemen anrufen können.",
+      "addDuration": "Bitte fügen Sie einen Wert und eine Einheit im Feld hinzu.",
+      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
+      "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
+      "durationSmallerThanStudySpan": "Die angegebene Dauer darf {maxDuration} Tag(e) nicht überschreiten."
     },
     "ical": {
       "copyMsg": "Link für das Kalender Abonnement ('{title} (Id: {studyId})') wurde kopiert.",
-      "title": "Kalender für Abonnements",
-      "copyTitle": "Link kopieren"
+      "copyTitle": "Link kopieren",
+      "title": "Kalender für Abonnements"
+    },
+    "placeholder": {
+      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
+      "contactEmail": "Geben Sie eine Kontakt-Emailadresse an.",
+      "contactPerson": "Geben Sie den Namen einer Kontaktperson an.",
+      "contactTel": "Geben Sie eine Kontakt-Telefonnummer an.",
+      "durationInput": "Bitte geben Sie eine Studiendauer ein.",
+      "durationUnitDropdown": "Einheit der Dauer",
+      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu.",
+      "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
+      "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
+      "finishText": "Geben Sie Informatonen ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird.",
+      "finishTextDesc": "Diese Information wird in der App nach Beendigung der Studie angezeigt. Ist keine gesetzt, wird eine Default-Information verwendet.",
+      "institute": "Geben Sie das durchführende Institut der Studie an.",
+      "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt.",
+      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer:innen bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
+      "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
+      "selectLanguage": "Sprache auswählen",
+      "titleInput": "Bitte geben Sie einen kurzen Titel ein."
+    },
+    "plural": "Studien",
+    "props": {
+      "actualEnd": "Aktuelles Ende",
+      "actualStart": "Aktueller Start",
+      "consentInfo": "Berechtigungsinformation",
+      "duration": "Studiendauer",
+      "finishText": "Information nach Studienabschluss",
+      "language": "Sprache",
+      "participantInfo": "Teilnehmerinformationen",
+      "plannedEnd": "Geplantes Ende",
+      "plannedStart": "Geplanter Start",
+      "purpose": "Zielsetzung",
+      "roles": "Rolle(n)",
+      "status": "Status",
+      "studyGroup": "Studiengruppe {size}",
+      "studyId": "Studien-ID",
+      "title": "Titel"
     },
     "roles": {
       "admin": "Studien-Administrator",
       "operator": "Studien-Operator",
       "viewer": "Studien-Beobachter"
     },
+    "singular": "Studie",
     "statusChange": {
-      "start": "Studie Starten",
-      "pause": "Studie Pausieren",
-      "edit": "Studie Bearbeiten",
-      "resume": "Fortsetzen",
       "complete": "Abschließen",
       "complete-preview": "Preview Beenden",
-      "start-preview": "Preview Starten",
-      "resume-preview": "Preview Fortsetzen",
+      "dialog": {
+        "header": "Studienstatus ändern"
+      },
+      "edit": "Studie Bearbeiten",
+      "labels": {
+        "changeFrom": "Statusänderung von",
+        "changeStatus": "Studienstatus ändern"
+      },
+      "pause": "Studie Pausieren",
       "pause-preview": "Preview Pausieren",
+      "resume": "Fortsetzen",
+      "resume-preview": "Preview Fortsetzen",
+      "start": "Studie Starten",
+      "start-preview": "Preview Starten",
       "transition": {
-        "draft-active": {
-          "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
-          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen. Ist der geplante Start nach dem heutigen Datum, wird dieser mit der Statusänderung auf das aktuelle Startdatum gesetzt.",
-          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
+        "active-closed": {
+          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?",
+          "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
+          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer:innen auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich, neue Daten einzubringen oder weiter teilzunehmen."
         },
         "active-paused": {
+          "confirm": "Möchten Sie den Studienstatus wirklich auf 'PAUSIERT' setzen?",
           "intro": "Sie sind im Begriff den Studienstatus auf 'PAUSIERT' zu setzen.",
-          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird.",
-          "confirm": "Möchten Sie den Studienstatus wirklich auf 'PAUSIERT' setzen?"
+          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis der Studienstatus zurück auf 'AKTIV' gesetzt wird."
         },
-        "paused-active": {
-          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen.",
-          "confirm": "Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?"
-        },
-        "active-closed": {
-          "intro": "Sie sind im Begriff den Studienstatus auf 'ABGESCHLOSSEN' zu setzen.",
-          "warning": "Eine auf 'ABGESCHLOSSEN' gesetzte Studie setzt alle Datenaufzeichnungsmodule, Interventionen und Teilnehmer:innen auf abgeschlossen und es könne keine neuen Datenerhebungen oder Änderungen hinzugefügt werden. Den Teilnehmer:innen ist es ab diesem Zeitpunkt nicht mehr möglich, neue Daten einzubringen oder weiter teilzunehmen.",
-          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden, wenn die Studie einmal als 'ABGESCHLOSSEN' gekennzeichnet wurde.  Möchten Sie den Studien Status wirklich auf 'ABGESCHLOSSEN' setzen?"
+        "draft-active": {
+          "confirm": "Diese Statusänderung kann nicht wieder zurückgesetzt werden. Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?",
+          "intro": "Sie sind im Begtriff den Studienstatus auf 'AKTIV' zu setzen.",
+          "warning": "Eine auf 'AKTIV' gesetzte Studie setzt alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen auf aktiv und ermöglicht so das aktive Aufzeichnen von Daten. Die Teilnehmer:innen können sich ab diesem Zeitpunkt in der App anmelden und aktiv teilnehmen. Eine auf aktiv gesetzte Studie kann pausiert werden, um Änderungen an den Einstellungen und Konfigurationen vorzunehmen. Ist der geplante Start nach dem heutigen Datum, wird dieser mit der Statusänderung auf das aktuelle Startdatum gesetzt."
         },
         "draft-preview": {
+          "confirm": "Preview Starten",
           "intro": "Sie sind im Begriff die Studie im Preview-Modus zu starten",
-          "warning": "Alle Daten die während der Preview aufgezeichnet werden, werden beim Beenden der Preview verworfen.",
-          "confirm": "Preview Starten"
+          "warning": "Alle Daten die während der Preview aufgezeichnet werden, werden beim Beenden der Preview verworfen."
         },
-        "preview-paused-preview": {
-          "intro": "Sie sind im Begriff die Preview zu pausieren",
-          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis die Preview fortgesetzt wird."
+        "paused-active": {
+          "confirm": "Möchten Sie den Studienstatus wirklich auf 'AKTIV' setzen?",
+          "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen."
         },
         "paused-preview-preview": {
           "intro": "Sie sind im Begriff die Preview fortzusetzten",
           "warning": "Alle Datenerhebungsmodule, Interventionen und Zeitplaneinstellungen werden erneut auf 'AKTIV' gesetzt und die Datenerhebung ermöglicht. Die Teilnehmer:innen können sich nun wieder aktiv an der Studie beteiligen."
         },
         "preview-draft": {
+          "confirm": "Preview beenden und Daten verwerfen",
           "intro": "Sie sind im Begriff die Preview zu beenden",
-          "warning": "Alle aufgezeichneten Daten werden beim Beenden verworfen. Die Teilnehmer:innen werden erneut initialisiert.",
-          "confirm": "Preview beenden und Daten verwerfen"
+          "warning": "Alle aufgezeichneten Daten werden beim Beenden verworfen. Die Teilnehmer:innen werden erneut initialisiert."
+        },
+        "preview-paused-preview": {
+          "intro": "Sie sind im Begriff die Preview zu pausieren",
+          "warning": "Eine Änderung des Studienstatus auf 'PAUSIERT' stoppt alle Datenerhebungsmodule, Interventionsbedingungen und aktive Datenerhebungen. Die Teilnehmer:innen können während einer pausierten Studie keine neuen Datenerhebungen starten bis die Preview fortgesetzt wird."
         }
-      },
-      "dialog": {
-        "header": "Studienstatus ändern"
-      },
-      "labels": {
-        "changeStatus": "Studienstatus ändern",
-        "changeFrom": "Statusänderung von"
       }
     },
     "statusStrings": {
@@ -179,945 +968,165 @@
       "paused-preview": "Pausiert (Preview)",
       "preview": "Preview"
     },
-    "error": {
-      "addTitle": "Der Studientitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
-      "addDuration": "Bitte fügen Sie einen Wert und eine Einheit im Feld hinzu.",
-      "durationSmallerThanStudySpan": "Die angegebene Dauer darf {maxDuration} Tag(e) nicht überschreiten.",
-      "addConsentInfo": "Die Berechtigungsinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addParticipantInfo": "Die Teilnehmerinformation ist ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addContactInfo": "Bitte fügen Sie eine Kontaktperson und eine Emailadresse ein.",
-      "addContactPerson": "Bitte fügen Sie eine Kontaktperson ein, welche die Teilnehmer:innen bei Problemen kontaktieren können.",
-      "addContactEmail": "Bitte fügen Sie eine Kontaktemail ein, welche die Teilnehmer:innen bei Problemen anschreiben können.",
-      "addContactTel": "Bitte fügen Sie eine Kontakttelefonnummer ein, welche die Teilnehmer:innen bei Problemen anrufen können."
-    },
-    "placeholder": {
-      "titleInput": "Bitte geben Sie einen kurzen Titel ein.",
-      "purposeInput": "Stellen Sie eine kurze Beschreibung Ihres Forschungszwecks für Ihre Studien-Mitarbeiter bereit.",
-      "durationInput": "Bitte geben Sie eine Studiendauer ein.",
-      "durationUnitDropdown": "Einheit der Dauer",
-      "participantInfoInput": "Stellen Sie Informationen für Ihre Studienteilnehmer:innen bereit. Dies Beschreibung wird den Teilnehmern:innen auf der App angezeigt.",
-      "consentInfoInput": "Stellen Sie Informationen über die zu sammelnden Daten bereit. Dies wird den Teilnehmern:innen als Beschreibungstext der generellen Studienberechtigungen in der App angezeigt.",
-      "selectLanguage": "Sprache auswählen",
-      "emptyPurpose": "Eine Beschreibung über das Ziel der Studie wurde noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
-      "emptyParticipantInfo": "Die Teilnehmerinformation wurde der Studie noch nicht hinzugefügt. Um diese Information zu ergänzen, bearbeiten Sie die Studiendetails.",
-      "emptyConsentInfo": "Fügen Sie eine Beschreibung für die Berechtigungsinformation der Studie hinzu.",
-      "institute": "Geben Sie das durchführende Institut der Studie an.",
-      "contactPerson": "Geben Sie den Namen einer Kontaktperson an.",
-      "contactEmail": "Geben Sie eine Kontakt-Emailadresse an.",
-      "contactTel": "Geben Sie eine Kontakt-Telefonnummer an.",
-      "missingContactData": "Derzeit sind keine Kontaktinformation angegeben. Bitte fügen Sie mindestens eine Kontaktperson und -Email hinzu, um es den Teilnehmern zu ermöglichen bei Problemen Kontakt aufzunehmen. Diese Inforamtion wird auf der App angezeigt.",
-      "finishText": "Geben Sie Informatonen ein, die den Teilnehmern nach Ende der Studie auf der App angezeigt wird.",
-      "finishTextDesc": "Diese Information wird in der App nach Beendigung der Studie angezeigt. Ist keine gesetzt, wird eine Default-Information verwendet."
-    },
-    "dialog": {
-      "header": {
-        "edit": "Studie bearbeiten",
-        "create": "Studie erstellen",
-        "delete": "Studie löschen",
-        "urlCopied": "Studien-ID kopieren"
-      },
-      "label": {
-        "studyTitle": "Studientitel",
-        "durationExample": "Beispiel der Studiendauer",
-        "studyStart": "Studienstart",
-        "studyEnd": "Studienende",
-        "contactInfo": "Kontaktinformationen",
-        "contactPerson": "Name",
-        "institute": "Institut",
-        "contactEmail": "E-mail",
-        "contactTel": "Telefon"
-      },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Wenn Sie die Studie löschen, können Sie diese nicht zu einem späteren Zeitpunkt wieder verwenden. Zur Zeit ist es nur möglich eine Studie ohne ihre Daten zu löschen.",
-        "intro": "Sie sind kurz davor folgende Studie zu löschen:",
-        "confirm": "Möchten Sie die Studie wirklich löschen?"
-      },
-      "msg": {
-        "urlCopied": "Der Link zur Studie '{title} (Id: {studyId})' wurde in die Zwischenablage kopiert.",
-        "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?"
-      },
-      "description": {
-        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
-        "duration": "Die Studiendauer ist der Zeitraum, in dem die Teilnehmer:innen aktiv zur Datenerhebung beitragen. Dies ist wichtig, wenn relative Beobachtungen verwendet werden. Wenn keine Studiendauer angegeben ist, wird die gesamte Zeit vom Studienbeginn bis zum Ende der Studie als Sudiendauer betrachtet.",
-        "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen. Die aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
-        "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
-        "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
-        "consentInfo": "Die Berechtigungsinformation wird in der App den Teilnehmer:innen angezeigt. Sie muss von diesen akzeptiert werden, um über die App Daten aufzeichnen zu dürfen.",
-        "contactData": "Diese Kontaktdaten werden in der App den Teilnehmer:innen angezeigt. Sie dienen dazu einen Kontakt zur Verfügung zu stellen, wenn es Probleme bei der Teilnahme an der Studie gibt."
-      },
-      "error": {
-        "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
-      }
-    },
     "studyList": {
-      "title": "Übersicht meiner Studien",
-      "description": "Die unten angeführte Liste zeigt alle Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
-      "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
-      "labels": {
-        "exportStudyConfig": "Studienkonfiguration herunterladen",
-        "exportStudyData": "Studiendaten herunterladen",
-        "exportStudyCalendar": "Studienkalender exportieren"
-      },
       "action": {
         "addStudy": "Neue Studie hinzufügen",
-        "importStudy": "Studie importieren",
-        "copyUrl": "Studie teilen"
+        "copyUrl": "Studie teilen",
+        "importStudy": "Studie importieren"
       },
+      "description": "Die unten angeführte Liste zeigt alle Studien, die sie selbst erstellt oder zu denen Sie als Mitarbeiter eingeladen wurden.",
+      "emptyListMsg": "Bislang sind keine eigenen Studien angelegt worden.",
       "error": {
         "studyImportFailed": "Die Studie {filename} konnte nicht importiert werden"
-      }
-    }
-  },
-  "studyGroup": {
-    "singular": "Studiengruppe",
-    "plural": "Studiengruppen",
-    "dialog": {
-      "header": {
-        "delete": "Studiengruppe löschen",
-        "create": "Studiengruppe hinzufügen"
       },
-      "msg": {
-        "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
+      "labels": {
+        "exportStudyCalendar": "Studienkalender exportieren",
+        "exportStudyConfig": "Studienkonfiguration herunterladen",
+        "exportStudyData": "Studiendaten herunterladen"
       },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie.",
-        "intro": "Sie sind kurz davor folgende Studiengruppe zu löschen:",
-        "confirm": "Möchten Sie die Studiengruppe wirklich löschen?"
-      }
-    },
-    "groupList": {
-      "description": "Studiengruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventionen zu gruppieren.",
-      "placeholder": {
-        "title": "Stellen Sie einen Titel bereit",
-        "purpose": "Beschreiben Sie die Zielsetzung für diese Gruppe",
-        "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet.",
-        "duration": "Gib die Studiendauer ein",
-        "durationUnit": "Einheit der Studiendauer",
-        "durationValue": "Wert der Studiendauer"
-      },
-      "action": {
-        "create": "Studiengruppe erstellen"
-      }
-    },
-    "placeholder": {
-      "chooseGroup": "Studiengruppe auswählen"
+      "title": "Übersicht meiner Studien"
     }
   },
   "studyCollaborator": {
-    "dialog": {
-      "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
-      "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
-      "chooseRoles": "Wählen Sie die Rolle für Ihren Studien-Mitarbeiter: ",
-      "assignedRoles": "Vergebene Rolle(n)",
-      "header": {
-        "delete": "Studien-Mitarbeiter löschen",
+    "collaboratorList": {
+      "action": {
         "add": "Studien-Mitarbeiter hinzufügen"
+      },
+      "description": "Studien-Mitarbeiter können eine oder mehrer Rollen haben. Ein <b>Studien-Administrator</b> hat keine Einschränkungen. Ein <b>Studien-Operator</b> kann die Studie beaufsichtigen, bearbeiten und einsehen, sieht aber keine Daten. Ein <b>Studien-Beobachter</b> kann nur die grundsätzlichen Informationen (Overview) und die eingehenden Daten (Monitoring Tab) einsehen.",
+      "props": {
+        "email": "E-Mail",
+        "institution": "Organisation",
+        "name": "Name"
+      },
+      "title": "Studien-Mitarbeiter"
+    },
+    "dialog": {
+      "addCollaboratorInfo": "wird zu Ihrer Studien-Mitarbeiterliste hinzugefügt. ",
+      "addRole": "Wählen Sie mindestens eine Rolle um fortzufahren, oder brechen Sie den Vorgang ab.",
+      "assignedRoles": "Vergebene Rolle(n)",
+      "chooseRoles": "Wählen Sie die Rolle für Ihren Studien-Mitarbeiter: ",
+      "deleteMsg": {
+        "confirm": "Möchten Sie diese/n Stuiden-Mitarbeiter/in wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende/n Studien-Mitarbeiter/in zu löschen:",
+        "warning": "Ein/e gelöschte/r Studien-Mitarbeiter/in kann zu einem späteren Zeitpunkt der Studie erneut hinzugefügt werden. Diese/r verliert durch das Löschen jedoch seine Rechte, um auf die Studie zuzugreifen oder Daten einzusehen."
+      },
+      "header": {
+        "add": "Studien-Mitarbeiter hinzufügen",
+        "delete": "Studien-Mitarbeiter löschen"
       },
       "msg": {
         "delete": "Möchten Sie diesen Studien-Mitarbeiter wirklich löschen?"
-      },
-      "deleteMsg": {
-        "warning": "Ein/e gelöschte/r Studien-Mitarbeiter/in kann zu einem späteren Zeitpunkt der Studie erneut hinzugefügt werden. Diese/r verliert durch das Löschen jedoch seine Rechte, um auf die Studie zuzugreifen oder Daten einzusehen.",
-        "intro": "Sie sind kurz davor folgende/n Studien-Mitarbeiter/in zu löschen:",
-        "confirm": "Möchten Sie diese/n Stuiden-Mitarbeiter/in wirklich löschen?"
-      }
-    },
-    "collaboratorList": {
-      "title": "Studien-Mitarbeiter",
-      "description": "Studien-Mitarbeiter können eine oder mehrer Rollen haben. Ein <b>Studien-Administrator</b> hat keine Einschränkungen. Ein <b>Studien-Operator</b> kann die Studie beaufsichtigen, bearbeiten und einsehen, sieht aber keine Daten. Ein <b>Studien-Beobachter</b> kann nur die grundsätzlichen Informationen (Overview) und die eingehenden Daten (Monitoring Tab) einsehen.",
-      "props": {
-        "name": "Name",
-        "institution": "Organisation",
-        "email": "E-Mail"
-      },
-      "action": {
-        "add": "Studien-Mitarbeiter hinzufügen"
       }
     },
     "placeholder": {
       "addCollaborator": "Studien-Mitarbeiter hinzufügen",
-      "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen.",
+      "defaultEmptyMsg": "Noch keine Mitarbeiter hinzugefügt.",
       "noResultsFound": "Keine Ergebnisse gefunden",
-      "defaultEmptyMsg": "Noch keine Mitarbeiter hinzugefügt."
+      "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen."
     }
   },
-  "monitoringData": {
+  "studyGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie die Studiengruppe wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Studiengruppe zu löschen:",
+        "warning": "Eine gelöschte Studiengruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Studiengruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie."
+      },
+      "header": {
+        "create": "Studiengruppe hinzufügen",
+        "delete": "Studiengruppe löschen"
+      },
+      "msg": {
+        "delete": "Möchten Sie die Studiengruppe wirklich löschen?"
+      }
+    },
+    "groupList": {
+      "action": {
+        "create": "Studiengruppe erstellen"
+      },
+      "description": "Studiengruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventionen zu gruppieren.",
+      "placeholder": {
+        "duration": "Gib die Studiendauer ein",
+        "durationUnit": "Einheit der Studiendauer",
+        "durationValue": "Wert der Studiendauer",
+        "emptyGroupList": "Fügen Sie Gruppen zu Ihrer Studie hinzu, um die Gruppenfunktionalitäten nutzen zu können. Ihre Studiengruppen werden hier aufgelistet.",
+        "purpose": "Beschreiben Sie die Zielsetzung für diese Gruppe",
+        "title": "Stellen Sie einen Titel bereit"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Studiengruppe auswählen"
+    },
+    "plural": "Studiengruppen",
+    "singular": "Studiengruppe"
+  },
+  "studyNavigation": {
+    "accessDialog": {
+      "accessInformation": "-Abschnitt kann nicht angesehen werden. Der Zugriff benötigt folgende Berechtigungen: ",
+      "header": "Zugriff verweigert",
+      "permissionWarningMsg": ". Bitte kontaktieren Sie Ihren Studien-Administrator, wenn Sie Zugang zu diesem Abschnitt benötigen."
+    },
     "tabs": {
-      "lastDataPoints": "Letzte Datenpunkte",
-      "recordedObservation": "Erhobene Daten",
-      "dataDownload": "Studiendaten herunterladen"
-    }
-  },
-  "monitoring": {
-    "title": "Monitoring",
-    "description": "Hier sehen Sie Live-Daten aus Ihrer Studie. Die Daten werden alle {duration} Sekunden aktualisiert.",
-    "dataList": {
-      "emptyListMsg": "Zur Zeit gibt es keine Datenaufzeichnungen, die beobachtet werden können.",
-      "title": "Erhobene Daten",
-      "description": "Hier werden die zuletzt gesammelten Datenpunkte in tabellarischer Form angezeigt und die gesamten Datenpunkte können in verschiedenen Visualisierungen dargestellt werden."
-    },
-    "dataPointsList": {
-      "lastDatapoints": "Letzte Datenpunkte",
-      "resultSize": "Anzahl der Datenpunkte",
-      "filterInfo": "Die Filterung ist nur für die Visualisierung möglich."
-    },
-    "placeholder": {
-      "chooseSize": "Größe auswählen"
-    },
-    "labels": {
-      "latestDataPoints": "Letzte Datenpunkte",
-      "visualization": "Visualisierung",
-      "dateRange": "Datumsbereich",
-      "noDataAvailable": "Keine Daten verfügbar"
-    },
-    "charts": {
-      "simpleQuestion": {
-        "responseDistribution": {
-          "label": "Alle Antworten",
-          "title": "Verteilung der Antworten der Teilnehmer:innen",
-          "description": "Jedes Segment stellt die Häufigkeit einer bestimmten Antwort dar und zeigt, wie viele Teilnehmer:innen die jeweilige Option gewählt haben."
-        },
-        "responseDistributionStudyGroup": {
-          "label": "Antworten per Gruppe",
-          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
-          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
-        },
-        "responseDistributionResponse": {
-          "label": "Gruppierung nach Antwort",
-          "title": "Verteilung der Antworten der Teilnehmer:innen in den Studiengruppen",
-          "description": "Jede Spalte des Balkendiagramms gibt die Anzahl der Antworten pro Studiengruppe an."
-        }
-      },
-      "polarVerity": {
-        "avgHeartRate": {
-          "label": "Herzfrequenz",
-          "title": "Durchschnittliche Herzfrequenz pro Teilnehmer im Zeitverlauf",
-          "description": "Vergleicht die durchschnittliche Herzfrequenz aller Teilnehmer über die Zeit mit einem Zeitintervall von 1 Minute."
-        }
-      }
-    }
-  },
-  "data": {
-    "dataDownload": {
-      "title": "Studiendaten herunterladen",
-      "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden."
-    }
-  },
-  "participants": {
-    "singular": "Teilnehmer",
-    "plural": "Teilnehmer",
-    "props": {
-      "participantId": "Teilnehmer ID",
-      "alias": "Alias",
-      "token": "Token",
-      "registrationToken": "Registrierungstoken",
-      "individualStart": "Gestartet am"
-    },
-    "dialog": {
-      "header": {
-        "delete": "Teilnehmer:in löschen",
-        "deleteWithData": "Daten löschen",
-        "edit": "Teilnehmer:in bearbeiten",
-        "create": "Teilnehmer:in hinzufügen",
-        "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen"
-      },
-      "msg": {
-        "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
-        "deleteWithData": "Sollen alle Daten gelöscht werden?"
-      },
-      "btn": {
-        "distributeBtn": "Zuweisen"
-      },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen.",
-        "intro": "Sie sind kurz davor eine Teilnehmer:in zu löschen:",
-        "confirm": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
-        "deleteWithoutData": "Löschen",
-        "deleteWithData": "Inklusive Daten löschen"
-      }
-    },
-    "participantsList": {
-      "title": "Teilnehmer:innen",
-      "description": "Sie können Teilnehmer:innen hinzufügen durch Import einer Liste mit Alias-Namen, oder Sie erstellen sie manuell. Dann können die Teilnehmer:innen auf Gruppen verteilt werden. Teilnehmer:innen können auch als CSV exportiert werden.",
-      "emptyListMsg": "Fügen Sie Teilnehmer:innen zu Ihrer Studie hinzu",
-      "action": {
-        "distribute": "Automatische Gruppenzuweisung",
-        "import": "Teilnehmer:innen importieren",
-        "export": "CSV exportieren",
-        "add": "Teilnehmer:innen hinzufügen"
-      },
-      "labels": {
-        "add1": "1 hinzufügen",
-        "add3": "3 hinzufügen",
-        "add10": "10 hinzufügen",
-        "add25": "25 hinzufügen",
-        "add50": "50 hinzufügen"
-      },
-      "distributeMsg": {
-        "intro": "Sie können die Studienteilnehmer:innen automatisch auf alle vorhandenen Gruppen aufteilen.",
-        "warning": "Die automatische Zuweisung von Studienteilnehmer:innen führt zu einer gleichmäßigen Aufteilung dieser zu den erstellten Studiengruppen. Waren Teilnehmer:innen schon Gruppen zugewiesen, werden ALLE Teilnehmer/innen erneut via Zufall unteschiedlichen Gruppen zugeteilt.",
-        "confirm": "Die automatische Zuweisung kann nicht mehr rückgängig gemacht werden. Möchten Sie die Teilnehmer:innen automatisch Studiengruppen zuweisen?"
-      }
-    },
-    "placeholder": {
-      "allParticipants": "Alle Teilnehmer:innen",
-      "chooseParticipant": "Teilnehmer:in auswählen"
-    }
-  },
-  "observation": {
-    "singular": "Aufzeichnung",
-    "plural": "Aufzeichnungen",
-    "props": {
-      "type": "Typ",
-      "observationType": {
-        "smartphoneAccelerometer": "Beschleunigungsmesser",
-        "heartRateMeter": "Herzfrequenzmesser"
-      },
-      "hidden": {
-        "true": "Versteckt",
-        "false": "Nicht versteckt"
-      },
-      "noSchedule": "Keine Planzeit"
-    },
-    "observationList": {
-      "title": "Datenerhebung",
-      "description": "Eine Datenerhebung kann Daten von einem Sensor, einem Mobilgerät, einem tragbaren Gerät (z.B. Smartwatch) oder einem Fragebogen sammeln. Eine Datenerhebung kann einer bestimmten Studiengruppe zugewiesen sein. Ist keine Studiengruppe ausgewählt, gilt die Datenerhebung für die gesamte Studie.",
-      "emptyListMsg": "Verwalten oder fügen Sie eine Datenerhebung hinzu. Diese werden hier angezeigt.",
-      "action": {
-        "add": "Datenerhebung hinzufügen"
-      }
-    },
-    "dialog": {
-      "header": {
-        "delete": "Datenerhebung löschen",
-        "clone": "Datenerhebung klonen",
-        "create": "Datenerhebung hinzufügen",
-        "edit": "Datenerhebung bearbeiten",
-        "view": "Details einer Datenerhebung"
-      },
-      "label": {
-        "observationTitle": "Titel"
-      },
-      "msg": {
-        "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
-        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
-      },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Datenerhebung kann nicht wiederhergestellt werden. Wenn Sie die Datenerhebung löschen, gehen alle Konfigurationen verloren.",
-        "intro": "Sie sind kurz davor folgende Datenerhebung zu löschen:",
-        "confirm": "Möchten Sie diese Datenerhebung wirklich löschen?"
-      }
-    },
-    "factory": {
-      "limeSurvey": {
-        "title": "Lime Survey",
-        "description": "Diese Datenerhebung ermöglicht Ihnen, eine über die More Platform erstelltes Lime Survey Umfrage in MORE einzubinden. Bitte verwenden Sie dafür More <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a> Instanz. Denken Sie daran die Option <b>\"multiple responses or update responses with one access code\"</b> innerhalb ihres Lime Surveys zu aktivieren und das Lime Survey auf aktive zu stellen.",
-        "configProps": {
-          "idName": "Fragebogen",
-          "idDesc": "Die ID des Lime Surveys"
-        }
-      },
-      "polarVerity": {
-        "title": "Polar Verity Sensor",
-        "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten über den Polar Verity Sensor zu sammeln."
-      },
-      "external": {
-        "title": "Externe Datenerhebung",
-        "description": "Eine Daterhebung für Daten, die über die externe API Schnittstelle gesammelt werden sollen."
-      },
-      "gpsMobile": {
-        "title": "GPS Mobile Sensor",
-        "description": "Diese Datenerhebung ermöglicht es, Ortsdaten über das Smartphone zu sammeln.",
-        "configProps": {
-          "measurementName": "Messintervall",
-          "measurementDesc": "Messintervall in Millisekunden, 30k bis 600k"
-        }
-      },
-      "simpleQuestion": {
-        "title": "Einfache Frage",
-        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
-        "configProps": {
-          "questionName": "Frage",
-          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
-          "answerName": "Antworten",
-          "answerDesc": "Mögliche Antworten (min. 2, max.5)"
-        }
-      },
-      "accelerometerMobile": {
-        "title": "Accelerometer Mobile Sensor",
-        "description": "Diese Datenerhebung ermöglicht es, Bewegungsdaten über das Smartphone zu sammeln."
-      }
-    },
-    "error": {
-      "noValidField": "Fehler im Wert {key}: {message}",
-      "addTitle": "Der Titel des Datenerhebungsmodul ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
-      "addScheduler": "Planer",
-      "addParticipantInfo": "Die Teilnehmerinformationen sind ein erforderliches Feld. Bitte fügen Sie eine Beschreibung hinzu.",
-      "addSchedulerMsg": "Bitte stellen Sie den Zeitplan für dieses Aufzeichnungsmodul ein."
-    },
-    "placeholder": {
-      "emptySchedulerMsg": "Bitte stellen Sie einen Zeitplan für dieses Aufzeichnungsmodul bereit.",
-      "enterMainPurpose": "Fügen Sie die Ziele der Studie hinzu.",
-      "chooseObservation": "Aufzeichnung auswählen"
-    }
-  },
-  "integration": {
-    "singular": "Integration",
-    "plural": "Integrationen",
-    "props": {
-      "observationId": "Modul Id",
-      "observationTitle": "Datenerhebungsmodul",
-      "tokenId": "Token Id",
-      "tokenLabel": "Tokenname",
-      "token": "Token",
-      "created": "Erstellt"
-    },
-    "dialog": {
-      "header": {
-        "delete": "Integration löschen",
-        "clone": "Integration klonen",
-        "create": "Integration erstellen",
-        "tokenCopy": "Token kopieren"
-      },
-      "label": {
-        "description": "Ein Integrationsmodule ermöglicht es eine externe API an eine schon existierende Observation zu verlinken. Wähle jenes Datenerhebungsmodul, für welches Sie einen Token erstellen wollen. Über den Token können externe Datenmodule gekoppelt werden.",
-        "integrationTitle": "Integrationstitel",
-        "chooseObservation": "Wähle ein Datenerhebungsmodul",
-        "chooseObservationDesc": "Wahle aus den existierenden Datenerhebungsmodulen.",
-        "copyToken": "Token kopieren",
-        "copySuccess": "Token wurde erfolgreich in die Zwischenablage kopiert."
-      },
-      "placeholder": {
-        "tokenLabelInput": "Bitte fügen Sie einen Titel für das Integrationsmodul ein.",
-        "selectObservation": "Bitte wählen sie ein existierendes Datenerhebungsmodul."
-      },
-      "example": {
-        "title": "Beispiele",
-        "dataTitle": "Senden Sie Daten an die API via token",
-        "participantsTitle": "Rufen Sie Teilnehmer:innen über API ab via token",
-        "filledExample": "Ausgefülltes Beispiel",
-        "yourDomain": "DOMÄNE",
-        "yourToken": "TOKEN",
-        "yourData": "DATEN OBJEKT"
-      },
-      "msg": {
-        "delete": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht wiederhergestellt werden. Sind Sie sicher, dass Sie die Integration löschen möchten?",
-        "createdToken": "Bitte kopieren Sie den API-Token und speichern diesen zur Verwendung. Der Token wird dazu benützt, um über die API mit dem gewünschten Datenerhebungsmodul externe Daten einzufügen. Der Token ist später nicht mehr verfügbar. Sie können aber jederzeit einen neuen Token generieren, indem Sie eine neue Integration erstellen."
-      },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Integration kann zu einem späteren Zeitpunkt nicht mehr wiederhergestellt werden. Wenn Sie diese Integration löschen, geht dessen Verlinkung zu dem Datenerhebungsmodul verloren und die Daten werden gelöscht.",
-        "intro": "Sie sind im Begriff folgende Integration zu löschen:",
-        "confirm": "Sind Sie sicher, dass sie Ihre Integration löschen wollen?"
-      }
-    },
-    "integrationList": {
-      "title": "Externe Datenintegration",
-      "description": "Eine externe Datenintegration kann mit einem schon bestehenden Datenerhebungsmodul verknüpft werden.",
-      "emptyListMsg": "Verwalten oder fügen Sie Datenintegrationen hinzu. Diese werden hier aufgelistet.",
-      "action": {
-        "add": "Integration hinzufügen"
-      }
-    },
-    "error": {
-      "addTokenLabel": "Geben Sie bitte einen Namen für Ihr Integrationsmodul ein.",
-      "selectObservation": "Wählen Sie bitte ein Datenerhebungsmodul aus, an das sie Ihr Integrationsmodul verlinken wollen."
-    }
-  },
-  "intervention": {
-    "singular": "Intervention",
-    "plural": "Interventionen",
-    "props": {
-      "trigger": "Auslöser",
-      "action": "Aktion",
-      "actions": "Aktionen"
-    },
-    "dialog": {
-      "title": "Intervention",
-      "description": "Fügen Sie die Basis Information, die Konfiguration, Auslösungsbedingung und mindestens eine Aktion für Ihre Intervention hinzu.",
-      "header": {
-        "delete": "Intervention löschen",
-        "create": "Intervention erstellen",
-        "clone": "Intervention klonen",
-        "edit": "Intervention bearbeiten",
-        "view": "Interventiondetails"
-      },
-      "label": {
-        "interventionTitle": "Interventionstitel",
-        "triggerConditions": "Auslöserkonditionen",
-        "triggerConditionsDesc": "Stelle Auslöserproperties von vorhandenen Datenerhebungsmodulen zur Verfügung. Um zu vergleichen werden folgende Operatoren verwendet: <, >, <=, >=, = oder != (nicht gleich).",
-        "triggerConditionObservationProperty": "Aufzeichnungseigenschaft",
-        "triggerConditionOperator": "Operator",
-        "triggerConditionPropertyValue": "Aufzeichnungswert",
-        "addTriggerGroup": "Konditionsgruppe hinzufügen",
-        "chooseObservation": "Datenerhebung auswählen",
-        "triggerType": "Triggertyp",
-        "window": "Window",
-        "windowInSeconds": "Zeitfenster rückwärts vom Triggerzeitpunkt (in Sekunden) "
-      },
-      "msg": {
-        "delete": "Eine gelöschte Intervention kann nicht wiederhergestllt werden! Sind Sie sicher, dass sie diese Intervention löschen wollen?"
-      },
-      "deleteMsg": {
-        "warning": "Eine gelöschte Intervention kann nicht wiederhergestellt werden. Wenn Sie diese Intervention löschen, gehen alle Konfigurationen verloren und Sie können dieses nicht zu einem späteren Zeitpunkt wieder verwenden.",
-        "intro": "Sie sind kurz davor folgende Intervention zu löschen:",
-        "confirm": "Möchten Sie diese Intervention wirklich löschen?"
-      },
-      "placeholder": {
-        "title": "Titel einfügen",
-        "message": "Nachricht einfügen",
-        "enterValue": "Wert einfügen",
-        "enterNumber": "Numerischen Wert einfügen"
-      }
-    },
-    "interventionList": {
-      "title": "Interventionen",
-      "description": "Eine Intervention besteht aus einer Auslösungsbedingung und mindestens einer darauf folgenden Aktion.",
-      "emptyListMsg": "Verwalten oder fügen Sie Studien-Interventionen hinzu. Diese werden hier aufgelistet.",
-      "action": {
-        "add": "Intervention hinzufügen"
-      },
-      "snippets": {
-        "every": "jeder",
-        "day": "Tag",
-        "ofEvery": "jedes",
-        "month": "Monat",
-        "months": "Monats"
-      }
-    },
-    "factory": {
-      "trigger": {
-        "relativeTime": {
-          "title": "Relativer Zeit Trigger",
-          "description": "Auslösung einer Aktion zu einer bestimmten relativen Zeit (Tag und Stunde)",
-          "configProps": {
-            "day": "Tag",
-            "dayDesc": "Tag des Teilnehmers",
-            "hour": "Stunde",
-            "hourDesc": "Die Stunde des jeweiligen Tages"
-          }
-        },
-        "scheduled": {
-          "title": "Scheduled Trigger",
-          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler aus.",
-          "configProps": {
-            "cronName": "Cron Schedule",
-            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Further info on cron values!</a>\n"
-          }
-        },
-        "scheduledDatacheck": {
-          "title": "Scheduled Datacheck",
-          "description": "Dieser Auslösertyp löst eine Aktion basierend auf den eingestellten Cron Scheduler und den definierten zusätzlichen Bedingungen (basierend auf Datenerhebungsmodulen) aus.",
-          "configProps": {
-            "queryName": "Query",
-            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
-            "queryObjName": "Query Objekt",
-            "queryObjDesc": "Eine complexere Variante des Scheduled Triggers.",
-            "timeWindowName": "Beobachtungszeitraum in Sekunden",
-            "windowPlaceholder": "Füge eine Nummer in Sekunden ein",
-            "onlyOnceName": "Nur einmal",
-            "onlyOnceDesc": "Trigger löst nur einmal aus, wenn der Wert übereinstimmt; wenn der Wert nicht mehr übereinstimmt, löst der Trigger beim nächsten mal wieder aus."
-          }
-        }
-      },
-      "actions": {
-        "pushNotification": {
-          "title": "Push-Benachrichtigung Aktion",
-          "description": "Sendet eine Push Notification zu allen darauf passenden TeilnehmerInnen, basierend auf die gesetzten Auslöserkondition."
-        },
-        "triggerObservation": {
-          "title": "Beobachtung auslösen",
-          "description": "Starte eine Beobachtung aktiv",
-          "properties": {
-            "observation": {
-              "name": "Beobachtung",
-              "description": "Wähle eine Beobachtung aus (zur Zeit sind nur einfache Fragen und Lime Surveys erlaubt)"
-            }
-          }
-        }
-      }
-    },
-    "error": {
-      "addTitle": "Der Interventiontitel ist ein erforderliches Feld. Bitte fügen Sie einen Titel hinzu.",
-      "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
-      "addAction": "Die Intervention benötigt mindestens eine Aktion, welche ausgeführt wird, sobald der Trigger ausgelöst wird. Fügen Sie bitte mindestens eine Aktion hinzu.",
-      "addTriggerConfig": "Bitte fügen sie weitere Konfigurationen zum Datacheck hinzu.",
-      "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern.",
-      "emptyTriggerConditions": "Bitte fügen Sie mindesetens eine Auslöserkondition zu ihrem Trigger hinzu.",
-      "triggerProp": "Ein Trigger-Property hat einen Fehler."
-    },
-    "placeholder": {
-      "noDescription": "Keine Beschreibung verfügbar",
-      "trigger": "Wähle einen Auslösertyp",
-      "chooseAction": "Wähle eine Aktion",
-      "emptyScheduler": "Stellen Sie einen Zeitplan für Ihre Intervention bereit."
-    },
-    "description": {
-      "provideTriggerConfig": "Fügen Sie die Auslösungs-Konfiguration hinzu.",
-      "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu."
+      "integration": "Integrationen",
+      "interventions": "Interventionen",
+      "monitoringAndData": "Monitoring & Data",
+      "observations": "Datenerhebungen",
+      "overview": "Studie",
+      "participants": "Teilnehmer:innen",
+      "timeline": "Kalender"
     }
   },
   "timeline": {
     "labels": {
-      "relativeDate": "Registrierungsdatum",
-      "studyStart": "Studienstart",
-      "studyEnd": "Studienende",
-      "plannedStart": "Geplanter Start",
-      "plannedEnd": "Geplantes Ende",
-      "study": "Studie",
-      "type": "Typ",
       "chooseType": "Typ auswählen",
+      "participantJoined": "Teilnehmer:in beigetreten",
+      "plannedEnd": "Geplantes Ende",
+      "plannedStart": "Geplanter Start",
+      "relativeDate": "Registrierungsdatum",
+      "study": "Studie",
+      "studyEnd": "Studienende",
+      "studyStart": "Studienstart",
       "today": "Heute",
-      "participantJoined": "Teilnehmer:in beigetreten"
+      "type": "Typ"
     }
   },
-  "moreTable": {
-    "defaultEmptyMsg": "Keine Einträge vorhanden",
-    "filterBy": "Filtern",
-    "saveLine": "Bitte speichern"
-  },
-  "cronSchedule": {
-    "singular": "Cron Scheduler",
-    "placeholders": {
-      "secondsAndMinutes": "0-59",
-      "hours": "0-23",
-      "months": "1-12",
-      "dayOfMonth": "1-31",
-      "dayOfWeek": "1-7"
-    },
-    "labels": {
-      "seconds": "Sekunden",
-      "minutes": "Minuten",
-      "hours": "Stunden",
-      "months": "Monate",
-      "dayOfMonth": "Tag des Monats",
-      "dayOfWeek": "Tag der Woche"
-    },
-    "info": {
-      "example": "Beispiel: 0 12 ? * * wird jeden Tag um 12:00 ausgelöst.",
-      "generalInfo": "Füge eine Nummer, eine Liste von Nummern (z.B. 1,2,3) oder einen Bereich (z.B. 12-14) ein.",
-      "questionMark": "Kein spezifischer Wert (z.B. ein beliebter Tag einer Woche)",
-      "asterisk": "Alle Werte (z.B. jede Minute)"
-    },
-    "example": {
-      "title": "Cron Scheduler Beispiele",
-      "titles": {
-        "everyMinute": "Jede Minute",
-        "hourly": "Jede Stunde um xx:30",
-        "daily": "Täglich um 12:00",
-        "specificDayOfMonth": "Jeden 4ten Tag des Monats",
-        "specificMonth": "Jeden Tag um 8:00 im März",
-        "everyFiveMinutes": "Alle 5 Minuten",
-        "everyMinuteInSetTime": "Jede Minute im Bereich von xx:00 bis xx:10",
-        "specificHourRange": "Um xx:30 zwischen 8:00 und 10:00"
-      }
-    },
-    "error": {
-      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide einen * verwenden. Bitte verwenden Sie ein ? (leerer Wert) in einem der Felder.",
-      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Tag des Monats' und 'Tag der Woche' dürfen nicht beide den Wert ? verwenden. Bitte verwenden Sie einen * (jeden Tag des Monats oder jeden Tag der Woche) in einem der Felder.",
-      "Expected 5 values, but got 4": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "Expected 5 values, but got 3": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "Expected 5 values, but got 2": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "Expected 5 values, but got 1": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "months field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "hours field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "daysOfMonth field is undefined": "Bitte füllen Sie alle Input Felder des Cron Schedules aus.",
-      "blank notation is not allowed in minutes field": "Das Minuten Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Minute) oder einen spezifischen Wert.",
-      "blank notation is not allowed in hours field": "Das Stunden Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jede Stunde) oder einen spezifischen Wert.",
-      "blank notation is not allowed in months field": "Das Monats Feld unterstützt kein ? (leerer Wert). Bitte verwenden Sie entweder * (jedes Monat) oder einen spezifischen Wert."
-    },
-    "formTitle": "<a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Scheduler</a> manuell konfigurieren ",
-    "formTitleDisabled": "Konfiguration Ihres Cron Schedulers",
-    "additionalConfig": "Zusätzliche Konfiguration",
-    "cronScheduleTip": "Weitere Infromationen zum Cron Scheduler",
-    "quickStart": "oder verwenden Sie den <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a>, um schnell starten zu können.",
-    "quickStartNote": "Sekunden und Jahre werden automatisch gesetzt.",
-    "limitDescription": ""
-  },
-  "scheduler": {
-    "singular": "Planer",
-    "type": {
-      "Event": "Absoluter Zeitplan",
-      "RelativeEvent": "Relativer Zeitplan"
-    },
-    "dialogTitle": "Absoluten Zeitplan verwalten",
-    "relativeDialogTitle": "Relativen Zeitplan verwalten",
-    "preview": {
-      "title": {
-        "individualEvent": "Individuelles Event",
-        "repeatEvent": "Event wiederholen",
-        "startsOn": "Startet am",
-        "endsOn": "Endet am",
-        "timeframe": "Timeframe",
-        "every": "Jeden",
-        "ends": "Endet",
-        "on": "am",
-        "in": "in",
-        "selectedDays": "Ausgewählte Tages"
-      },
-      "unit": {
-        "MINUTE": "Minute",
-        "PL-MINUTE": "Minuten",
-        "HOUR": "Stunde",
-        "PL-HOUR": "Stunden",
-        "DAY": "Tag",
-        "PL-DAY": "Tage",
-        "DAILY": "täglich",
-        "WEEKLY": "Wochen",
-        "date": "Datum",
-        "time": "Zeit"
-      },
-      "value": {
-        "MINUTE": "keine Minute | 1 Minute | {n} Minuten",
-        "HOUR": "keine Stunde | 1 Stunde | {n} Stunden",
-        "DAY": "kein Tag | 1 Tag | {n} Tage",
-        "WEEKLY": "keine Woche | 1 Woche | {n} Wochen"
-      }
-    },
-    "frequency": {
-      "minute": "Minute",
-      "minutes": "Minute(n)",
-      "hour": "Stunde",
-      "hours": "Stunde(n)",
-      "days": "Tag(e)",
-      "day": "Tag",
-      "week": "Woche",
-      "weeks": "Woche(n)",
-      "month": "Monat",
-      "months": "Monat(e)",
-      "years": "Jahr(e)",
-      "labels": {
-        "daily": "täglich",
-        "weekly": "wöchentlich"
-      }
-    },
-    "byMonthDayLabel": {
-      "first": "",
-      "second": "",
-      "third": "",
-      "fourth": ""
-    },
-    "weekday": {
-      "monday": "Montag",
-      "tuesday": "Dientstag",
-      "wednesday": "Mittwoch",
-      "thursday": "Donnerstag",
-      "friday": "Freitag",
-      "saturday": "Samstag",
-      "sunday": "Sonntag",
-      "short": {
-        "monday": "MO",
-        "tuesday": "DI",
-        "wednesday": "MI",
-        "thursday": "DO",
-        "friday": "FR",
-        "saturday": "SA",
-        "sunday": "SO"
-      },
-      "props": {
-        "MO": "Mo",
-        "TU": "Di",
-        "WE": "Mi",
-        "TH": "Do",
-        "FR": "Fr",
-        "SA": "Sa",
-        "SO": "So"
-      }
-    },
-    "months": {
-      "january": "Jänner",
-      "february": "Februar",
-      "march": "März",
-      "april": "April",
-      "mai": "Mai",
-      "june": "Juni",
-      "july": "Juli",
-      "august": "August",
-      "september": "September",
-      "october": "Oktober",
-      "november": "November",
-      "december": "Dezember",
-      "short": {
-        "january": "Jan",
-        "february": "Feb",
-        "march": "Mar",
-        "april": "Apr",
-        "mai": "Mai",
-        "june": "Jun",
-        "july": "Jul",
-        "august": "Aug",
-        "september": "Sep",
-        "october": "Okt",
-        "november": "Nov",
-        "december": "Dez"
-      }
-    },
-    "bySetPosLabel": {
-      "first": "erstes",
-      "second": "zweites",
-      "third": "drittes",
-      "fourth": "viertes",
-      "last": "letztes"
-    },
-    "labels": {
-      "after": "Nach",
-      "on": "Am",
-      "every": "Jede(s)",
-      "openScheduler": "Absoluten Zeitplaner hinzufügen",
-      "editScheduler": "Absoluten Zeitplaner bearbeiten",
-      "openRelativeScheduler": "Relativen Zeitplaner hinzfügen",
-      "editRelativeScheduler": "Relativen Zeitplaner bearbeiten",
-      "removeScheduler": "Zeitplaner entfernen",
-      "frequency": "Frequenz",
-      "repetitionEnd": "Wiederholungsende",
-      "repeat": "Wiederholung",
-      "date": "Datum",
-      "timeframe": "Zeitraum",
-      "selection": {
-        "specificDay": "An einem spezifischen Tag",
-        "allDaysInWeek": "Alle Tage der Woche",
-        "allWeekdays": "Nur Arbeitstage",
-        "allWeekendDays": "Nur Wochenende",
-        "daysSelected": "Tage ausgewählt"
-      },
-      "event": {
-        "first": "Erstes Ereignis",
-        "allDay": "Ganztags",
-        "setDates": "Setze den Zeitrahmen",
-        "setDatesDesc": "Mit Start- und Endzeit können Sie eine Zeitspanne für eine Datenerhebung an einem Tag festlegen. Die Datenerhebung kann auch ganztags gesetzt werden. Durch die Angaben von Wiederholdungen könenn Sie eine Serie von Datenerhebungen definieren. Alternativ dazu können Sie einen gesamten Zeitraum definieren.",
-        "repeat": "Wiederhole die oben definierte Zeitspanne",
-        "repeatDesc": "Um die gesetzte Zeitspanne zu wiederholen, können Sie dies bis zu einer bestimmten Anzahl an Tagen oder Wochen tun. Beachte, dass die gesamte oben angegebene Zeitspanne weiderholt wird.",
-        "oneDayObservation": "Mehrfache Datenerhebung",
-        "repetitionEnd": {
-          "studyEnd": "Bis Studienende",
-          "after": "Nach"
-        },
-        "example": {
-          "titles": {
-            "singleDay": "Einmalige Datenerhebung",
-            "series": "Serie von Datenerhebungen über 10 Tage",
-            "fullTimespan": "Fortlaufende Datenerhebung über ganze Zeitspanne von zwei Monaten"
-          },
-          "values": {
-            "singleDay": "'An einem Tag' auswählen <br>Start: {egDate} 14:00 - 16:00",
-            "series": "'An einem Tag' auswählen <br>Zeitspanne: {egDate} 14:00 - 18:00 <br>Wiederholung: täglich, Wiederholungsende nach 10 Tagen",
-            "fullTimespan": "'An einem Tag' nicht auswählen <br>Start: {egStartDate} 08:00, End: {egEndDate} 20:00<br>Optional: ganztägig auswählen"
-          }
-        }
-      }
-    },
-    "placeholder": {
-      "chooseMonth": "Monat auswählen",
-      "enterDayOfMonth": "Tag des Monats einfügen",
-      "chooseGeneralInterval": "Wählen Sie ein Intervall",
-      "chooseDayInterval": "Wählen Sie ein Tagesintervall",
-      "chooseRepetitionEnd": "Wählen Sie das Wiederholungsende",
-      "enterRepeatCount": "Fügen Sie die Anzahl der Wiederholungen ein"
-    },
-    "info": {
-      "timeOverlapStart": "Die Endzeit wurde der Startzeit angepasst.",
-      "timeOverlapEnd": "Die Startzeit wurde der Endzeit angepasst.",
-      "dateOverlapStart": "Das Enddatum wurde dem Startdatum angepasst.",
-      "dateOverlapEnd": "Das Startdatum wurde dem Enddatum angepasst.",
-      "startDateNotWithinRange": "Das Startdatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
-      "endDateNotWithinRange": "Das Enddatum war nicht innerhalb der Studiendauer. Bitte stellen Sie sicher, dass die Datenerhebung innerhalb der Studiendauer geplant wird.",
-      "timeOutsideStudyRange": "Bitte stellen Sie sicher, dass das Start- und Enddatum sich innerhalb der Studiendauer befindet."
-    },
-    "dialog": {
-      "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
-      "noSetScheduleDesc": "Wenn kein Schedule gesetzt wird, wird die gesamte Studienzeit als Standard-Zeitraum als absoluter Zeitplan verwendet.",
-      "repeatEvent": "Event wiederholen",
-      "singleEventTitle": "Einzelnes Datenerhebungs-Event",
-      "repeatEventTitle": "Datenerhebungs-Event wiederholen",
-      "repeatEventDescription": "Das oben gezeigte Event wird wiederholt, sobald die aktuelle abgeschlossen ist.",
-      "repeatEvery": "Wiederholen: Jede",
-      "endAfter": "Ende nach",
-      "absoluteSchedule": {
-        "description": "Eine absolute Zeitplanung umfasst absolute Datum und Zeit Angaben. Beobachtungen können durch absolute Daten und Zeitfenster zeitlich festgelegt werden."
-      },
-      "relativeSchedule": {
-        "dialogTitle": "Relativen Zeitplan verwalten",
-        "description": "Ein relativer Zeitplan richtet sich nach dem individuellen Studienstart jedes Teilnehmers, basierend auf das App-Login Datum. Die Teilnehmer:innen können jederzeit zwischen Beginn und Ende der Studie starten, und die Studiendauer umfasst den Zeitraum, indem aktiv Daten erhoben werden.",
-        "startValue": "Startet am",
-        "endValue": "Endet am",
-        "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer:in (Anmeldung) berechnet.",
-        "dayExplanation": "Der Begriff 'Tag' bezeichnet die Korrelation zwischen dem Beginn der Studie eines einzelnen Teilnehmers und dem entsprechenden Tageswert. (Beispiel: Ein/e Teilnehmer:in meldet sich am {egLoginDate} an, der Studienbeginn ist auf Tag 2 festgelegt. Sie beginnen am {egStartDate}.)",
-        "rrrule": {
-          "endsAfter": "Endet 0 Tage nach dem individuellen Studienstart | Endet 1 Tag nach dem individuellen Studienstart | Endet {n} Tage nach dem individuellen Studienstart",
-          "runTime": "Das Event wird {repetitionNum} Mal ausgeführt."
-        },
-        "placeholder": {
-          "dtstartOffset": "Offset in Tage(n)",
-          "dtstartTime": "Start Zeit",
-          "dtendOffset": "Offset in Tage(n)",
-          "dtendTime": "End Zeit",
-          "enterNumber": "Nummer eingeben"
-        },
-        "error": {
-          "dtstart": {
-            "addOffset": "Befülle den Offset des relativen Startzeitraum."
-          },
-          "dtend": {
-            "addOffset": "Befülle den Offset des relativen Endzeitraum.",
-            "EndBeforeStart": "Bitte setzen Sie den relativen Startzeitpunkt vor dem Endzeitpunkt"
-          },
-          "scheduleTooLong": "Das Datenerhebungs-Event darf den Studienzeitraum von maximal {maxDuration} Tagen nicht überschreiten.",
-          "startTimeBeforeEnd": "Startzeit muss vor der Endzeit liegen.",
-          "rrrule": {
-            "frequency": "Fülle die Wiederholungsrate ein.",
-            "endAfter": "Bitte geben Sie den Offset zum Enddatum ein.",
-            "notValid": "Die eingegebenen Werte sind ungültig.",
-            "repetitionTooLong": "Wiederholungen dürfen das Studienende nicht überschreiten. Das maximale Intervall beträgt {repValue} {repUnit}.",
-            "repetitionEndTooLong": "Das Ende der Wiederholungen darf die verbleibende Studiendauer von {durValue} {durUnit} nicht überschreiten."
-          },
-          "cannotRepeat": "Das Datenerhebungs-Event kann nicht erneut stattfinden, da dies über das Ende der Studie hinausgehen würde."
-        }
-      }
-    },
-    "warningsAndErrors": {
-      "endWasChangedWithStartValue": "End Wert wurde mit dem Start Wert geändert.",
-      "rruleFreqIsEmpty": "Bitte legen Sie die Häufigkeit für Ihre Wiederholung fest.",
-      "rruleWeeklyIsMissingByDay": "Bitte legen Sie die Wochentage für Ihre Wiederholung fest.",
-      "rruleEndIsEmpty": "Bitte legen Sie einen Endpunkt für Ihren Wiederholungszeitraum fest."
-    }
-  },
+  "title": "Titel",
   "tooltips": {
     "deleteBtn": "Löschen",
-    "editBtn": "Bearbeiten",
     "downloadBtn": "Herunterladen",
+    "editBtn": "Bearbeiten",
     "moreTable": {
-      "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
-      "saveChanges": "Änderungen speichern",
       "cancelAction": "Abbrechen",
-      "cloneObservation": "Datenerhebung klonen",
       "cloneIntegration": "Integration klonen",
       "cloneIntervention": "Intervention klonen",
-      "deleteObservation": "Datenerhebung löschen",
+      "cloneObservation": "Datenerhebung klonen",
+      "copyStudyUrl": "Studie teilen",
+      "deleteCollaborator": "Studien-Mitarbeiter löschen",
       "deleteIntegration": "Integration löschen",
       "deleteIntervention": "Intervention löschen",
-      "deleteCollaborator": "Studien-Mitarbeiter löschen",
+      "deleteObservation": "Datenerhebung löschen",
+      "deleteParticipantBtn": "Teilnehmer:in löschen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
-      "deleteParticipantBtn": "Teilnehmer:in löschen",
-      "copyStudyUrl": "Studie teilen",
-      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
-      "goToStudy": "Studie öffnen"
+      "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
+      "goToStudy": "Studie öffnen",
+      "saveChanges": "Änderungen speichern",
+      "showQrCode": "QR Code anzeigen",
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
     },
     "timeline": {
       "relativeDateInfo": "Damit wird der Zeitpunkt simuliert, an dem ein Teilnehmer in die Studie eintritt."
     }
   },
   "userstatus": {
+    "accepted": "akzeptiert",
     "active": "aktiv",
     "approved": "genehmigt",
+    "droppedOut": "abgebrochen",
     "inactive": "inaktiv",
     "invited": "eingeladen",
-    "accepted": "akzeptiert",
-    "droppedOut": "abgebrochen",
     "kickedOut": "rausgeschmissen"
   },
-  "inputModel": {
-    "enterValue": "Bitte geben Sie einen Wert hinzu."
-  },
-  "title": "Titel",
-  "message": "Nachricht"
+  "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie, indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
+  "welcomeToMore": "Willkommen bei More"
 }

@@ -36,7 +36,7 @@ Licensed under the Elastic License 2.0. */
       {{ token }}
     </div>
     <IntegrationExample :token="token" />
-    <div class="mt-8 flex flex flex-row items-center justify-end">
+    <div class="mt-8 flex flex-row items-center justify-end">
       <Button
         type="button"
         class="btn-gray"

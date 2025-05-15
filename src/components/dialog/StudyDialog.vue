@@ -202,9 +202,9 @@ Licensed under the Elastic License 2.0. */
           :date-format="dateFormat"
           autocomplete="off"
           :pt="{
-           input: {
-              class: ['w-full']
-            }
+            input: {
+              class: ['w-full'],
+            },
           }"
         />
       </div>
@@ -220,9 +220,9 @@ Licensed under the Elastic License 2.0. */
           autocomplete="off"
           :min-date="start"
           :pt="{
-           input: {
-              class: ['w-full']
-            }
+            input: {
+              class: ['w-full'],
+            },
           }"
         />
       </div>
@@ -334,7 +334,9 @@ Licensed under the Elastic License 2.0. */
         />
       </div>
       <ContactInformation v-model="contact" />
-      <div class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right">
+      <div
+        class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button
           class="btn-gray"
           :label="$t('global.labels.cancel')"

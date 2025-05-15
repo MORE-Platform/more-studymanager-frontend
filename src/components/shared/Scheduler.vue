@@ -408,7 +408,9 @@ Licensed under the Elastic License 2.0. */
 
     <div class="h-24"></div>
     <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
-      <div class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right">
+      <div
+        class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
+      >
         <Button
           class="btn-gray !mr-3"
           :label="$t('global.labels.cancel')"

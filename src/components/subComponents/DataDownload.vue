@@ -3,11 +3,7 @@
   import Button from 'primevue/button';
   import { computed, ComputedRef, Ref, ref } from 'vue';
   import { DropdownOption } from '../../models/Common';
-  import {
-    ComponentFactory,
-    Observation,
-    Participant,
-  } from '@gs';
+  import { ComponentFactory, Observation, Participant } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
   import {
     useComponentsApi,
@@ -216,7 +212,7 @@
             )}`"
           />
         </div>
-          <div class="flex flex-row items-center">
+        <div class="flex flex-row items-center">
           {{ $t('participants.plural') }}:
           <MultiSelect
             v-model="filterParticipant"

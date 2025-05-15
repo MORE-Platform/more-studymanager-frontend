@@ -30,14 +30,11 @@ Licensed under the Elastic License 2.0. */
   import Checkbox from 'primevue/checkbox';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import {
-    ComponentFactory,
-    StudyRole,
-    StudyStatus,
-    Visibility,
-  } from '@gs';
+  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+
+  import { ACTION_ID_QR_CODE } from '../../constants';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -558,8 +555,11 @@ Licensed under the Elastic License 2.0. */
                 :icon="action.icon"
                 :disabled="
                   rowIDsInEditMode.length
-                    ? true
-                    : !isVisible(action, slotProps.data)
+                      ? true
+                      : action.id === ACTION_ID_QR_CODE ?
+                        !(isVisible(action, slotProps.data) &&
+                        !!slotProps.data.registrationToken)
+                        : !isVisible(action, slotProps.data)
                 "
                 :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
