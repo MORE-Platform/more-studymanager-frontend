@@ -15,9 +15,8 @@ Licensed under the Elastic License 2.0. */
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
   const id = `qr-code-${participant?.participantId || ''}`;
-  const registrationUrl = ref<string>(
-    URL.parse(participant?.registrationUrl || '')?.toString() || '',
-  );
+  const registrationUrl: string =
+    URL.parse(participant?.registrationUrl || '')?.toString() || '';
   const level = ref<Level>('M');
   const renderAs = ref<RenderAs>('canvas');
   const background = ref('#ffffff');
@@ -30,9 +29,9 @@ Licensed under the Elastic License 2.0. */
   const gradientEndColor = ref('#38bdf8');
 
   const copy = (): void => {
-    if (registrationUrl.value && navigator?.clipboard) {
+    if (registrationUrl && navigator?.clipboard) {
       navigator.clipboard
-        .writeText(registrationUrl.value)
+        .writeText(registrationUrl)
         .catch(console.error);
     }
   };
@@ -75,7 +74,6 @@ Licensed under the Elastic License 2.0. */
       {{ $t('participants.dialog.msg.qrCode', { part: participant.alias }) }}
     </div>
     <QrcodeVue
-      v-if="registrationUrl"
       :id="id"
       class="my-4"
       :value="registrationUrl"
