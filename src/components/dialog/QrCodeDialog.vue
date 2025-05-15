@@ -12,6 +12,8 @@ Licensed under the Elastic License 2.0. */
   import SplitButton from 'primevue/splitbutton';
   import { MenuItem } from 'primevue/menuitem';
 
+  type DownloadType = 'jpg' | 'png' | 'pdf';
+
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
   const id = `qr-code-${participant?.participantId || ''}`;
@@ -28,6 +30,17 @@ Licensed under the Elastic License 2.0. */
   const gradientStartColor = ref('#000000');
   const gradientEndColor = ref('#38bdf8');
 
+  const items: MenuItem[] = [
+    {
+      label: 'PNG',
+      command: () => download('png'),
+    },
+    {
+      label: 'PDF',
+      command: () => download('pdf'),
+    },
+  ];
+
   const copy = (): void => {
     if (registrationUrl && navigator?.clipboard) {
       navigator.clipboard
@@ -35,8 +48,6 @@ Licensed under the Elastic License 2.0. */
         .catch(console.error);
     }
   };
-
-  type DownloadType = 'jpg' | 'png' | 'pdf';
 
   const download = (format: DownloadType = 'jpg'): void => {
     if (format === 'jpg' || format === 'png') {
@@ -52,17 +63,6 @@ Licensed under the Elastic License 2.0. */
       window.print();
     }
   };
-
-  const items: MenuItem[] = [
-    {
-      label: 'PNG',
-      command: () => download('png'),
-    },
-    {
-      label: 'PDF',
-      command: () => download('pdf'),
-    },
-  ];
 </script>
 
 <template>
