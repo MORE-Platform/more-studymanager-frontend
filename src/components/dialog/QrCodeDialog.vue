@@ -4,15 +4,19 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref } from 'vue';
+  import { inject, onMounted, Ref, ref } from 'vue';
   import { Participant } from '@gs';
   import QrcodeVue from 'qrcode.vue';
   import type { Level, RenderAs, GradientType } from 'qrcode.vue';
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import { MenuItem } from 'primevue/menuitem';
-
+  import Message from 'primevue/message';
+  import AlertMsg from '../shared/AlertMsg.vue';
+  import { useI18n } from 'vue-i18n';
   type DownloadType = 'jpg' | 'png' | 'pdf';
+
+  const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
@@ -31,6 +35,8 @@ Licensed under the Elastic License 2.0. */
   const gradientStartColor = ref('#000000');
   const gradientEndColor = ref('#38bdf8');
 
+  const showMessage: Ref<boolean> = ref(false);
+
   const items: MenuItem[] = [
     {
       label: 'PNG',
@@ -47,6 +53,7 @@ Licensed under the Elastic License 2.0. */
       navigator.clipboard
         .writeText(registrationUrl.value)
         .catch(console.error);
+      showMessage.value = true;
     }
   };
 
@@ -134,6 +141,16 @@ Licensed under the Elastic License 2.0. */
       :icon="'pi pi-download'"
       :disabled="!registrationUrl"
       @click.prevent="download()"
+    />
+
+    <AlertMsg
+      :show-msg="showMessage"
+      :message="t('participants.dialog.msg.alert')"
+      class="qr-code-message"
+      type="msg"
+      severity-type="success"
+      style-modifier="msg-position"
+      @on-msg-change="showMessage = false"
     />
   </div>
 
