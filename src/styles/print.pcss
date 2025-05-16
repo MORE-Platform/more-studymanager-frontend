@@ -11,25 +11,39 @@
     border: none !important;
     padding: 0 !important;
     margin: 0 !important;
-  }
-
-  .p-dialog-header {
-    margin-bottom: 5px !important;
-  }
-
-  .qr-code-container {
+    display: block;
+    height: 100%;
+    width: 400px;
+    overflow: hidden;
     align-items: start;
+    justify-content: start;
   }
 
-  .p-dialog-header-icons, .p-button, .p-splitbutton, .p-tieredmenu, .qr-info {
+  /* hide everything except the print layout section, to guarantee wanted design */
+  .p-dialog-header-icons, .p-button, .p-splitbutton, .p-tieredmenu, .qr-info, .p-dialog-header, .qr-code-container, .qr-code-message  {
     display: none;
+    visibility: hidden;
   }
-
    .p-dialog {
      box-shadow: none;
      border: none;
      position: absolute;
-     top: 10px;
+     top: 0;
      left: 10px;
+     width: 100%;
+  }
+
+  .print-qr-code-container {
+    display:block;
+    align-items: start;
+    width: 100%;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+  }
+
+  .print-qr-code-container > * {
+    page-break-before: avoid;
+    page-break-after: avoid;
   }
 }

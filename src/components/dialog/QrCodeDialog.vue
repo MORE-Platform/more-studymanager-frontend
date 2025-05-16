@@ -50,7 +50,23 @@ Licensed under the Elastic License 2.0. */
     }
   };
 
-  const download = (format: DownloadType = 'jpg'): void => {
+  const getQRCodeAsImg = (): void => {
+    const canvas: HTMLCanvasElement | null = document.querySelector(`${renderAs.value}#${id}`);
+    const container: HTMLElement | null = document.getElementById('qr-code-as-img');
+
+    if (canvas && container) {
+      container.innerHTML = ''
+
+      const img = document.createElement('img')
+      img.src = canvas.toDataURL('image/png')
+      img.style.width = canvas.style.width
+      img.style.height = canvas.style.height
+
+      container.appendChild(img)
+    }
+  }
+
+  const download = async (format: DownloadType = 'jpg'): void => {
     if (format === 'jpg' || format === 'png') {
       const canvas: HTMLCanvasElement | null = document.querySelector(`${renderAs.value}#${id}`);
       if(canvas) {
@@ -64,6 +80,11 @@ Licensed under the Elastic License 2.0. */
       window.print();
     }
   };
+
+  onMounted(() => {
+    /* this guarantees that the qr code is rendered correctly when opening the pdf view */
+    getQRCodeAsImg()
+  })
 </script>
 
 <template>
@@ -112,7 +133,15 @@ Licensed under the Elastic License 2.0. */
       type="button"
       :icon="'pi pi-download'"
       :disabled="!registrationUrl"
-      @click="download()"
+      @click.prevent="download()"
     />
+  </div>
+
+  <!-- give the print view a seperate section, to control layout more efficiently -->
+  <div class="print-qr-code-container hidden">
+    <div class="font-bold mb-3 text-lg">{{ $t('participants.dialog.header.qrCode') }} {{ participant.alias }}</div>
+    <div class="mb-1.5"> {{ $t('participants.dialog.msg.qrCode', { part: participant.alias }) }}</div>
+    <div id="qr-code-as-img"></div>
+    <div id="qr-code-link mt-1.5">{{ registrationUrl }}</div>
   </div>
 </template>
