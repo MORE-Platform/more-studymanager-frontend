@@ -73,7 +73,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  const download = async (format: DownloadType = 'jpg'): void => {
+  const download = (format: DownloadType = 'jpg'): void => {
     if (format === 'jpg' || format === 'png') {
       const canvas: HTMLCanvasElement | null = document.querySelector(`${renderAs.value}#${id}`);
       if(canvas) {
