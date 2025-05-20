@@ -17,7 +17,6 @@ Licensed under the Elastic License 2.0. */
   type DownloadType = 'jpg' | 'png' | 'pdf';
 
   const { t } = useI18n();
-
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
   const id = `qr-code-${participant?.participantId || ''}`;
@@ -29,12 +28,10 @@ Licensed under the Elastic License 2.0. */
   const background = ref('#ffffff');
   const foreground = ref('#000000');
   const margin = ref(1);
-
   const gradient = ref(false);
   const gradientType = ref<GradientType>('linear');
   const gradientStartColor = ref('#000000');
   const gradientEndColor = ref('#38bdf8');
-
   const showMessage: Ref<boolean> = ref(false);
 
   const items: MenuItem[] = [
@@ -88,10 +85,8 @@ Licensed under the Elastic License 2.0. */
     }
   };
 
-  onMounted(() => {
-    /* this guarantees that the qr code is rendered correctly when opening the pdf view */
-    getQRCodeAsImg()
-  })
+  /* this guarantees that the qr code is rendered correctly when opening the pdf view */
+  onMounted(getQRCodeAsImg);
 </script>
 
 <template>
@@ -155,10 +150,10 @@ Licensed under the Elastic License 2.0. */
   </div>
 
   <!-- give the print view a seperate section, to control layout more efficiently -->
-  <div class="print-qr-code-container hidden">
-    <div class="font-bold mb-3 text-lg">{{ $t('participants.dialog.header.qrCode') }} {{ participant.alias }}</div>
-    <div class="mb-1.5"> {{ $t('participants.dialog.msg.qrCode', { part: participant.alias }) }}</div>
-    <div id="qr-code-as-img"></div>
-    <div id="qr-code-link mt-1.5">{{ registrationUrl }}</div>
+  <div class="print-qr-code-container ml-8 mt-0 hidden">
+    <div class="font-bold text-lg mb-1.5">{{ $t('participants.dialog.header.qrCode') }} {{ participant.alias }}</div>
+    <div> {{ $t('participants.dialog.msg.qrCode', { part: participant.alias }) }}</div>
+    <div class="my-2"><span id="qr-code-as-img"></span></div>
+    <div id="qr-code-link">{{ registrationUrl }}</div>
   </div>
 </template>
