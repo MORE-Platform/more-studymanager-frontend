@@ -4,16 +4,19 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref } from 'vue';
+  import { inject, onMounted, Ref, ref } from 'vue';
   import { Participant } from '@gs';
   import QrcodeVue from 'qrcode.vue';
   import type { Level, RenderAs, GradientType } from 'qrcode.vue';
   import Button from 'primevue/button';
   import SplitButton from 'primevue/splitbutton';
   import { MenuItem } from 'primevue/menuitem';
-
+  import Message from 'primevue/message';
+  import AlertMsg from '../shared/AlertMsg.vue';
+  import { useI18n } from 'vue-i18n';
   type DownloadType = 'jpg' | 'png' | 'pdf';
 
+  const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
   const participant: Participant = dialogRef.value.data?.participant || {};
   const id = `qr-code-${participant?.participantId || ''}`;
@@ -25,11 +28,11 @@ Licensed under the Elastic License 2.0. */
   const background = ref('#ffffff');
   const foreground = ref('#000000');
   const margin = ref(1);
-
   const gradient = ref(false);
   const gradientType = ref<GradientType>('linear');
   const gradientStartColor = ref('#000000');
   const gradientEndColor = ref('#38bdf8');
+  const showMessage: Ref<boolean> = ref(false);
 
   const items: MenuItem[] = [
     {
@@ -47,8 +50,25 @@ Licensed under the Elastic License 2.0. */
       navigator.clipboard
         .writeText(registrationUrl.value)
         .catch(console.error);
+      showMessage.value = true;
     }
   };
+
+  const getQRCodeAsImg = (): void => {
+    const canvas: HTMLCanvasElement | null = document.querySelector(`${renderAs.value}#${id}`);
+    const container: HTMLElement | null = document.getElementById('qr-code-as-img');
+
+    if (canvas && container) {
+      container.innerHTML = ''
+
+      const img = document.createElement('img')
+      img.src = canvas.toDataURL('image/png')
+      img.style.width = canvas.style.width
+      img.style.height = canvas.style.height
+
+      container.appendChild(img)
+    }
+  }
 
   const download = (format: DownloadType = 'jpg'): void => {
     if (format === 'jpg' || format === 'png') {
@@ -64,6 +84,9 @@ Licensed under the Elastic License 2.0. */
       window.print();
     }
   };
+
+  /* this guarantees that the qr code is rendered correctly when opening the pdf view */
+  onMounted(getQRCodeAsImg);
 </script>
 
 <template>
@@ -112,7 +135,25 @@ Licensed under the Elastic License 2.0. */
       type="button"
       :icon="'pi pi-download'"
       :disabled="!registrationUrl"
-      @click="download()"
+      @click.prevent="download()"
     />
+
+    <AlertMsg
+      :show-msg="showMessage"
+      :message="t('participants.dialog.msg.alert')"
+      class="qr-code-message"
+      type="msg"
+      severity-type="success"
+      style-modifier="msg-position"
+      @on-msg-change="showMessage = false"
+    />
+  </div>
+
+  <!-- give the print view a seperate section, to control layout more efficiently -->
+  <div class="print-qr-code-container ml-8 mt-0 hidden">
+    <div class="font-bold text-lg mb-1.5">{{ $t('participants.dialog.header.qrCode') }} {{ participant.alias }}</div>
+    <div> {{ $t('participants.dialog.msg.qrCode', { part: participant.alias }) }}</div>
+    <div class="my-2"><span id="qr-code-as-img"></span></div>
+    <div id="qr-code-link">{{ registrationUrl }}</div>
   </div>
 </template>

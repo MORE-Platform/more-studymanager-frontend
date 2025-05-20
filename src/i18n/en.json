@@ -511,7 +511,8 @@
         "deleteWithData": "Delete data",
         "distribute": "Distribute participants randomly to study groups",
         "edit": "Edit participant",
-        "qrCode": "QR Code for"
+        "qrCode": "QR Code for",
+        "alert": "QR Code Link was copied successfully."
       },
       "msg": {
         "delete": "Do you really want to delete this participant?",

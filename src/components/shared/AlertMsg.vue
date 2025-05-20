@@ -70,8 +70,8 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   .message {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 30px;
+    right: 10px;
     transform: translate(-50%, -50%);
     transition: opacity ease-in-out 0.5s;
   }

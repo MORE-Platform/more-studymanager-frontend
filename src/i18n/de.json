@@ -516,7 +516,8 @@
       "msg": {
         "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
         "deleteWithData": "Sollen alle Daten gelöscht werden?",
-        "qrCode": "Mit diesem QR Code kann sich der Teilnehmer {part} mittels der More Handy App anmelden."
+        "qrCode": "Mit diesem QR Code kann sich der Teilnehmer {part} mittels der More Handy App anmelden.",
+        "alert": "Der QR Code Link wurde erfolgreich kopiert."
       }
     },
     "participantsList": {
