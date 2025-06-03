@@ -80,7 +80,7 @@ jobs:
   build-and-push-image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    if: contains(fromJSON('["main", "develop", "redlink"]'), github.ref_name) || github.event.inputs.dockerTag != ''
+    if: contains(fromJSON('["main", "develop", "redlink", "staging"]'), github.ref_name) || github.event.inputs.dockerTag != ''
     needs:
       - test
     permissions:

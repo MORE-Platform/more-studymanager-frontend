@@ -2,6 +2,15 @@
 The Management & Monitoring Backend (MMB) is the front-end to manage and monitor the back-end.
 The [frontend`s architecture](docs/adr) is based upon an Architectural Decision Records (ADR).
 Mainly, Vue 3, vite, TS, tailwindCSS and PrimeVue are used.
+
+## Things to do to start development
+```
+npm i
+npm run dev
+npm run generate:api
+```
+go to http://localhost:3000
+
 To have a consistent code style and quality, we use Eslint in combination with prettier.
 
 # Setup

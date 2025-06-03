@@ -10,3 +10,4 @@ more-configuration-api-client-ts*
 ConfiguratorAPI.yaml
 src/generated-sources
 tests/coverage
+.env
