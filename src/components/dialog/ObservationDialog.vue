@@ -324,20 +324,24 @@ Licensed under the Elastic License 2.0. */
           />
         </div>
 
-        <div class="info-box relative cursor-pointer flex flex-row items-center">
-            <span class="ml-1 inline">
-              {{ $t(`observation.props.hidden.${hidden}`) }}
-            </span>
-          <i class="pi pi-info-circle color-primary mx-1" :class="{ 'me-2' : editable && factory.visibility.changeable }"/>
-          <div v-if="editable && factory.visibility.changeable" class="flex items-center">
-            <div  class="icon-box eye">
+        <div
+          class="info-box relative flex cursor-pointer flex-row items-center"
+        >
+          <span class="ml-1 inline">
+            {{ $t(`observation.props.hidden.${hidden}`) }}
+          </span>
+          <i
+            class="pi pi-info-circle color-primary mx-1"
+            :class="{ 'me-2': editable && factory.visibility.changeable }"
+          />
+          <div
+            v-if="editable && factory.visibility.changeable"
+            class="flex items-center"
+          >
+            <div class="icon-box eye">
               <span
                 class="pi cursor-pointer"
-                :class="
-                  hidden
-                    ? 'pi-eye-slash'
-                    : 'pi-eye'
-                "
+                :class="hidden ? 'pi-eye-slash' : 'pi-eye'"
                 @click="hidden = !hidden"
               />
             </div>
@@ -362,7 +366,9 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right">
+      <div
+        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>

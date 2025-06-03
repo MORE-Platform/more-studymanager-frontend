@@ -480,13 +480,13 @@ Licensed under the Elastic License 2.0. */
             :disabled="!editable"
             @click="actionToggle"
           >
-            <div class="flex flex-row items-center justify-between flex-1">
-            <div>
-              <span class="pi pi-plus pr-2"></span>{{ $t('global.labels.new') }}
-              {{ $t('intervention.props.action') }}
-            </div>
-            <div class="pi pi-chevron-down"></div
-          >
+            <div class="flex flex-1 flex-row items-center justify-between">
+              <div>
+                <span class="pi pi-plus pr-2"></span
+                >{{ $t('global.labels.new') }}
+                {{ $t('intervention.props.action') }}
+              </div>
+              <div class="pi pi-chevron-down"></div>
             </div>
           </Button>
           <div
@@ -578,7 +578,9 @@ Licensed under the Elastic License 2.0. */
         </Dropdown>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right">
+      <div
+        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>

@@ -7,13 +7,7 @@
  Licensed under the Elastic License 2.0.
  */
 
-import {
-  Intervention,
-  Observation,
-  Participant,
-  Study,
-  StudyGroup,
-} from '@gs';
+import { Intervention, Observation, Participant, Study, StudyGroup } from '@gs';
 
 export interface MoreTableColumn {
   field: string;

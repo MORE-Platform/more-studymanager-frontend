@@ -1599,6 +1599,10 @@ components:
         registrationToken:
           type: string
           readOnly: true
+        registrationUrl:
+          type: string
+          format: uri
+          readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
         start:

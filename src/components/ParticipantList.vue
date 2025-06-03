@@ -15,12 +15,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableSortOptions,
   } from '../models/MoreTableModel';
-  import {
-    Participant,
-    StudyGroup,
-    StudyRole,
-    StudyStatus,
-  } from '@gs';
+  import { Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -35,7 +30,12 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
-  import { PARTICIPANT_COUNTS } from '../constants';
+  import {
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+    PARTICIPANT_COUNTS,
+  } from '../constants';
+  import QrCodeDialog from './dialog/QrCodeDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -117,7 +117,7 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
-      id: 'delete',
+      id: ACTION_ID_DELETE,
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteParticipantBtn'),
@@ -147,9 +147,9 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                executeAction(
+                onAction(
                   {
-                    id: 'delete',
+                    id: ACTION_ID_DELETE,
                     row: options.data.participant,
                   } as MoreTableRowActionResult,
                   options.data.withData,
@@ -158,6 +158,13 @@ Licensed under the Elastic License 2.0. */
             },
           }),
       },
+    },
+    {
+      id: ACTION_ID_QR_CODE,
+      label: t('global.labels.qr'),
+      icon: 'pi pi-qrcode',
+      tooltip: t('tooltips.moreTable.showQrCode'),
+      visible: () => props.studyStatus !== StudyStatus.Closed,
     },
   ];
 
@@ -236,18 +243,37 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  function executeAction(
+  const onAction = (
     action: MoreTableRowActionResult,
     withData?: boolean,
-  ): void {
+  ): void => {
     switch (action.id) {
-      case 'delete':
+      case ACTION_ID_DELETE:
         deleteParticipant(action.row as Participant, !!withData);
+        break;
+      case ACTION_ID_QR_CODE:
+        openQrCodeDialog(action.row as Participant);
         break;
       default:
         console.error('no handler for action', action);
     }
-  }
+  };
+
+  const openQrCodeDialog = (participant: Participant): void => {
+    dialog.open(QrCodeDialog, {
+      data: {
+        participant,
+      },
+      props: {
+        header: `${t('participants.dialog.header.qrCode')} ${participant.alias}`,
+        style: {
+          width: 'fit-content',
+        },
+        modal: true,
+        draggable: false,
+      },
+    });
+  };
 
   const createParticipant = (amount: number): void => {
     const newParticipants: Participant[] = [];
@@ -376,7 +402,7 @@ Licensed under the Elastic License 2.0. */
       :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-50"
-      @on-action="executeAction($event)"
+      @on-action="onAction($event)"
       @on-change="changeValue($event)"
     >
       <template #tableActions="{ isInEditMode }">
@@ -426,7 +452,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </template>
     </MoreTable>
-    <ConfirmDialog></ConfirmDialog>
+    <ConfirmDialog />
     <DynamicDialog />
   </div>
 </template>

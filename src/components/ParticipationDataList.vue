@@ -719,7 +719,10 @@ Licensed under the Elastic License 2.0. */
           :header="observationData[0].observationTitle"
           headerClass="mt-2.5"
         >
-          <TabView class="pt-8" @update:active-index="onTabChange(observationId, $event)">
+          <TabView
+            class="pt-8"
+            @update:active-index="onTabChange(observationId, $event)"
+          >
             <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"
