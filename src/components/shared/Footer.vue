@@ -8,7 +8,7 @@ Licensed under the Elastic License 2.0. */
   import { BuildInfo, FrontendConfiguration } from '@gs';
   import OverlayPanel from 'primevue/overlaypanel';
   import { useI18n } from 'vue-i18n';
-
+  import { computed } from 'vue'
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
   const buildInfo = inject('buildInfo') as {
     frontend: BuildInfo;
@@ -16,6 +16,9 @@ Licensed under the Elastic License 2.0. */
   };
   const buildInfoPanel = ref();
   const { locale } = useI18n();
+   const moreUrl = computed(() =>
+  `https://dhp.lbg.ac.at/more/${locale.value === 'en' ? '?lang=en' : ''}`
+)
 </script>
 
 <template>
@@ -45,7 +48,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        :href="`https://dhp.lbg.ac.at/more/${locale.value === 'en' ? '?lang=en' : ''}`"
+        :href=moreUrl
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
