@@ -7,8 +7,6 @@ Licensed under the Elastic License 2.0. */
   import { inject, ref } from 'vue';
   import { BuildInfo, FrontendConfiguration } from '@gs';
   import OverlayPanel from 'primevue/overlaypanel';
-  import { useI18n } from 'vue-i18n';
-  import { computed } from 'vue'
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
   const buildInfo = inject('buildInfo') as {
     frontend: BuildInfo;
