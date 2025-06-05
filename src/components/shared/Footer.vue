@@ -15,10 +15,7 @@ Licensed under the Elastic License 2.0. */
     backend: BuildInfo;
   };
   const buildInfoPanel = ref();
-  const { locale } = useI18n();
-   const moreUrl = computed(() =>
-  `https://dhp.lbg.ac.at/more/${locale.value === 'en' ? '?lang=en' : ''}`
-)
+  
 </script>
 
 <template>
@@ -48,7 +45,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        :href=moreUrl
+        :href="https://more-platform.at/"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
