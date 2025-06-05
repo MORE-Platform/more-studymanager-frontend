@@ -45,7 +45,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        :href="`https://dhp.lbg.ac.at/more/${locale === 'en' ? '?lang=en' : ''}`"
+        :href="`https://dhp.lbg.ac.at/more/${locale.value === 'en' ? '?lang=en' : ''}`"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
