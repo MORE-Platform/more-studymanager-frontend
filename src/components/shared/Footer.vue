@@ -43,7 +43,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        :href="https://more-platform.at/"
+        href="https://more-platform.at/"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
