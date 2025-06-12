@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { ref, Ref, PropType } from 'vue';
-  import { useInterventionsApi } from '../composable/useApi';
+  import { useInterventionsApi, useObservationsApi } from '../composable/useApi';
   import { useComponentsApi } from '../composable/useApi';
   import {
     Intervention,
@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
-    ListComponentsComponentTypeEnum,
+    ListComponentsComponentTypeEnum, Observation
   } from '@gs';
   import {
     MoreTableAction,
@@ -40,6 +40,7 @@ Licensed under the Elastic License 2.0. */
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
+  const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
@@ -177,10 +178,72 @@ Licensed under the Elastic License 2.0. */
   ];
 
   function listInterventions(): void {
+    console.log('list interventions')
+
     interventionsApi
       .listInterventions(props.studyId)
       .then((response: AxiosResponse) => {
-        interventionList.value = response.data;
+        const interventions = response.data;
+
+        return Promise.all(
+          interventions.map((i: Intervention) =>
+            listActions(i.interventionId).then((actions: Action[] | undefined) => {
+
+              var observationIds = null;
+
+              if (actions) {
+                observationIds = actions
+                  .map(a => a.properties?.observation?.id)
+                  .filter((id): id is number => typeof id === 'number');
+              }
+
+              const uniqueObservationIds = [...new Set(observationIds)];
+
+              return Promise.all(uniqueObservationIds.map(id =>
+                checkIfObservationDeleted(id)
+              )).then(deletionChecks => {
+                const hasDeletedObservations = deletionChecks.includes(true);
+
+                return {
+                  studyId: i.studyId,
+                  interventionId: i.interventionId,
+                  studyGroupId: i.studyGroupId,
+                  title: i.title,
+                  purpose: i.purpose,
+                  schedule: i.schedule,
+                  trigger: i.trigger,
+                  actions,
+                  created: i.created,
+                  modified: i.modified,
+                  hasError: hasDeletedObservations
+                };
+              });
+
+              /*
+              return ({
+              studyId: i.studyId,
+              interventionId: i.interventionId,
+              studyGroupId: i.studyGroupId,
+              title: i.title,
+              purpose: i.purpose,
+              schedule: i.schedule,
+              trigger: i.trigger,
+              actions: actions || [],
+              created: i.created,
+              modified: i.modified
+            }) as Intervention
+            */
+
+            })
+          )
+        );
+      })
+      .then((resolvedList) => {
+        interventionList.value = resolvedList;
+        console.log(interventionList.value);
+      })
+      .catch((error) => {
+        console.error('Fehler beim Laden der Interventionen:', error);
       });
   }
 
@@ -190,10 +253,26 @@ Licensed under the Elastic License 2.0. */
     if (interventionId) {
       return interventionsApi
         .listActions(props.studyId, interventionId)
-        .then((response: any) => response.data);
+        .then((response: any) => {
+          console.log('interventionsApi-------')
+          console.log(response.data)
+          return response.data
+        });
     } else {
       return undefined;
     }
+  }
+
+  async function checkIfObservationDeleted(observationId: number): Promise<boolean> {
+    const response = await observationsApi.listObservations(props.studyId);
+    const observationList = response.data;
+
+    const observation = observationList.find(
+      (o: Observation) => observationId === o.observationId
+    );
+
+    console.log('observation: ', observationId, observation)
+    return !observation;
   }
 
   async function getTrigger(

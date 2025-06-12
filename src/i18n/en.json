@@ -246,7 +246,8 @@
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
       "emptyTriggerConditions": "Please save at least one trigger condition to your trigger.",
       "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
-      "triggerProp": "A Trigger property has an error."
+      "triggerProp": "A Trigger property has an error.",
+      "observationDeleted": "The linked observation (ID: {observationId}, Type: {observationType}) has been deleted and cannot be referenced. Please link a different data collection, remove this action or delete the intervention completely. Keep in mind that an intervention always requires at least one action."
     },
     "factory": {
       "actions": {
