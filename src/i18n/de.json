@@ -246,7 +246,8 @@
       "addTriggerTypeConfig": "Der Trigger ist erforderlich, um die Bedingugn für die Intervention zu definieren. Bitte fügen Sie einen Trigger mit Konfiguration hinzu.",
       "emptyTriggerConditions": "Bitte fügen Sie mindesetens eine Auslöserkondition zu ihrem Trigger hinzu.",
       "interventionRowIsOpen": "Bitte speichern Sie alle Konfigurationszeilen, bevor Sie die Intervention speichern.",
-      "triggerProp": "Ein Trigger-Property hat einen Fehler."
+      "triggerProp": "Ein Trigger-Property hat einen Fehler.",
+      "observationDeleted": "Die verlinkte Datenerhebung (ID: {observationId}, Type: {observationType}) wurde gelöscht und kann nicht mehr referenziert werden. Bitte verlinke eine andere Datenerhebung, entferne diese Aktion oder lösche die Intervention komplett. Beachte, dass eine Intervention stets mindestens eine Aktion enthalten muss."
     },
     "factory": {
       "actions": {
