@@ -186,15 +186,15 @@ Licensed under the Elastic License 2.0. */
         const interventions = response.data;
 
         return Promise.all(
-          interventions.map((i: Intervention) =>
-            listActions(i.interventionId).then((actions: Action[] | undefined) => {
+          interventions.map((intervention: Intervention) =>
+            listActions(intervention.interventionId).then((actions: Action[] | undefined) => {
 
-              var observationIds = null;
+              let observationIds: Array<number> = [];
 
               if (actions) {
-                observationIds = actions
+                observationIds = [...actions
                   .map(a => a.properties?.observation?.id)
-                  .filter((id): id is number => typeof id === 'number');
+                  .filter((id): id is number => typeof id === 'number')];
               }
 
               const uniqueObservationIds = [...new Set(observationIds)];
@@ -205,35 +205,19 @@ Licensed under the Elastic License 2.0. */
                 const hasDeletedObservations = deletionChecks.includes(true);
 
                 return {
-                  studyId: i.studyId,
-                  interventionId: i.interventionId,
-                  studyGroupId: i.studyGroupId,
-                  title: i.title,
-                  purpose: i.purpose,
-                  schedule: i.schedule,
-                  trigger: i.trigger,
+                  studyId: intervention.studyId,
+                  interventionId: intervention.interventionId,
+                  studyGroupId: intervention.studyGroupId,
+                  title: intervention.title,
+                  purpose: intervention.purpose,
+                  schedule: intervention.schedule,
+                  trigger: intervention.trigger,
                   actions,
-                  created: i.created,
-                  modified: i.modified,
+                  created: intervention.created,
+                  modified: intervention.modified,
                   hasError: hasDeletedObservations
                 };
               });
-
-              /*
-              return ({
-              studyId: i.studyId,
-              interventionId: i.interventionId,
-              studyGroupId: i.studyGroupId,
-              title: i.title,
-              purpose: i.purpose,
-              schedule: i.schedule,
-              trigger: i.trigger,
-              actions: actions || [],
-              created: i.created,
-              modified: i.modified
-            }) as Intervention
-            */
-
             })
           )
         );
