@@ -5,6 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { ref } from 'vue';
+  import ExclamationIcon from '../shared/ExclamationIcon.vue';
 
   defineProps({
     editable: {
@@ -59,9 +60,7 @@ Licensed under the Elastic License 2.0. */
       </div>
       <div class="cron-rel-warning flex items-center gap-5 px-6 py-4 italic">
         <div>
-          <span
-            class="pi pi-exclamation-triangle warning-icon error !text-3xl"
-          />
+          <ExclamationIcon class="warning-icon error" />
         </div>
         {{ $t('scheduler.dialog.relativeSchedule.interventionWarning') }}
       </div>
@@ -96,5 +95,9 @@ Licensed under the Elastic License 2.0. */
     border: 1px solid var(--surface-50);
     border-radius: 6px;
     background-color: var(--surface-50);
+  }
+
+  .warning-icon {
+    width: 30px;
   }
 </style>

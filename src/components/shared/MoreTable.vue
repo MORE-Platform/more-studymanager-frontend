@@ -33,6 +33,7 @@ Licensed under the Elastic License 2.0. */
   import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+  import ExclamationIcon from './ExclamationIcon.vue';
 
   import { ACTION_ID_QR_CODE } from '../../constants';
 
@@ -465,35 +466,8 @@ Licensed under the Elastic License 2.0. */
           </div>
           <div v-else>
             <span v-if="field === 'title'" class="flex flex-row gap-1.5 align-center">
-              <span v-if="data['hasError']" class="title-has-warning">
-                <svg
-                  id="exclamation"
-                  class="w-full"
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="61.127"
-                  height="54"
-                  viewBox="0 0 61.127 54"
-                >
-            <defs>
-              <clipPath id="clip-path">
-                <rect
-                  id="Rechteck_148158"
-                  width="61.127"
-                  height="54"
-                  fill="none"
-                />
-              </clipPath>
-            </defs>
-            <g id="Gruppe_161928" clip-path="url(#clip-path)">
-              <path
-                id="Pfad_1250"
-                d="M60.43,46.37,34.954,2.527a5.08,5.08,0,0,0-8.782,0L.7,46.37A5.077,5.077,0,0,0,5.087,54H56.038a5.077,5.077,0,0,0,4.391-7.63M30.952,47.826H30.92a3.742,3.742,0,1,1,.032,0m3.22-12.659a1.882,1.882,0,0,1-1.886,1.828H29.62a1.886,1.886,0,0,1-1.886-1.828L27.182,17.26v-.046a1.89,1.89,0,0,1,1.886-1.9h3.814a1.891,1.891,0,0,1,1.84,1.942Z"
-                transform="translate(0 0.001)"
-                fill="#a37070"
-              />
-            </g>
-          </svg>
+              <span v-if="data['hasError']" class="title-has-warning mr-0.2">
+                <ExclamationIcon id="exclamationIcon" />
               </span>
               {{ data[field]}}
             </span>
@@ -744,7 +718,7 @@ Licensed under the Elastic License 2.0. */
     padding: 5px;
   }
 
-  .title-has-warning, .title-has-warning svg {
+  .title-has-warning, .title-has-warning #exclamationIcon {
     height: 18px;
     width: auto;
   }

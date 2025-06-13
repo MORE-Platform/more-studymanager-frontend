@@ -178,8 +178,6 @@ Licensed under the Elastic License 2.0. */
   ];
 
   function listInterventions(): void {
-    console.log('list interventions')
-
     interventionsApi
       .listInterventions(props.studyId)
       .then((response: AxiosResponse) => {
@@ -224,7 +222,6 @@ Licensed under the Elastic License 2.0. */
       })
       .then((resolvedList) => {
         interventionList.value = resolvedList;
-        console.log(interventionList.value);
       })
       .catch((error) => {
         console.error('Fehler beim Laden der Interventionen:', error);
@@ -238,8 +235,6 @@ Licensed under the Elastic License 2.0. */
       return interventionsApi
         .listActions(props.studyId, interventionId)
         .then((response: any) => {
-          console.log('interventionsApi-------')
-          console.log(response.data)
           return response.data
         });
     } else {
@@ -254,8 +249,6 @@ Licensed under the Elastic License 2.0. */
     const observation = observationList.find(
       (o: Observation) => observationId === o.observationId
     );
-
-    console.log('observation: ', observationId, observation)
     return !observation;
   }
 
