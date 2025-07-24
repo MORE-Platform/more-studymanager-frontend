@@ -30,14 +30,12 @@ Licensed under the Elastic License 2.0. */
   import Checkbox from 'primevue/checkbox';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import {
-    ComponentFactory,
-    StudyRole,
-    StudyStatus,
-    Visibility,
-  } from '../../generated-sources/openapi';
+  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+
+  import { ACTION_ID_QR_CODE } from '../../constants';
+
   const dateFormat = useGlobalStore().getDateFormat;
 
   interface MoreTableProps {
@@ -105,6 +103,7 @@ Licensed under the Elastic License 2.0. */
 
   const enableEditMode = ref(false);
   updateEditableStatus();
+
   function updateEditableStatus(): void {
     if (props.editableAccess) {
       enableEditMode.value = props.columns.some((c) => c.editable);
@@ -112,6 +111,7 @@ Licensed under the Elastic License 2.0. */
       enableEditMode.value = false;
     }
   }
+
   watch(
     () => props.editableAccess,
     () => {
@@ -132,6 +132,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const rowIDsInEditMode: Ref<any[]> = ref([]);
+
   function isRowInEditMode(row: any): boolean {
     if (row[props.rowId]) {
       return rowIDsInEditMode.value.includes(row[props.rowId]);
@@ -140,6 +141,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const editingRows: Ref<any[]> = ref([]);
+
   function setRowToEditMode(row: any): void {
     rowIDsInEditMode.value = [];
     editingRows.value = [];
@@ -267,7 +269,7 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="more-table">
-    <div class="mb-8 flex">
+    <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
         <h3 v-if="title" class="font-semibold">{{ title }}</h3>
         <h4 v-if="subtitle" class="text-base">
@@ -275,7 +277,9 @@ Licensed under the Elastic License 2.0. */
           <span v-html="subtitle" />
         </h4>
       </div>
-      <div class="actions table-actions ml-2.5 flex flex-1 justify-end">
+      <div
+        class="actions table-actions ml-2.5 flex flex-row items-center justify-end"
+      >
         <slot
           name="tableActions"
           :is-in-edit-mode="rowIDsInEditMode.length"
@@ -284,7 +288,7 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <DataTable
-      v-model:editingRows="editingRows"
+      v-model:editing-rows="editingRows"
       v-model:filters="tableFilter"
       :value="prepareRows(rows)"
       :sort-field="sortOptions?.sortField"
@@ -300,7 +304,7 @@ Licensed under the Elastic License 2.0. */
       @row-click="onRowClick($event)"
     >
       <Column
-        v-if="frontRowActions.length"
+        v-if="frontRowActions?.length"
         key="actions"
         class="row-actions"
         :frozen="true"
@@ -372,6 +376,7 @@ Licensed under the Elastic License 2.0. */
             v-if="column.type === MoreTableFieldType.calendar"
             v-model="data[`__internalValue_${field}`]"
             style="width: 100%"
+            class="min-w-[90px]"
             input-id="dateformat"
             autocomplete="off"
             :date-format="dateFormat"
@@ -391,8 +396,8 @@ Licensed under the Elastic License 2.0. */
                       data[field],
                       getColumnEditableValues(column.editable),
                     )
-                  : column.placeholder ??
-                    $t('global.placeholder.chooseDropdownOptionDefault')
+                  : (column.placeholder ??
+                    $t('global.placeholder.chooseDropdownOptionDefault'))
               "
             />
             <span v-else>{{
@@ -550,8 +555,11 @@ Licensed under the Elastic License 2.0. */
                 :icon="action.icon"
                 :disabled="
                   rowIDsInEditMode.length
-                    ? true
-                    : !isVisible(action, slotProps.data)
+                      ? true
+                      : action.id === ACTION_ID_QR_CODE ?
+                        !(isVisible(action, slotProps.data) &&
+                        !!slotProps.data.registrationToken)
+                        : !isVisible(action, slotProps.data)
                 "
                 :class="{ 'btn-important': action.id === 'delete' }"
                 @click="rowActionHandler(action, slotProps.data)"
@@ -608,7 +616,7 @@ Licensed under the Elastic License 2.0. */
       <template #empty>
         {{ emptyMessage ?? $t('moreTable.defaultEmptyMsg') }}
       </template>
-      <template #loading> </template>
+      <template #loading></template>
     </DataTable>
   </div>
 </template>
@@ -640,6 +648,8 @@ Licensed under the Elastic License 2.0. */
 
     table tbody tr {
       font-size: 0.906rem !important;
+      @apply cursor-pointer;
+
       td:last-child {
         width: 1%;
         white-space: nowrap;
@@ -648,15 +658,19 @@ Licensed under the Elastic License 2.0. */
 
     :deep(td.row-actions) {
       pointer-events: none;
+
       div {
         display: flex;
         justify-content: flex-end;
       }
+
       button {
         margin: 0 0.188rem;
       }
+
       .p-button {
         pointer-events: all;
+
         &.p-disabled {
           pointer-events: none;
         }
@@ -681,6 +695,7 @@ Licensed under the Elastic License 2.0. */
       &:after {
         content: ', ';
       }
+
       &:last-of-type:after {
         content: '';
       }

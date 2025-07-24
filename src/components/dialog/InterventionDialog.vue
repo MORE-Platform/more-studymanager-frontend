@@ -19,7 +19,7 @@ Licensed under the Elastic License 2.0. */
     ValidationReport,
     StudyStatus,
     ListComponentsComponentTypeEnum,
-  } from '../../generated-sources/openapi';
+  } from '@gs';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { MoreTableChoice } from '../../models/MoreTableModel';
@@ -480,12 +480,15 @@ Licensed under the Elastic License 2.0. */
             :disabled="!editable"
             @click="actionToggle"
           >
-            <div>
-              <span class="pi pi-plus pr-2"></span>{{ $t('global.labels.new') }}
-              {{ $t('intervention.props.action') }}
+            <div class="flex flex-1 flex-row items-center justify-between">
+              <div>
+                <span class="pi pi-plus pr-2"></span
+                >{{ $t('global.labels.new') }}
+                {{ $t('intervention.props.action') }}
+              </div>
+              <div class="pi pi-chevron-down"></div>
             </div>
-            <div class="pi pi-chevron-down"></div
-          ></Button>
+          </Button>
           <div
             v-if="getError(ListComponentsComponentTypeEnum.Action)"
             class="error col-span-8 mb-4"
@@ -532,7 +535,7 @@ Licensed under the Elastic License 2.0. */
                 @on-action-prop-change="updateActionProps($event, index)"
               />
 
-              <div class="buttons col-span-9 mt-2 text-end">
+              <div class="buttons col-span-9 mt-2 flex flex-row justify-end">
                 <Button
                   v-if="editable"
                   :icon="'pi pi-trash'"
@@ -557,6 +560,7 @@ Licensed under the Elastic License 2.0. */
           option-label="label"
           option-value="value"
           :disabled="!editable"
+          class="w-fit"
           :class="{ 'dropdown-has-value': studyGroupId }"
           :placeholder="
             studyGroupId
@@ -574,7 +578,9 @@ Licensed under the Elastic License 2.0. */
         </Dropdown>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
+      <div
+        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>

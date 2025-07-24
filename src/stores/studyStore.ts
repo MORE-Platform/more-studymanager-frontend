@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { Study, StudyRole, StudyStatus } from '../generated-sources/openapi';
+import { Study, StudyRole, StudyStatus } from '@gs';
 import { useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
@@ -36,6 +36,7 @@ export const useStudyStore = defineStore('study', () => {
         return study.value;
       });
   }
+
   async function updateStudy(studyResponse: Study): Promise<void> {
     if (study.value.studyId) {
       study.value = await studiesApi
@@ -95,6 +96,7 @@ export const useStudyStore = defineStore('study', () => {
         );
     }
   }
+
   async function listStudies(): Promise<void> {
     studies.value = await studiesApi
       .listStudies()
@@ -104,6 +106,7 @@ export const useStudyStore = defineStore('study', () => {
         return studies.value;
       });
   }
+
   async function updateStudyInStudies(changedStudy: Study): Promise<void> {
     const i = studies.value.findIndex(
       (studyItem) => studyItem.studyId === changedStudy.studyId,
@@ -118,22 +121,14 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function importStudy(importedStudy: File): Promise<void> {
-    await importExportApi
+  const importStudy = (importedStudy: File): Promise<void> =>
+    importExportApi
       .importStudy(importedStudy, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-      .then(() => {
-        setTimeout(function () {
-          listStudies();
-        }, 100);
-      })
-      .catch((e: AxiosError) =>
-        handleIndividualError(e, 'cannot import study'),
-      );
-  }
+      .then(listStudies);
 
   async function exportStudyConfig(studyId: number): Promise<void> {
     await importExportApi
@@ -175,10 +170,6 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  function exportStudyCalendar(studyId: number): void {
-    window.open(`api/v1/studies/${studyId}/calendar.ics`);
-  }
-
   function downloadJSON(filename: string, file: File): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
@@ -217,7 +208,6 @@ export const useStudyStore = defineStore('study', () => {
     importStudy,
     exportStudyConfig,
     exportStudyData,
-    exportStudyCalendar,
     studyUserRoles,
     studyStatus,
     studyId,

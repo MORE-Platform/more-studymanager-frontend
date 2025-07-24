@@ -3,11 +3,7 @@
   import Button from 'primevue/button';
   import { computed, ComputedRef, Ref, ref } from 'vue';
   import { DropdownOption } from '../../models/Common';
-  import {
-    ComponentFactory,
-    Observation,
-    Participant,
-  } from '../../generated-sources/openapi';
+  import { ComponentFactory, Observation, Participant } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
   import {
     useComponentsApi,
@@ -185,9 +181,9 @@
         @click="clearAllFilters"
       />
     </div>
-    <div class="mb-3 flex items-center justify-between gap-5">
+    <div class="mb-3 flex flex-row items-center justify-between gap-5">
       <div class="flex gap-5">
-        <div>
+        <div class="flex flex-row items-center">
           {{ $t('monitoring.labels.dateRange') }}:
           <Calendar
             v-model="filterDateRange"
@@ -199,7 +195,7 @@
             :placeholder="`${dateFormat} - ${dateFormat}`"
           />
         </div>
-        <div>
+        <div class="flex flex-row items-center">
           {{ $t('studyGroup.plural') }}:
           <MultiSelect
             v-model="filterStudyGroup"
@@ -216,7 +212,7 @@
             )}`"
           />
         </div>
-        <div>
+        <div class="flex flex-row items-center">
           {{ $t('participants.plural') }}:
           <MultiSelect
             v-model="filterParticipant"
@@ -234,7 +230,7 @@
             )}`"
           />
         </div>
-        <div>
+        <div class="flex flex-row items-center">
           {{ $t('observation.plural') }}:
           <MultiSelect
             v-model="filterObservation"

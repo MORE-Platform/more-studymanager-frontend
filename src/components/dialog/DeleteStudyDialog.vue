@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import { inject } from 'vue';
   import Button from 'primevue/button';
   import { useStudyStore } from '../../stores/studyStore';
-  import { Study } from '../../generated-sources/openapi';
+  import { Study } from '@gs';
   import WarningSection from './shared/WarningSection.vue';
   import StudyStatusPill from '../study/StudyStatusPill.vue';
 
@@ -43,7 +43,7 @@ Licensed under the Elastic License 2.0. */
 
     <WarningSection :confirm-msg="confirmMsg" :warning-msg="warningMsg" />
 
-    <div class="flex justify-end gap-2">
+    <div class="flex flex-row items-center justify-end gap-2">
       <Button
         type="button"
         class="p-button btn-gray"

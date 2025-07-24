@@ -4,11 +4,11 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref, Ref, watch } from 'vue';
+  import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import Checkbox from 'primevue/checkbox';
-  import { Event, RecurrenceRule } from '../../generated-sources/openapi';
+  import { Event, RecurrenceRule } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
   import { MoreTableChoice } from '../../models/MoreTableModel';
@@ -22,6 +22,18 @@ Licensed under the Elastic License 2.0. */
 
   const studyStore = useStudyStore();
 
+  const minDate = computed(() => {
+    const date = new Date(studyStore.study.plannedStart!);
+    date.setHours(0, 0, 0);
+    return date;
+  });
+
+  const maxDate = computed(() => {
+    const date = new Date(studyStore.study.plannedEnd!);
+    date.setHours(23, 59, 59);
+    return date;
+  });
+
   const scheduler: any = dialogRef.value.data.scheduler;
   const returnSchedule: Ref<Event> = ref({
     type: scheduler.type ?? ScheduleType.Event,
@@ -33,9 +45,11 @@ Licensed under the Elastic License 2.0. */
   const calendarStart: Ref<Date> = ref(
     new Date(returnSchedule.value.dtstart as string),
   );
+  calendarStart.value.setHours(0, 0, 0);
   const calendarEnd: Ref<Date> = ref(
     new Date(returnSchedule.value.dtend as string),
   );
+  calendarEnd.value.setHours(23, 59, 59);
   let calendarEndChangedWithStart: boolean = false;
 
   watch(calendarStart, (newValue, oldValue) => {
@@ -293,8 +307,8 @@ Licensed under the Elastic License 2.0. */
         v-model="calendarStart"
         :date-format="dateFormat"
         :placeholder="dateFormat"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         :manual-input="false"
         autocomplete="off"
         class="start-date col-span-2 col-start-2 w-full"
@@ -303,8 +317,8 @@ Licensed under the Elastic License 2.0. */
       <Calendar
         v-if="!entireDayCheckbox"
         v-model="calendarStart"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         :manual-input="false"
         placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
@@ -322,7 +336,7 @@ Licensed under the Elastic License 2.0. */
         v-if="!singleDayEventCheckbox"
         v-model="calendarEnd"
         :min-date="calendarStart"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :max-date="maxDate"
         :manual-input="false"
         :date-format="dateFormat"
         :placeholder="dateFormat"
@@ -340,8 +354,8 @@ Licensed under the Elastic License 2.0. */
         v-if="!entireDayCheckbox"
         v-model="calendarEnd"
         :manual-input="false"
-        :min-date="new Date(studyStore.study.plannedStart as string)"
-        :max-date="new Date(studyStore.study.plannedEnd as string)"
+        :min-date="minDate"
+        :max-date="maxDate"
         placeholder="hh:mm"
         class="p-calendar-timeonly start-date start-time col-span-1"
         :class="{
@@ -360,7 +374,7 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-span-7 col-start-2 grid grid-cols-2">
-        <div class="col-start-1">
+        <div class="flex flex-row items-center justify-start">
           {{ $t('scheduler.labels.event.oneDayObservation') }}:
           <Checkbox
             v-model="singleDayEventCheckbox"
@@ -369,7 +383,7 @@ Licensed under the Elastic License 2.0. */
             @change="onChangeSingleDayEventCheckbox()"
           />
         </div>
-        <div>
+        <div class="flex flex-row items-center justify-start">
           <span>{{ $t('scheduler.labels.event.allDay') }}</span>
           <Checkbox
             v-model="entireDayCheckbox"
@@ -394,7 +408,9 @@ Licensed under the Elastic License 2.0. */
 
     <div class="h-24"></div>
     <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
-      <div class="col-start-0 col-span-6 mt-8 justify-end text-right">
+      <div
+        class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
+      >
         <Button
           class="btn-gray !mr-3"
           :label="$t('global.labels.cancel')"

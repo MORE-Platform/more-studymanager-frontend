@@ -11,10 +11,10 @@ Licensed under the Elastic License 2.0. */
   import Dropdown from 'primevue/dropdown';
   import {
     Observation,
-    ValidationReport,
-    StudyStatus,
     ObservationSchedule,
-  } from '../../generated-sources/openapi';
+    StudyStatus,
+    ValidationReport,
+  } from '@gs/models';
   import { MoreTableChoice } from '../../models/MoreTableModel';
   import RelativeScheduler from '../shared/RelativeScheduler.vue';
   import { useDialog } from 'primevue/usedialog';
@@ -22,7 +22,6 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import { Property } from '../../models/InputModels';
-  import Checkbox from 'primevue/checkbox';
   import PropertyInputs from './shared/PropertyInputs.vue';
   import { PropertyEmit } from '../../models/PropertyInputModels';
   import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
@@ -112,6 +111,7 @@ Licensed under the Elastic License 2.0. */
       },
     );
   }
+
   function validate(): void {
     let parsedProps: any;
     try {
@@ -134,22 +134,36 @@ Licensed under the Elastic License 2.0. */
           handleIndividualError(e, 'cannot fetch study');
         });
     } catch (e: any) {
+      console.error(e);
       showErrorToast(t('global.error.general'));
     }
   }
+
+  const minDate = (date: Date): Date => {
+    date.setHours(0, 0, 0);
+    return date;
+  };
+
+  const maxDate = (date: Date): Date => {
+    date.setHours(23, 59, 59);
+    return date;
+  };
 
   function save(props: any): void {
     if (isObjectEmpty(scheduler.value)) {
       if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
         scheduler.value = {
           type: ScheduleType.Event,
-          dtstart: new Date(studyStore.study.plannedStart).toISOString(),
-          dtend: new Date(studyStore.study.plannedEnd).toISOString(),
+          dtstart: minDate(
+            new Date(studyStore.study.plannedStart),
+          ).toISOString(),
+          dtend: maxDate(new Date(studyStore.study.plannedEnd)).toISOString(),
         };
       } else {
+        const date = new Date();
         scheduler.value = {
-          dtstart: new Date().toISOString(),
-          dtend: new Date().toISOString(),
+          dtstart: minDate(date).toISOString(),
+          dtend: maxDate(date).toISOString(),
         };
       }
     }
@@ -310,57 +324,38 @@ Licensed under the Elastic License 2.0. */
           />
         </div>
 
-        <div class="info-box relative cursor-pointer py-2.5">
-          <!-- if editable with checkbox-->
-          <div v-if="editable" class="inline flex items-center">
-            <span v-if="hidden" class="ml-1 inline">
-              {{ $t('observation.props.hidden.true') }}
-            </span>
-            <span v-else class="ml-1 inline">
-              {{ $t('observation.props.hidden.false') }}
-            </span>
-            <span class="pi pi-info-circle color-primary ml-1 mr-4"></span>
-
-            <Checkbox
-              v-if="factory.visibility.changeable"
-              v-model="hidden"
-              :binary="true"
-              class="icon-checkbox show-icon icon-box eye mr-2 inline"
-            >
-              <template #icon>
-                <div class="p-checkbox-box">
-                  <span class="p-checkbox-icon pi pi-check"></span>
-                </div>
-              </template>
-            </Checkbox>
-            <div v-else class="icon-box eye inline">
+        <div
+          class="info-box relative flex cursor-pointer flex-row items-center"
+        >
+          <span class="ml-1 inline">
+            {{ $t(`observation.props.hidden.${hidden}`) }}
+          </span>
+          <i
+            class="pi pi-info-circle color-primary mx-1"
+            :class="{ 'me-2': editable && factory.visibility.changeable }"
+          />
+          <div
+            v-if="editable && factory.visibility.changeable"
+            class="flex items-center"
+          >
+            <div class="icon-box eye">
               <span
-                class="pi mr-0.5"
-                :class="
-                  hidden
-                    ? 'pi-eye-slash color-important'
-                    : 'pi-eye color-approved'
-                "
+                class="pi cursor-pointer"
+                :class="hidden ? 'pi-eye-slash' : 'pi-eye'"
+                @click="hidden = !hidden"
               />
             </div>
           </div>
-
-          <!-- if not editable -->
-          <div v-else class="icon-box eye preview inline flex items-center">
-            <span class="ml-1 inline">{{
-              $t(`observation.props.hidden.${hidden}`)
-            }}</span>
-            <span class="pi pi-info-circle color-primary ml-1 mr-0.5"></span>
+          <div v-else class="icon-box eye preview">
             <span
-              class="pi mr-0.5"
+              class="pi"
               :class="
                 observation.hidden
-                  ? 'pi-eye-slash color-important'
-                  : 'pi-eye color-approved'
+                  ? 'pi-eye color-approved'
+                  : 'pi-eye-slash color-important'
               "
             />
           </div>
-
           <div class="inline">
             <div
               class="info-box-hidden pointer-events-none absolute bottom-full right-0 bg-white p-5 text-center opacity-0"
@@ -371,7 +366,9 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 justify-end text-right">
+      <div
+        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>
@@ -391,6 +388,7 @@ Licensed under the Elastic License 2.0. */
 <style scoped lang="postcss">
   @import '../../styles/components/moreTable-dialogs.pcss';
   @import '../../styles/components/eye-checkbox.pcss';
+
   .dialog {
     :deep(.dropdown-has-value .p-dropdown-label) {
       color: var(--text-color);
@@ -400,6 +398,7 @@ Licensed under the Elastic License 2.0. */
       &:after {
         content: ', ';
       }
+
       &:last-of-type:after {
         content: '';
       }

@@ -16,18 +16,20 @@ export default class AuthService {
   }
 
   public async init(): Promise<boolean> {
-    const loggedIn = await this.keycloak.init({ onLoad: 'login-required' });
+    const loggedIn = await this.keycloak.init({
+      onLoad: 'login-required',
+    });
     if (loggedIn) {
       setInterval(() => {
         this.keycloak
           .updateToken(70)
           .then((refreshed) => {
             if (refreshed) {
-              console.log(`Token refreshed: ${refreshed}`);
+              console.log(`Token refreshed: ${refreshed}, ${new Date()}`);
             }
           })
-          .catch(() => {
-            console.error('Failed to refresh token');
+          .catch((e) => {
+            console.error('Failed to refresh token', e);
           });
       }, 6000);
       return true;

@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject } from 'vue';
   import Button from 'primevue/button';
-  import { StudyGroup } from '../../generated-sources/openapi';
+  import { StudyGroup } from '@gs';
   import { MoreTableColumn } from '../../models/MoreTableModel';
   import { useI18n } from 'vue-i18n';
   import MoreTable from '../shared/MoreTable.vue';
@@ -57,7 +57,7 @@ Licensed under the Elastic License 2.0. */
       :warning-msg="t('participants.participantsList.distributeMsg.warning')"
     />
 
-    <div class="flex justify-end">
+    <div class="flex flex-row items-center justify-end">
       <Button
         type="button"
         class="p-button btn-gray"

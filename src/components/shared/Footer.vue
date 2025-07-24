@@ -5,18 +5,15 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject, ref } from 'vue';
-  import {
-    BuildInfo,
-    FrontendConfiguration,
-  } from '../../generated-sources/openapi';
+  import { BuildInfo, FrontendConfiguration } from '@gs';
   import OverlayPanel from 'primevue/overlaypanel';
-
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
   const buildInfo = inject('buildInfo') as {
     frontend: BuildInfo;
     backend: BuildInfo;
   };
   const buildInfoPanel = ref();
+  
 </script>
 
 <template>
@@ -46,7 +43,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        href="https://dhp.lbg.ac.at/more/"
+        href="https://more-platform.at/"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a

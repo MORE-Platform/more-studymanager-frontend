@@ -19,7 +19,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     ComponentFactoryMeasurementsInner,
     Observation,
-  } from '../../generated-sources/openapi';
+  } from '@gs';
   import {
     useComponentsApi,
     useObservationsApi,
@@ -309,7 +309,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="trigger-condition-row">
     <DataTable
-      v-model:editingRows="editingRows"
+      v-model:editing-rows="editingRows"
       :value="rows"
       edit-mode="row"
       table-class="editable-cells-table"
@@ -447,7 +447,7 @@ Licensed under the Elastic License 2.0. */
     <div v-if="rowOpenError" class="error my-4">
       {{ rowOpenError }}
     </div>
-    <div class="mt-5 text-center">
+    <div class="mt-5 text-center flex justify-center">
       <Button
         v-if="!nextGroupCondition"
         type="button"

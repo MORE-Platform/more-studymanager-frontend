@@ -15,16 +15,10 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableSortOptions,
   } from '../models/MoreTableModel';
-  import {
-    Participant,
-    StudyGroup,
-    StudyStatus,
-    StudyRole,
-  } from '../generated-sources/openapi';
+  import { Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import * as starWarsNames from 'starwars-names';
   import useLoader from '../composable/useLoader';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
@@ -36,6 +30,12 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
+  import {
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+    PARTICIPANT_COUNTS,
+  } from '../constants';
+  import QrCodeDialog from './dialog/QrCodeDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -117,7 +117,7 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
-      id: 'delete',
+      id: ACTION_ID_DELETE,
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteParticipantBtn'),
@@ -147,9 +147,9 @@ Licensed under the Elastic License 2.0. */
             },
             onClose: (options) => {
               if (options?.data) {
-                executeAction(
+                onAction(
                   {
-                    id: 'delete',
+                    id: ACTION_ID_DELETE,
                     row: options.data.participant,
                   } as MoreTableRowActionResult,
                   options.data.withData,
@@ -159,36 +159,22 @@ Licensed under the Elastic License 2.0. */
           }),
       },
     },
-  ];
-
-  const addParticipantOptions: MenuOptions[] = [
     {
-      label: t('participants.participantsList.labels.add1'),
-      value: 1,
-      command: (): void => createParticipant(1),
-    },
-    {
-      label: t('participants.participantsList.labels.add3'),
-      value: 3,
-      command: (): void => createParticipant(3),
-    },
-    {
-      label: t('participants.participantsList.labels.add10'),
-      value: 10,
-      command: (): void => createParticipant(10),
-    },
-    {
-      label: t('participants.participantsList.labels.add25'),
-      value: 25,
-      command: (): void => createParticipant(25),
-    },
-    {
-      label: t('participants.participantsList.labels.add50'),
-      value: 50,
-      command: (): void => createParticipant(50),
+      id: ACTION_ID_QR_CODE,
+      label: t('global.labels.qr'),
+      icon: 'pi pi-qrcode',
+      tooltip: t('tooltips.moreTable.showQrCode'),
+      visible: () => props.studyStatus !== StudyStatus.Closed,
     },
   ];
 
+  const addParticipantOptions: MenuOptions[] = PARTICIPANT_COUNTS.map(
+    (count) => ({
+      label: t(`participants.participantsList.labels.add${count}`),
+      value: count,
+      command: (): void => createParticipant(count),
+    }),
+  );
   async function listParticipant(): Promise<void> {
     participantsList.value = await participantsApi
       .listParticipants(props.studyId)
@@ -257,28 +243,56 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
-  function executeAction(
+  const onAction = (
     action: MoreTableRowActionResult,
     withData?: boolean,
-  ): void {
+  ): void => {
     switch (action.id) {
-      case 'delete':
+      case ACTION_ID_DELETE:
         deleteParticipant(action.row as Participant, !!withData);
+        break;
+      case ACTION_ID_QR_CODE:
+        openQrCodeDialog(action.row as Participant);
         break;
       default:
         console.error('no handler for action', action);
     }
-  }
+  };
 
-  function createParticipant(amount: number): void {
-    const i = amount || 1;
-    const participants = starWarsNames
-      .random(i)
-      .map((alias: string) => ({ alias, studyId: props.studyId }));
+  const openQrCodeDialog = (participant: Participant): void => {
+    dialog.open(QrCodeDialog, {
+      data: {
+        participant,
+      },
+      props: {
+        header: `${t('participants.dialog.header.qrCode')} ${participant.alias}`,
+        style: {
+          width: 'fit-content',
+        },
+        modal: true,
+        draggable: false,
+      },
+    });
+  };
+
+  const createParticipant = (amount: number): void => {
+    const newParticipants: Participant[] = [];
+    const maxId = Math.max(
+      0,
+      ...participantsList.value.map((p) => p?.participantId || 0),
+    );
+
+    for (let i = 1; i <= amount; i++) {
+      newParticipants.push({
+        alias: `P ${maxId + i}`,
+        studyId: props.studyId,
+      });
+    }
+
     participantsApi
-      .createParticipants(props.studyId, participants)
+      .createParticipants(props.studyId, newParticipants)
       .then(listParticipant);
-  }
+  };
 
   function changeValue(participant: Participant): void {
     const i = participantsList.value.findIndex(
@@ -364,6 +378,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   const menu = ref();
+
   function toggleButtonMenu(event: MouseEvent): void {
     menu.value.toggle(event);
   }
@@ -384,10 +399,10 @@ Licensed under the Elastic License 2.0. */
       :loading="loader.isLoading.value"
       :editable-access="props.studyStatus !== StudyStatus.Closed"
       :editable="checkEditablePermissions"
-      :editable-user-roles="[StudyRole.Admin, StudyRole.Operator]"
+      :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-50"
-      @on-action="executeAction($event)"
+      @on-action="onAction($event)"
       @on-change="changeValue($event)"
     >
       <template #tableActions="{ isInEditMode }">
@@ -415,6 +430,7 @@ Licensed under the Elastic License 2.0. */
         </div>
         <div class="ml-2.5">
           <FileUpload
+            class="cursor-pointer"
             mode="basic"
             upload-icon="pi pi-upload"
             :choose-label="t('participants.participantsList.action.import')"
@@ -436,7 +452,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </template>
     </MoreTable>
-    <ConfirmDialog></ConfirmDialog>
+    <ConfirmDialog />
     <DynamicDialog />
   </div>
 </template>

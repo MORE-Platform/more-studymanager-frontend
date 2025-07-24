@@ -13,12 +13,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
   } from '../models/MoreTableModel';
-  import {
-    DurationUnitEnum,
-    StudyGroup,
-    StudyRole,
-    StudyStatus,
-  } from '../generated-sources/openapi';
+  import { UnitEnum, StudyGroup, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
@@ -53,15 +48,15 @@ Licensed under the Elastic License 2.0. */
     },
     {
       label: t('scheduler.preview.unit.MINUTE'),
-      value: DurationUnitEnum.Minute,
+      value: UnitEnum.Minute,
     },
     {
       label: t('scheduler.preview.unit.HOUR'),
-      value: DurationUnitEnum.Hour,
+      value: UnitEnum.Hour,
     },
     {
       label: t('scheduler.preview.unit.DAY'),
-      value: DurationUnitEnum.Day,
+      value: UnitEnum.Day,
     },
   ];
 
@@ -144,7 +139,10 @@ Licensed under the Elastic License 2.0. */
     },
   ];
 
-  const editableRoles: StudyRole[] = [StudyRole.Admin, StudyRole.Operator];
+  const editableRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+    StudyRole.StudyOperator,
+  ];
 
   const actionsVisible =
     (props.userRoles.some((r) => editableRoles.includes(r)) &&

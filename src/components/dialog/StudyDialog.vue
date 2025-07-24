@@ -4,29 +4,30 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, onUpdated, reactive, ref, Ref } from 'vue';
+  import { inject, reactive, ref, watch } from 'vue';
   import InputText from 'primevue/inputtext';
   import Calendar from 'primevue/calendar';
   import Textarea from 'primevue/textarea';
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
-  import {
-    Study,
-    Duration,
-    DurationUnitEnum,
-  } from '../../generated-sources/openapi';
-  import { dateToDateString } from '../../utils/dateUtils';
+  import { Contact, Duration, UnitEnum, Study } from '@gs';
+  import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
-  import { MoreTableChoice } from '../../models/MoreTableModel';
-  import Dropdown from 'primevue/dropdown';
   import { useGlobalStore } from '../../stores/globalStore';
+  import ErrorLabel from '../forms/ErrorLabel.vue';
+  import { useErrorQueue } from '../../composable/useErrorHandling';
+  import { calcStudyDuration } from '../../utils/studyUtils';
+  import { scrollToFirstError } from '../../utils/componentUtils';
+  import ContactInformation from './shared/ContactInformation.vue';
+  import {
+    validateEmail,
+    validateTelephoneNumber,
+  } from '../../utils/stringUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
-
   const dialogRef: any = inject('dialogRef');
-  const study: Study = dialogRef.value.data?.study || {};
   const { t } = useI18n();
-
+  const study: Study = dialogRef.value.data?.study || {};
   const returnStudy: Study = reactive({
     studyId: study.studyId,
     title: study.title,
@@ -42,131 +43,119 @@ Licensed under the Elastic License 2.0. */
     contact: undefined,
     finishText: study.finishText,
   });
+  const contact = ref<Contact>({
+    person:
+      study?.contact?.person !== 'pending' ? study?.contact?.person || '' : '',
+    email:
+      study.contact?.email !== 'pending' ? study?.contact?.email || '' : '',
+    phoneNumber: study.contact?.phoneNumber ?? '',
+    institute: study.contact?.institute ?? '',
+  });
 
   const studyDuration: Duration = reactive({
     value: study.duration?.value,
-    unit: study.duration?.unit,
+    unit: study.duration?.unit ?? UnitEnum.Day,
   });
-
-  const durationUnitOptions = [
-    {
-      label: t('global.placeholder.nothingSelected'),
-      value: undefined,
-    },
-    {
-      label: t('scheduler.preview.unit.MINUTE'),
-      value: DurationUnitEnum.Minute,
-    },
-    {
-      label: t('scheduler.preview.unit.HOUR'),
-      value: DurationUnitEnum.Hour,
-    },
-    {
-      label: t('scheduler.preview.unit.DAY'),
-      value: DurationUnitEnum.Day,
-    },
-  ];
-
   const start = ref(
-    study
-      ? study.plannedStart
-        ? new Date(study.plannedStart)
-        : new Date()
-      : new Date(),
+    study?.plannedStart ? new Date(study.plannedStart) : new Date(),
   );
-  const end = ref(
-    study
-      ? study.plannedEnd
-        ? new Date(study.plannedEnd)
-        : new Date()
-      : new Date(),
-  );
-
-  const contactInstitute: Ref<string> = ref(study.contact?.institute ?? '');
-  const contactPerson: Ref<string> = ref(
-    study.contact?.person && study.contact?.person !== 'pending'
-      ? study.contact.person
-      : '',
-  );
-  const contactEmail: Ref<string> = ref(
-    study.contact?.email && study.contact?.email !== 'pending'
-      ? study.contact.email
-      : '',
-  );
-  const contactPhoneNumber: Ref<string> = ref(study.contact?.phoneNumber ?? '');
+  const end = ref(study?.plannedEnd ? new Date(study.plannedEnd) : new Date());
+  const { errors, clearError, getError, addError, clearAllErrors } =
+    useErrorQueue();
+  const maxStudyDuration = ref<number>(0);
 
   function save(): void {
     returnStudy.plannedStart = dateToDateString(start.value);
     returnStudy.plannedEnd = dateToDateString(end.value);
     returnStudy.duration =
       studyDuration.value && studyDuration.unit ? studyDuration : undefined;
+    returnStudy.contact = contact.value;
 
-    returnStudy.contact = {
-      institute: contactInstitute.value,
-      person: contactPerson.value,
-      email: contactEmail.value,
-      phoneNumber: contactPhoneNumber.value,
-    };
-    if (!errors.length) {
+    if (!errors.value.length) {
       dialogRef.value.close(returnStudy);
     }
   }
 
-  let errors: MoreTableChoice[] = [];
-
   function checkRequiredFields(): void {
-    errors = [];
+    clearAllErrors();
+
     if (!returnStudy.title) {
-      errors.push({ label: 'title', value: t('study.error.addTitle') });
-    }
-    if (
-      (!studyDuration.value && studyDuration.unit) ||
-      (studyDuration.value && !studyDuration.unit)
-    ) {
-      errors.push({
-        label: 'duration',
-        value: t('study.error.addDuration'),
-      });
+      addError({ label: 'title', value: t('study.error.addTitle') });
     }
     if (!returnStudy.consentInfo) {
-      errors.push({
+      addError({
         label: 'consentInfo',
         value: t('study.error.addConsentInfo'),
       });
     }
     if (!returnStudy.participantInfo) {
-      errors.push({
+      addError({
         label: 'participantInfo',
         value: t('study.error.addParticipantInfo'),
       });
     }
-    if (!contactPerson.value && !contactEmail.value) {
-      errors.push({
+
+    const isEmailValid = validateEmail(contact.value?.email);
+
+    if (!contact.value?.person && !isEmailValid) {
+      addError({
         label: 'contactInfo',
         value: t('study.error.addContactInfo'),
       });
-    } else if (!contactPerson.value) {
-      errors.push({
+    } else if (!contact.value?.person) {
+      addError({
         label: 'contactPerson',
         value: t('study.error.addContactPerson'),
       });
-    } else if (!contactEmail.value) {
-      errors.push({
+    } else if (!isEmailValid) {
+      addError({
         label: 'contactEmail',
         value: t('study.error.addContactEmail'),
       });
     }
-  }
 
-  function getError(label: string): string | null | undefined {
-    return errors.find((el) => el.label === label)?.value;
-  }
-
-  onUpdated(() => {
-    if (end.value < start.value) {
-      end.value = start.value;
+    if (
+      contact.value?.phoneNumber &&
+      !validateTelephoneNumber(contact.value?.phoneNumber)
+    ) {
+      addError({
+        label: 'contactTel',
+        value: t('study.error.addContactTel'),
+      });
     }
-  });
+
+    scrollToFirstError();
+  }
+
+  watch(
+    [studyDuration, start, end],
+    ([newDuration, newStart, newEnd]) => {
+      if (newEnd < newStart) {
+        end.value = newStart;
+      }
+      const maxDuration = calcStudyDuration(
+        createLuxonDateTime(newStart),
+        createLuxonDateTime(newEnd),
+      );
+      if (!maxDuration?.value) {
+        return;
+      } else {
+        maxStudyDuration.value = maxDuration.value;
+      }
+
+      if (newDuration.value && newDuration.value > maxStudyDuration.value) {
+        clearError('duration');
+        addError({
+          label: 'duration',
+          value: t('study.error.durationSmallerThanStudySpan', {
+            maxDuration: maxStudyDuration.value,
+          }),
+        });
+      }
+      scrollToFirstError();
+    },
+    { deep: true },
+  );
 
   function cancel(): void {
     dialogRef.value.close();
@@ -178,15 +167,12 @@ Licensed under the Elastic License 2.0. */
     <form
       id="studyDialogForm"
       class="grid grid-cols-6 items-center gap-4"
-      @submit.prevent="save()"
+      @submit.prevent="save"
     >
       <div class="col-start-0 col-span-6">
         <h5 class="text-lg font-bold" :class="{ 'mb-2': !getError('title') }">
           {{ $t('study.dialog.label.studyTitle') }}*
         </h5>
-        <div v-if="getError('title')" class="error col-span-8 mb-2">
-          {{ getError('title') }}
-        </div>
         <InputText
           id="name"
           v-model="returnStudy.title"
@@ -195,7 +181,9 @@ Licensed under the Elastic License 2.0. */
           required
           :placeholder="$t('study.placeholder.titleInput')"
           :name="'title'"
-        ></InputText>
+          @input="clearError('title')"
+        />
+        <ErrorLabel :error="getError('title')" class="col-span-8" />
       </div>
       <div class="col-span-5 col-start-2"></div>
       <div class="col-start-0 col-span-3">
@@ -204,7 +192,6 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="start"
-          class="w-full"
           :name="'start'"
           :min-date="
             study.plannedStart && new Date(study.plannedStart) < new Date()
@@ -214,6 +201,11 @@ Licensed under the Elastic License 2.0. */
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
+          :pt="{
+            input: {
+              class: ['w-full'],
+            },
+          }"
         />
       </div>
       <div class="col-start-0 col-span-3">
@@ -222,12 +214,16 @@ Licensed under the Elastic License 2.0. */
         </h5>
         <Calendar
           v-model="end"
-          class="w-full"
           :name="'end'"
           :placeholder="dateFormat"
           :date-format="dateFormat"
           autocomplete="off"
           :min-date="start"
+          :pt="{
+            input: {
+              class: ['w-full'],
+            },
+          }"
         />
       </div>
       <div class="ol-start-0 col-span-6">
@@ -237,9 +233,6 @@ Licensed under the Elastic License 2.0. */
         >
           {{ $t('study.props.duration') }}
         </h5>
-        <div v-if="getError('duration')" class="error col-span-8 mb-2">
-          {{ getError('duration') }}
-        </div>
         <div class="mb-2">{{ $t('study.dialog.description.duration') }}</div>
         <div class="examples mb-1.5 rounded-md p-2">
           <div class="color-primary font-medium">
@@ -254,29 +247,26 @@ Licensed under the Elastic License 2.0. */
             }}
           </div>
         </div>
-        <div class="grid grid-cols-6 items-center gap-4">
+        <div class="flex w-full flex-nowrap items-center gap-2">
           <InputNumber
             v-model="studyDuration.value"
-            class="col-span-4 w-full"
-            :name="'duration'"
+            :name="'duration_input'"
             :placeholder="$t('study.placeholder.durationInput')"
             :auto-resize="true"
-            @input="checkRequiredFields"
-          ></InputNumber>
-          <Dropdown
-            v-model="studyDuration.unit"
-            class="col-span-2 w-full"
-            :options="durationUnitOptions"
-            :name="'duration'"
-            option-label="label"
-            option-value="value"
-            :placeholder="$t('study.placeholder.durationInput')"
-            @change="checkRequiredFields"
+            :min="0"
+            class="w-full"
+            @input="clearError('duration')"
           />
+          <span class="w-fit">
+            {{ $t('scheduler.frequency.days') }}
+          </span>
         </div>
+        <ErrorLabel :error="getError('duration')" class="col-span-8" />
       </div>
       <div class="col-start-0 col-span-6">
-        <h5 class="mb-2 text-lg font-bold">{{ $t('study.props.purpose') }}</h5>
+        <h5 class="mb-2 text-lg font-bold">
+          {{ $t('study.props.purpose') }}
+        </h5>
         <div class="mb-2">{{ $t('study.dialog.description.purpose') }}</div>
         <Textarea
           v-model="returnStudy.purpose"
@@ -284,7 +274,7 @@ Licensed under the Elastic License 2.0. */
           :name="'purpose'"
           :placeholder="$t('study.placeholder.purposeInput')"
           :auto-resize="true"
-        ></Textarea>
+        />
       </div>
       <div class="col-start-0 col-span-6">
         <h5
@@ -293,9 +283,7 @@ Licensed under the Elastic License 2.0. */
         >
           {{ $t('study.props.participantInfo') }}*
         </h5>
-        <div v-if="getError('participantInfo')" class="error col-span-8 mb-2">
-          {{ getError('participantInfo') }}
-        </div>
+
         <div class="mb-2">
           {{ $t('study.dialog.description.participantInfo') }}
         </div>
@@ -306,7 +294,9 @@ Licensed under the Elastic License 2.0. */
           :name="'participantInfo'"
           :placeholder="$t('study.placeholder.participantInfoInput')"
           :auto-resize="true"
+          @input="clearError('participantInfo')"
         />
+        <ErrorLabel :error="getError('participantInfo')" class="col-span-8" />
       </div>
       <div class="col-start-0 col-span-6">
         <h5
@@ -315,10 +305,10 @@ Licensed under the Elastic License 2.0. */
         >
           {{ $t('study.props.consentInfo') }}*
         </h5>
-        <div v-if="getError('consentInfo')" class="error col-span-8 mb-2">
-          {{ getError('consentInfo') }}
+
+        <div class="mb-2">
+          {{ $t('study.dialog.description.consentInfo') }}
         </div>
-        <div class="mb-2">{{ $t('study.dialog.description.consentInfo') }}</div>
         <Textarea
           v-model="returnStudy.consentInfo"
           class="w-full"
@@ -326,7 +316,9 @@ Licensed under the Elastic License 2.0. */
           :required="true"
           :placeholder="$t('study.placeholder.consentInfoInput')"
           :auto-resize="true"
+          @input="clearError('consentInfo')"
         />
+        <ErrorLabel :error="getError('consentInfo')" class="col-span-8" />
       </div>
       <div class="col-start-0 col-span-6">
         <h5 class="mb-2 text-lg font-bold">
@@ -341,73 +333,10 @@ Licensed under the Elastic License 2.0. */
           auto-rezise="true"
         />
       </div>
-      <div class="col-span-6 mb-4 mt-2">
-        <h5 class="mb-2 text-lg font-bold">
-          {{ $t('study.dialog.label.contactInfo') }}*
-        </h5>
-        <div v-if="getError('contactInfo')" class="error col-span-8 mb-2">
-          {{ getError('contactInfo') }}
-        </div>
-        <div
-          v-else-if="getError('contactPerson')"
-          class="error col-span-8 mb-2"
-        >
-          {{ getError('contactPerson') }}
-        </div>
-        <div v-else-if="getError('contactEmail')" class="error col-span-8 mb-2">
-          {{ getError('contactEmail') }}
-        </div>
-        <div class="mb-3">{{ $t('study.dialog.description.contactData') }}</div>
-        <div class="grid grid-cols-6 gap-4">
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.institute') }}
-            </h6>
-            <InputText
-              v-model="contactInstitute"
-              class="w-full"
-              type="text"
-              :placeholder="t('study.placeholder.institute')"
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactPerson') }}*
-            </h6>
-            <InputText
-              v-model="contactPerson"
-              required
-              type="text"
-              class="w-full"
-              :placeholder="t('study.placeholder.contactPerson')"
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactEmail') }}*
-            </h6>
-            <InputText
-              v-model="contactEmail"
-              class="w-full"
-              required
-              type="email"
-              :placeholder="t('study.placeholder.contactEmail')"
-            />
-          </div>
-          <div class="col-span-3">
-            <h6 class="mb-1 font-medium">
-              {{ $t('study.dialog.label.contactTel') }}
-            </h6>
-            <InputText
-              v-model="contactPhoneNumber"
-              class="w-full"
-              type="tel"
-              :placeholder="t('study.placeholder.contactTel')"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="buttons col-start-0 col-span-6 mt-1 justify-end text-right">
+      <ContactInformation v-model="contact" />
+      <div
+        class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right"
+      >
         <Button
           class="btn-gray"
           :label="$t('global.labels.cancel')"
@@ -417,7 +346,8 @@ Licensed under the Elastic License 2.0. */
           class="!ml-2"
           type="submit"
           :label="$t('global.labels.save')"
-          @click="checkRequiredFields()"
+          :disabled="errors.length > 0"
+          @click="checkRequiredFields"
         />
       </div>
     </form>

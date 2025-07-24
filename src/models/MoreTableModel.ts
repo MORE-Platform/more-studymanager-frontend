@@ -7,13 +7,7 @@
  Licensed under the Elastic License 2.0.
  */
 
-import {
-  Intervention,
-  Observation,
-  Participant,
-  Study,
-  StudyGroup,
-} from '../generated-sources/openapi';
+import { Intervention, Observation, Participant, Study, StudyGroup } from '@gs';
 
 export interface MoreTableColumn {
   field: string;

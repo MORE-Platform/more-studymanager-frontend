@@ -1,176 +1,964 @@
 {
-  "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
-  "welcomeToMore": "Welcome to More",
-  "global": {
+  "cronSchedule": {
+    "additionalConfig": "Additional configuration",
+    "cronScheduleTip": "Further info on specific cron values",
+    "error": {
+      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use * each. Use a ? (blank value) in either of them.",
+      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use ? each. Use a * (every day of month or every day of week) in either of them.",
+      "Expected 5 values, but got 1": "Please fill out all input fields for the Cron Schedule.",
+      "Expected 5 values, but got 2": "Please fill out all input fields for the Cron Schedule.",
+      "Expected 5 values, but got 3": "Please fill out all input fields for the Cron Schedule.",
+      "Expected 5 values, but got 4": "Please fill out all input fields for the Cron Schedule.",
+      "blank notation is not allowed in hours field": "Hours field doesn't support ? (blank value). Please use a * (every hour) or a specific value.",
+      "blank notation is not allowed in minutes field": "Minutes field doesn't support ? (blank value). Please usa * (every minute) or a specific value.",
+      "blank notation is not allowed in months field": "Months field doesn't support ? (blank value). Please use a * (every hour) or a specific value.",
+      "daysOfMonth field is undefined": "Please fill out all input fields for the Cron Schedule.",
+      "hours field is undefined": "Please fill out all input fields for the Cron Schedule.",
+      "months field is undefined": "Please fill out all input fields for the Cron Schedule."
+    },
+    "example": {
+      "title": "Cron Scheduler examples",
+      "titles": {
+        "daily": "Every Day at 12:00",
+        "everyFiveMinutes": "Every 5 minutes",
+        "everyMinute": "Every minute",
+        "everyMinuteInSetTime": "Every minute in the range of xx:00 to xx:10",
+        "hourly": "Every hour at xx:30",
+        "specificDayOfMonth": "Every 4th of every month",
+        "specificHourRange": "At xx:30 between 8:00 and 10:00",
+        "specificMonth": "Every day at 8:00 in March"
+      }
+    },
+    "formTitle": "Configure your <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Schedule manually</a> ",
+    "formTitleDisabled": "Configuration of your Cron Schedule",
+    "info": {
+      "asterisk": "All values (e.g. every minute)",
+      "example": "Example: 0 12 ? * * means every day at 12.",
+      "generalInfo": "Provide a number, a list of numbers (e.g. 1,2,3) or a range (e.g. 12-14)",
+      "questionMark": "No specific value (e.g. any day of the week)"
+    },
     "labels": {
-      "close": "Close",
-      "save": "Save",
-      "apply": "Apply",
-      "cancel": "Cancel",
-      "delete": "Delete",
-      "new": "New",
-      "add": "Add",
-      "start": "Start",
-      "end": "End",
-      "time": "Time",
-      "repetition": "Repetition",
-      "confirm": "Confirm",
-      "id": "Id",
-      "clone": "Clone",
-      "description": "Description",
-      "edit": "Edit",
-      "setPause": "Pause",
-      "lastEdited": "Last edited",
-      "isRequired": "Required",
-      "isNotRequired": "Not required",
-      "modules": "Modules",
-      "noValue": "-",
-      "config": "Configuration",
-      "notFound": "Not found",
-      "noRecords": "No records",
-      "lastCollected": "Last collected",
-      "dataReceived": "Data received",
-      "noDataReceived": "No data received",
-      "lastDataReceived": "Last data received",
-      "to": "to",
-      "message": "Message",
-      "option": "Option {value}",
-      "data": "Data",
-      "scheduleType": "Schedule Type",
-      "filter": "Filter"
+      "dayOfMonth": "Day of month",
+      "dayOfWeek": "Day of week",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "months": "Months",
+      "seconds": "Seconds"
     },
-    "placeholder": {
-      "entireStudy": "Entire study",
-      "chooseDropdownOptionDefault": "Choose option",
-      "optionsSelected": "options selected",
-      "chooseRole": "Choose role",
-      "nothingSelected": "Nothing selected",
-      "noGroup": "No group",
-      "all": "All",
-      "enterTextValue": "Enter text value"
+    "limitDescription": "This version of the More Cron Scheduler only supports whole numbers, * or ?. Expressions like 0/1 or 3-20 are not supported for the time being.",
+    "placeholders": {
+      "dayOfMonth": "1-31",
+      "dayOfWeek": "1-7",
+      "hours": "0-23",
+      "months": "1-12",
+      "secondsAndMinutes": "0-59"
     },
-    "header": {
-      "logout": "Log out",
-      "backToDashboard": "Dashboard"
+    "quickStart": "or use <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a> to get quickly started.",
+    "quickStartNote": "Seconds and years are handled automatically.",
+    "singular": "Cron Scheduler"
+  },
+  "data": {
+    "dataDownload": {
+      "description": "Here you can download the study data based on various filters.",
+      "title": "Download study data"
+    }
+  },
+  "global": {
+    "error": {
+      "general": "A General error occurred.",
+      "immutable": "The value '{value}' is immutable and cannot be changed.",
+      "inComponentTitle": "In Observation '{title}': ",
+      "required": "Required value '{value}' missing.",
+      "type": {
+        "error": "Error",
+        "info": "Info",
+        "warning": "Warning"
+      }
     },
     "footer": {
       "aboutMore": "About More"
     },
-    "error": {
-      "type": {
-        "error": "Error",
-        "warning": "Warning",
-        "info": "Info"
-      },
-      "general": "A General error occurred.",
-      "required": "Required value '{value}' missing.",
-      "immutable": "The value '{value}' is immutable and cannot be changed.",
-      "inComponentTitle": "In Observation '{title}': "
-    }
-  },
-
-  "studyNavigation": {
-    "accessDialog": {
-      "header": "Access denied",
-      "permissionWarningMsg": ". Please contact your study administrator if you require access to this section.",
-      "accessInformation": "-section can't be viewed. Access requires following permissions: "
+    "header": {
+      "backToDashboard": "Dashboard",
+      "logout": "Log out"
     },
-    "tabs": {
-      "overview": "Study",
-      "participants": "Participants",
-      "observations": "Observations",
-      "integration": "Integrations",
-      "interventions": "Interventions",
-      "timeline": "Timeline",
-      "monitoringAndData": "Monitoring & Data"
+    "labels": {
+      "add": "Add",
+      "apply": "Apply",
+      "cancel": "Cancel",
+      "clone": "Clone",
+      "close": "Close",
+      "config": "Configuration",
+      "confirm": "Confirm",
+      "data": "Data",
+      "dataReceived": "Data received",
+      "delete": "Delete",
+      "description": "Description",
+      "edit": "Edit",
+      "end": "End",
+      "filter": "Filter",
+      "id": "Id",
+      "isNotRequired": "Not required",
+      "isRequired": "Required",
+      "lastCollected": "Last collected",
+      "lastDataReceived": "Last data received",
+      "lastEdited": "Last edited",
+      "message": "Message",
+      "modules": "Modules",
+      "new": "New",
+      "noDataReceived": "No data received",
+      "noRecords": "No records",
+      "noValue": "-",
+      "notFound": "Not found",
+      "option": "Option {value}",
+      "qr": "QR Code",
+      "repetition": "Repetition",
+      "save": "Save",
+      "scheduleType": "Schedule Type",
+      "setPause": "Pause",
+      "start": "Start",
+      "time": "Time",
+      "to": "to"
+    },
+    "placeholder": {
+      "all": "All",
+      "chooseDropdownOptionDefault": "Choose option",
+      "chooseRole": "Choose role",
+      "enterTextValue": "Enter text value",
+      "entireStudy": "Entire study",
+      "noGroup": "No group",
+      "nothingSelected": "Nothing selected",
+      "optionsSelected": "options selected"
     }
   },
-
-  "study": {
-    "singular": "Study",
-    "plural": "Studies",
+  "inputModel": {
+    "enterValue": "Please enter a value."
+  },
+  "integration": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete your integration?",
+        "intro": "You are about to delete the following integration:",
+        "warning": "A deleted integration can't be restored. If you delete this integration its link to the observation will be deleted and its data will be lost."
+      },
+      "example": {
+        "dataTitle": "Send data to API with your token",
+        "filledExample": "Filled example",
+        "participantsTitle": "Get Participants from API with your token",
+        "title": "Examples",
+        "yourData": "DATA OBJECT",
+        "yourDomain": "DOMAIN",
+        "yourToken": "TOKEN"
+      },
+      "header": {
+        "clone": "Clone integration",
+        "create": "Create integration",
+        "delete": "Delete integration",
+        "tokenCopy": "Copy token"
+      },
+      "label": {
+        "chooseObservation": "Choose observation",
+        "chooseObservationDesc": "Choose an existing observation to link to.",
+        "copySuccess": "Token successfully copied to clipboard.",
+        "copyToken": "Copy token",
+        "description": "An integration enables to link an external API to an existing observation. Choose the observation for which you want to create a token to link the observation to your external device.",
+        "integrationTitle": "Integration title"
+      },
+      "msg": {
+        "createdToken": "Please copy your token to be able to link. The token won't be reviewable afterwards, so be mindful with your usage. If you loose a token you can recreate it at anytime.",
+        "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?"
+      },
+      "placeholder": {
+        "selectObservation": "Please select an existing observation.",
+        "tokenLabelInput": "Please enter a label for your token."
+      }
+    },
+    "error": {
+      "addTokenLabel": "Please add a label for your token",
+      "selectObservation": "Please select an observation you want to link to."
+    },
+    "integrationList": {
+      "action": {
+        "add": "Create integration"
+      },
+      "description": "An external integration can be linked to already existing observations to add and collect data from.",
+      "emptyListMsg": "Add an manage your external integrations",
+      "title": "External integrations"
+    },
+    "plural": "Integrations",
     "props": {
-      "studyId": "Study ID",
-      "title": "Title",
-      "purpose": "Purpose",
-      "status": "Status",
-      "roles": "Role(s)",
-      "duration": "Study duration",
-      "plannedStart": "Planned Start",
-      "actualStart": "Actual start",
-      "plannedEnd": "Planned end",
-      "actualEnd": "Actual end",
-      "participantInfo": "Participant information",
-      "consentInfo": "Consent information",
-      "language": "Language",
-      "studyGroup": "Study group {size}",
-      "finishText": "Study end message"
+      "created": "Created",
+      "observationId": "Observation ID",
+      "observationTitle": "Observation",
+      "token": "Token",
+      "tokenId": "Token ID",
+      "tokenLabel": "Token label"
+    },
+    "singular": "Integration"
+  },
+  "intervention": {
+    "description": {
+      "provideActionConfig": "Enter the config for the action",
+      "provideTriggerConfig": "Enter the config for the trigger"
+    },
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete your intervention?",
+        "intro": "You are about to delete the following intervention:",
+        "warning": "A deleted intervention can't be restored. If you delete this intervention all settings and configurations are lost and you won't be able to use it at a later date."
+      },
+      "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue.",
+      "header": {
+        "clone": "Clone intervention",
+        "create": "Create intervention",
+        "delete": "Delete intervention",
+        "edit": "Edit intervention",
+        "view": "Intervention details"
+      },
+      "label": {
+        "addTriggerGroup": "Add trigger group",
+        "chooseObservation": "Choose observation",
+        "interventionTitle": "Intervention title",
+        "triggerConditionObservationProperty": "Observation Property",
+        "triggerConditionOperator": "Operator",
+        "triggerConditionPropertyValue": "Property Value",
+        "triggerConditions": "Trigger conditions",
+        "triggerConditionsDesc": "Configure trigger properties from observations or observation types. To compare the property values use <, >, >=, <=, = or != (is not).",
+        "triggerType": "Trigger-Type",
+        "window": "Window",
+        "windowInSeconds": "Observation period in seconds"
+      },
+      "msg": {
+        "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention:"
+      },
+      "placeholder": {
+        "enterNumber": "Enter number",
+        "enterValue": "Enter value",
+        "message": "Enter message",
+        "title": "Enter title"
+      },
+      "title": "Intervention"
+    },
+    "error": {
+      "addAction": "The intervention needs at least one Trigger. Please add a trigger.",
+      "addTitle": "The intervention title is required. Please add a title for your intervention.",
+      "addTriggerConfig": "Please add specific trigger configurations to your data check.",
+      "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
+      "emptyTriggerConditions": "Please save at least one trigger condition to your trigger.",
+      "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
+      "triggerProp": "A Trigger property has an error."
+    },
+    "factory": {
+      "actions": {
+        "pushNotification": {
+          "description": "Sends a push notification to all matching participants based on the trigger.",
+          "title": "Push Notification Action"
+        },
+        "triggerObservation": {
+          "description": "Trigger a selected observation",
+          "properties": {
+            "observation": {
+              "description": "Select an existing observation (currently simple questions and lime surveys are supported)",
+              "name": "Observation"
+            }
+          },
+          "title": "Trigger Observation"
+        }
+      },
+      "trigger": {
+        "relativeTime": {
+          "configProps": {
+            "day": "Day",
+            "dayDesc": "Day of participant",
+            "hour": "Hour",
+            "hourDesc": "The hour of the given day"
+          },
+          "description": "Triggers an action on a given relative time (day and hour-of-day)",
+          "title": "Relative Time Trigger"
+        },
+        "scheduled": {
+          "configProps": {
+            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Show further info on possible cron values.</a>\n",
+            "cronName": "Cron Schedule"
+          },
+          "description": "This trigger triggers and action based on a cron trigger.",
+          "title": "Scheduled Trigger"
+        },
+        "scheduledDatacheck": {
+          "configProps": {
+            "onlyOnceDesc": "Triggers only once when value is matching; resets when value is not matching anymore",
+            "onlyOnceName": "Only Once",
+            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
+            "queryName": "Query",
+            "queryObjDesc": "A more complex variant of query",
+            "queryObjName": "Query Object",
+            "timeWindowName": "Time window in seconds from the query time",
+            "windowPlaceholder": "Enter number in seconds."
+          },
+          "description": "This trigger triggers an action based on a cron trigger and specific observation data capture values.",
+          "title": "Scheduled Datacheck"
+        }
+      }
+    },
+    "interventionList": {
+      "action": {
+        "add": "Add intervention"
+      },
+      "description": "An intervention describes an action delivered to the app triggered by a scheduled interval or by rules on captured data.",
+      "emptyListMsg": "Add and manage your studies interventions",
+      "snippets": {
+        "day": "day",
+        "every": "every",
+        "month": "month",
+        "months": "months",
+        "ofEvery": "of every"
+      },
+      "title": "Interventions"
+    },
+    "placeholder": {
+      "chooseAction": "Choose an action",
+      "emptyScheduler": "Please provide a schedule for your intervention",
+      "noDescription": "No description available",
+      "trigger": "Choose a trigger type"
+    },
+    "plural": "Interventions",
+    "props": {
+      "action": "Action",
+      "actions": "Actions",
+      "trigger": "Trigger"
+    },
+    "singular": "Intervention"
+  },
+  "message": "Message",
+  "monitoring": {
+    "charts": {
+      "polarVerity": {
+        "avgHeartRate": {
+          "description": "Compares the average heart rate of all participants over time, with a time interval of 1 minute.",
+          "label": "Heart rate",
+          "title": "Average heart rate per participant over time"
+        }
+      },
+      "simpleQuestion": {
+        "responseDistribution": {
+          "description": "Each segment represents the frequency of a particular answer and shows how many participants selected the respective option.",
+          "label": "All Responses",
+          "title": "Distribution of Participant Responses"
+        },
+        "responseDistributionResponse": {
+          "description": "Each column in the bar chart represents the number of responses per study group.",
+          "label": "Groups by Response",
+          "title": "Response Distribution Across Study Groups"
+        },
+        "responseDistributionStudyGroup": {
+          "description": "Each column in the bar chart represents the number of responses per study group.",
+          "label": "Responses by Group",
+          "title": "Response Distribution Across Study Groups"
+        }
+      }
+    },
+    "dataList": {
+      "description": "The most recently collected data points are displayed here in tabular form and the entire data points can be displayed in various visualizations.",
+      "emptyListMsg": "Currently there are no observations to track.",
+      "title": "Recorded observations"
+    },
+    "dataPointsList": {
+      "filterInfo": "Filtering is only possible for visualization.",
+      "lastDatapoints": "Last data points",
+      "resultSize": "Size of result"
+    },
+    "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
+    "labels": {
+      "dateRange": "Date range",
+      "latestDataPoints": "Latest Data Points",
+      "noDataAvailable": "No data available",
+      "visualization": "Visualization"
+    },
+    "placeholder": {
+      "chooseSize": "Choose a size"
+    },
+    "title": "Monitoring"
+  },
+  "monitoringData": {
+    "tabs": {
+      "dataDownload": "Export study data",
+      "lastDataPoints": "Latest Data Points",
+      "recordedObservation": "Recorded Observations"
+    }
+  },
+  "moreTable": {
+    "defaultEmptyMsg": "No records",
+    "filterBy": "Filter by",
+    "saveLine": "Please save"
+  },
+  "observation": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete your observation?",
+        "intro": "You are about to delete the following observation:",
+        "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost."
+      },
+      "header": {
+        "clone": "Clone observation",
+        "create": "Create observation",
+        "delete": "Delete observation",
+        "edit": "Edit observation",
+        "view": "Observation details"
+      },
+      "label": {
+        "observationTitle": "Observation title"
+      },
+      "msg": {
+        "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation:",
+        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app."
+      }
+    },
+    "error": {
+      "addParticipantInfo": "The participant information describes the purpose of the observation. Please enter a participant information.",
+      "addScheduler": "Scheduler",
+      "addSchedulerMsg": "Please set the scheduler for your observation.",
+      "addTitle": "The observation title is required. Please enter a title.",
+      "noValidField": "Wrong value {key}: {message}"
+    },
+    "factory": {
+      "accelerometerMobile": {
+        "description": "This observation enables you to collect accelerometer data via the smartphone sensor.",
+        "title": "Accelerometer Mobile Sensor"
+      },
+      "external": {
+        "description": "An observation for data that is collected via the external data api.",
+        "title": "External Observation"
+      },
+      "gpsMobile": {
+        "configProps": {
+          "measurementDesc": "Measurement interval in milliseconds, 30k to 600k",
+          "measurementName": "Measurement interval"
+        },
+        "description": "This observation enables you to collect GPS data via the smartphone sensor.",
+        "title": "GPS Mobile Sensor"
+      },
+      "limeSurvey": {
+        "configProps": {
+          "idDesc": "The id of the survey",
+          "idName": "Survey"
+        },
+        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
+        "title": "Lime Survey"
+      },
+      "polarVerity": {
+        "description": "This observation enables you to collect heart rate data via the polar verity sensor.",
+        "title": "Polar Verity Sensor"
+      },
+      "simpleQuestion": {
+        "configProps": {
+          "answerDesc": "Possible answers (min. 2, max.5)",
+          "answerName": "Answers",
+          "questionDesc": "The question you want to ask.",
+          "questionName": "Question"
+        },
+        "description": "This observation enables you to create a simple multiple choice question.",
+        "title": "Simple Question"
+      }
+    },
+    "observationList": {
+      "action": {
+        "add": "Add observation"
+      },
+      "description": "An observation can be sensor data from a mobile phone, a wearable device or information gathered from a questionnaire. An observation can be assigned to one specific study group. If no study group is assigned, the observation will be applied to the entire study.",
+      "emptyListMsg": "Add and manage your studies observations",
+      "title": "Observations"
+    },
+    "placeholder": {
+      "chooseObservation": "Choose an observation",
+      "emptySchedulerMsg": "Please provide a schedule for your observation.",
+      "enterMainPurpose": "Enter the main purpose and intention of the study."
+    },
+    "plural": "Observations",
+    "props": {
+      "hidden": {
+        "false": "Not hidden",
+        "true": "Hidden"
+      },
+      "noSchedule": "No Schedule",
+      "observationType": {
+        "heartRateMeter": "Heart Rate Meter",
+        "smartphoneAccelerometer": "Smartphone Accelerometer"
+      },
+      "type": "Type"
+    },
+    "singular": "Observation"
+  },
+  "participants": {
+    "dialog": {
+      "btn": {
+        "copyLink": "Copy link",
+        "distributeBtn": "Distribute",
+        "downloadQr": "Download JPG"
+      },
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this participant?",
+        "deleteWithData": "Delete incl. data",
+        "deleteWithoutData": "Delete",
+        "intro": "You are about to delete the following participant:",
+        "warning": "A deleted participant can't be restored. You have the option to delete a participant including all the collected data or the participant alone."
+      },
+      "error": {
+        "qrcode": "Error in QR code creation"
+      },
+      "header": {
+        "create": "Create participant",
+        "delete": "Delete participant",
+        "deleteWithData": "Delete data",
+        "distribute": "Distribute participants randomly to study groups",
+        "edit": "Edit participant",
+        "qrCode": "QR Code for",
+        "alert": "QR Code Link was copied successfully."
+      },
+      "msg": {
+        "delete": "Do you really want to delete this participant?",
+        "deleteWithData": "Include all data for the participant?",
+        "qrCode": "With this QR code, participant {part} can log in using the More mobile app."
+      }
+    },
+    "participantsList": {
+      "action": {
+        "add": "Add participant",
+        "distribute": "Assign study groups",
+        "export": "Export CSV",
+        "import": "Import participants"
+      },
+      "description": "Add participants manually or by importing a list with alias names. Participants can be automatically assigned to groups and exported to a CSV.",
+      "distributeMsg": {
+        "confirm": "Distribution of participants can't be revoked. Are you sure you want to assign the participants to your study groups?",
+        "intro": "You are about to distribute all participants to your study groups.",
+        "warning": "Participants will be randomly assigned to the created study groups. They are evenly seperated to the groups. Reassigning participants will assign all participants randomly to your groups again."
+      },
+      "emptyListMsg": "Add study participants to your study",
+      "labels": {
+        "add1": "Add 1",
+        "add10": "Add 10",
+        "add25": "Add 25",
+        "add3": "Add 3",
+        "add50": "Add 50"
+      },
+      "title": "Participants"
+    },
+    "placeholder": {
+      "allParticipants": "All participants",
+      "chooseParticipant": "Choose a participant"
+    },
+    "plural": "Participants",
+    "props": {
+      "alias": "Alias",
+      "individualStart": "Started on",
+      "participantId": "Participant ID",
+      "registrationToken": "Registration token",
+      "token": "Token"
+    },
+    "singular": "Participant"
+  },
+  "scheduler": {
+    "byMonthDayLabel": {
+      "first": "st",
+      "fourth": "th",
+      "second": "nd",
+      "third": "rd"
+    },
+    "bySetPosLabel": {
+      "first": "first",
+      "fourth": "fourth",
+      "last": "last",
+      "second": "second",
+      "third": "third"
+    },
+    "dialog": {
+      "absoluteSchedule": {
+        "description": "An absolute Schedule includes absolute date times. Observations can be timed by absolute dates and timeframes."
+      },
+      "description": "An absolute Schedule includes absolute date times. A relativ schedule collects data based on participant login and individual study starts.",
+      "endAfter": "End after",
+      "noSetScheduleDesc": "If there is no schedule set, the whole schedule time will be set als default time as absolute Schedule.",
+      "relativeSchedule": {
+        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
+        "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
+        "dialogTitle": "Manage relative schedule",
+        "endValue": "Ends on",
+        "error": {
+          "cannotRepeat": "The observation cannot occur again as it would exceed the end of the study.",
+          "dtend": {
+            "EndBeforeStart": "Please Set the relative start period before the end period",
+            "addOffset": "Fill in the offset of the relative end period."
+          },
+          "dtstart": {
+            "addOffset": "Fill in the offset of the relative start period."
+          },
+          "rrrule": {
+            "endAfter": "Fill in the offset to the end date.",
+            "frequency": "Fill in the repetition rate.",
+            "notValid": "Values entered are not valid",
+            "repetitionEndTooLong": "The end of repetitions must not exceed the remaining study duration of {durValue} {durUnit}.",
+            "repetitionTooLong": "Repetitions must not exceed the end of the study. The maximum interval is {repValue} {repUnit}."
+          },
+          "scheduleTooLong": "The observation must not exceed the study period of {maxDuration} days.",
+          "startTimeBeforeEnd": "Start time must be before the end time."
+        },
+        "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
+        "placeholder": {
+          "dtendOffset": "Enter offset in day(s)",
+          "dtendTime": "Enter end time",
+          "dtstartOffset": "Enter offset in day(s)",
+          "dtstartTime": "Enter start time",
+          "enterNumber": "Enter number"
+        },
+        "rrrule": {
+          "endsAfter": "Ends 0 days after individual study start | Ends 1 day after individual study start | Ends {n} days after individual study start",
+          "runTime": "The observation will run {repetitionNum} times."
+        },
+        "startValue": "Starts on"
+      },
+      "repeatEvent": "Repeat event",
+      "repeatEventDescription": "The event above will be repeated after the runtime of the current event has finished.",
+      "repeatEventTitle": "Repeat observation event",
+      "repeatEvery": "Repeat every",
+      "singleEventTitle": "Single observation event"
+    },
+    "dialogTitle": "Manage absolute schedule",
+    "frequency": {
+      "day": "day",
+      "days": "day(s)",
+      "hour": "hour",
+      "hours": "hour(s)",
+      "labels": {
+        "daily": "Daily",
+        "weekly": "Weekly"
+      },
+      "minute": "minute",
+      "minutes": "minute(s)",
+      "month": "month",
+      "months": "month(s)",
+      "week": "week",
+      "weeks": "week(s)",
+      "years": "year(s)"
+    },
+    "info": {
+      "dateOverlapEnd": "Start date was resetted to end date. Please be sure to set start and end time within each others range.",
+      "dateOverlapStart": "End date was changed with start date. Please be sure to set start and end time within each others range.",
+      "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
+      "timeOutsideStudyRange": "Please be sure to set start and end time within the study range.",
+      "timeOverlapEnd": "Start time was changed with end time. Please be sure to set start and end time within each others range.",
+      "timeOverlapStart": "End time was changed with start time. Please be sure to set start and end time within each others range."
+    },
+    "labels": {
+      "after": "After",
+      "date": "Date",
+      "editRelativeScheduler": "Edit relative Schedule",
+      "editScheduler": "Edit absolute schedule",
+      "event": {
+        "allDay": "Entire day",
+        "example": {
+          "titles": {
+            "fullTimespan": "Continuous data collection over the entire two-month period",
+            "series": "Repeat single day schedule for 10 days",
+            "singleDay": "Single data capture"
+          },
+          "values": {
+            "fullTimespan": "Uncheck 'One day observation' &bull; Start: {egStartDate}, 08:00 - End: {egEndDate}, 20:00<br>Optional: Check 'Entire day'",
+            "series": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00<br>Repeat: Daily - After 10 days",
+            "singleDay": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00"
+          }
+        },
+        "first": "First event",
+        "oneDayObservation": "Multiple observation events",
+        "repeat": "Repeat set duration above",
+        "repeatDesc": "To repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated.",
+        "repetitionEnd": {
+          "after": "After",
+          "studyEnd": "Until end of study"
+        },
+        "setDates": "Set dates",
+        "setDatesDesc": "You can define a timeframe for your observation with start and end date for one day. The timeframe can be set to 'Entire day'. A series of data collection can be defined through the repetition definition below. Alternatively you can set a full time span over more days."
+      },
+      "every": "Every",
+      "frequency": "Frequency",
+      "on": "On",
+      "openRelativeScheduler": "Add relative Schedule",
+      "openScheduler": "Add absolute schedule",
+      "removeScheduler": "Remove scheduler",
+      "repeat": "Repeat",
+      "repetitionEnd": "Repetition ends",
+      "selection": {
+        "allDaysInWeek": "All days in week",
+        "allWeekdays": "All weekdays",
+        "allWeekendDays": "All weekend days",
+        "daysSelected": "Days selected",
+        "specificDay": "On a specific day"
+      },
+      "timeframe": "Timeframe"
+    },
+    "months": {
+      "april": "April",
+      "august": "August",
+      "december": "December",
+      "february": "February",
+      "january": "January",
+      "july": "July",
+      "june": "June",
+      "mai": "Mai",
+      "march": "March",
+      "november": "November",
+      "october": "October",
+      "september": "September",
+      "short": {
+        "april": "Apr",
+        "august": "Aug",
+        "december": "Dec",
+        "february": "Feb",
+        "january": "Jan",
+        "july": "Jul",
+        "june": "Jun",
+        "mai": "Mai",
+        "march": "Mar",
+        "november": "Nov",
+        "october": "Oct",
+        "september": "Sep"
+      }
+    },
+    "placeholder": {
+      "chooseDayInterval": "Choose day interval",
+      "chooseGeneralInterval": "Choose general interval",
+      "chooseMonth": "Choose month",
+      "chooseRepetitionEnd": "Choose repetition end",
+      "enterDayOfMonth": "Enter day of month",
+      "enterRepeatCount": "Enter repeat count"
+    },
+    "preview": {
+      "title": {
+        "ends": "Ends",
+        "endsOn": "Ends on",
+        "every": "Every",
+        "in": "in",
+        "individualEvent": "Individual Event",
+        "on": "on",
+        "repeatEvent": "Repeat Event",
+        "selectedDays": "Selected days",
+        "startsOn": "Starts on",
+        "timeframe": "Timeframe"
+      },
+      "unit": {
+        "DAILY": "day(s)",
+        "DAY": "Day",
+        "HOUR": "Hour",
+        "MINUTE": "Minute",
+        "PL-DAY": "day(s)",
+        "PL-HOUR": "hour(s)",
+        "PL-MINUTE": "minute(s)",
+        "WEEKLY": "week(s)",
+        "date": "Date",
+        "time": "Time"
+      },
+      "value": {
+        "DAY": "no day | 1 day | {n} days",
+        "HOUR": "no hour | 1 hour | {n} hours",
+        "MINUTE": "no minute | 1 minute | {n} minutes",
+        "WEEKLY": "no week | 1 week | {n} weeks"
+      }
+    },
+    "relativeDialogTitle": "Manage relative schedule",
+    "singular": "Scheduler",
+    "type": {
+      "Event": "Absolut Event",
+      "RelativeEvent": "Relative Event"
+    },
+    "warningsAndErrors": {
+      "endWasChangedWithStartValue": "End value was changed with start value.",
+      "rruleEndIsEmpty": "Please set and end point for your repetition period.",
+      "rruleFreqIsEmpty": "Please set the frequency for your repetition.",
+      "rruleWeeklyIsMissingByDay": "Please set the weekdays for your repetition."
+    },
+    "weekday": {
+      "friday": "Friday",
+      "monday": "Monday",
+      "props": {
+        "FR": "Fr",
+        "MO": "Mo",
+        "SA": "Sa",
+        "SO": "So",
+        "TH": "Thur",
+        "TU": "Tue",
+        "WE": "We"
+      },
+      "saturday": "Saturday",
+      "short": {
+        "friday": "FR",
+        "monday": "MO",
+        "saturday": "SA",
+        "sunday": "SU",
+        "thursday": "TH",
+        "tuesday": "TU",
+        "wednesday": "WE"
+      },
+      "sunday": "Sunday",
+      "thursday": "Thursday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday"
+    }
+  },
+  "study": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete your study?",
+        "intro": "You are about to delete the following study:",
+        "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date. It is only possible to delete a study without its data for the time being."
+      },
+      "description": {
+        "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",
+        "contactData": "This contact information will be displayed in the app for participants to use when they encounter problems.",
+        "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
+        "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks. The participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
+        "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
+        "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
+        "study": "Enter the base information of your study to provide basic information for collaborators and participants."
+      },
+      "error": {
+        "missedFieldsMsg": "Please fill out the following information fields: "
+      },
+      "header": {
+        "create": "Create study",
+        "delete": "Delete study",
+        "edit": "Edit study",
+        "urlCopied": "Share study"
+      },
+      "label": {
+        "contactEmail": "Email",
+        "contactInfo": "Contact information",
+        "contactPerson": "Name",
+        "contactTel": "Phone",
+        "durationExample": "Study Duration Example",
+        "institute": "Institute",
+        "studyEnd": "Study end",
+        "studyStart": "Study start",
+        "studyTitle": "Study title"
+      },
+      "msg": {
+        "delete": "A deleted study can't be restored. Are you sure you want to delete your study?",
+        "urlCopied": "Link to study '{title} (Id: {studyId})'  was copied to your clipboard."
+      }
+    },
+    "error": {
+      "addConsentInfo": "The consent information is required. Please enter a description.",
+      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
+      "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
+      "addContactTel": "Please add a valid contact telephone number, which participants can use to contact your institute when they encounter problems.",
+      "addDuration": "Please enter both a duration and a unit.",
+      "addParticipantInfo": "The participant information is required. Please enter a description.",
+      "addTitle": "The study title is required. Please enter a study title.",
+      "durationSmallerThanStudySpan": "The specified duration must not exceed {maxDuration} day(s)."
     },
     "ical": {
       "copyMsg": "Link for ICalendar subscription ('{title} (Id: {studyId})') was copied to clipboard.",
-      "title": "Calendar for subscription",
-      "copyTitle": "Copy Link"
+      "copyTitle": "Copy Link",
+      "title": "Calendar for subscription"
+    },
+    "placeholder": {
+      "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
+      "contactEmail": "Enter the contact email.",
+      "contactPerson": "Enter the information of the contact person.",
+      "contactTel": "Enter the contact telephone number.",
+      "durationInput": "Please provide the duration of the study",
+      "durationUnitDropdown": "Duration unit",
+      "emptyConsentInfo": "Enter your description for the consent information.",
+      "emptyParticipantInfo": "The participant information hasn't been added yet.",
+      "emptyPurpose": "The purpose information hasn't been added yet.",
+      "finishText": "Enter an ending information that will be displayed in the app when the study is completed.",
+      "finishTextDesc": "The ending information will be displayed in the App after a study was completed. Is no specific ending information set a default message will be displayed.",
+      "institute": "Enter the institute of your study.",
+      "missingContactData": "Currently there is no contact information set. Please set at least a contact person and email address, that participants can contact when they encounter problems. This information will be shown on the app.",
+      "participantInfoInput": "Please provide information for your studies participants. This description will be visible on the participant's app.",
+      "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
+      "selectLanguage": "Select a language",
+      "titleInput": "Please provide a short title."
+    },
+    "plural": "Studies",
+    "props": {
+      "actualEnd": "Actual end",
+      "actualStart": "Actual start",
+      "consentInfo": "Consent information",
+      "duration": "Study duration",
+      "finishText": "Study end message",
+      "language": "Language",
+      "participantInfo": "Participant information",
+      "plannedEnd": "Planned end",
+      "plannedStart": "Planned Start",
+      "purpose": "Purpose",
+      "roles": "Role(s)",
+      "status": "Status",
+      "studyGroup": "Study group {size}",
+      "studyId": "Study ID",
+      "title": "Title"
     },
     "roles": {
       "admin": "Study Administrator",
       "operator": "Study Operator",
       "viewer": "Study Viewer"
     },
+    "singular": "Study",
     "statusChange": {
-      "start": "Start Study",
-      "pause": "Pause Study",
-      "edit": "Edit Study",
-      "resume": "Resume",
       "complete": "Close",
       "complete-preview": "Complete Preview",
-      "start-preview": "Start Preview",
-      "resume-preview": "Resume Preview",
+      "dialog": {
+        "header": "Change study status"
+      },
+      "edit": "Edit Study",
+      "labels": {
+        "changeFrom": "Change status from",
+        "changeStatus": "Change study status"
+      },
+      "pause": "Pause Study",
       "pause-preview": "Pause Preview",
+      "resume": "Resume",
+      "resume-preview": "Resume Preview",
+      "start": "Start Study",
+      "start-preview": "Start Preview",
       "transition": {
-        "draft-active": {
-          "intro": "You are about to change your study status to 'ACTIVE'.",
-          "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participate in the research. If the planned start date is after today's date, it will be set to the actual start date with this status change.",
-          "confirm": "This study status change cannot be reversed, but there is the possibility to pause the study to make changes to your settings. Are you sure you want to set your Study Status to 'ACTIVE'?"
+        "active-closed": {
+          "confirm": "This study status change cannot be reversed and the study will stay 'COMPLETED'. Are you sure you want to set your study status to 'COMPLETED'?",
+          "intro": "You are about to change your study status to 'COMPLETED'.",
+          "warning": "Changing your study status to 'COMPLETED' will set all data capture, intervention rules and schedules to finished and no data will be captured anymore. The participants won't be able to participate in a completed study anymore."
         },
         "active-paused": {
+          "confirm": "Are you sure you want to set your Study Status to 'PAUSED'?",
           "intro": "You are about to change your study status to 'PAUSED'.",
-          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the study is set back to 'ACTIVE'.",
-          "confirm": "Are you sure you want to set your Study Status to 'PAUSED'?"
+          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the study is set back to 'ACTIVE'."
         },
-        "paused-active": {
-          "warning": "All observations, interventions, schedules and data captures will be available again. The participants will be able to continue their participation on the app.",
-          "confirm": "Are you sure you want to set your Study Status to 'ACTIVE'"
-        },
-        "active-closed": {
-          "intro": "You are about to change your study status to 'COMPLETED'.",
-          "warning": "Changing your study status to 'COMPLETED' will set all data capture, intervention rules and schedules to finished and no data will be captured anymore. The participants won't be able to participate in a completed study anymore.",
-          "confirm": "This study status change cannot be reversed and the study will stay 'COMPLETED'. Are you sure you want to set your study status to 'COMPLETED'?"
+        "draft-active": {
+          "confirm": "This study status change cannot be reversed, but there is the possibility to pause the study to make changes to your settings. Are you sure you want to set your Study Status to 'ACTIVE'?",
+          "intro": "You are about to change your study status to 'ACTIVE'.",
+          "warning": "Changing your study status to 'ACTIVE', will make the study available to your participants in the app and set all your interventions and observations into data capture mode, based on their set schedule. Participants will be able to log in and participate in the research. If the planned start date is after today's date, it will be set to the actual start date with this status change."
         },
         "draft-preview": {
+          "confirm": "Start Preview",
           "intro": "You are about to start a study 'PREVIEW'",
-          "warning": "All data recorded during the preview will be discarded once you complete the preview.",
-          "confirm": "Start Preview"
+          "warning": "All data recorded during the preview will be discarded once you complete the preview."
         },
-        "preview-paused-preview": {
-          "intro": "You are about to 'PAUSE' your preview",
-          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the preview is resumed."
+        "paused-active": {
+          "confirm": "Are you sure you want to set your Study Status to 'ACTIVE'",
+          "warning": "All observations, interventions, schedules and data captures will be available again. The participants will be able to continue their participation on the app."
         },
         "paused-preview-preview": {
           "intro": "You are about to resume your preview",
           "warning": "All observations, interventions, schedules and data captures will be available again. The participants will be able to continue their participation on the app."
         },
         "preview-draft": {
+          "confirm": "Complete Preview and discard data",
           "intro": "You are about to end the study 'PREVIEW'",
-          "warning": "All data recorded so far will be deleted, all participants will be re-initialized.",
-          "confirm": "Complete Preview and discard data"
+          "warning": "All data recorded so far will be deleted, all participants will be re-initialized."
+        },
+        "preview-paused-preview": {
+          "intro": "You are about to 'PAUSE' your preview",
+          "warning": "Changing your study status to 'PAUSED' will result into pausing all observations, interventions and data captures for the time being. The participant app won't be collecting data until the preview is resumed."
         }
-      },
-      "dialog": {
-        "header": "Change study status"
-      },
-      "labels": {
-        "changeStatus": "Change study status",
-        "changeFrom": "Change status from"
       }
     },
     "statusStrings": {
@@ -181,951 +969,165 @@
       "paused-preview": "paused preview",
       "preview": "preview"
     },
-    "error": {
-      "addTitle": "The study title is required. Please enter a study title.",
-      "addDuration": "Please enter both a duration and a unit.",
-      "addConsentInfo": "The consent information is required. Please enter a description.",
-      "addParticipantInfo": "The participant information is required. Please enter a description.",
-      "addContactInfo": "Please add a contact person and email address, which participants can use to contact your institute when they encounter problems.",
-      "addContactPerson": "Please add a contact person, which participants can write to when they encounter problems.",
-      "addContactEmail": "Please add a contact email address, which participants can use to contact your institute when they encounter problems."
-    },
-    "placeholder": {
-      "titleInput": "Please provide a short title.",
-      "durationInput": "Please provide the duration of the study",
-      "purposeInput": "Please provide a short description of your research purpose for your collaborators.",
-      "participantInfoInput": "Please provide information for your studies participants. This description will be visible on the participant's app.",
-      "consentInfoInput": "Please provide information on the data that will be collected. This description will be shown on the participant's app.",
-      "selectLanguage": "Select a language",
-      "emptyPurpose": "The purpose information hasn't been added yet.",
-      "emptyParticipantInfo": "The participant information hasn't been added yet.",
-      "emptyConsentInfo": "Enter your description for the consent information.",
-      "institute": "Enter the institute of your study.",
-      "contactPerson": "Enter the information of the contact person.",
-      "contactEmail": "Enter the contact email.",
-      "contactTel": "Enter the contact telephone number.",
-      "missingContactData": "Currently there is no contact information set. Please set at least a contact person and email address, that participants can contact when they encounter problems. This information will be shown on the app.",
-      "finishText": "Enter an ending information that will be displayed in the app when the study is completed.",
-      "finishTextDesc": "The ending information will be displayed in the App after a study was completed. Is no specific ending information set a default message will be displayed."
-    },
-    "dialog": {
-      "header": {
-        "edit": "Edit study",
-        "create": "Create study",
-        "delete": "Delete study",
-        "urlCopied": "Share study"
-      },
-      "label": {
-        "studyTitle": "Study title",
-        "durationExample": "Study Duration Example",
-        "studyStart": "Study start",
-        "studyEnd": "Study end",
-        "contactInfo": "Contact information",
-        "contactPerson": "Name",
-        "institute": "Institute",
-        "contactEmail": "Email",
-        "contactTel": "Phone"
-      },
-      "deleteMsg": {
-        "warning": "A deleted study can't be restored. If you delete this study you won't be able to use it at a later date. It is only possible to delete a study without its data for the time being.",
-        "intro": "You are about to delete the following study:",
-        "confirm": "Are you sure you want to delete your study?"
-      },
-      "msg": {
-        "urlCopied": "Link to study '{title} (Id: {studyId})'  was copied to your clipboard.",
-        "delete": "A deleted study can't be restored. Are you sure you want to delete your study?"
-      },
-      "description": {
-        "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
-        "duration": "The study duration is the period when participants are actively contributing to data collection. This is important when using relative observations. If no study duration is specified, the entire time from study start to end of the study is considered.",
-        "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks. The participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
-        "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
-        "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
-        "consentInfo": "The consent information will be displayed in the app and has to be approved by the participants.",
-        "contactData": "This contact information will be displayed in the app for participants to use when they encounter problems."
-      },
-      "error": {
-        "missedFieldsMsg": "Please fill out the following information fields: "
-      }
-    },
     "studyList": {
-      "title": "My dashboard of studies",
-      "description": "This is a list of your studies, the studies that you created or that you were invited to as a collaborator.",
-      "emptyListMsg": "No studies yet",
-      "labels": {
-        "exportStudyConfig": "Export study config",
-        "exportStudyData": "Export study data",
-        "exportStudyCalendar": "Export study calendar"
-      },
       "action": {
         "addStudy": "Add new study",
         "copyUrl": "Copy URL",
         "importStudy": "Import study"
-      }
+      },
+      "description": "This is a list of your studies, the studies that you created or that you were invited to as a collaborator.",
+      "emptyListMsg": "No studies yet",
+      "error": {
+        "studyImportFailed": "The study {filename} could not be imported"
+      },
+      "labels": {
+        "exportStudyCalendar": "Export study calendar",
+        "exportStudyConfig": "Export study config",
+        "exportStudyData": "Export study data"
+      },
+      "title": "My dashboard of studies"
     }
   },
-
-  "studyGroup": {
-    "singular": "Study group",
-    "plural": "Study groups",
-    "dialog": {
-      "header": {
-        "delete": "Delete group",
-        "create": "Add study group"
-      },
-      "msg": {
-        "delete": "Do you really want to delete this study group?"
-      },
-      "deleteMsg": {
-        "warning": "A deleted study group can't be restored. All information and settings of the study group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study.",
-        "intro": "You are about to delete the following study group:",
-        "confirm": "Are you sure you want to delete this study group?"
-      }
-    },
-    "groupList": {
-      "description": "Study groups are used to group participants, interventions and/or observations.",
-      "placeholder": {
-        "title": "Set a title",
-        "purpose": "Describe the purpose of the group.",
-        "emptyGroupList": "Add groups to your study to use group functionalities",
-        "duration": "Set the individual study duration",
-        "durationUnit": "Individual study duration unit",
-        "durationValue": "Ind. study duration value"
-      },
-      "action": {
-        "create": "Create group"
-      }
-    },
-    "placeholder": {
-      "chooseGroup": "Choose a group"
-    }
-  },
-
   "studyCollaborator": {
-    "dialog": {
-      "addRole": "Please choose at least one role to continue.",
-      "addCollaboratorInfo": "will be added to your collaborator list. ",
-      "chooseRoles": "Choose your collaborators role:",
-      "header": {
-        "delete": "Delete study collaborator",
+    "collaboratorList": {
+      "action": {
         "add": "Add collaborator"
       },
-      "assignedRoles": "Assigned role(s)",
-      "msg": {
-        "delete": "Do you really want to delete the collaborator?"
-      },
-      "deleteMsg": {
-        "warning": "A deleted study collaborator can be added again on a later date. If deleted he will loose his permission to edit or view this study.",
-        "intro": "You are about to delete the following study collaborator:",
-        "confirm": "Are you sure you want to delete this study collaborator?"
-      }
-    },
-    "collaboratorList": {
-      "title": "Study collaborators",
       "description": "Study collaborators can be provided with one or more roles. A <b>Study Administrator</b> has no limitation. A <b>Study Operator</b> is allowed to manage and view information, but is not allowed to view recorded data. A <b>Study Viewer</b> can only view the basic overview information and recorded data.",
       "props": {
-        "name": "Name",
+        "email": "Email",
         "institution": "Organisation",
-        "email": "Email"
+        "name": "Name"
       },
-      "action": {
-        "add": "Add collaborator"
+      "title": "Study collaborators"
+    },
+    "dialog": {
+      "addCollaboratorInfo": "will be added to your collaborator list. ",
+      "addRole": "Please choose at least one role to continue.",
+      "assignedRoles": "Assigned role(s)",
+      "chooseRoles": "Choose your collaborators role:",
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this study collaborator?",
+        "intro": "You are about to delete the following study collaborator:",
+        "warning": "A deleted study collaborator can be added again on a later date. If deleted he will loose his permission to edit or view this study."
+      },
+      "header": {
+        "add": "Add collaborator",
+        "delete": "Delete study collaborator"
+      },
+      "msg": {
+        "delete": "Do you really want to delete the collaborator?"
       }
     },
     "placeholder": {
       "addCollaborator": "Add collaborator",
-      "searchCollaborators": "Type to search collaborators",
+      "defaultEmptyMsg": "No collaborators added yet.",
       "noResultsFound": "No results found",
-      "defaultEmptyMsg": "No collaborators added yet."
+      "searchCollaborators": "Type to search collaborators"
     }
   },
-
-  "monitoringData": {
+  "studyGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this study group?",
+        "intro": "You are about to delete the following study group:",
+        "warning": "A deleted study group can't be restored. All information and settings of the study group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study."
+      },
+      "header": {
+        "create": "Add study group",
+        "delete": "Delete group"
+      },
+      "msg": {
+        "delete": "Do you really want to delete this study group?"
+      }
+    },
+    "groupList": {
+      "action": {
+        "create": "Create group"
+      },
+      "description": "Study groups are used to group participants, interventions and/or observations.",
+      "placeholder": {
+        "duration": "Set the individual study duration",
+        "durationUnit": "Individual study duration unit",
+        "durationValue": "Ind. study duration value",
+        "emptyGroupList": "Add groups to your study to use group functionalities",
+        "purpose": "Describe the purpose of the group.",
+        "title": "Set a title"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Choose a group"
+    },
+    "plural": "Study groups",
+    "singular": "Study group"
+  },
+  "studyNavigation": {
+    "accessDialog": {
+      "accessInformation": "-section can't be viewed. Access requires following permissions: ",
+      "header": "Access denied",
+      "permissionWarningMsg": ". Please contact your study administrator if you require access to this section."
+    },
     "tabs": {
-      "lastDataPoints": "Latest Data Points",
-      "recordedObservation": "Recorded Observations",
-      "dataDownload": "Export study data"
+      "integration": "Integrations",
+      "interventions": "Interventions",
+      "monitoringAndData": "Monitoring & Data",
+      "observations": "Observations",
+      "overview": "Study",
+      "participants": "Participants",
+      "timeline": "Timeline"
     }
   },
-
-  "monitoring": {
-    "title": "Monitoring",
-    "description": "You can view the live data of your study here. Data will be updated every {duration} seconds.",
-    "dataList": {
-      "emptyListMsg": "Currently there are no observations to track.",
-      "title": "Recorded observations",
-      "description": "The most recently collected data points are displayed here in tabular form and the entire data points can be displayed in various visualizations."
-    },
-    "dataPointsList": {
-      "lastDatapoints": "Last data points",
-      "resultSize": "Size of result",
-      "filterInfo": "Filtering is only possible for visualization."
-    },
-    "placeholder": {
-      "chooseSize": "Choose a size"
-    },
-    "labels": {
-      "latestDataPoints": "Latest Data Points",
-      "visualization": "Visualization",
-      "dateRange": "Date range",
-      "noDataAvailable": "No data available"
-    },
-    "charts": {
-      "simpleQuestion": {
-        "responseDistribution": {
-          "label": "All Responses",
-          "title": "Distribution of Participant Responses",
-          "description": "Each segment represents the frequency of a particular answer and shows how many participants selected the respective option."
-        },
-        "responseDistributionStudyGroup": {
-          "label": "Responses by Group",
-          "title": "Response Distribution Across Study Groups",
-          "description": "Each column in the bar chart represents the number of responses per study group."
-        },
-        "responseDistributionResponse": {
-          "label": "Groups by Response",
-          "title": "Response Distribution Across Study Groups",
-          "description": "Each column in the bar chart represents the number of responses per study group."
-        }
-      },
-      "polarVerity": {
-        "avgHeartRate": {
-          "label": "Heart rate",
-          "title": "Average heart rate per participant over time",
-          "description": "Compares the average heart rate of all participants over time, with a time interval of 1 minute."
-        }
-      }
-    }
-  },
-
-  "data": {
-    "dataDownload": {
-      "title": "Download study data",
-      "description": "Here you can download the study data based on various filters."
-    }
-  },
-
-  "participants": {
-    "singular": "Participant",
-    "plural": "Participants",
-    "props": {
-      "participantId": "Participant ID",
-      "alias": "Alias",
-      "token": "Token",
-      "registrationToken": "Registration token",
-      "individualStart": "Started on"
-    },
-    "dialog": {
-      "header": {
-        "delete": "Delete participant",
-        "deleteWithData": "Delete data",
-        "edit": "Edit participant",
-        "create": "Create participant",
-        "distribute": "Distribute participants randomly to study groups"
-      },
-      "msg": {
-        "delete": "Do you really want to delete this participant?",
-        "deleteWithData": "Include all data for the participant?"
-      },
-      "btn": {
-        "distributeBtn": "Distribute"
-      },
-      "deleteMsg": {
-        "warning": "A deleted participant can't be restored. You have the option to delete a participant including all the collected data or the participant alone.",
-        "intro": "You are about to delete the following participant:",
-        "confirm": "Are you sure you want to delete this participant?",
-        "deleteWithoutData": "Delete",
-        "deleteWithData": "Delete incl. data"
-      }
-    },
-    "participantsList": {
-      "title": "Participants",
-      "description": "Add participants manually or by importing a list with alias names. Participants can be automatically assigned to groups and exported to a CSV.",
-      "emptyListMsg": "Add study participants to your study",
-      "action": {
-        "distribute": "Assign study groups",
-        "import": "Import participants",
-        "export": "Export CSV",
-        "add": "Add participant"
-      },
-      "labels": {
-        "add1": "Add 1",
-        "add3": "Add 3",
-        "add10": "Add 10",
-        "add25": "Add 25",
-        "add50": "Add 50"
-      },
-      "distributeMsg": {
-        "intro": "You are about to distribute all participants to your study groups.",
-        "warning": "Participants will be randomly assigned to the created study groups. They are evenly seperated to the groups. Reassigning participants will assign all participants randomly to your groups again.",
-        "confirm": "Distribution of participants can't be revoked. Are you sure you want to assign the participants to your study groups?"
-      }
-    },
-    "placeholder": {
-      "allParticipants": "All participants",
-      "chooseParticipant": "Choose a participant"
-    }
-  },
-
-  "observation": {
-    "singular": "Observation",
-    "plural": "Observations",
-    "props": {
-      "type": "Type",
-      "observationType": {
-        "smartphoneAccelerometer": "Smartphone Accelerometer",
-        "heartRateMeter": "Heart Rate Meter"
-      },
-      "hidden": {
-        "true": "Hidden",
-        "false": "Not hidden"
-      },
-      "noSchedule": "No Schedule"
-    },
-    "observationList": {
-      "title": "Observations",
-      "description": "An observation can be sensor data from a mobile phone, a wearable device or information gathered from a questionnaire. An observation can be assigned to one specific study group. If no study group is assigned, the observation will be applied to the entire study.",
-      "emptyListMsg": "Add and manage your studies observations",
-      "action": {
-        "add": "Add observation"
-      }
-    },
-    "dialog": {
-      "header": {
-        "delete": "Delete observation",
-        "clone": "Clone observation",
-        "create": "Create observation",
-        "edit": "Edit observation",
-        "view": "Observation details"
-      },
-      "label": {
-        "observationTitle": "Observation title"
-      },
-      "msg": {
-        "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation:",
-        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app."
-      },
-      "deleteMsg": {
-        "warning": "A deleted observation can't be restored. If you delete this observation all settings and configurations are lost.",
-        "intro": "You are about to delete the following observation:",
-        "confirm": "Are you sure you want to delete your observation?"
-      }
-    },
-    "factory": {
-      "limeSurvey": {
-        "title": "Lime Survey",
-        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
-        "configProps": {
-          "idName": "Survey",
-          "idDesc": "The id of the survey"
-        }
-      },
-      "polarVerity": {
-        "title": "Polar Verity Sensor",
-        "description": "This observation enables you to collect heart rate data via the polar verity sensor."
-      },
-      "external": {
-        "title": "External Observation",
-        "description": "An observation for data that is collected via the external data api."
-      },
-      "gpsMobile": {
-        "title": "GPS Mobile Sensor",
-        "description": "This observation enables you to collect GPS data via the smartphone sensor.",
-        "configProps": {
-          "measurementName": "Measurement interval",
-          "measurementDesc": "Measurement interval in milliseconds, 30k to 600k"
-        }
-      },
-      "simpleQuestion": {
-        "title": "Simple Question",
-        "description": "This observation enables you to create a simple multiple choice question.",
-        "configProps": {
-          "questionName": "Question",
-          "questionDesc": "The question you want to ask.",
-          "answerName": "Answers",
-          "answerDesc": "Possible answers (min. 2, max.5)"
-        }
-      },
-      "accelerometerMobile": {
-        "title": "Accelerometer Mobile Sensor",
-        "description": "This observation enables you to collect accelerometer data via the smartphone sensor."
-      }
-    },
-    "error": {
-      "noValidField": "Wrong value {key}: {message}",
-      "addTitle": "The observation title is required. Please enter a title.",
-      "addScheduler": "Scheduler",
-      "addParticipantInfo": "The participant information describes the purpose of the observation. Please enter a participant information.",
-      "addSchedulerMsg": "Please set the scheduler for your observation."
-    },
-    "placeholder": {
-      "emptySchedulerMsg": "Please provide a schedule for your observation.",
-      "enterMainPurpose": "Enter the main purpose and intention of the study.",
-      "chooseObservation": "Choose an observation"
-    }
-  },
-
-  "integration": {
-    "singular": "Integration",
-    "plural": "Integrations",
-    "props": {
-      "observationId": "Observation ID",
-      "observationTitle": "Observation",
-      "tokenId": "Token ID",
-      "tokenLabel": "Token label",
-      "token": "Token",
-      "created": "Created"
-    },
-    "dialog": {
-      "header": {
-        "delete": "Delete integration",
-        "clone": "Clone integration",
-        "create": "Create integration",
-        "tokenCopy": "Copy token"
-      },
-      "label": {
-        "description": "An integration enables to link an external API to an existing observation. Choose the observation for which you want to create a token to link the observation to your external device.",
-        "integrationTitle": "Integration title",
-        "chooseObservation": "Choose observation",
-        "chooseObservationDesc": "Choose an existing observation to link to.",
-        "copyToken": "Copy token",
-        "copySuccess": "Token successfully copied to clipboard."
-      },
-      "placeholder": {
-        "tokenLabelInput": "Please enter a label for your token.",
-        "selectObservation": "Please select an existing observation."
-      },
-      "example": {
-        "title": "Examples",
-        "dataTitle": "Send data to API with your token",
-        "participantsTitle": "Get Participants from API with your token",
-        "filledExample": "Filled example",
-        "yourDomain": "DOMAIN",
-        "yourToken": "TOKEN",
-        "yourData": "DATA OBJECT"
-      },
-      "msg": {
-        "delete": "An deleted integration can't be restored again. Are you sure you want to delete the integration?",
-        "createdToken": "Please copy your token to be able to link. The token won't be reviewable afterwards, so be mindful with your usage. If you loose a token you can recreate it at anytime."
-      },
-      "deleteMsg": {
-        "warning": "A deleted integration can't be restored. If you delete this integration its link to the observation will be deleted and its data will be lost.",
-        "intro": "You are about to delete the following integration:",
-        "confirm": "Are you sure you want to delete your integration?"
-      }
-    },
-    "integrationList": {
-      "title": "External integrations",
-      "description": "An external integration can be linked to already existing observations to add and collect data from.",
-      "emptyListMsg": "Add an manage your external integrations",
-      "action": {
-        "add": "Create integration"
-      }
-    },
-    "error": {
-      "addTokenLabel": "Please add a label for your token",
-      "selectObservation": "Please select an observation you want to link to."
-    }
-  },
-
-  "intervention": {
-    "singular": "Intervention",
-    "plural": "Interventions",
-    "props": {
-      "trigger": "Trigger",
-      "action": "Action",
-      "actions": "Actions"
-    },
-    "dialog": {
-      "title": "Intervention",
-      "description": "Enter your intervention's base information and configuration. Add the trigger configuration and at least one action to continue.",
-      "header": {
-        "delete": "Delete intervention",
-        "create": "Create intervention",
-        "clone": "Clone intervention",
-        "edit": "Edit intervention",
-        "view": "Intervention details"
-      },
-      "label": {
-        "interventionTitle": "Intervention title",
-        "triggerConditions": "Trigger conditions",
-        "triggerConditionsDesc": "Configure trigger properties from observations or observation types. To compare the property values use <, >, >=, <=, = or != (is not).",
-        "triggerConditionObservationProperty": "Observation Property",
-        "triggerConditionOperator": "Operator",
-        "triggerConditionPropertyValue": "Property Value",
-        "addTriggerGroup": "Add trigger group",
-        "chooseObservation": "Choose observation",
-        "triggerType": "Trigger-Type",
-        "window": "Window",
-        "windowInSeconds": "Observation period in seconds"
-      },
-      "msg": {
-        "delete": "Deletion of an intervention can’t be revoked! Are you sure you want to delete following intervention:"
-      },
-      "deleteMsg": {
-        "warning": "A deleted intervention can't be restored. If you delete this intervention all settings and configurations are lost and you won't be able to use it at a later date.",
-        "intro": "You are about to delete the following intervention:",
-        "confirm": "Are you sure you want to delete your intervention?"
-      },
-      "placeholder": {
-        "title": "Enter title",
-        "message": "Enter message",
-        "enterValue": "Enter value",
-        "enterNumber": "Enter number"
-      }
-    },
-    "interventionList": {
-      "title": "Interventions",
-      "description": "An intervention describes an action delivered to the app triggered by a scheduled interval or by rules on captured data.",
-      "emptyListMsg": "Add and manage your studies interventions",
-      "action": {
-        "add": "Add intervention"
-      },
-      "snippets": {
-        "every": "every",
-        "day": "day",
-        "ofEvery": "of every",
-        "month": "month",
-        "months": "months"
-      }
-    },
-    "factory": {
-      "trigger": {
-        "relativeTime": {
-          "title": "Relative Time Trigger",
-          "description": "Triggers an action on a given relative time (day and hour-of-day)",
-          "configProps": {
-            "day": "Day",
-            "dayDesc": "Day of participant",
-            "hour": "Hour",
-            "hourDesc": "The hour of the given day"
-          }
-        },
-        "scheduled": {
-          "title": "Scheduled Trigger",
-          "description": "This trigger triggers and action based on a cron trigger.",
-          "configProps": {
-            "cronName": "Cron Schedule",
-            "cronDesc": "Triggers and action based on a set cron trigger.<a target=\"_blank\" href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\">Show further info on possible cron values.</a>\n"
-          }
-        },
-        "scheduledDatacheck": {
-          "title": "Scheduled Datacheck",
-          "description": "This trigger triggers an action based on a cron trigger and specific observation data capture values.",
-          "configProps": {
-            "queryName": "Query",
-            "queryDesc": "The query for values in <a target=\\\"_blank\\\" href=\\\"https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-simple-query-string-query.html#simple-query-string-syntax\\\">simple query syntax.</a>.",
-            "queryObjName": "Query Object",
-            "queryObjDesc": "A more complex variant of query",
-            "timeWindowName": "Time window in seconds from the query time",
-            "windowPlaceholder": "Enter number in seconds.",
-            "onlyOnceName": "Only Once",
-            "onlyOnceDesc": "Triggers only once when value is matching; resets when value is not matching anymore"
-          }
-        }
-      },
-      "actions": {
-        "pushNotification": {
-          "title": "Push Notification Action",
-          "description": "Sends a push notification to all matching participants based on the trigger."
-        },
-        "triggerObservation": {
-          "title": "Trigger Observation",
-          "description": "Trigger a selected observation",
-          "properties": {
-            "observation": {
-              "name": "Observation",
-              "description": "Select an existing observation (currently simple questions and lime surveys are supported)"
-            }
-          }
-        }
-      }
-    },
-    "error": {
-      "addTitle": "The intervention title is required. Please add a title for your intervention.",
-      "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
-      "addAction": "The intervention needs at least one Trigger. Please add a trigger.",
-      "addTriggerConfig": "Please add specific trigger configurations to your data check.",
-      "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
-      "emptyTriggerConditions": "Please save at least one trigger condition to your trigger.",
-      "triggerProp": "A Trigger property has an error."
-    },
-    "placeholder": {
-      "noDescription": "No description available",
-      "trigger": "Choose a trigger type",
-      "chooseAction": "Choose an action",
-      "emptyScheduler": "Please provide a schedule for your intervention"
-    },
-    "description": {
-      "provideTriggerConfig": "Enter the config for the trigger",
-      "provideActionConfig": "Enter the config for the action"
-    }
-  },
-
   "timeline": {
     "labels": {
-      "relativeDate": "Enrollment date",
-      "studyStart": "Study start",
-      "studyEnd": "Study end",
-      "plannedStart": "Planned Start",
-      "plannedEnd": "Planned end",
-      "study": "Study",
-      "type": "Type",
       "chooseType": "Choose type",
+      "participantJoined": "Participant joined",
+      "plannedEnd": "Planned end",
+      "plannedStart": "Planned Start",
+      "relativeDate": "Enrollment date",
+      "study": "Study",
+      "studyEnd": "Study end",
+      "studyStart": "Study start",
       "today": "Today",
-      "participantJoined": "Participant joined"
+      "type": "Type"
     }
   },
-
-  "moreTable": {
-    "defaultEmptyMsg": "No records",
-    "filterBy": "Filter by",
-    "saveLine": "Please save"
-  },
-
-  "cronSchedule": {
-    "singular": "Cron Scheduler",
-    "placeholders": {
-      "secondsAndMinutes": "0-59",
-      "hours": "0-23",
-      "months": "1-12",
-      "dayOfMonth": "1-31",
-      "dayOfWeek": "1-7"
-    },
-    "labels": {
-      "seconds": "Seconds",
-      "minutes": "Minutes",
-      "hours": "Hours",
-      "months": "Months",
-      "dayOfMonth": "Day of month",
-      "dayOfWeek": "Day of week"
-    },
-    "info": {
-      "example": "Example: 0 12 ? * * means every day at 12.",
-      "generalInfo": "Provide a number, a list of numbers (e.g. 1,2,3) or a range (e.g. 12-14)",
-      "questionMark": "No specific value (e.g. any day of the week)",
-      "asterisk": "All values (e.g. every minute)"
-    },
-    "example": {
-      "title": "Cron Scheduler examples",
-      "titles": {
-        "everyMinute": "Every minute",
-        "hourly": "Every hour at xx:30",
-        "daily": "Every Day at 12:00",
-        "specificDayOfMonth": "Every 4th of every month",
-        "specificMonth": "Every day at 8:00 in March",
-        "everyFiveMinutes": "Every 5 minutes",
-        "everyMinuteInSetTime": "Every minute in the range of xx:00 to xx:10",
-        "specificHourRange": "At xx:30 between 8:00 and 10:00"
-      }
-    },
-    "error": {
-      "Cannot specify both daysOfMonth and daysOfWeek field when mustHaveBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use * each. Use a ? (blank value) in either of them.",
-      "Cannot use blank value in daysOfMonth and daysOfWeek field when allowOnlyOneBlankDayField option is enabled": "'Day of month' and 'Day of week' are not allowed to use ? each. Use a * (every day of month or every day of week) in either of them.",
-      "Expected 5 values, but got 4": "Please fill out all input fields for the Cron Schedule.",
-      "Expected 5 values, but got 3": "Please fill out all input fields for the Cron Schedule.",
-      "Expected 5 values, but got 2": "Please fill out all input fields for the Cron Schedule.",
-      "Expected 5 values, but got 1": "Please fill out all input fields for the Cron Schedule.",
-      "months field is undefined": "Please fill out all input fields for the Cron Schedule.",
-      "hours field is undefined": "Please fill out all input fields for the Cron Schedule.",
-      "daysOfMonth field is undefined": "Please fill out all input fields for the Cron Schedule.",
-      "blank notation is not allowed in minutes field": "Minutes field doesn't support ? (blank value). Please usa * (every minute) or a specific value.",
-      "blank notation is not allowed in hours field": "Hours field doesn't support ? (blank value). Please use a * (every hour) or a specific value.",
-      "blank notation is not allowed in months field": "Months field doesn't support ? (blank value). Please use a * (every hour) or a specific value."
-    },
-    "formTitle": "Configure your <a href=\"https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html\" target=\"_blank\">Cron Schedule manually</a> ",
-    "formTitleDisabled": "Configuration of your Cron Schedule",
-    "additionalConfig": "Additional configuration",
-    "cronScheduleTip": "Further info on specific cron values",
-    "quickStart": "or use <a href=\"https://crontab.cronhub.io/\" target=\"_blank\">Cronhub</a> to get quickly started.",
-    "quickStartNote": "Seconds and years are handled automatically.",
-    "limitDescription": "This version of the More Cron Scheduler only supports whole numbers, * or ?. Expressions like 0/1 or 3-20 are not supported for the time being."
-  },
-
-  "scheduler": {
-    "singular": "Scheduler",
-    "type": {
-      "Event": "Absolut Event",
-      "RelativeEvent": "Relative Event"
-    },
-    "dialogTitle": "Manage absolute schedule",
-    "relativeDialogTitle": "Manage relative schedule",
-    "preview": {
-      "title": {
-        "individualEvent": "Individual Event",
-        "repeatEvent": "Repeat Event",
-        "startsOn": "Starts on",
-        "endsOn": "Ends on",
-        "timeframe": "Timeframe",
-        "every": "Every",
-        "ends": "Ends",
-        "on": "on",
-        "in": "in",
-        "selectedDays": "Selected days"
-      },
-      "unit": {
-        "MINUTE": "Minute",
-        "PL-MINUTE": "minute(s)",
-        "HOUR": "Hour",
-        "PL-HOUR": "hour(s)",
-        "DAY": "Day",
-        "PL-DAY": "day(s)",
-        "DAILY": "day(s)",
-        "WEEKLY": "week(s)",
-        "date": "Date",
-        "time": "Time"
-      },
-      "value": {
-        "MINUTE": "no minute | 1 minute | {n} minutes",
-        "HOUR": "no hour | 1 hour | {n} hours",
-        "DAY": "no day | 1 day | {n} days",
-        "WEEKLY": "no week | 1 week | {n} weeks"
-      }
-    },
-    "frequency": {
-      "minute": "minute",
-      "minutes": "minute(s)",
-      "hour": "hour",
-      "hours": "hour(s)",
-      "day": "day",
-      "days": "day(s)",
-      "week": "week",
-      "weeks": "week(s)",
-      "month": "month",
-      "months": "month(s)",
-      "years": "year(s)",
-      "labels": {
-        "daily": "Daily",
-        "weekly": "Weekly"
-      }
-    },
-    "byMonthDayLabel": {
-      "first": "st",
-      "second": "nd",
-      "third": "rd",
-      "fourth": "th"
-    },
-    "weekday": {
-      "monday": "Monday",
-      "tuesday": "Tuesday",
-      "wednesday": "Wednesday",
-      "thursday": "Thursday",
-      "friday": "Friday",
-      "saturday": "Saturday",
-      "sunday": "Sunday",
-      "short": {
-        "monday": "MO",
-        "tuesday": "TU",
-        "wednesday": "WE",
-        "thursday": "TH",
-        "friday": "FR",
-        "saturday": "SA",
-        "sunday": "SU"
-      },
-      "props": {
-        "MO": "Mo",
-        "TU": "Tue",
-        "WE": "We",
-        "TH": "Thur",
-        "FR": "Fr",
-        "SA": "Sa",
-        "SO": "So"
-      }
-    },
-    "months": {
-      "january": "January",
-      "february": "February",
-      "march": "March",
-      "april": "April",
-      "mai": "Mai",
-      "june": "June",
-      "july": "July",
-      "august": "August",
-      "september": "September",
-      "october": "October",
-      "november": "November",
-      "december": "December",
-      "short": {
-        "january": "Jan",
-        "february": "Feb",
-        "march": "Mar",
-        "april": "Apr",
-        "mai": "Mai",
-        "june": "Jun",
-        "july": "Jul",
-        "august": "Aug",
-        "september": "Sep",
-        "october": "Oct",
-        "november": "Nov",
-        "december": "Dec"
-      }
-    },
-    "bySetPosLabel": {
-      "first": "first",
-      "second": "second",
-      "third": "third",
-      "fourth": "fourth",
-      "last": "last"
-    },
-    "labels": {
-      "after": "After",
-      "on": "On",
-      "every": "Every",
-      "openScheduler": "Add absolute schedule",
-      "editScheduler": "Edit absolute schedule",
-      "openRelativeScheduler": "Add relative Schedule",
-      "editRelativeScheduler": "Edit relative Schedule",
-      "removeScheduler": "Remove scheduler",
-      "frequency": "Frequency",
-      "repetitionEnd": "Repetition ends",
-      "repeat": "Repeat",
-      "date": "Date",
-      "timeframe": "Timeframe",
-      "selection": {
-        "specificDay": "On a specific day",
-        "allDaysInWeek": "All days in week",
-        "allWeekdays": "All weekdays",
-        "allWeekendDays": "All weekend days",
-        "daysSelected": "Days selected"
-      },
-      "event": {
-        "first": "First event",
-        "allDay": "Entire day",
-        "setDates": "Set dates",
-        "setDatesDesc": "You can define a timeframe for your observation with start and end date for one day. The timeframe can be set to 'Entire day'. A series of data collection can be defined through the repetition definition below. Alternatively you can set a full time span over more days.",
-        "repeat": "Repeat set duration above",
-        "repeatDesc": "To repeat the set duration above, you can schedule it up to a specific amount of days or weeks. Consider, that the whole timeframe above will be repeated.",
-        "oneDayObservation": "Multiple observation events",
-        "repetitionEnd": {
-          "studyEnd": "Until end of study",
-          "after": "After"
-        },
-        "example": {
-          "titles": {
-            "singleDay": "Single data capture",
-            "series": "Repeat single day schedule for 10 days",
-            "fullTimespan": "Continuous data collection over the entire two-month period"
-          },
-          "values": {
-            "singleDay": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00",
-            "series": "Check 'One day observation' &bull; Timeframe: {egDate}, 14:00 - 16:00<br>Repeat: Daily - After 10 days",
-            "fullTimespan": "Uncheck 'One day observation' &bull; Start: {egStartDate}, 08:00 - End: {egEndDate}, 20:00<br>Optional: Check 'Entire day'"
-          }
-        }
-      }
-    },
-    "placeholder": {
-      "chooseMonth": "Choose month",
-      "enterDayOfMonth": "Enter day of month",
-      "chooseGeneralInterval": "Choose general interval",
-      "chooseDayInterval": "Choose day interval",
-      "chooseRepetitionEnd": "Choose repetition end",
-      "enterRepeatCount": "Enter repeat count"
-    },
-    "info": {
-      "timeOverlapStart": "End time was changed with start time. Please be sure to set start and end time within each others range.",
-      "timeOverlapEnd": "Start time was changed with end time. Please be sure to set start and end time within each others range.",
-      "dateOverlapStart": "End date was changed with start date. Please be sure to set start and end time within each others range.",
-      "dateOverlapEnd": "Start date was resetted to end date. Please be sure to set start and end time within each others range.",
-      "startDateNotWithinRange": "Start date was not inside the study range. Please be sure to set the dates inside the study ranges.",
-      "endDateNotWithinRange": "End date was not inside the study range. Please be sure to set the dates inside the study ranges.",
-      "timeOutsideStudyRange": "Please be sure to set start and end time within the study range."
-    },
-    "dialog": {
-      "description": "An absolute Schedule includes absolute date times. A relativ schedule collects data based on participant login and individual study starts.",
-      "noSetScheduleDesc": "If there is no schedule set, the whole schedule time will be set als default time as absolute Schedule.",
-      "repeatEvent": "Repeat event",
-      "singleEventTitle": "Single observation event",
-      "repeatEventTitle": "Repeat observation event",
-      "repeatEventDescription": "The event above will be repeated after the runtime of the current event has finished.",
-      "repeatEvery": "Repeat every",
-      "endAfter": "End after",
-      "absoluteSchedule": {
-        "description": "An absolute Schedule includes absolute date times. Observations can be timed by absolute dates and timeframes."
-      },
-      "relativeSchedule": {
-        "dialogTitle": "Manage relative schedule",
-        "description": "A relative schedule is determined by each participant's actual log-in time. They can start anytime between the study's beginning and end, and the set duration covers their active participation period.",
-        "startValue": "Starts on",
-        "endValue": "Ends on",
-        "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
-        "dayExplanation": "The term 'Day' signifies the correlation between the start of an individual participant's study and the corresponding day value. (Example: Participant logs in on {egLoginDate}, study start is set to Day 2. They start on {egStartDate}.)",
-        "rrrule": {
-          "endsAfter": "Ends {days} day after individual study start | Ends {days} day after individual study start | Ends {days} days after individual study start",
-          "repeated": "Repeated",
-          "times": "times"
-        },
-        "placeholder": {
-          "dtstartOffset": "Enter offset in day(s)",
-          "dtstartTime": "Enter start time",
-          "dtendOffset": "Enter offset in day(s)",
-          "dtendTime": "Enter end time",
-          "enterNumber": "Enter number"
-        },
-        "error": {
-          "dtstart": {
-            "addOffset": "Fill in the offset of the relative start period."
-          },
-          "dtend": {
-            "addOffset": "Fill in the offset of the relative end period.",
-            "EndBeforeStart": "Please Set the relative start period before the end period"
-          },
-          "rrrule": {
-            "frequency": "Fill in the repetition rate.",
-            "endAfter": "Fill in the offset to the end date.",
-            "notValid": "Values entered are not valid"
-          }
-        }
-      }
-    },
-    "warningsAndErrors": {
-      "endWasChangedWithStartValue": "End value was changed with start value.",
-      "rruleFreqIsEmpty": "Please set the frequency for your repetition.",
-      "rruleWeeklyIsMissingByDay": "Please set the weekdays for your repetition.",
-      "rruleEndIsEmpty": "Please set and end point for your repetition period."
-    }
-  },
-
+  "title": "Title",
   "tooltips": {
     "deleteBtn": "Delete",
-    "editBtn": "Edit",
     "downloadBtn": "Download",
+    "editBtn": "Edit",
     "moreTable": {
-      "editBtn": "Edit shown properties.",
-      "saveChanges": "Save changes",
       "cancelAction": "Cancel",
-      "cloneObservation": "Clone observation",
       "cloneIntegration": "Clone integration",
       "cloneIntervention": "Clone intervention",
-      "deleteObservation": "Delete observation",
+      "cloneObservation": "Clone observation",
+      "copyStudyUrl": "Share study",
+      "deleteCollaborator": "Delete collaborator",
       "deleteIntegration": "Delete integration",
       "deleteIntervention": "Delete intervention",
-      "deleteCollaborator": "Delete collaborator",
+      "deleteObservation": "Delete observation",
+      "deleteParticipantBtn": "Delete participant",
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
-      "deleteParticipantBtn": "Delete participant",
-      "copyStudyUrl": "Share study",
-      "showStudy": "Click on row to show study details page.",
-      "goToStudy": "Go to study"
+      "editBtn": "Edit shown properties.",
+      "goToStudy": "Go to study",
+      "saveChanges": "Save changes",
+      "showQrCode": "Show QR code",
+      "showStudy": "Click on row to show study details page."
     },
     "timeline": {
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."
     }
   },
-
   "userstatus": {
+    "accepted": "accepted",
     "active": "active",
     "approved": "approved",
+    "droppedOut": "dropped out",
     "inactive": "inactive",
     "invited": "invited",
-    "accepted": "accepted",
-    "droppedOut": "dropped out",
     "kickedOut": "kicked out"
   },
-
-  "inputModel": {
-    "enterValue": "Please enter a value."
-  },
-  "title": "Title",
-  "message": "Message"
+  "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
+  "welcomeToMore": "Welcome to More"
 }

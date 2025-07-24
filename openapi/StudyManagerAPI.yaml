@@ -1577,12 +1577,14 @@ components:
         value:
           type: integer
         unit:
-          type: string
-          description: unit of time
-          enum:
-            - MINUTE
-            - HOUR
-            - DAY
+          $ref: '#/components/schemas/DurationUnit'
+    DurationUnit:
+      type: string
+      description: unit of time
+      enum:
+        - MINUTE
+        - HOUR
+        - DAY
     Participant:
       type: object
       properties:
@@ -1596,6 +1598,10 @@ components:
           $ref: '#/components/schemas/Id'
         registrationToken:
           type: string
+          readOnly: true
+        registrationUrl:
+          type: string
+          format: uri
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'

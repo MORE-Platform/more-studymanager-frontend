@@ -6,7 +6,7 @@
  Foerderung der wissenschaftlichen Forschung).
  Licensed under the Elastic License 2.0.
  */
-import { Frequency, Weekday } from '../generated-sources/openapi';
+import { Frequency, Weekday } from '@gs';
 
 export default interface Scheduler {
   //start time
