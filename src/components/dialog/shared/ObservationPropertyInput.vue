@@ -11,6 +11,10 @@ Licensed under the Elastic License 2.0. */
   import { AxiosResponse } from 'axios';
   import Dropdown from 'primevue/dropdown';
   import { Context } from '../../../models/ContextModel';
+  import { useI18n } from 'vue-i18n';
+  import ExclamationIcon from '../../../components/shared/ExclamationIcon.vue';
+
+  const { t } = useI18n();
 
   const props = defineProps({
     property: {
@@ -69,10 +73,19 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="flex flex-col gap-1">
     <h6 class="font-bold">
-      <label v-if="property.name" :for="property.id">
+      <label v-if="property.name" :for="property.id" class="flex flex-row gap-1.5 justify-start align-center" >
+        <span v-if="!observation && property.value?.id" class="warning-icon">
+          <ExclamationIcon id="exclamationIcon" />
+        </span>
         {{ $t(property.name) }}<span v-if="property.required">*</span>
       </label>
     </h6>
+    <div
+      v-if="!observation && property.value?.id"
+      class="error col-span-8 mb-4"
+    >
+      {{ t('intervention.error.observationDeleted', { observationId: property.value?.id, observationType: property.value?.factory}) }}
+    </div>
     <Dropdown
       :id="property.id"
       v-model="observation"
@@ -86,3 +99,10 @@ Licensed under the Elastic License 2.0. */
     />
   </div>
 </template>
+
+<style scoped lang="postcss">
+  .warning-icon #exclamationIcon {
+    height: 20px;
+    width: auto;
+  }
+</style>

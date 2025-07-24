@@ -33,6 +33,7 @@ Licensed under the Elastic License 2.0. */
   import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+  import ExclamationIcon from './ExclamationIcon.vue';
 
   import { ACTION_ID_QR_CODE } from '../../constants';
 
@@ -464,8 +465,14 @@ Licensed under the Elastic License 2.0. */
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
+            <span v-if="field === 'title'" class="flex flex-row gap-1.5 align-center">
+              <span v-if="data['hasError']" class="title-has-warning mr-0.2">
+                <ExclamationIcon id="exclamationIcon" />
+              </span>
+              {{ data[field]}}
+            </span>
             <span
-              v-if="
+              v-else-if="
                 column.type === MoreTableFieldType.string ||
                 column.type === MoreTableFieldType.number ||
                 !column.type
@@ -709,5 +716,10 @@ Licensed under the Elastic License 2.0. */
   :deep(.icon-checkbox.p-checkbox.show-icon) {
     height: 100%;
     padding: 5px;
+  }
+
+  .title-has-warning, .title-has-warning #exclamationIcon {
+    height: 18px;
+    width: auto;
   }
 </style>
