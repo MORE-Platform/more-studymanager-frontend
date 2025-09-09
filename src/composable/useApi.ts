@@ -20,6 +20,7 @@ import {
   DataApi,
   ConfigurationApi,
   CalendarApi,
+  AuditlogApi
 } from '@gs';
 
 const apiConfig = {
@@ -41,6 +42,7 @@ let calendarApi: CalendarApi;
 let importExportApi: ImportExportApi;
 let dataApi: DataApi;
 let uiConfigApi: ConfigurationApi;
+let auditlogApi: AuditlogApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi;
@@ -147,5 +149,15 @@ export function useUiConfigApi(): {
   uiConfigApi = uiConfigApi || new ConfigurationApi(apiConfig);
   return {
     uiConfigApi,
+  };
+}
+
+
+export function useAuditlogApi(): {
+  auditlogApi: AuditlogApi;
+} {
+  auditlogApi = auditlogApi || new AuditlogApi(apiConfig);
+  return {
+    auditlogApi,
   };
 }

@@ -8,8 +8,8 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { Study, StudyRole, StudyStatus } from '@gs';
-import { useImportExportApi, useStudiesApi } from '../composable/useApi';
+import { AuditlogMetadata, Study, StudyRole, StudyStatus } from '@gs';
+import { useAuditlogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
@@ -19,12 +19,14 @@ import { useToastService } from '../composable/toastService';
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { importExportApi } = useImportExportApi();
+  const { auditlogApi } = useAuditlogApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
   const { handleToastErrors } = useToastService();
   // State
   const study: Ref<Study> = ref({});
   const studies: Ref<Study[]> = ref([]);
+  const auditlogMetadata: Ref<AuditlogMetadata | undefined> = ref();
 
   // Actions
   async function getStudy(studyId: number): Promise<void> {
@@ -170,6 +172,19 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
+  async function exportCurrentAuditlog(studyId: number): Promise<void> {
+    await auditlogApi.exportLastAuditlog(studyId)
+      .then((rs) => {
+        window.open(rs.headers.location);
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(
+          e,
+          'cannot generate download token to export study data',
+        );
+      });
+  }
+
   function downloadJSON(filename: string, file: File): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
@@ -184,6 +199,13 @@ export const useStudyStore = defineStore('study', () => {
       link.click();
       document.body.removeChild(link);
     }
+  }
+
+  async function getAuditlogMetadata(studyId: number): Promise<AuditlogMetadata | undefined> {
+    auditlogMetadata.value = await auditlogApi.getAuditlogMetadata(studyId)
+      .then((response: AxiosResponse) => response.data)
+
+    return auditlogMetadata.value;
   }
 
   // Getters
@@ -211,5 +233,8 @@ export const useStudyStore = defineStore('study', () => {
     studyUserRoles,
     studyStatus,
     studyId,
+    auditlogMetadata,
+    getAuditlogMetadata,
+    exportCurrentAuditlog
   };
 });

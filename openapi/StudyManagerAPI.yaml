@@ -315,6 +315,7 @@ paths:
           description: Cleared
         '409':
           description: removal failed
+
   /studies/{studyId}/calendar.ics:
     get:
       tags:
@@ -374,7 +375,6 @@ paths:
                 $ref: '#/components/schemas/StudyTimeline'
         '404':
           description: Not found
-
 
   /studies/{studyId}/studyGroups:
     post:
@@ -658,6 +658,7 @@ paths:
                   $ref: '#/components/schemas/Observation'
         '404':
           description: not found
+
   /studies/{studyId}/observations/{observationId}:
     put:
       tags:
@@ -805,7 +806,6 @@ paths:
           description: Token successfully deleted
         '404':
           description: not found
-
 
   /studies/{studyId}/interventions:
     post:
@@ -986,6 +986,7 @@ paths:
                 $ref: '#/components/schemas/Action'
         '400':
           description: bad request
+
   /studies/{studyId}/interventions/{interventionId}/actions/{actionId}:
     parameters:
       - $ref: '#/components/parameters/StudyId'
@@ -1035,7 +1036,6 @@ paths:
           description: action deleted successfully
         '400':
           description: bad request
-
 
   /studies/import/study:
     post:
@@ -1327,6 +1327,93 @@ paths:
         '404':
           description: not found
 
+  /auditlog/study/{studyId}/export:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditlog
+      description: Export Auditlog
+      operationId: exportAuditlog
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditlogData'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+
+  /auditlog/study/{studyId}/export/last:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditlog
+      description: Export Auditlog
+      operationId: exportLastAuditlog
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditlogData'
+        '400':
+          description: bad request
+        '404':
+          description: not found
+
+  /auditlog/study/{studyId}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - in: query
+        name: format
+        required: false
+        schema:
+          type: string
+        description: |
+          Optional export format (default: json)
+    get:
+      tags:
+        - auditlog
+      description: Get current length of auditlogs with export format
+      operationId: getAuditlogMetadata
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditlogMetadata'
+        '404':
+          description: not found
+
+  /auditlog/study/{studyId}/list:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditlog
+      description: Get current AuditLog
+      operationId: listAuditlogs
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditlogData'
+        '404':
+          description: not found
+
   /users/me:
     get:
       tags:
@@ -1340,6 +1427,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+
   /users/search:
     get:
       tags:
@@ -2134,6 +2222,82 @@ components:
         - STUDY_VIEWER
       externalDocs:
         url: https://more-platform.atlassian.net/browse/MORE-213
+
+    AuditlogData:
+      description: |
+        An Auditlog Entry saves Metadata to a specific recorded activity made by a user. The Auditlog is only accessible to Study Administrators.
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        auditlogId:
+          type: string
+          format: uuid
+          readOnly: true
+          description: Unique identifier of the auditlog data entry
+        userId:
+          description: |
+            The userId of the person to the specific recoreded activity.
+          type: string
+          readOnly: true
+        userRoles:
+          description: |
+            An array of the user's study roles at the moment of the recorded activity.
+          type: array
+          items:
+            $ref: '#/components/schemas/StudyRole'
+        userName:
+          description: |
+            The user's name. It is optional, if database can't provide the name.
+          type: string
+          readOnly: true
+        timestamp:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        action:
+          description: |
+            The method of the corresponding action, saved by the database.
+          allOf:
+            - $ref: '#/components/schemas/Action'
+        state:
+          description: |
+            The state of the specific action taken (e.g. successful, redirect, error)
+          type: string
+          enum:
+            - successful
+            - redirect
+            - error
+            - pending
+            - undefined
+          default: undefined
+        details:
+          description: |
+            Any other metadata alreaddy stored by the database. "Details" is already stored as JSON String in the database and
+            mapped as Map<String,Object> to Java. Details can have any additional JSON properties!
+          type: object
+          additionalProperties: true
+      required:
+        - uuid
+        - userId
+        - state
+        - action
+        - timestamp
+
+    AuditlogMetadata:
+      description: |
+        Gives back current length of audit log entries with an integer and export format
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        length:
+          type: integer
+          format: int32
+        format:
+          description: The export format of the audit log
+          type: string
 
     FrontendConfiguration:
       description: |
