@@ -3,7 +3,6 @@
   import { watch, computed } from 'vue';
   import { useStudyStore } from '../../stores/studyStore';
   import Button from 'primevue/button';
-  import { StudyStatus } from '@gs';
 
   const { t } = useI18n();
   const studyStore = useStudyStore();
@@ -41,7 +40,7 @@
 <template>
   <div>
     <h3 class="mb-1 font-bold">{{t('data.auditLogDownload.title')}}</h3>
-    <div v-if="studyStatus !== StudyStatus.Active">{{t('data.auditLogDownload.notStartedInfo')}}</div>
+    <div v-if="!(auditLogMetadata && auditLogMetadata?.length)">{{t('data.auditLogDownload.notStartedInfo')}}</div>
     <div v-else-if="auditLogMetadata && auditLogMetadata?.length">
       {{t('data.auditLogDownload.description', { length: auditLogMetadata.length } )}}
     </div>
