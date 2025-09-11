@@ -63,6 +63,10 @@ Licensed under the Elastic License 2.0. */
       type: Number,
       required: true,
     },
+    pauseDataRefresh: {
+      type: Boolean,
+      default: false
+    }
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -611,6 +615,20 @@ Licensed under the Elastic License 2.0. */
 
   let timer: ReturnType<typeof setInterval>;
   const refreshTimeInSeconds = 10;
+
+  watch(
+    () => props.pauseDataRefresh,
+    (newVal) => {
+      if (newVal) {
+        console.log('Pause aktiviert:', newVal)
+        clearInterval(timer)
+      } else {
+        console.log('Pause aufgehoben:', newVal)
+        loadData()
+      }
+    }
+  )
+
 
   function loadData(): void {
     timer ??= setInterval(function () {

@@ -48,7 +48,7 @@ Licensed under the Elastic License 2.0. */
           <DatapointList :study-id="studyStore.studyId" class="mb-14" />
         </TabPanel>
         <TabPanel :header="$t('monitoringData.tabs.recordedObservation')">
-          <ParticipationDataList :study-id="studyStore.studyId" />
+          <ParticipationDataList :study-id="studyStore.studyId" :pause-data-refresh="activeIndex !== 1"/>
         </TabPanel>
         <TabPanel :header="$t('monitoringData.tabs.dataDownload')">
           <Suspense>
