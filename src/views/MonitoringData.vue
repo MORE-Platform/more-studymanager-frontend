@@ -21,6 +21,9 @@ Licensed under the Elastic License 2.0. */
     StudyRole.StudyAdmin,
     StudyRole.StudyViewer,
   ];
+  const auditLogAccessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+  ];
 
   const activeIndex = ref(0)
 </script>
@@ -52,7 +55,12 @@ Licensed under the Elastic License 2.0. */
             <DataDownload />
           </Suspense>
         </TabPanel>
-        <TabPanel v-if="studyStore.studyUserRoles.some((r: StudyRole) => [StudyRole.StudyAdmin].includes(r))" :header="$t('monitoringData.tabs.auditLog')">
+        <TabPanel
+          v-if="
+            studyStore.studyUserRoles.some((r: StudyRole) =>
+            auditLogAccessRoles.includes(r),
+            )"
+          :header="$t('monitoringData.tabs.auditLog')">
           <AuditLogDownload :study-id="studyStore.studyId" :is-active="activeIndex === 3"/>
         </TabPanel>
       </TabView>
