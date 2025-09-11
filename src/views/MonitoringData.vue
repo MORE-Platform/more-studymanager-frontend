@@ -13,7 +13,7 @@ Licensed under the Elastic License 2.0. */
   import TabPanel from 'primevue/tabpanel';
   import DatapointList from '../components/subComponents/DatapointList.vue';
   import ParticipationDataList from '../components/ParticipationDataList.vue';
-  import AuditlogDownload from '../components/subComponents/AuditlogDownload.vue';
+  import AuditLogDownload from '../components/subComponents/AuditLogDownload.vue';
   import { ref } from 'vue';
 
   const studyStore = useStudyStore();
@@ -52,8 +52,8 @@ Licensed under the Elastic License 2.0. */
             <DataDownload />
           </Suspense>
         </TabPanel>
-        <TabPanel v-if="studyStore.studyUserRoles.some((r: StudyRole) => [StudyRole.StudyAdmin].includes(r))" :header="$t('monitoringData.tabs.auditlog')">
-          <AuditlogDownload :study-id="studyStore.studyId" :is-active="activeIndex === 3"/>
+        <TabPanel v-if="studyStore.studyUserRoles.some((r: StudyRole) => [StudyRole.StudyAdmin].includes(r))" :header="$t('monitoringData.tabs.auditLog')">
+          <AuditLogDownload :study-id="studyStore.studyId" :is-active="activeIndex === 3"/>
         </TabPanel>
       </TabView>
     </div>

@@ -62,10 +62,10 @@
       "description": "Here you can download the study data based on various filters.",
       "title": "Download study data"
     },
-    "auditlogDownload": {
-      "title": "Download auditlog",
-      "description": "Here you can download the current auditlog.",
-      "btnLabel": "Download current auditlog",
+    "auditLogDownload": {
+      "title": "Download AuditLog",
+      "description": "Your current AuditLog length is: {length}. s",
+      "btnLabel": "Download current AuditLog",
       "notStartedInfo": "Audit log data is only recorded when a study is active.",
       "noDataInfo": "The study has not recorded any audit log data yet."
     }
@@ -392,7 +392,7 @@
       "dataDownload": "Export study data",
       "lastDataPoints": "Latest Data Points",
       "recordedObservation": "Recorded Observations",
-      "auditlog": "Download Auditlog"
+      "auditLog": "Download AuditLog"
     }
   },
   "moreTable": {

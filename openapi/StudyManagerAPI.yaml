@@ -1341,29 +1341,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuditlogData'
-        '400':
-          description: bad request
-        '404':
-          description: not found
-
-  /auditlog/study/{studyId}/export/last:
-    parameters:
-      - $ref: '#/components/parameters/StudyId'
-    get:
-      tags:
-        - auditlog
-      description: Export Auditlog
-      operationId: exportLastAuditlog
-      responses:
-        '200':
-          description: Operation successful
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuditlogData'
+                $ref: '#/components/schemas/AuditLog'
         '400':
           description: bad request
         '404':
@@ -1372,13 +1350,6 @@ paths:
   /auditlog/study/{studyId}:
     parameters:
       - $ref: '#/components/parameters/StudyId'
-      - in: query
-        name: format
-        required: false
-        schema:
-          type: string
-        description: |
-          Optional export format (default: json)
     get:
       tags:
         - auditlog
@@ -1390,27 +1361,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuditlogMetadata'
-        '404':
-          description: not found
-
-  /auditlog/study/{studyId}/list:
-    parameters:
-      - $ref: '#/components/parameters/StudyId'
-    get:
-      tags:
-        - auditlog
-      description: Get current AuditLog
-      operationId: listAuditlogs
-      responses:
-        '200':
-          description: Operation successful
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/AuditlogData'
+                $ref: '#/components/schemas/AuditLogMetadata'
         '404':
           description: not found
 
@@ -2223,21 +2174,57 @@ components:
       externalDocs:
         url: https://more-platform.atlassian.net/browse/MORE-213
 
-    AuditlogData:
+    AuditLog:
+      description: |
+        The auditlog object of one study that includes all Auditlog Entries of said study.
+      type: array
+      items:
+        $ref: '#/components/schemas/AuditLogEntry'
+
+    AuditLogEntry:
       description: |
         An Auditlog Entry saves Metadata to a specific recorded activity made by a user. The Auditlog is only accessible to Study Administrators.
       type: object
       properties:
-        studyId:
-          $ref: '#/components/schemas/StudyId'
-        auditlogId:
-          type: string
-          format: uuid
+        id:
+          type: integer
+          format: int64
           readOnly: true
           description: Unique identifier of the auditlog data entry
+        created:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
         userId:
           description: |
             The userId of the person to the specific recoreded activity.
+          type: string
+          readOnly: true
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        action:
+          description: |
+            The performed action. The full Method signature.
+          type: string
+        actionState:
+          description: |
+            The state of the specific action taken (e.g. successful, redirect, error)
+          type: string
+          enum:
+            - success
+            - redirect
+            - error
+            - unknown
+          default: unknown
+        timestamp:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        userName:
+          description: |
+            The user's name. It is optional, if database can't provide the name.
           type: string
           readOnly: true
         userRoles:
@@ -2245,39 +2232,12 @@ components:
             An array of the user's study roles at the moment of the recorded activity.
           type: array
           items:
-            $ref: '#/components/schemas/StudyRole'
-        userName:
+            type: string
+        resource:
           description: |
-            The user's name. It is optional, if database can't provide the name.
+            The ressource accessed by the user
           type: string
-          readOnly: true
-        timestamp:
-          description: |
-            Timestamp of when the entry was stored in the database (not the created value of the data).
-          type: string
-          format: date-time
-        action:
-          description: |
-            The method of the corresponding action, saved by the database.
-          allOf:
-            - $ref: '#/components/schemas/Action'
-        state:
-          description: |
-            The state of the specific action taken (e.g. successful, redirect, error)
-          type: string
-          enum:
-            - successful
-            - redirect
-            - error
-            - pending
-            - undefined
-          default: undefined
-        details:
-          description: |
-            Any other metadata alreaddy stored by the database. "Details" is already stored as JSON String in the database and
-            mapped as Map<String,Object> to Java. Details can have any additional JSON properties!
-          type: object
-          additionalProperties: true
+      additionalProperties: true
       required:
         - uuid
         - userId
@@ -2285,7 +2245,7 @@ components:
         - action
         - timestamp
 
-    AuditlogMetadata:
+    AuditLogMetadata:
       description: |
         Gives back current length of audit log entries with an integer and export format
       type: object
@@ -2294,10 +2254,7 @@ components:
           $ref: '#/components/schemas/StudyId'
         length:
           type: integer
-          format: int32
-        format:
-          description: The export format of the audit log
-          type: string
+          format: int64
 
     FrontendConfiguration:
       description: |

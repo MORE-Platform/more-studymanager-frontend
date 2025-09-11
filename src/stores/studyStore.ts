@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AuditlogMetadata, Study, StudyRole, StudyStatus } from '@gs';
+import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus } from '@gs';
 import { useAuditlogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
@@ -26,7 +26,8 @@ export const useStudyStore = defineStore('study', () => {
   // State
   const study: Ref<Study> = ref({});
   const studies: Ref<Study[]> = ref([]);
-  const auditlogMetadata: Ref<AuditlogMetadata | undefined> = ref();
+  const auditLogMetadata: Ref<AuditLogMetadata | undefined> = ref();
+  const auditLogEntries: Ref<Array<AuditLogEntry>> = ref([]);
 
   // Actions
   async function getStudy(studyId: number): Promise<void> {
@@ -172,10 +173,13 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  async function exportCurrentAuditlog(studyId: number): Promise<void> {
-    await auditlogApi.exportLastAuditlog(studyId)
-      .then((rs) => {
-        window.open(rs.headers.location);
+  async function exportAuditLog(studyId: number): Promise<void> {
+    await auditlogApi.exportAuditlog(studyId)
+      .then((response) => {
+        window.open(response.headers.location);
+        console.log('response: ', response.data)
+        const filename: string = `study_auditlog_${studyId}.json`;
+        downloadJSON(filename, response.data)
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
@@ -185,7 +189,7 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  function downloadJSON(filename: string, file: File): void {
+  function downloadJSON(filename: string, file: File | AuditLogEntry[]): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
     if (link) {
@@ -201,11 +205,13 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function getAuditlogMetadata(studyId: number): Promise<AuditlogMetadata | undefined> {
-    auditlogMetadata.value = await auditlogApi.getAuditlogMetadata(studyId)
+  async function getAuditLogMetadata(studyId: number): Promise<AuditLogMetadata | undefined> {
+    auditLogMetadata.value = await auditlogApi.getAuditlogMetadata(studyId)
       .then((response: AxiosResponse) => response.data)
 
-    return auditlogMetadata.value;
+    console.log('getAuditlogMetadata was called')
+
+    return auditLogMetadata.value;
   }
 
   // Getters
@@ -233,8 +239,9 @@ export const useStudyStore = defineStore('study', () => {
     studyUserRoles,
     studyStatus,
     studyId,
-    auditlogMetadata,
-    getAuditlogMetadata,
-    exportCurrentAuditlog
+    auditLogMetadata,
+    auditLogEntries,
+    getAuditLogMetadata,
+    exportAuditLog
   };
 });
