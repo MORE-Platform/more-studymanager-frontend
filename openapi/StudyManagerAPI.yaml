@@ -1332,9 +1332,9 @@ paths:
       - $ref: '#/components/parameters/StudyId'
     get:
       tags:
-        - auditlog
-      description: Export Auditlog
-      operationId: exportAuditlog
+        - auditLog
+      description: Export AuditLog
+      operationId: exportAuditLog
       responses:
         '200':
           description: Operation successful
@@ -1352,9 +1352,9 @@ paths:
       - $ref: '#/components/parameters/StudyId'
     get:
       tags:
-        - auditlog
-      description: Get current length of auditlogs with export format
-      operationId: getAuditlogMetadata
+        - auditLog
+      description: Get current length of AuditLogs with export format
+      operationId: getAuditLogMetadata
       responses:
         '200':
           description: Operation successful
@@ -2176,21 +2176,21 @@ components:
 
     AuditLog:
       description: |
-        The auditlog object of one study that includes all Auditlog Entries of said study.
+        The audit log object of one study that includes all audit log entries of said study.
       type: array
       items:
         $ref: '#/components/schemas/AuditLogEntry'
 
     AuditLogEntry:
       description: |
-        An Auditlog Entry saves Metadata to a specific recorded activity made by a user. The Auditlog is only accessible to Study Administrators.
+        An audit log entry saves Metadata to a specific recorded activity made by a user. The audit log is only accessible to Study Administrators.
       type: object
       properties:
         id:
           type: integer
           format: int64
           readOnly: true
-          description: Unique identifier of the auditlog data entry
+          description: Unique identifier of the audit log data entry
         created:
           description: |
             Timestamp of when the entry was stored in the database (not the created value of the data).

@@ -9,7 +9,7 @@
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
 import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus } from '@gs';
-import { useAuditlogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
+import { useAuditLogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
@@ -19,7 +19,7 @@ import { useToastService } from '../composable/toastService';
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { importExportApi } = useImportExportApi();
-  const { auditlogApi } = useAuditlogApi();
+  const { auditLogApi } = useAuditLogApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
   const { handleToastErrors } = useToastService();
@@ -174,8 +174,8 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function exportAuditLog(studyId: number): Promise<void> {
-    await auditlogApi.exportAuditlog(studyId)
-      .then((response) => {
+    await auditLogApi.exportAuditLog(studyId)
+      .then((response:AxiosResponse<AuditLogEntry[]>) => {
         window.open(response.headers.location);
         console.log('response: ', response.data)
         const filename: string = `study_auditlog_${studyId}.json`;
@@ -206,7 +206,7 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function getAuditLogMetadata(studyId: number): Promise<AuditLogMetadata | undefined> {
-    auditLogMetadata.value = await auditlogApi.getAuditlogMetadata(studyId)
+    auditLogMetadata.value = await auditLogApi.getAuditLogMetadata(studyId)
       .then((response: AxiosResponse) => response.data)
 
     console.log('getAuditlogMetadata was called')

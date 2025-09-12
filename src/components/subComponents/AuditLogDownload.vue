@@ -18,7 +18,6 @@
     }
   })
 
-  const studyStatus = computed(() => studyStore.studyStatus)
   const auditLogMetadata = computed(() => studyStore.auditLogMetadata)
 
   watch(() => props.isActive,
