@@ -1333,7 +1333,7 @@ paths:
     get:
       tags:
         - auditLog
-      description: Export AuditLog
+      description: Export the complete audit log to a json file
       operationId: exportAuditLog
       responses:
         '200':
@@ -1353,7 +1353,7 @@ paths:
     get:
       tags:
         - auditLog
-      description: Get current length of AuditLogs with export format
+      description: Provides metadata of the aduit logs for the requested study
       operationId: getAuditLogMetadata
       responses:
         '200':
@@ -2176,7 +2176,7 @@ components:
 
     AuditLog:
       description: |
-        The audit log object of one study that includes all audit log entries of said study.
+        The AuditLog object of one study that includes all AuditLog entries of said study.
       type: array
       items:
         $ref: '#/components/schemas/AuditLogEntry'
