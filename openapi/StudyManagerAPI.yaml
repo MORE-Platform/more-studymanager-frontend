@@ -1342,6 +1342,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuditLog'
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: attachment; filename="auditlogs_123.json"
         '400':
           description: bad request
         '404':
