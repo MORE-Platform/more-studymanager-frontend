@@ -1097,7 +1097,9 @@
       "studyEnd": "Studienende",
       "studyStart": "Studienstart",
       "today": "Heute",
-      "type": "Typ"
+      "type": "Typ",
+      "showFullTimeline": "0-24 Uhr",
+      "collapseTimeline": "8-19 Uhr"
     }
   },
   "title": "Titel",
