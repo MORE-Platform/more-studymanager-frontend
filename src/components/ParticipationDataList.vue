@@ -620,10 +620,8 @@ Licensed under the Elastic License 2.0. */
     () => props.pauseDataRefresh,
     (newVal) => {
       if (newVal) {
-        console.log('Pause aktiviert:', newVal)
         clearInterval(timer)
       } else {
-        console.log('Pause aufgehoben:', newVal)
         loadData()
       }
     }

@@ -177,7 +177,6 @@ export const useStudyStore = defineStore('study', () => {
     await auditLogApi.exportAuditLog(studyId)
       .then((response:AxiosResponse<AuditLogEntry[]>) => {
         window.open(response.headers.location);
-        console.log('response: ', response.data)
         const filename: string = `study_auditlog_${studyId}.json`;
         downloadJSON(filename, response.data)
       })
@@ -205,13 +204,9 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function getAuditLogMetadata(studyId: number): Promise<AuditLogMetadata | undefined> {
+  async function getAuditLogMetadata(studyId: number): Promise<void> {
     auditLogMetadata.value = await auditLogApi.getAuditLogMetadata(studyId)
       .then((response: AxiosResponse) => response.data)
-
-    console.log('getAuditlogMetadata was called')
-
-    return auditLogMetadata.value;
   }
 
   // Getters

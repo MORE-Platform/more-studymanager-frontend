@@ -18,7 +18,7 @@
     }
   })
 
-  const auditLogMetadata = computed(() => studyStore.auditLogMetadata)
+  const auditLogMetadataLength = computed(() => studyStore.auditLogMetadata?.length)
 
   watch(() => props.isActive,
     (active) => {
@@ -39,14 +39,14 @@
 <template>
   <div>
     <h3 class="mb-1 font-bold">{{t('data.auditLogDownload.title')}}</h3>
-    <div v-if="!(auditLogMetadata && auditLogMetadata?.length)">{{t('data.auditLogDownload.notStartedInfo')}}</div>
-    <div v-else-if="auditLogMetadata && auditLogMetadata?.length">
-      {{t('data.auditLogDownload.description', { length: auditLogMetadata.length } )}}
+    <div v-if="!auditLogMetadataLength">{{t('data.auditLogDownload.notStartedInfo')}}</div>
+    <div v-else-if="auditLogMetadataLength">
+      {{t('data.auditLogDownload.description', { length: auditLogMetadataLength || 0 } )}}
     </div>
     <div v-else>{{t('data.auditLogDownload.noDataInfo')}}</div>
   </div>
 
-  <div v-if="auditLogMetadata && auditLogMetadata?.length" class="flex justify-end">
+  <div v-if="auditLogMetadataLength" class="flex justify-end">
     <Button
       icon="pi pi-download"
       class="mt-8"
