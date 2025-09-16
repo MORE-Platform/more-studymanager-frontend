@@ -303,7 +303,7 @@ Licensed under the Elastic License 2.0. */
       case 'bar':
         return transformToBarChartData(observationDataViewData);
       default:
-        console.log(
+        console.info(
           `Unsupported Chart type: ${observationDataViewData.chartType}`,
         );
         return null;
