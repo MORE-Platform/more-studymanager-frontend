@@ -63,6 +63,10 @@ Licensed under the Elastic License 2.0. */
       type: Number,
       required: true,
     },
+    pauseDataRefresh: {
+      type: Boolean,
+      default: false
+    }
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -299,7 +303,7 @@ Licensed under the Elastic License 2.0. */
       case 'bar':
         return transformToBarChartData(observationDataViewData);
       default:
-        console.log(
+        console.info(
           `Unsupported Chart type: ${observationDataViewData.chartType}`,
         );
         return null;
@@ -611,6 +615,18 @@ Licensed under the Elastic License 2.0. */
 
   let timer: ReturnType<typeof setInterval>;
   const refreshTimeInSeconds = 10;
+
+  watch(
+    () => props.pauseDataRefresh,
+    (newVal) => {
+      if (newVal) {
+        clearInterval(timer)
+      } else {
+        loadData()
+      }
+    }
+  )
+
 
   function loadData(): void {
     timer ??= setInterval(function () {

@@ -25,7 +25,7 @@ function getBrowserDateFormat(): string {
       case 'year':
         return 'yy';
       default:
-        console.log('Unknown Intl.DateTimeFormat value:', value);
+        console.info('Unknown Intl.DateTimeFormat value:', value);
         return '';
     }
   }

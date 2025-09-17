@@ -124,7 +124,7 @@ Licensed under the Elastic License 2.0. */
           draggable: false,
         },
         onClose: () => {
-          console.log('closed access dialog');
+          console.info('closed access dialog');
         },
       });
     }

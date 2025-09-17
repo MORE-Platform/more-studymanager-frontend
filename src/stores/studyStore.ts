@@ -8,8 +8,8 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { Study, StudyRole, StudyStatus } from '@gs';
-import { useImportExportApi, useStudiesApi } from '../composable/useApi';
+import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus } from '@gs';
+import { useAuditLogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
@@ -19,12 +19,15 @@ import { useToastService } from '../composable/toastService';
 export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { importExportApi } = useImportExportApi();
+  const { auditLogApi } = useAuditLogApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
   const { handleToastErrors } = useToastService();
   // State
   const study: Ref<Study> = ref({});
   const studies: Ref<Study[]> = ref([]);
+  const auditLogMetadata: Ref<AuditLogMetadata | undefined> = ref();
+  const auditLogEntries: Ref<Array<AuditLogEntry>> = ref([]);
 
   // Actions
   async function getStudy(studyId: number): Promise<void> {
@@ -170,7 +173,22 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  function downloadJSON(filename: string, file: File): void {
+  async function exportAuditLog(studyId: number): Promise<void> {
+    await auditLogApi.exportAuditLog(studyId)
+      .then((response:AxiosResponse<AuditLogEntry[]>) => {
+        window.open(response.headers.location);
+        const filename: string = `study_auditlog_${studyId}.json`;
+        downloadJSON(filename, response.data)
+      })
+      .catch((e: AxiosError) => {
+        handleIndividualError(
+          e,
+          'cannot generate download token to export study data',
+        );
+      });
+  }
+
+  function downloadJSON(filename: string, file: File | AuditLogEntry[]): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
     if (link) {
@@ -184,6 +202,11 @@ export const useStudyStore = defineStore('study', () => {
       link.click();
       document.body.removeChild(link);
     }
+  }
+
+  async function getAuditLogMetadata(studyId: number): Promise<void> {
+    auditLogMetadata.value = await auditLogApi.getAuditLogMetadata(studyId)
+      .then((response: AxiosResponse) => response.data)
   }
 
   // Getters
@@ -211,5 +234,9 @@ export const useStudyStore = defineStore('study', () => {
     studyUserRoles,
     studyStatus,
     studyId,
+    auditLogMetadata,
+    auditLogEntries,
+    getAuditLogMetadata,
+    exportAuditLog
   };
 });

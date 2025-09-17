@@ -61,13 +61,20 @@
     "dataDownload": {
       "description": "Hier können die Studiendaten basierend auf diverse Filter heruntergeladen werden.",
       "title": "Studiendaten herunterladen"
+    },
+    "auditLogDownload": {
+      "title": "AuditLog herunterladen",
+      "description": "Die Länge der aktuellen AuditLog Einträge beträgt: {length}.",
+      "btnLabel": "Aktuellen AuditLog herunterladen",
+      "notStartedInfo": "AuditLog-Daten werden erst bei einer aktiven Studie aufgezeichnet.",
+      "noDataInfo": "Die Studie hat noch keine AuditLog-Daten aufgezeichnet."
     }
   },
   "global": {
     "error": {
       "general": "Ein allgemeiner Fehler ist aufgetreten.",
       "immutable": "Der Wert von '{value}' darf nicht geändert werden.",
-      "inComponentTitle": "In Aufzeichnung '{title}': ",
+      "inComponentTitle": "In Aufzeichnung {title}: ",
       "required": "Erforderlicher Wert '{value}' fehlt.",
       "type": {
         "error": "Fehler",
@@ -384,7 +391,8 @@
     "tabs": {
       "dataDownload": "Studiendaten herunterladen",
       "lastDataPoints": "Letzte Datenpunkte",
-      "recordedObservation": "Erhobene Daten"
+      "recordedObservation": "Erhobene Daten",
+      "auditLog": "AuditLog herunterladen"
     }
   },
   "moreTable": {
