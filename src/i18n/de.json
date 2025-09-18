@@ -63,11 +63,11 @@
       "title": "Studiendaten herunterladen"
     },
     "auditLogDownload": {
-      "title": "AuditLog herunterladen",
-      "description": "Die Länge der aktuellen AuditLog Einträge beträgt: {length}.",
-      "btnLabel": "Aktuellen AuditLog herunterladen",
-      "notStartedInfo": "AuditLog-Daten werden erst bei einer aktiven Studie aufgezeichnet.",
-      "noDataInfo": "Die Studie hat noch keine AuditLog-Daten aufgezeichnet."
+      "title": "Auditlog herunterladen",
+      "description": "Die Anzahl der aktuellen Auditlog Einträge beträgt: {length}.",
+      "btnLabel": "Aktuellen Auditlog herunterladen",
+      "notStartedInfo": "Auditlog-Daten werden erst bei einer aktiven Studie aufgezeichnet.",
+      "noDataInfo": "Die Studie hat noch keine Auditlog-Daten aufgezeichnet."
     }
   },
   "global": {

@@ -64,8 +64,8 @@
     },
     "auditLogDownload": {
       "title": "Download AuditLog",
-      "description": "Your current AuditLog length is: {length}. s",
-      "btnLabel": "Download current AuditLog",
+      "description": "The number of the current audit log entries is: {length}.",
+      "btnLabel": "Download current audit log",
       "notStartedInfo": "Audit log data is only recorded when a study is active.",
       "noDataInfo": "The study has not recorded any audit log data yet."
     }
