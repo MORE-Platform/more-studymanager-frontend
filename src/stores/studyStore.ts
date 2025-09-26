@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus } from '@gs';
+import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus, DataExportInner } from '@gs';
 import { useAuditLogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
@@ -162,8 +162,28 @@ export const useStudyStore = defineStore('study', () => {
         from,
         to,
       )
-      .then((rs) => {
-        window.open(rs.headers.location);
+      .then(async (rs) => {
+        if (rs && rs?.data?.token) {
+          await importExportApi.exportStudyData(
+            studyId,
+            rs.data.token,
+            studyGroupId,
+            participantId,
+            observationId,
+            from,
+            to
+          ).then((response) => {
+            window.open(response.headers.location);
+            const filename: string = 'study_data_' + studyId + '.json';
+            downloadJSON(filename, response.data);
+
+          }).catch((e: AxiosError) => {
+            handleIndividualError(
+              e,
+              'cannot export data despite of existing download token',
+            );
+          } );
+        }
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
@@ -188,7 +208,7 @@ export const useStudyStore = defineStore('study', () => {
       });
   }
 
-  function downloadJSON(filename: string, file: File | AuditLogEntry[]): void {
+  function downloadJSON(filename: string, file: File | AuditLogEntry[] | DataExportInner[]): void {
     const fileJSON = JSON.stringify(file);
     const link = document.createElement('a');
     if (link) {
