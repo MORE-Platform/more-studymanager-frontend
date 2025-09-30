@@ -116,10 +116,14 @@
     getObservationList();
   }
 
+  const isDownloadDataLoading = ref<boolean>(false)
   function downloadStudyData(): void {
+    isDownloadDataLoading.value = true
     studyStore.exportStudyData({
       studyId: studyStore.studyId,
       ...getDownloadFilters(),
+    }).then(() => {
+      isDownloadDataLoading.value = false
     });
   }
 
@@ -253,6 +257,7 @@
         icon="pi pi-download"
         class="mt-8"
         :label="$t('study.studyList.labels.exportStudyData')"
+        :disabled="isDownloadDataLoading"
         @click="downloadStudyData()"
       />
     </div>
