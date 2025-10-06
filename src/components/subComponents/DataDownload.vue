@@ -17,6 +17,7 @@
   import { useGlobalStore } from '../../stores/globalStore';
   import MultiSelect from 'primevue/multiselect';
   import { DownloadDataFilter } from '../../models/DataDownloadModel';
+  import ProgressSpinner from 'primevue/progressspinner';
 
   const { t } = useI18n();
   const { componentsApi } = useComponentsApi();
@@ -259,9 +260,24 @@
         :label="$t('study.studyList.labels.exportStudyData')"
         :disabled="isDownloadDataLoading"
         @click="downloadStudyData()"
-      />
+      >
+        <span class="p-button-icon p-button-icon-left pi pi-download"></span>
+      <span>{{t('study.studyList.labels.exportStudyData')}}</span>
+        <ProgressSpinner
+          v-if="isDownloadDataLoading"
+          class="!text-white ml-2"
+          style="width: 25px; height: 25px"
+          stroke-width="6"
+          fill="transparent"
+          animation-duration=".5s"
+        />
+      </Button>
     </div>
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped lang="postcss">
+  :deep(.p-progress-spinner-circle) {
+    stroke: currentColor!important; /* nimmt dann die text-red-600 aus Tailwind */
+  }
+</style>
