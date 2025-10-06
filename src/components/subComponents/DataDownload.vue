@@ -1,7 +1,7 @@
 <script setup lang="ts">
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
-  import { computed, ComputedRef, Ref, ref } from 'vue';
+  import { computed, ComputedRef, onBeforeMount, onBeforeUnmount, Ref, ref } from 'vue';
   import { DropdownOption } from '../../models/Common';
   import { ComponentFactory, Observation, Participant } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
@@ -18,6 +18,13 @@
   import MultiSelect from 'primevue/multiselect';
   import { DownloadDataFilter } from '../../models/DataDownloadModel';
   import ProgressSpinner from 'primevue/progressspinner';
+  import { useDialog } from 'primevue/usedialog';
+  import ConfirmationDialog from '../dialog/ConfirmationDialog.vue';
+  import { onBeforeRouteLeave, useRouter } from 'vue-router';
+
+  const dialog = useDialog();
+  const router = useRouter();
+  const pendingRoute = ref<any>(null);
 
   const { t } = useI18n();
   const { componentsApi } = useComponentsApi();
@@ -166,6 +173,62 @@
     .then((response: any) => response.data)
     .then((rs) => (factories = rs))
     .then(loadData);
+
+  function interceptPageNavigation(): void {
+    dialog.open(ConfirmationDialog, {
+      data: {
+        message: t('monitoringData.dialog.msg.downloadStudyData'),
+        cancelBtn: t('monitoringData.dialog.waitForDownload'),
+        approveBtn: t('monitoringData.dialog.navigatePage')
+      },
+      props: {
+        header: t('monitoringData.dialog.header.downloadStudyData'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+        draggable: false,
+      },
+      onClose: (options) =>{
+        if (options?.data) {
+          if (pendingRoute.value) {
+            isDownloadDataLoading.value = false
+            router.push(pendingRoute.value)
+            pendingRoute.value = null
+          }
+        } else {
+          pendingRoute.value = null
+        }
+        }
+      })
+    }
+
+  onBeforeRouteLeave((to, from, next) => {
+    if (isDownloadDataLoading.value) {
+      pendingRoute.value = to
+      interceptPageNavigation()
+      // preventNavigation
+      next(false)
+    } else {
+      // navigate
+      next()
+    }
+  })
+
+  onBeforeMount(() => {
+    window.addEventListener('beforeunload', (e) => {
+      if (isDownloadDataLoading.value) e.preventDefault() }
+    )
+  })
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', (e) => {
+      if (isDownloadDataLoading.value) e.preventDefault() }
+    )
+  })
 </script>
 
 <template>
@@ -278,6 +341,6 @@
 
 <style scoped lang="postcss">
   :deep(.p-progress-spinner-circle) {
-    stroke: currentColor!important; /* nimmt dann die text-red-600 aus Tailwind */
+    stroke: currentColor!important;
   }
 </style>
