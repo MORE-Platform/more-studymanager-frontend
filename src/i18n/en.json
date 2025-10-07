@@ -63,7 +63,7 @@
       "title": "Download study data"
     },
     "auditLogDownload": {
-      "title": "Download AuditLog",
+      "title": "Download Audit log",
       "description": "The number of the current audit log entries is: {length}.",
       "btnLabel": "Download current audit log",
       "notStartedInfo": "Audit log data is only recorded when a study is active.",
@@ -125,7 +125,8 @@
       "setPause": "Pause",
       "start": "Start",
       "time": "Time",
-      "to": "to"
+      "to": "to",
+      "leavePage": "Do you really want to leave the page?"
     },
     "placeholder": {
       "all": "All",
@@ -393,6 +394,16 @@
       "lastDataPoints": "Latest Data Points",
       "recordedObservation": "Recorded Observations",
       "auditLog": "Download AuditLog"
+    },
+    "dialog": {
+      "navigatePage": "Leave page",
+      "waitForDownload": "Wait for download",
+      "msg": {
+        "downloadStudyData": "The data download is still in progress. You may leave the page – the process will be buffered in the background and the download will automatically open in a new tab once it is ready. Any changes you make from now on will not be included in this download."
+      },
+      "header": {
+        "downloadStudyData": "Navigate page"
+      }
     }
   },
   "moreTable": {

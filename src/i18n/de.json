@@ -125,7 +125,8 @@
       "setPause": "Pausieren",
       "start": "Start",
       "time": "Zeit",
-      "to": "zu"
+      "to": "zu",
+      "leavePage": "Möchten Sie die Seite wirklich verlassen?"
     },
     "placeholder": {
       "all": "Alle",
@@ -392,7 +393,17 @@
       "dataDownload": "Studiendaten herunterladen",
       "lastDataPoints": "Letzte Datenpunkte",
       "recordedObservation": "Erhobene Daten",
-      "auditLog": "AuditLog herunterladen"
+      "auditLog": "Auditlog herunterladen"
+    },
+    "dialog": {
+      "waitForDownload": "Auf Download warten",
+      "navigatePage": "Seite verlassen",
+      "msg": {
+        "downloadStudyData": "Der Daten-Download läuft noch. Sie können die Seite trotzdem verlassen – der Vorgang wird im Hintergrund gebuffert und der Download öffnet sich automatisch in einem neuen Tab, sobald er bereitsteht. Änderungen, die Sie ab jetzt vornehmen, sind darin nicht enthalten."
+      },
+      "header": {
+        "downloadStudyData": "Seite navigieren"
+      }
     }
   },
   "moreTable": {
