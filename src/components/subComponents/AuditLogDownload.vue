@@ -38,7 +38,7 @@
   function downloadCurrentAuditlog(): void {
     isLoading.value = true
     studyStore.exportAuditLog(studyStore.studyId)
-      .then(() => isLoading.value = false);
+      .finally(() => isLoading.value = false);
   }
 </script>
 
@@ -57,6 +57,7 @@
       icon="pi pi-download"
       class="mt-8"
       :label="$t('data.auditLogDownload.btnLabel')"
+      :disabled="isLoading"
       @click="downloadCurrentAuditlog()"
     >
       <span class="p-button-icon p-button-icon-left pi pi-download"></span>

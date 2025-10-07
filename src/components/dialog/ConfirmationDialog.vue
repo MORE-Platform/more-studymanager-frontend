@@ -1,19 +1,21 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  /* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
-  license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
-  Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
-  Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
-  Licensed under the Elastic License 2.0. */
-
   import { inject } from 'vue';
   import Button from 'primevue/button';
   import ExclamationIcon from '../shared/ExclamationIcon.vue';
+  import { useI18n } from 'vue-i18n';
+
+  const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
 
-  const message: string = dialogRef.value?.data?.message ?? 'Möchten Sie die Seite wirklich verlassen?';
-  const cancelBtn: string = dialogRef.value?.data?.cancelBtn ?? 'Abbrechen';
-  const approveBtn: string = dialogRef.value?.data?.approveBtn ?? 'Bestätigen';
+  const message: string = dialogRef.value?.data?.message ?? t('global.labels.leavePage');
+  const cancelBtn: string = dialogRef.value?.data?.cancelBtn ?? t('global.labels.cancel');
+  const approveBtn: string = dialogRef.value?.data?.approveBtn ?? t('global.labels.confirm');
 
   function closeDialog(navigate: boolean): void {
     dialogRef.value.close(navigate)

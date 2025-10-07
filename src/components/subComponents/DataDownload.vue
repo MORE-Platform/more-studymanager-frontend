@@ -198,14 +198,12 @@
           if (pendingRoute.value) {
             isDownloadDataLoading.value = false
             router.push(pendingRoute.value)
-            pendingRoute.value = null
           }
-        } else {
-          pendingRoute.value = null
         }
-        }
-      })
-    }
+        pendingRoute.value = null
+      }
+    })
+  }
 
   onBeforeRouteLeave((to, from, next) => {
     if (isDownloadDataLoading.value) {

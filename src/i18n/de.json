@@ -125,7 +125,8 @@
       "setPause": "Pausieren",
       "start": "Start",
       "time": "Zeit",
-      "to": "zu"
+      "to": "zu",
+      "leavePage": "Möchten Sie die Seite wirklich verlassen?"
     },
     "placeholder": {
       "all": "Alle",
