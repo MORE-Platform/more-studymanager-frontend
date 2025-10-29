@@ -478,6 +478,11 @@
         },
         "description": "This observation enables you to create a simple multiple choice question.",
         "title": "Simple Question"
+      },
+      "garmin": {
+        "configProps": {},
+        "description": "This observation enables you to collect health data via the Garmin Connect.",
+        "title": "Garmin"
       }
     },
     "observationList": {

@@ -478,6 +478,11 @@
         },
         "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
         "title": "Einfache Frage"
+      },
+      "garmin": {
+        "configProps": {},
+        "description": "Diese Datenerhebung ermöglicht es, Gesundheitsdaten via Garmin Connect zu erhalten.",
+        "title": "Garmin"
       }
     },
     "observationList": {
