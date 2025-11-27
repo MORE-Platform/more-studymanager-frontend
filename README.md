@@ -80,6 +80,10 @@ Make sure that the enum structure within `openapi/StudyManagerApi.yml` is
 Otherwise, the generated enums will be duplicated, leading to errors.
 
 ## Testing Environment with Vitest
+
+To test the frontend with a deployed backend server, you have to set environment variable `VITE_MORE_BACKEND_URL` to the desired backend.
+For testing with a local backend use `npm run dev:local`
+
 Run
 
 ```

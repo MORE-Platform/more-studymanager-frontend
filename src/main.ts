@@ -74,9 +74,9 @@ const uiConfig = await uiConfigApi
     return {
       title: 'Unknown Legacy Backend',
       auth: {
-        server: 'https://auth.more.redlink.io',
-        realm: 'Auth-Client-Test',
-        clientId: 'oauth2-pkce-client',
+        server: 'https://auth.more.redlink.io/',
+        realm: 'UMM',
+        clientId: 'oauth2-umm-client',
       },
     } as FrontendConfiguration;
   });
@@ -88,7 +88,7 @@ const authService = new AuthService({
 });
 const loggedIn = await authService.init();
 if (!loggedIn) {
-  window.location.reload();
+  // window.location.reload();
 }
 
 axios.interceptors.request.use(
