@@ -126,7 +126,8 @@
       "start": "Start",
       "time": "Zeit",
       "to": "zu",
-      "leavePage": "Möchten Sie die Seite wirklich verlassen?"
+      "leavePage": "Möchten Sie die Seite wirklich verlassen?",
+      "dataHealth": "Data-Health"
     },
     "placeholder": {
       "all": "Alle",
@@ -504,7 +505,8 @@
         "heartRateMeter": "Herzfrequenzmesser",
         "smartphoneAccelerometer": "Beschleunigungsmesser"
       },
-      "type": "Typ"
+      "type": "Typ",
+      "dataHealth": "Status"
     },
     "singular": "Aufzeichnung"
   },
@@ -531,7 +533,8 @@
         "deleteWithData": "Daten löschen",
         "distribute": "Teilnehmer:innen automatisch Gruppen zuweisen",
         "edit": "Teilnehmer:in bearbeiten",
-        "qrCode": "QR Code für"
+        "qrCode": "QR Code für",
+        "details": "Teilnehmer-Details"
       },
       "msg": {
         "delete": "Möchten Sie diese Teilnehmer:in wirklich löschen?",
@@ -1135,7 +1138,8 @@
       "goToStudy": "Studie öffnen",
       "saveChanges": "Änderungen speichern",
       "showQrCode": "QR Code anzeigen",
-      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen."
+      "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
+      "openParticipantDetails": "Öffne Teilnehmer-Details für mehr Informationen."
     },
     "timeline": {
       "relativeDateInfo": "Damit wird der Zeitpunkt simuliert, an dem ein Teilnehmer in die Studie eintritt."

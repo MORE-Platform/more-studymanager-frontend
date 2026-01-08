@@ -37,6 +37,7 @@ Licensed under the Elastic License 2.0. */
     PARTICIPANT_COUNTS,
   } from '../constants';
   import QrCodeDialog from './dialog/QrCodeDialog.vue';
+  import ParticipantDetailsDialog from './dialog/ParticipantDetailsDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
@@ -114,14 +115,22 @@ Licensed under the Elastic License 2.0. */
       placeholder: '-',
       columnWidth: '10vw',
     },
+    {
+      field: 'dataHealth',
+      header: 'test',
+      type: MoreTableFieldType.string,
+      sortable: true,
+      placeholder: 'orange',
+      columnWidth: '5vw'
+    },
   ];
 
   const rowActions: MoreTableAction[] = [
     {
       id: ACTION_ID_DATA_HEALTH,
-      label: t('global.labels.data-health'),
+      label: t('global.labels.dataHealth'),
       icon: 'pi pi-id-card',
-      tooltip: dataHealthTooltip.value,
+      tooltip: t('tooltips.moreTable.openParticipantDetails'),
       visible: () => true,
     },
     {
@@ -262,6 +271,9 @@ Licensed under the Elastic License 2.0. */
       case ACTION_ID_QR_CODE:
         openQrCodeDialog(action.row as Participant);
         break;
+      case ACTION_ID_DATA_HEALTH:
+        openParticipantDetailsDialog(action.row as Participant);
+        break;
       default:
         console.error('no handler for action', action);
     }
@@ -282,6 +294,29 @@ Licensed under the Elastic License 2.0. */
       },
     });
   };
+
+  const openParticipantDetailsDialog = (participant: Participant): void => {
+    dialog.open(ParticipantDetailsDialog, {
+      data: {
+        participant,
+        studyId: props.studyId
+      },
+      props: {
+        header: `${t('participants.dialog.header.details')}: ${participant.alias}`,
+        style: {
+          width: '50vw',
+          maxHeight: '92vh',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+        draggable: false,
+        closeOnEscape: false,
+      }
+    });
+  }
 
   const createParticipant = (amount: number): void => {
     const newParticipants: Participant[] = [];
