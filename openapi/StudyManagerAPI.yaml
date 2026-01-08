@@ -615,6 +615,48 @@ paths:
         '500':
           description: Error
 
+  /studies/{studyId}/occuredObservations:
+    get:
+      tags:
+        - participants
+      description: List of occured observations of one specific participant
+      operationId: listOccuredObservations
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: participant
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: observation
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: from
+          in: query
+          description: default is entire time
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: default is now
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OccuredObservation'
+        '404':
+          description: Not found
+
   /studies/{studyId}/observations:
     post:
       tags:
@@ -1358,7 +1400,7 @@ paths:
     get:
       tags:
         - auditLog
-      description: Provides metadata of the aduit logs for the requested study
+      description: Provides metadata of the audit logs for the requested study
       operationId: getAuditLogMetadata
       responses:
         '200':
@@ -1649,6 +1691,12 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
+        dataHealthIndicator:
+          type: string
+          enum:
+            - 'green'
+            - 'orange'
+            - 'red'
         start:
           type: string
           format: date-time
@@ -1717,6 +1765,33 @@ components:
           type: boolean
           default: false
 
+    OccuredObservation:
+      type: object
+      properties:
+        studyId:
+          type: string
+        participant:
+          $ref: '#/components/schemas/Participant'
+        observation:
+          $ref: '#/components/schemas/Observation'
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - missing
+            - completed
+            - incomplete
+            - ongoing
+      required:
+        - studyId
+        - start
+        - end
+        - state
 
     StudyTimeline:
       type: object
@@ -2170,7 +2245,7 @@ components:
         We differentiate between the following roles within a study:
         * `STUDY_ADMIN` (_Study Administrator_): **All** rights to create and manage studies, configure components and assign participants, invite and manage operators and viewers and see study data.
         * `STUDY_OPERATOR` (_Study Operator_): Rights to manage studies, configure components and assign participants, **no rights to see data**.
-        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study data only.
+        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study daƒta only.
       type: string
       enum:
         - STUDY_ADMIN
@@ -2181,7 +2256,7 @@ components:
 
     AuditLog:
       description: |
-        The AuditLog object of one study that includes all AuditLog entries of said study.
+        The audit log object of one study that includes all audit log entries of said study.
       type: array
       items:
         $ref: '#/components/schemas/AuditLogEntry'
@@ -2233,6 +2308,12 @@ components:
           type: string
           readOnly: true
         userRoles:
+          description: |
+            An array of the user's roles on the MORE server at the moment of the recorded activity.
+          type: array
+          items:
+            type: string
+        studyRoles:
           description: |
             An array of the user's study roles at the moment of the recorded activity.
           type: array
