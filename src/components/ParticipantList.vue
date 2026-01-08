@@ -31,6 +31,7 @@ Licensed under the Elastic License 2.0. */
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
   import {
+    ACTION_ID_DATA_HEALTH,
     ACTION_ID_DELETE,
     ACTION_ID_QR_CODE,
     PARTICIPANT_COUNTS,
@@ -116,6 +117,13 @@ Licensed under the Elastic License 2.0. */
   ];
 
   const rowActions: MoreTableAction[] = [
+    {
+      id: ACTION_ID_DATA_HEALTH,
+      label: t('global.labels.data-health'),
+      icon: 'pi pi-id-card',
+      tooltip: dataHealthTooltip.value,
+      visible: () => true,
+    },
     {
       id: ACTION_ID_DELETE,
       label: t('global.labels.delete'),
