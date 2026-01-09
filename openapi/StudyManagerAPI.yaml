@@ -615,12 +615,12 @@ paths:
         '500':
           description: Error
 
-  /studies/{studyId}/occuredObservations:
+  /studies/{studyId}/occuredObserrvations:
     get:
       tags:
-        - participants
-      description: List of occured observations of one specific participant
-      operationId: listOccuredObservations
+        - studies
+      description: List of occurred observations of one specific participant
+      operationId: listOccurredObservations
       parameters:
         - $ref: '#/components/parameters/StudyId'
         - name: participant
@@ -653,7 +653,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/OccuredObservation'
+                  $ref: '#/components/schemas/OccurredObservation'
         '404':
           description: Not found
 
@@ -1765,7 +1765,7 @@ components:
           type: boolean
           default: false
 
-    OccuredObservation:
+    OccurredObservation:
       type: object
       properties:
         studyId:

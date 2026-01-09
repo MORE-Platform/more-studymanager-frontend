@@ -927,6 +927,9 @@
       "viewer": "Studien-Beobachter"
     },
     "singular": "Studie",
+    "dataHealth": {
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar."
+    },
     "statusChange": {
       "complete": "Abschließen",
       "complete-preview": "Preview Beenden",
@@ -1139,7 +1142,7 @@
       "saveChanges": "Änderungen speichern",
       "showQrCode": "QR Code anzeigen",
       "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
-      "openParticipantDetails": "Öffne Teilnehmer-Details für mehr Informationen."
+      "openParticipantDetails": "Öffne Teilnehmer-Details für mehr Informationen zum Thema Data-Health."
     },
     "timeline": {
       "relativeDateInfo": "Damit wird der Zeitpunkt simuliert, an dem ein Teilnehmer in die Studie eintritt."

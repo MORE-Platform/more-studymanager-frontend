@@ -1,17 +1,13 @@
 <script setup lang="ts">
-  import { computed, inject, onMounted, ref } from 'vue';
+  import { computed, inject, onMounted } from 'vue';
   import Button from 'primevue/button';
-  import { Participant, StudyTimeline } from '@gs';
-  import { useCalendarApi } from '../../composable/useApi';
-  import { AxiosError, AxiosResponse } from 'axios';
-  import { useErrorHandling } from '../../composable/useErrorHandling';
+  import { OccurredObservation, Participant, StateEnum } from '@gs';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
-  const { handleIndividualError } = useErrorHandling();
   import DataTable from 'primevue/datatable';
   import Column from 'primevue/column';
+  import { DataHealthTableItem } from '../../models/DataHeaqlthTableItem';
 
-  const { calendarApi } = useCalendarApi();
   const studyStore = useStudyStore();
   const { t, d } = useI18n();
 
@@ -19,7 +15,9 @@
   const participant: Participant = dialogRef.value.data?.participant || {};
   const studyId: number = dialogRef.value.data?.studyId || {};
 
-  const participantStudyTimeline = ref();
+  const participantObservationsInTimeline = computed(() => studyStore.participantTimelineObservations);
+  const participantOccuredObservations = computed(() => studyStore.occurredObservations);
+  const dataHealthTableItems = computed(() => mapInformationToTable());
 
   const studyStartDate =
     studyStore.study.start ?? studyStore.study.plannedStart;
@@ -35,7 +33,7 @@
       header: t('global.labels.time')
     },
     {
-      field: 'dataHealth',
+      field: 'healthState',
       header: t('observation.props.dataHealth')
     }
   ];
@@ -44,7 +42,7 @@
     dialogRef.value.close();
   }
 
-  const dataHealthIndicatorBg = computed(() => {
+  const dataHealthIndicatorBtn = computed(() => {
     if (participant.dataHealthIndicator) {
       switch (participant.dataHealthIndicator) {
         case 'green':
@@ -75,44 +73,86 @@
     return 'pi pi-exclamation-triangle';
   });
 
-  // get timeline data for the participant
-  async function getParticipantTimeline(): Promise<void> {
-    try {
-      const response: AxiosResponse<StudyTimeline> = await calendarApi.getStudyTimeline(
-        studyId,
-        undefined,
-        undefined,
-        undefined,
-        studyStartDate,
-        studyEndDate,
-        undefined,
-      )
-
-      const now = new Date()
-
-      participantStudyTimeline.value = response.data.observations
-        ?.filter(item => new Date(item.start as string) >= now)
-        .map(item => ({
-          observationTitle: item.title,
-          observationId: item.observationId,
-          observationType: item.type,
-          start: item.start,
-          end: item.end,
-          timeInfo: `${d(new Date(item.start as string), 'long')} -
-            ${d(new Date(item.end as string), 'short') === d(new Date(item.start as string), 'short')
-              ? d(new Date(item.end as string), 'long').toString().slice(12)
-              : d(new Date(item.end as string), 'long')}`,
-          dataHealth: '-',
-          upcoming: true
-        })) ?? []
-    } catch (e) {
-      handleIndividualError(e as AxiosError, 'cannot list studyTimeline')
+  function getDataHelathIndicatorColor(state: StateEnum): string {
+    switch(state) {
+      case StateEnum.Completed: return 'bg-[var(--green-500)]'
+      default: return 'bg-[var(--orange-500)]'
+    }
+  }
+  function getDataHealthIcon(state: StateEnum): string {
+    switch(state) {
+      case StateEnum.Completed: return 'pi pi-check'
+      default: return 'pi pi-exclamation-triangle'
     }
   }
 
-  onMounted(async () => {
-    await getParticipantTimeline();
-  });
+  function mapInformationToTable(): DataHealthTableItem[] {
+    const upcomingTimelineEvents = participantObservationsInTimeline.value
+      ?.filter(item => new Date(item.end as string).getTime() >= Date.now())
+      .map(item => ({
+        observationTitle: item.title,
+        observationId: item.observationId,
+        observationType: item.type,
+        start: d(new Date(item.start as string)),
+        timeInfo: formatTimeInfo(item.start as string, item.end as string),
+        healthState: '-',
+        upcoming: true
+      })) ?? []
+
+    const occurredObservationPoints = participantOccuredObservations.value
+      .map((item: OccurredObservation) => ({
+        observationTitle: item.observation?.title,
+        observationId: item.observation?.observationId,
+        observationType: item.observation?.type,
+        start: d(new Date(item.start as string)),
+        timeInfo: formatTimeInfo(item.start as string, item.end as string),
+        healthState: formatOccuredState(item.state)
+      })) ?? []
+
+    const merged: DataHealthTableItem[] = [
+      ...occurredObservationPoints,
+      ...upcomingTimelineEvents
+    ].sort((a, b) =>
+      new Date(b.start).getTime() - new Date(a.start).getTime()
+    )
+
+    return merged
+  }
+
+  async function getObservationInformation(): Promise<void> {
+    if(participant.participantId) {
+      await Promise.all([
+        studyStore.listOccuredObservations(studyId, participant.participantId),
+        studyStore.listParticipantObservationsInTimeline(
+          studyId,
+          participant.participantId,
+          undefined,
+          undefined,
+          studyStartDate,
+          studyEndDate,
+        )])
+    }
+  }
+
+  function formatTimeInfo(start: string, end: string): string {
+    return `${d(new Date(start as string), 'long')} -
+            ${d(new Date(end as string), 'short') === d(new Date(start as string), 'short')
+      ? d(new Date(end as string), 'long').toString().slice(12)
+      : d(new Date(end as string), 'long')}`
+  }
+
+  function formatOccuredState(state: StateEnum): string {
+    switch (state) {
+      case StateEnum.Completed:
+        return 'green'
+      default:
+        return 'orange'
+    }
+  }
+
+  onMounted(() => {
+      getObservationInformation();
+  })
 </script>
 
 <template>
@@ -124,23 +164,56 @@
       </div>
       <div
         v-if="participant.dataHealthIndicator"
-        :class="dataHealthIndicatorBg"
+        :class="dataHealthIndicatorBtn"
         class="flex aspect-square !w-10 items-center justify-center"
       >
         <span :class="dataHealthIndicatorIcon" class="!text-xl" />
       </div>
     </div>
 
-    <DataTable v-if="participantStudyTimeline" :value="participantStudyTimeline">
-      <template v-for="(col, colIndex) in tableColumns" :key="colIndex">
-        <Column
-          :field="col.field"
-          :header="col.header"
-          :class="{'bg-gray-100 text-gray-500': participantStudyTimeline[colIndex].dataHealth === '-'}"
-        >
+    <DataTable
+      v-if="dataHealthTableItems.length"
+      :value="dataHealthTableItems">
+      <template v-for="(col) in tableColumns" :key="col.field">
+        <Column :field="col.field" :header="col.header" body-class="!p-0" >
+
+          <template v-if="col.field === 'healthState'" #body="{ data }">
+            <div
+              :class="[
+                { 'bg-gray-100 text-gray-500': data.upcoming },
+                data.healthState !== '-' && [
+                  getDataHelathIndicatorColor(data.healthState),
+                  'px-2 py-2 flex justify-center',
+                ]
+              ]"
+            >
+              <span
+                v-if="data.healthState !== '-'"
+              >
+                <span :class="getDataHealthIcon(data.healthState)" class="!text-xl text-white" />
+              </span>
+              <div v-else class="px-2 py-3">
+                {{ data.healthState }}
+              </div>
+            </div>
+          </template>
+
+          <template v-else #body="{ data, field }">
+            <div
+              class="px-2 py-3"
+              :class="{'bg-gray-100 text-gray-500' : data.upcoming}"
+            >
+              {{ data[field] }}
+            </div>
+          </template>
+
         </Column>
       </template>
     </DataTable>
+
+    <div v-else>
+      {{$t('study.dataHealth.noDataInfo')}}
+    </div>
 
     <div class="flex justify-end mt-4">
       <Button

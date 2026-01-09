@@ -592,7 +592,8 @@ Licensed under the Elastic License 2.0. */
                 type="button"
                 :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
                 :disabled="
-                  rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.participant?.dataHealthIndicator || false
+                  : rowIDsInEditMode.length
                       ? true
                       : action.id === ACTION_ID_QR_CODE ?
                         !(isVisible(action, slotProps.data) &&
