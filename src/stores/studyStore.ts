@@ -15,7 +15,7 @@ import {
   StudyRole,
   StudyStatus,
   DataExportInner,
-  OccuredObservation, ObservationTimelineEvent, StudyTimeline
+  OccurredObservation, ObservationTimelineEvent, StudyTimeline
 } from '@gs';
 import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
@@ -37,7 +37,7 @@ export const useStudyStore = defineStore('study', () => {
   const studies: Ref<Study[]> = ref([]);
   const auditLogMetadata: Ref<AuditLogMetadata | undefined> = ref();
   const auditLogEntries: Ref<Array<AuditLogEntry>> = ref([]);
-  const occurredObservations: Ref<Array<OccuredObservation>> = ref([]);
+  const occurredObservations: Ref<Array<OccurredObservation>> = ref([]);
   const participantTimelineObservations: Ref<Array<ObservationTimelineEvent>> = ref([]);
 
   // Actions
@@ -137,7 +137,7 @@ export const useStudyStore = defineStore('study', () => {
 
   async function listOccuredObservations(studyId: number, participantId?: number, observationId?: number, from?: string, to?: string): Promise<void> {
     await studiesApi.listOccurredObservations(studyId, participantId, observationId, from, to)
-      .then((response: AxiosResponse<OccuredObservation>) => occurredObservations.value = response.data)
+      .then((response: AxiosResponse) => occurredObservations.value = response.data)
       .catch((e: AxiosError) =>
         handleIndividualError(e, `cannot get occuredObservation on study ${studyId} (participant: ${participantId}, observation: ${observationId}, from: ${from}, to: ${to})`)
       );
