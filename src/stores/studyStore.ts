@@ -17,7 +17,7 @@ import {
   DataExportInner,
   OccurredObservation, ObservationTimelineEvent, StudyTimeline
 } from '@gs';
-import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
+import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi, useOccurredObservationsApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
@@ -29,6 +29,7 @@ export const useStudyStore = defineStore('study', () => {
   const { importExportApi } = useImportExportApi();
   const { auditLogApi } = useAuditLogApi();
   const { calendarApi } = useCalendarApi();
+  const { occurredObservationsApi } = useOccurredObservationsApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
   const { handleToastErrors } = useToastService();
@@ -136,7 +137,7 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function listOccuredObservations(studyId: number, participantId?: number, observationId?: number, from?: string, to?: string): Promise<void> {
-    await studiesApi.listOccurredObservations(studyId, participantId, observationId, from, to)
+    await occurredObservationsApi.listOccurredObservations(studyId, participantId, observationId, from, to)
       .then((response: AxiosResponse) => occurredObservations.value = response.data)
       .catch((e: AxiosError) =>
         handleIndividualError(e, `cannot get occuredObservation on study ${studyId} (participant: ${participantId}, observation: ${observationId}, from: ${from}, to: ${to})`)

@@ -615,10 +615,10 @@ paths:
         '500':
           description: Error
 
-  /studies/{studyId}/occuredObserrvations:
+  /studies/{studyId}/occuredObservations:
     get:
       tags:
-        - studies
+        - occurredObservations
       description: List of occurred observations of one specific participant
       operationId: listOccurredObservations
       parameters:
