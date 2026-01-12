@@ -1769,7 +1769,7 @@ components:
       type: object
       properties:
         studyId:
-          type: string
+          $ref: '#/components/schemas/StudyId'
         participant:
           $ref: '#/components/schemas/Participant'
         observation:
