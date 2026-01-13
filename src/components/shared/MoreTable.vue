@@ -27,7 +27,7 @@ Licensed under the Elastic License 2.0. */
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from './CustomCheckbox.vue';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
@@ -427,7 +427,7 @@ Licensed under the Elastic License 2.0. */
             class="z-top"
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
-            <Checkbox
+            <CustomCheckbox
               v-if="getObservationVisibility(data['type'])?.changeable"
               v-model="data[field]"
               :binary="true"
@@ -438,7 +438,7 @@ Licensed under the Elastic License 2.0. */
                   <span class="p-checkbox-icon pi pi-check"></span>
                 </div>
               </template>
-            </Checkbox>
+            </CustomCheckbox>
             <div v-else class="icon-box eye">
               <span
                 v-if="data[field]"

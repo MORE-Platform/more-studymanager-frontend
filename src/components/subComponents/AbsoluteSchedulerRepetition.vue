@@ -2,7 +2,7 @@
   import { useI18n } from 'vue-i18n';
   import { Frequency, RecurrenceRule } from '@gs';
   import { PropType, reactive, ref, Ref, watch } from 'vue';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from '../shared/CustomCheckbox.vue';
   import InputNumber from 'primevue/inputnumber';
   import SelectButton from 'primevue/selectbutton';
   import { MoreTableChoice } from '../../models/MoreTableModel';
@@ -242,7 +242,7 @@
       <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
         <div class="flex flex-row items-center justify-start col-span-1">
           {{ $t('scheduler.labels.repeat') }}:
-          <Checkbox
+          <CustomCheckbox
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"

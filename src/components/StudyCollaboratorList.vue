@@ -373,8 +373,10 @@ Licensed under the Elastic License 2.0. */
                 v-for="(item, key) in slotProps"
                 :key="key"
               >
-                <div v-if="key === 'option'" class="w-full"
-                     @click="openAddCollaboratorDialog(slotProps.option)">
+                <div
+                  v-if="key === 'option'"
+                  class="w-full"
+                  @click="openAddCollaboratorDialog(slotProps.option)">
                   <span class="color-primary font-medium" >
                     {{ item.label }}
                   </span>
