@@ -126,7 +126,8 @@
       "start": "Start",
       "time": "Time",
       "to": "to",
-      "leavePage": "Do you really want to leave the page?"
+      "leavePage": "Do you really want to leave the page?",
+      "dataHealth": "Data health"
     },
     "placeholder": {
       "all": "All",
@@ -504,7 +505,8 @@
         "heartRateMeter": "Heart Rate Meter",
         "smartphoneAccelerometer": "Smartphone Accelerometer"
       },
-      "type": "Type"
+      "type": "Type",
+      "dataHealth": "State"
     },
     "singular": "Observation"
   },
@@ -532,7 +534,8 @@
         "distribute": "Distribute participants randomly to study groups",
         "edit": "Edit participant",
         "qrCode": "QR Code for",
-        "alert": "QR Code Link was copied successfully."
+        "alert": "QR Code Link was copied successfully.",
+        "details": "Participant-Details"
       },
       "msg": {
         "delete": "Do you really want to delete this participant?",
@@ -924,6 +927,9 @@
       "viewer": "Study Viewer"
     },
     "singular": "Study",
+    "dataHealth": {
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar."
+    },
     "statusChange": {
       "complete": "Close",
       "complete-preview": "Complete Preview",
@@ -1135,7 +1141,8 @@
       "goToStudy": "Go to study",
       "saveChanges": "Save changes",
       "showQrCode": "Show QR code",
-      "showStudy": "Click on row to show study details page."
+      "showStudy": "Click on row to show study details page.",
+      "openParticipantDetails": "Opent participant details for more information to data health."
     },
     "timeline": {
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."

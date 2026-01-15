@@ -35,7 +35,7 @@ Licensed under the Elastic License 2.0. */
   import { useGlobalStore } from '../../stores/globalStore';
   import ExclamationIcon from './ExclamationIcon.vue';
 
-  import { ACTION_ID_QR_CODE } from '../../constants';
+  import { ACTION_ID_DATA_HEALTH, ACTION_ID_DELETE, ACTION_ID_QR_CODE } from '../../constants';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -265,6 +265,37 @@ Licensed under the Elastic License 2.0. */
   function getObservationVisibility(type: string): Visibility | undefined {
     return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
+  }
+
+  function getActionBtnBgColor(actionId: string, data: any): string {
+    if (actionId === ACTION_ID_DELETE) return 'btn-important'
+    else if (actionId === ACTION_ID_DATA_HEALTH && data && data.dataHealthIndicator) {
+      switch (data.dataHealthIndicator) {
+        case 'green':
+          return 'btn-accepted'
+        case 'orange':
+          return 'btn-warn'
+        case 'red':
+          return 'btn-important'
+        default: return 'btn-warn'
+      }
+    }
+    return ''
+  }
+
+  function getDataHealthIcon(data: any): string | undefined {
+    if (data.dataHealthIndicator) {
+      switch(data.dataHealthIndicator) {
+        case 'green':
+          return 'pi pi-check'
+        case 'orange':
+          return 'pi pi-exclamation-triangle'
+        case 'red':
+          return 'pi pi-times'
+        default:
+          return 'pi pi-exclamation-triangle'
+      }
+    }
   }
 </script>
 
@@ -559,16 +590,17 @@ Licensed under the Elastic License 2.0. */
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :icon="action.icon"
+                :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
                 :disabled="
-                  rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.participant?.dataHealthIndicator || false
+                  : rowIDsInEditMode.length
                       ? true
                       : action.id === ACTION_ID_QR_CODE ?
                         !(isVisible(action, slotProps.data) &&
                         !!slotProps.data.registrationToken)
                         : !isVisible(action, slotProps.data)
                 "
-                :class="{ 'btn-important': action.id === 'delete' }"
+                :class="getActionBtnBgColor(action.id, slotProps.data)"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
