@@ -118,31 +118,31 @@
   const rruleWeekdayOptions = [
     {
       label: t('scheduler.weekday.short.monday'),
-      value: t('scheduler.weekday.short.monday'),
+      value: 'MO',
     },
     {
       label: t('scheduler.weekday.short.tuesday'),
-      value: t('scheduler.weekday.short.tuesday'),
+      value: 'TU',
     },
     {
       label: t('scheduler.weekday.short.wednesday'),
-      value: t('scheduler.weekday.short.wednesday'),
+      value: 'WE',
     },
     {
       label: t('scheduler.weekday.short.thursday'),
-      value: t('scheduler.weekday.short.thursday'),
+      value: 'TH',
     },
     {
       label: t('scheduler.weekday.short.friday'),
-      value: t('scheduler.weekday.short.friday'),
+      value: 'FR',
     },
     {
       label: t('scheduler.weekday.short.saturday'),
-      value: t('scheduler.weekday.short.saturday'),
+      value: 'SA',
     },
     {
       label: t('scheduler.weekday.short.sunday'),
-      value: t('scheduler.weekday.short.sunday'),
+      value: 'SO',
     },
   ];
 

@@ -1,3 +1,35 @@
+<script setup lang="ts">
+  import { ref } from 'vue'
+
+  type Props = {
+    modelValue: boolean
+    disabled?: boolean
+    invalid?: boolean
+    name?: string
+    value?: string | number
+  }
+
+  withDefaults(defineProps<Props>(), {
+    disabled: false,
+    invalid: false,
+    name: '',
+    value: ''
+  })
+
+  const emit = defineEmits<{
+    (e: 'update:modelValue', v: boolean): void
+    (e: 'change', v: boolean): void
+  }>()
+
+  const isFocused = ref(false)
+
+  function onChange(e: Event): void {
+    const next = (e.target as HTMLInputElement).checked
+    emit('update:modelValue', next)
+    emit('change', next)
+  }
+</script>
+
 <template>
   <label
     class="rl-check"
@@ -41,38 +73,6 @@
     </span>
   </label>
 </template>
-
-<script setup lang="ts">
-  import { ref } from 'vue'
-
-  type Props = {
-    modelValue: boolean
-    disabled?: boolean
-    invalid?: boolean
-    name?: string
-    value?: string | number
-  }
-
-  withDefaults(defineProps<Props>(), {
-    disabled: false,
-    invalid: false,
-    name: '',
-    value: ''
-  })
-
-  const emit = defineEmits<{
-    (e: 'update:modelValue', v: boolean): void
-    (e: 'change', v: boolean): void
-  }>()
-
-  const isFocused = ref(false)
-
-  function onChange(e: Event): void {
-    const next = (e.target as HTMLInputElement).checked
-    emit('update:modelValue', next)
-    emit('change', next)
-  }
-</script>
 
 <style scoped>
   /* ---- tokens (easy to tweak) ---- */

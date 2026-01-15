@@ -94,15 +94,6 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  function refactorToEngShort(weekdayShort: string): string {
-    switch(weekdayShort) {
-      case 'DO': return 'TH';
-      case 'DI': return 'TU';
-      case 'MI': return 'WE';
-      default: return weekdayShort;
-    }
-  }
-
   function getRepetitionValue(prop: string): string | undefined {
     switch (props.scheduler.type) {
       case ScheduleType.Event:
@@ -128,7 +119,7 @@ Licensed under the Elastic License 2.0. */
 
               if (schedule.rrule?.byday) {
                 schedule.rrule.byday.forEach((item, index) => {
-                  string += t(`scheduler.weekday.props.${refactorToEngShort(item)}`);
+                  string += t(`scheduler.weekday.props.${item}`);
 
                   if (
                     schedule.rrule?.byday &&
