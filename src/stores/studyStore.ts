@@ -136,7 +136,7 @@ export const useStudyStore = defineStore('study', () => {
     }
   }
 
-  async function listOccuredObservations(studyId: number, participantId?: number, observationId?: number, from?: string, to?: string): Promise<void> {
+  async function listOccurredObservations(studyId: number, participantId?: number, observationId?: number, from?: string, to?: string): Promise<void> {
     await occurredObservationsApi.listOccurredObservations(studyId, participantId, observationId, from, to)
       .then((response: AxiosResponse) => occurredObservations.value = response.data)
       .catch((e: AxiosError) =>
@@ -144,12 +144,12 @@ export const useStudyStore = defineStore('study', () => {
       );
   }
 
-  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: string, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
+  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
     await calendarApi.getStudyTimeline(
       studyId,
       participantId,
-      undefined,
-      undefined,
+      studyGroup,
+      referenceDate,
       studyStartDate,
       studyEndDate,
       undefined,
@@ -283,7 +283,7 @@ export const useStudyStore = defineStore('study', () => {
     updateStudy,
     updateStudyStatus,
     listStudies,
-    listOccuredObservations,
+    listOccuredObservations: listOccurredObservations,
     occurredObservations,
     createStudy,
     deleteStudy,
