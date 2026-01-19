@@ -615,7 +615,7 @@ paths:
         '500':
           description: Error
 
-  /studies/{studyId}/occuredObservations:
+  /studies/{studyId}/occurredObservations:
     get:
       tags:
         - occurredObservations

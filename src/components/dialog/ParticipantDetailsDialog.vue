@@ -89,15 +89,24 @@
   function mapInformationToTable(): DataHealthTableItem[] {
     const upcomingTimelineEvents = participantObservationsInTimeline.value
       ?.filter(item => new Date(item.end as string).getTime() >= Date.now())
-      .map(item => ({
-        observationTitle: item.title,
-        observationId: item.observationId,
-        observationType: item.type,
-        start: d(new Date(item.start as string)),
-        timeInfo: formatTimeInfo(item.start as string, item.end as string),
-        healthState: '-',
-        upcoming: true
-      })) ?? []
+      .map(item => {
+
+        const startTs = new Date(item.start as string).getTime()
+        const endTs = new Date(item.end as string).getTime()
+
+        return {
+          observationTitle: item.title,
+          observationId: item.observationId,
+          observationType: item.type,
+          startTs,
+          endTs,
+          start: d(new Date(item.start as string)),
+          timeInfo: formatTimeInfo(item.start as string, item.end as string),
+          healthState: '-',
+          upcoming: true,
+        }
+      })
+      .sort((a, b) => (a.startTs - b.startTs) || (a.endTs - b.endTs))
 
     const occurredObservationPoints = participantOccuredObservations.value
       .map((item: OccurredObservation) => ({
@@ -110,11 +119,9 @@
       })) ?? []
 
     const merged: DataHealthTableItem[] = [
+      ...upcomingTimelineEvents,
       ...occurredObservationPoints,
-      ...upcomingTimelineEvents
-    ].sort((a, b) =>
-      new Date(b.start).getTime() - new Date(a.start).getTime()
-    )
+    ]
 
     return merged
   }
@@ -122,7 +129,7 @@
   async function getObservationInformation(): Promise<void> {
     if(participant.participantId) {
       await Promise.all([
-        studyStore.listOccuredObservations(studyId, participant.participantId),
+        studyStore.listOccurredObservations(studyId, participant.participantId),
         studyStore.listParticipantObservationsInTimeline(
           studyId,
           participant.participantId,
