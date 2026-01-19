@@ -122,7 +122,7 @@
   async function getObservationInformation(): Promise<void> {
     if(participant.participantId) {
       await Promise.all([
-        studyStore.listOccuredObservations(studyId, participant.participantId),
+        studyStore.listOccurredObservations(studyId, participant.participantId),
         studyStore.listParticipantObservationsInTimeline(
           studyId,
           participant.participantId,

@@ -283,7 +283,7 @@ export const useStudyStore = defineStore('study', () => {
     updateStudy,
     updateStudyStatus,
     listStudies,
-    listOccuredObservations: listOccurredObservations,
+    listOccurredObservations,
     occurredObservations,
     createStudy,
     deleteStudy,
