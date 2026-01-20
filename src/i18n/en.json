@@ -928,7 +928,13 @@
     },
     "singular": "Study",
     "dataHealth": {
-      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar."
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar.",
+      "labels": {
+        "completed": "Completed",
+        "missing": "Missing",
+        "incomplete": "Incomplete",
+        "ongoing": "Ongoing"
+      }
     },
     "statusChange": {
       "complete": "Close",
@@ -1142,7 +1148,7 @@
       "saveChanges": "Save changes",
       "showQrCode": "Show QR code",
       "showStudy": "Click on row to show study details page.",
-      "openParticipantDetails": "Opent participant details for more information to data health."
+      "openParticipantDetails": "Show details on data."
     },
     "timeline": {
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."
