@@ -928,7 +928,13 @@
     },
     "singular": "Studie",
     "dataHealth": {
-      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar."
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar.",
+      "labels": {
+        "completed": "Abgeschlossen",
+        "missing": "Fehlend",
+        "incomplete": "Unvollständig",
+        "ongoing": "Laufend"
+      }
     },
     "statusChange": {
       "complete": "Abschließen",
