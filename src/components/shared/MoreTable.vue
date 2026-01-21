@@ -30,7 +30,7 @@ Licensed under the Elastic License 2.0. */
   import CustomCheckbox from './CustomCheckbox.vue';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
+  import { ComponentFactory, ParticipantStatus, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
   import ExclamationIcon from './ExclamationIcon.vue';
@@ -592,7 +592,7 @@ Licensed under the Elastic License 2.0. */
                 type="button"
                 :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
                 :disabled="
-                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.dataHealthIndicator
+                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.dataHealthIndicator || slotProps.data?.dataHealthIndicator && slotProps.data.status === ParticipantStatus.New
                   : rowIDsInEditMode.length
                       ? true
                       : action.id === ACTION_ID_QR_CODE ?
