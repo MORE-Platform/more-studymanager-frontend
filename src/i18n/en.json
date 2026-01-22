@@ -61,6 +61,13 @@
     "dataDownload": {
       "description": "Here you can download the study data based on various filters.",
       "title": "Download study data"
+    },
+    "auditLogDownload": {
+      "title": "Download Audit log",
+      "description": "The number of the current audit log entries is: {length}.",
+      "btnLabel": "Download current audit log",
+      "notStartedInfo": "Audit log data is only recorded when a study is active.",
+      "noDataInfo": "The study has not recorded any audit log data yet."
     }
   },
   "global": {
@@ -118,7 +125,9 @@
       "setPause": "Pause",
       "start": "Start",
       "time": "Time",
-      "to": "to"
+      "to": "to",
+      "leavePage": "Do you really want to leave the page?",
+      "dataHealth": "Data health"
     },
     "placeholder": {
       "all": "All",
@@ -246,7 +255,8 @@
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
       "emptyTriggerConditions": "Please save at least one trigger condition to your trigger.",
       "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
-      "triggerProp": "A Trigger property has an error."
+      "triggerProp": "A Trigger property has an error.",
+      "observationDeleted": "The linked observation (ID: {observationId}, Type: {observationType}) has been deleted and cannot be referenced. Please link a different data collection, remove this action or delete the intervention completely. Keep in mind that an intervention always requires at least one action."
     },
     "factory": {
       "actions": {
@@ -383,7 +393,18 @@
     "tabs": {
       "dataDownload": "Export study data",
       "lastDataPoints": "Latest Data Points",
-      "recordedObservation": "Recorded Observations"
+      "recordedObservation": "Recorded Observations",
+      "auditLog": "Download AuditLog"
+    },
+    "dialog": {
+      "navigatePage": "Leave page",
+      "waitForDownload": "Wait for download",
+      "msg": {
+        "downloadStudyData": "The data download is still in progress. You may leave the page – the process will be buffered in the background and the download will automatically open in a new tab once it is ready. Any changes you make from now on will not be included in this download."
+      },
+      "header": {
+        "downloadStudyData": "Navigate page"
+      }
     }
   },
   "moreTable": {
@@ -442,7 +463,7 @@
           "idDesc": "The id of the survey",
           "idName": "Survey"
         },
-        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
+        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"{link}\" target=\"_blank\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
         "title": "Lime Survey"
       },
       "polarVerity": {
@@ -484,7 +505,8 @@
         "heartRateMeter": "Heart Rate Meter",
         "smartphoneAccelerometer": "Smartphone Accelerometer"
       },
-      "type": "Type"
+      "type": "Type",
+      "dataHealth": "State"
     },
     "singular": "Observation"
   },
@@ -512,7 +534,8 @@
         "distribute": "Distribute participants randomly to study groups",
         "edit": "Edit participant",
         "qrCode": "QR Code for",
-        "alert": "QR Code Link was copied successfully."
+        "alert": "QR Code Link was copied successfully.",
+        "details": "Participant-Details"
       },
       "msg": {
         "delete": "Do you really want to delete this participant?",
@@ -904,6 +927,15 @@
       "viewer": "Study Viewer"
     },
     "singular": "Study",
+    "dataHealth": {
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar.",
+      "labels": {
+        "completed": "Completed",
+        "missing": "Missing",
+        "incomplete": "Incomplete",
+        "ongoing": "Ongoing"
+      }
+    },
     "statusChange": {
       "complete": "Close",
       "complete-preview": "Complete Preview",
@@ -1088,7 +1120,9 @@
       "studyEnd": "Study end",
       "studyStart": "Study start",
       "today": "Today",
-      "type": "Type"
+      "type": "Type",
+      "showFullTimeline": "24 hours",
+      "collapseTimeline": "8 to 7"
     }
   },
   "title": "Title",
@@ -1113,7 +1147,8 @@
       "goToStudy": "Go to study",
       "saveChanges": "Save changes",
       "showQrCode": "Show QR code",
-      "showStudy": "Click on row to show study details page."
+      "showStudy": "Click on row to show study details page.",
+      "openParticipantDetails": "Show details on data."
     },
     "timeline": {
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."

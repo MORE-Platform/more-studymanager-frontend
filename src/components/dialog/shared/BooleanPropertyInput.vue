@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { BooleanProperty } from '../../../models/InputModels';
   import { PropType, ref, Ref } from 'vue';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from '../../shared/CustomCheckbox.vue';
 
   const props = defineProps({
     property: {
@@ -40,7 +40,7 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="flex items-center">
-      <Checkbox
+      <CustomCheckbox
         v-model="booleanChecked"
         :label="property.name"
         class="mr-2"

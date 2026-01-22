@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { inject, ref, Ref } from 'vue';
-  import RadioButton from 'primevue/radiobutton';
+  import CustomRadioButton from '../shared/CustomRadioButton.vue';
   import {
     MoreTableChoice,
     MoreTableCollaboratorItem,
@@ -54,12 +54,13 @@ Licensed under the Elastic License 2.0. */
     <h6 class="mb-2">{{ $t('studyCollaborator.dialog.chooseRoles') }}</h6>
     <div v-if="warning" class="error mb-3">{{ warning }}</div>
     <div v-for="role in roleList" :key="role.value!" class="flex">
-      <RadioButton
+
+      <CustomRadioButton
         v-model="roleValue"
         name="roles"
         :input-id="role.value!"
-        :value="role"
-      ></RadioButton>
+        :value="role as unknown as string"
+      ></CustomRadioButton>
       <label :for="role.value!" class="-mt-1">{{ role.label }}</label>
     </div>
 

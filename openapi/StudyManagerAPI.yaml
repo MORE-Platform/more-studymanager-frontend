@@ -315,6 +315,7 @@ paths:
           description: Cleared
         '409':
           description: removal failed
+
   /studies/{studyId}/calendar.ics:
     get:
       tags:
@@ -374,7 +375,6 @@ paths:
                 $ref: '#/components/schemas/StudyTimeline'
         '404':
           description: Not found
-
 
   /studies/{studyId}/studyGroups:
     post:
@@ -615,6 +615,48 @@ paths:
         '500':
           description: Error
 
+  /studies/{studyId}/occurredObservations:
+    get:
+      tags:
+        - occurredObservations
+      description: List of occurred observations of one specific participant
+      operationId: listOccurredObservations
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: participant
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: observation
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: from
+          in: query
+          description: default is entire time
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: default is now
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OccurredObservation'
+        '404':
+          description: Not found
+
   /studies/{studyId}/observations:
     post:
       tags:
@@ -658,6 +700,7 @@ paths:
                   $ref: '#/components/schemas/Observation'
         '404':
           description: not found
+
   /studies/{studyId}/observations/{observationId}:
     put:
       tags:
@@ -805,7 +848,6 @@ paths:
           description: Token successfully deleted
         '404':
           description: not found
-
 
   /studies/{studyId}/interventions:
     post:
@@ -986,6 +1028,7 @@ paths:
                 $ref: '#/components/schemas/Action'
         '400':
           description: bad request
+
   /studies/{studyId}/interventions/{interventionId}/actions/{actionId}:
     parameters:
       - $ref: '#/components/parameters/StudyId'
@@ -1035,7 +1078,6 @@ paths:
           description: action deleted successfully
         '400':
           description: bad request
-
 
   /studies/import/study:
     post:
@@ -1327,6 +1369,49 @@ paths:
         '404':
           description: not found
 
+  /auditlog/study/{studyId}/export:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditLog
+      description: Export the complete audit log to a json file
+      operationId: exportAuditLog
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: attachment; filename="auditlogs_123.json"
+        '400':
+          description: bad request
+        '404':
+          description: not found
+
+  /auditlog/study/{studyId}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditLog
+      description: Provides metadata of the audit logs for the requested study
+      operationId: getAuditLogMetadata
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogMetadata'
+        '404':
+          description: not found
+
   /users/me:
     get:
       tags:
@@ -1340,6 +1425,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+
   /users/search:
     get:
       tags:
@@ -1605,6 +1691,12 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
+        dataHealthIndicator:
+          type: string
+          enum:
+            - 'green'
+            - 'orange'
+            - 'red'
         start:
           type: string
           format: date-time
@@ -1673,6 +1765,33 @@ components:
           type: boolean
           default: false
 
+    OccurredObservation:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        participant:
+          $ref: '#/components/schemas/Participant'
+        observation:
+          $ref: '#/components/schemas/Observation'
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - missing
+            - completed
+            - incomplete
+            - ongoing
+      required:
+        - studyId
+        - start
+        - end
+        - state
 
     StudyTimeline:
       type: object
@@ -2126,7 +2245,7 @@ components:
         We differentiate between the following roles within a study:
         * `STUDY_ADMIN` (_Study Administrator_): **All** rights to create and manage studies, configure components and assign participants, invite and manage operators and viewers and see study data.
         * `STUDY_OPERATOR` (_Study Operator_): Rights to manage studies, configure components and assign participants, **no rights to see data**.
-        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study data only.
+        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study daƒta only.
       type: string
       enum:
         - STUDY_ADMIN
@@ -2134,6 +2253,94 @@ components:
         - STUDY_VIEWER
       externalDocs:
         url: https://more-platform.atlassian.net/browse/MORE-213
+
+    AuditLog:
+      description: |
+        The audit log object of one study that includes all audit log entries of said study.
+      type: array
+      items:
+        $ref: '#/components/schemas/AuditLogEntry'
+
+    AuditLogEntry:
+      description: |
+        An audit log entry saves Metadata to a specific recorded activity made by a user. The audit log is only accessible to Study Administrators.
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          description: Unique identifier of the audit log data entry
+        created:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        userId:
+          description: |
+            The userId of the person to the specific recoreded activity.
+          type: string
+          readOnly: true
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        action:
+          description: |
+            The performed action. The full Method signature.
+          type: string
+        actionState:
+          description: |
+            The state of the specific action taken (e.g. successful, redirect, error)
+          type: string
+          enum:
+            - success
+            - redirect
+            - error
+            - unknown
+          default: unknown
+        timestamp:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        userName:
+          description: |
+            The user's name. It is optional, if database can't provide the name.
+          type: string
+          readOnly: true
+        userRoles:
+          description: |
+            An array of the user's roles on the MORE server at the moment of the recorded activity.
+          type: array
+          items:
+            type: string
+        studyRoles:
+          description: |
+            An array of the user's study roles at the moment of the recorded activity.
+          type: array
+          items:
+            type: string
+        resource:
+          description: |
+            The ressource accessed by the user
+          type: string
+      additionalProperties: true
+      required:
+        - uuid
+        - userId
+        - state
+        - action
+        - timestamp
+
+    AuditLogMetadata:
+      description: |
+        Gives back current length of audit log entries with an integer and export format
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        length:
+          type: integer
+          format: int64
 
     FrontendConfiguration:
       description: |

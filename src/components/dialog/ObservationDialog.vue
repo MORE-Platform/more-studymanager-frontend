@@ -220,6 +220,12 @@ Licensed under the Elastic License 2.0. */
   function updateProperty(item: PropertyEmit): void {
     properties.value[item.index].value = item.value;
   }
+  function extractCurrentLimeDomain(): string {
+    const hostnameParts = window.location.hostname.split('.');
+    return hostnameParts.slice(1).join('.') ? `https://lime.${hostnameParts.slice(1).join('.')}/admin/` : 'https://lime.platform-test.more.redlink.io/';
+  }
+
+
 </script>
 
 <template>
@@ -227,7 +233,7 @@ Licensed under the Elastic License 2.0. */
     <div class="mb-4" :class="{ 'pb-4': !editable }">
       <h5 class="mb-1">{{ $t(factory.title) }}</h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-if="factory.description" v-html="$t(factory.description)"></h6>
+      <h6 v-if="factory.description" v-html="$t(factory.description, {link: extractCurrentLimeDomain()})"></h6>
     </div>
 
     <form

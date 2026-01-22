@@ -27,14 +27,15 @@ Licensed under the Elastic License 2.0. */
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from './CustomCheckbox.vue';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
+  import { ComponentFactory, ParticipantStatus, StudyRole, StudyStatus, Visibility } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+  import ExclamationIcon from './ExclamationIcon.vue';
 
-  import { ACTION_ID_QR_CODE } from '../../constants';
+  import { ACTION_ID_DATA_HEALTH, ACTION_ID_DELETE, ACTION_ID_QR_CODE } from '../../constants';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -265,6 +266,37 @@ Licensed under the Elastic License 2.0. */
     return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
   }
+
+  function getActionBtnBgColor(actionId: string, data: any): string {
+    if (actionId === ACTION_ID_DELETE) return 'btn-important'
+    else if (actionId === ACTION_ID_DATA_HEALTH && data && data.dataHealthIndicator) {
+      switch (data.dataHealthIndicator) {
+        case 'green':
+          return 'btn-accepted'
+        case 'orange':
+          return 'btn-warn'
+        case 'red':
+          return 'btn-important'
+        default: return 'btn-warn'
+      }
+    }
+    return ''
+  }
+
+  function getDataHealthIcon(data: any): string | undefined {
+    if (data.dataHealthIndicator) {
+      switch(data.dataHealthIndicator) {
+        case 'green':
+          return 'pi pi-check'
+        case 'orange':
+          return 'pi pi-exclamation-triangle'
+        case 'red':
+          return 'pi pi-times'
+        default:
+          return 'pi pi-exclamation-triangle'
+      }
+    }
+  }
 </script>
 
 <template>
@@ -426,7 +458,7 @@ Licensed under the Elastic License 2.0. */
             class="z-top"
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
-            <Checkbox
+            <CustomCheckbox
               v-if="getObservationVisibility(data['type'])?.changeable"
               v-model="data[field]"
               :binary="true"
@@ -437,7 +469,7 @@ Licensed under the Elastic License 2.0. */
                   <span class="p-checkbox-icon pi pi-check"></span>
                 </div>
               </template>
-            </Checkbox>
+            </CustomCheckbox>
             <div v-else class="icon-box eye">
               <span
                 v-if="data[field]"
@@ -464,8 +496,14 @@ Licensed under the Elastic License 2.0. */
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
+            <span v-if="field === 'title'" class="flex flex-row gap-1.5 align-center">
+              <span v-if="data['hasError']" class="title-has-warning mr-0.2">
+                <ExclamationIcon id="exclamationIcon" />
+              </span>
+              {{ data[field]}}
+            </span>
             <span
-              v-if="
+              v-else-if="
                 column.type === MoreTableFieldType.string ||
                 column.type === MoreTableFieldType.number ||
                 !column.type
@@ -552,16 +590,17 @@ Licensed under the Elastic License 2.0. */
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :icon="action.icon"
+                :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
                 :disabled="
-                  rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.dataHealthIndicator || slotProps.data?.dataHealthIndicator && slotProps.data.status === ParticipantStatus.New
+                  : rowIDsInEditMode.length
                       ? true
                       : action.id === ACTION_ID_QR_CODE ?
                         !(isVisible(action, slotProps.data) &&
                         !!slotProps.data.registrationToken)
                         : !isVisible(action, slotProps.data)
                 "
-                :class="{ 'btn-important': action.id === 'delete' }"
+                :class="getActionBtnBgColor(action.id, slotProps.data)"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
@@ -709,5 +748,10 @@ Licensed under the Elastic License 2.0. */
   :deep(.icon-checkbox.p-checkbox.show-icon) {
     height: 100%;
     padding: 5px;
+  }
+
+  .title-has-warning, .title-has-warning #exclamationIcon {
+    height: 18px;
+    width: auto;
   }
 </style>

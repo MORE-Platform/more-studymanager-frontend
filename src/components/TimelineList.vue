@@ -55,6 +55,7 @@ Licensed under the Elastic License 2.0. */
   const filterStudyGroup = ref();
   const filterParticipant = ref();
   const filterObservationAndIntervention = ref();
+  const showFullTimeline = ref(false);
   // We differ between EventDetail (with more data for the dialog) and Event (prop for the VueCal component)
   const timelineEventsList: Ref<Event[]> = ref([]);
   const eventToEventDetailMapper: Record<string, EventDetail> = {};
@@ -476,7 +477,12 @@ Licensed under the Elastic License 2.0. */
   <div class="title w-full">
     <div class="flex-row-center justify-between">
       <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
-      <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
+      <div class="flex gap-1">
+        <Button @click="showFullTimeline = !showFullTimeline">
+          {{ showFullTimeline ? $t('timeline.labels.collapseTimeline') : $t('timeline.labels.showFullTimeline') }}
+        </Button>
+        <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
+      </div>
     </div>
     <div class="flex-row-center mb-3 justify-start gap-5">
       <div class="flex-row-center">
@@ -554,6 +560,10 @@ Licensed under the Elastic License 2.0. */
     overlaps-per-time-step
     :min-event-width="30"
     today-button
+    :time-from="showFullTimeline ? 0: 8*60"
+    :time-to="showFullTimeline ? 24*60 : 19*60 "
+    :time-step="showFullTimeline ? 30 : 15"
+    hide-weekends
   >
     <template #event="{ event }">
       <div class="vuecal__event-title">

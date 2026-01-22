@@ -369,18 +369,22 @@ Licensed under the Elastic License 2.0. */
               <span class="pi pi-angle-down text-white"></span>
             </template>
             <template #option="slotProps">
-              <div
-                v-for="(item, index) in slotProps"
-                :key="index"
-                @click="openAddCollaboratorDialog(slotProps.option)"
+              <template
+                v-for="(item, key) in slotProps"
+                :key="key"
               >
-                <span class="color-primary font-medium">
-                  {{ item.label }}
-                </span>
-                <span v-if="item.institution" class="block">
-                  ({{ item.institution }})
-                </span>
-              </div>
+                <div
+                  v-if="key === 'option'"
+                  class="w-full"
+                  @click="openAddCollaboratorDialog(slotProps.option)">
+                  <span class="color-primary font-medium" >
+                    {{ item.label }}
+                  </span>
+                  <span v-if="item.institution" class="block">
+                    ({{ item.institution }})
+                  </span>
+                </div>
+              </template>
             </template>
           </Dropdown>
         </div>
