@@ -19,7 +19,7 @@ components:
             - MINUTE
             - HOUR
             - DAY
-        
+
     RelativeDate:
       type: object
       description: A date relative to a specific base date (e.g study start)
@@ -44,6 +44,17 @@ components:
         endAfter:
           $ref: '#/components/schemas/Duration'
           description: How long to repeat
+    Randomization:
+      type: object
+      description: Model to state if an event is pseudo random
+      properties:
+        state:
+          type: boolean
+        duration:
+          type: integer
+          description: Duration of the event in minutes
+      required:
+        - state
 
     RelativeEvent:
       type: object
@@ -65,3 +76,6 @@ components:
         rrrule:
           $ref: '#/components/schemas/RelativeRecurrenceRule'
           description: How to repeat the event
+        random:
+          $ref: '#/components/schemas/Randomization'
+          description: If the event is pseudo random

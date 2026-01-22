@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, inject, onMounted, ref, Ref, watch } from 'vue';
+  import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
@@ -22,9 +22,13 @@
   import { valueToMinutes } from '../../utils/durationUtils';
   import { scrollToFirstError } from '../../utils/componentUtils';
   import { ONE_DAY_IN_MINUTES } from '../../constants';
+  import RandomizationView from '../subComponents/RandomizationView.vue';
+  import { useToast } from 'primevue/usetoast';
 
+  const timeFormat = 'HH:mm:ss';
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
+  const toast = useToast();
   const studyStore = useStudyStore();
   const { study } = storeToRefs(studyStore);
   const maxDuration = computed((): Duration | undefined =>
@@ -62,7 +66,7 @@
     }
   }
 
-  const returnSchedule: RelativeEvent = {
+  const returnSchedule: Ref<RelativeEvent> = ref({
     type: ScheduleType.RelativeEvent,
     dtstart: {
       offset: {
@@ -90,7 +94,8 @@
         unit: schedule.rrrule?.endAfter?.unit,
       },
     },
-  };
+    random: schedule.random ?? { state: false, duration: 0 },
+  });
 
   const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
   const frequencyUnit = ref<UnitEnum>(
@@ -133,8 +138,8 @@
   function checkErrors(): void {
     clearAllErrors();
     if (
-      !returnSchedule.dtstart.offset?.value ||
-      !returnSchedule.dtstart.offset?.unit
+      !returnSchedule.value.dtstart.offset?.value ||
+      !returnSchedule.value.dtstart.offset?.unit
     ) {
       addError({
         label: 'dtstart',
@@ -142,8 +147,8 @@
       });
     }
     if (
-      !returnSchedule.dtend.offset?.value ||
-      !returnSchedule.dtend.offset?.unit
+      !returnSchedule.value.dtend.offset?.value ||
+      !returnSchedule.value.dtend.offset?.unit
     ) {
       addError({
         label: 'dtend',
@@ -151,9 +156,10 @@
       });
     }
     if (
-      returnSchedule.dtend.offset?.value &&
-      returnSchedule.dtstart.offset?.value &&
-      returnSchedule.dtstart.offset?.value > returnSchedule.dtend.offset?.value
+      returnSchedule.value.dtend.offset?.value &&
+      returnSchedule.value.dtstart.offset?.value &&
+      returnSchedule.value.dtstart.offset?.value >
+        returnSchedule.value.dtend.offset?.value
     ) {
       addError({
         label: 'dtend',
@@ -163,11 +169,11 @@
       });
     }
     if (
-      returnSchedule.dtstart.time &&
-      returnSchedule.dtend.time &&
-      returnSchedule.dtstart.offset?.value ===
-        returnSchedule.dtend.offset?.value &&
-      returnSchedule.dtstart.time >= returnSchedule.dtend.time
+      returnSchedule.value.dtstart.time &&
+      returnSchedule.value.dtend.time &&
+      returnSchedule.value.dtstart.offset?.value ===
+        returnSchedule.value.dtend.offset?.value &&
+      returnSchedule.value.dtstart.time >= returnSchedule.value.dtend.time
     ) {
       addError({
         label: 'dtend',
@@ -178,8 +184,8 @@
     }
     if (repeatChecked.value) {
       if (
-        !returnSchedule.rrrule?.frequency?.value ||
-        !returnSchedule.rrrule?.frequency?.unit
+        !returnSchedule.value.rrrule?.frequency?.value ||
+        !returnSchedule.value.rrrule?.frequency?.unit
       ) {
         addError({
           label: 'rrruleFreq',
@@ -187,8 +193,8 @@
         });
       }
       if (
-        !returnSchedule.rrrule?.endAfter?.value ||
-        !returnSchedule.rrrule?.endAfter?.unit
+        !returnSchedule.value.rrrule?.endAfter?.value ||
+        !returnSchedule.value.rrrule?.endAfter?.unit
       ) {
         addError({
           label: 'rrruleEndAfter',
@@ -221,27 +227,72 @@
     totalDays.value = Math.round(endOfIndividualStudy / ONE_DAY_IN_MINUTES);
   };
 
+  const offsetToMinutes = (offset: Duration): number => {
+    const v = Number(offset.value ?? 0);
+    switch (offset.unit) {
+      case UnitEnum.Minute:
+        return v;
+      case UnitEnum.Hour:
+        return v * 60;
+      case UnitEnum.Day:
+        return v * 24 * 60;
+      default:
+        return v * 24 * 60;
+    }
+  };
+
+  const timeOfDayMinutes = (t: DateTime): number => {
+    return t.hour * 60 + t.minute + Math.floor(t.second / 60);
+  };
+
+  const startTotalMinutes = computed(
+    () =>
+      offsetToMinutes(startOffset.value) + timeOfDayMinutes(startTime.value),
+  );
+
+  const endTotalMinutes = computed(
+    () => offsetToMinutes(endOffset.value) + timeOfDayMinutes(endTime.value),
+  );
+
+  const maxDurationInMinutes = computed(() =>
+    Math.max(0, endTotalMinutes.value - startTotalMinutes.value),
+  );
+
   function cancel(): void {
     dialogRef.value.close();
   }
 
   function save(): void {
-    returnSchedule.dtstart.time = startTime.value.toFormat('HH:mm:ss');
-    returnSchedule.dtend.time = endTime.value.toFormat('HH:mm:ss');
+    if (
+      returnSchedule.value.random &&
+      returnSchedule.value.random.state &&
+      typeof returnSchedule.value.random.duration === 'number' &&
+      (returnSchedule.value.random.duration <= 0 ||
+        returnSchedule.value.random.duration > maxDurationInMinutes.value)
+    ) {
+      toast.add({
+        summary: t('scheduler.randomization.toast.title'),
+        detail: t('scheduler.randomization.toast.message'),
+        severity: 'error',
+      });
+      return;
+    }
+    returnSchedule.value.dtstart.time = startTime.value.toFormat(timeFormat);
+    returnSchedule.value.dtend.time = endTime.value.toFormat(timeFormat);
 
-    returnSchedule.dtstart.offset = startOffset.value;
-    returnSchedule.dtend.offset = endOffset.value;
+    returnSchedule.value.dtstart.offset = startOffset.value;
+    returnSchedule.value.dtend.offset = endOffset.value;
 
     const currentTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (typeof returnSchedule.dtstart.time !== 'undefined') {
-      returnSchedule.dtstart.timezone = currentTimeZone;
+    if (typeof returnSchedule.value.dtstart.time !== 'undefined') {
+      returnSchedule.value.dtstart.timezone = currentTimeZone;
     }
-    if (typeof returnSchedule.dtend.time !== 'undefined') {
-      returnSchedule.dtend.timezone = currentTimeZone;
+    if (typeof returnSchedule.value.dtend.time !== 'undefined') {
+      returnSchedule.value.dtend.timezone = currentTimeZone;
     }
 
     if (repeatChecked.value) {
-      returnSchedule.rrrule = {
+      returnSchedule.value.rrrule = {
         frequency: {
           value: frequency.value,
           unit: frequencyUnit.value,
@@ -252,18 +303,19 @@
         },
       };
     } else {
-      returnSchedule.rrrule = undefined;
+      returnSchedule.value.rrrule = undefined;
     }
 
     checkErrors();
 
     if (errors.value.length) {
-      returnSchedule.dtstart.time =
-        returnSchedule.dtstart.time ?? startTime.value.toFormat('HH:mm');
-      returnSchedule.dtend.time =
-        returnSchedule.dtend.time ?? endTime.value.toFormat('HH:mm');
+      returnSchedule.value.dtstart.time =
+        returnSchedule.value.dtstart.time ??
+        startTime.value.toFormat(timeFormat);
+      returnSchedule.value.dtend.time =
+        returnSchedule.value.dtend.time ?? endTime.value.toFormat(timeFormat);
     } else {
-      dialogRef.value.close(returnSchedule);
+      dialogRef.value.close(returnSchedule.value);
     }
   }
 
@@ -313,6 +365,25 @@
     calcRepetition();
   };
 
+  function onRandomStateChange(newState: boolean): void {
+    if (!returnSchedule.value.random) {
+      returnSchedule.value.random = { state: false, duration: 0 };
+    }
+    returnSchedule.value.random.state = newState;
+  }
+
+  function onRandomDurationChange(newDuration: number): void {
+    if (!returnSchedule.value.random) {
+      returnSchedule.value.random = { state: false, duration: 0 };
+    }
+    returnSchedule.value.random.state = true;
+    if (maxDurationInMinutes.value < newDuration) {
+      returnSchedule.value.random.duration = maxDurationInMinutes.value;
+    } else {
+      returnSchedule.value.random.duration = newDuration;
+    }
+  }
+
   watch(
     [
       startOffset,
@@ -327,7 +398,6 @@
     onChange,
     { deep: true, immediate: true },
   );
-  onMounted(onChange);
 </script>
 
 <template>
@@ -455,6 +525,15 @@
       />
       <span class="ms-2">{{ $t('scheduler.dialog.repeatEvent') }}</span>
     </div>
+    <div class="flex flex-row items-center justify-start">
+      <span>{{ $t('scheduler.randomization.label') }}:</span>
+      <Checkbox
+        :model-value="!!returnSchedule.random?.state"
+        class="ml-2"
+        :binary="true"
+        @update:model-value="onRandomStateChange"
+      />
+    </div>
     <div v-if="repeatChecked" class="col-span-6 pb-5">
       <div class="mb-5">
         {{ $t('scheduler.dialog.repeatEventDescription') }}
@@ -534,6 +613,14 @@
       <span class="pi pi-info-circle" />
       {{ $t('scheduler.dialog.relativeSchedule.error.cannotRepeat') }}
     </div>
+
+    <RandomizationView
+      v-if="!!returnSchedule.random?.state"
+      class="col-span-8"
+      :duration="returnSchedule.random?.duration ?? 0"
+      :max-duration-in-minutes="maxDurationInMinutes"
+      @update:duration="onRandomDurationChange"
+    />
 
     <div class="grid w-full grid-cols-6">
       <div

@@ -825,8 +825,22 @@
       },
       "sunday": "Sonntag",
       "thursday": "Donnerstag",
-      "tuesday": "Dientstag",
+      "tuesday": "Dienstag",
       "wednesday": "Mittwoch"
+    },
+    "randomization": {
+      "label": "Zufällige Events",
+      "title": "Event Randomisierung",
+      "description": "Dieses Event wird innerhalb des angegebenen Zeitraums zufällig ausgeführt. Die Länge des Events wird durch die angegebene Dauer in Minuten bestimmt. Die Dauer kann nicht länger sein, als der angegebene Zeitraum.",
+      "duration": "Dauer (in Minuten)",
+      "warning": "Die angegebene Dauer darf nicht länger sein als der angegebene Zeitraum.",
+      "maxDuration": "Maximale Dauer (in Minuten): {maxDuration}",
+      "on": "An",
+      "off": "Aus",
+      "toast": {
+        "title": "Fehler in der Zeitplannung",
+        "message": "Die angegebene Dauer muss größer als 0 sein und darf nicht länger als der angegebene Zeitraum sein."
+      }
     }
   },
   "study": {
