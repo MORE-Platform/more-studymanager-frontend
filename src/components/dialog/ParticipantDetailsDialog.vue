@@ -101,7 +101,7 @@
 
   function mapInformationToTable(): DataHealthTableItem[] {
     const upcomingTimelineEvents = participantObservationsInTimeline.value
-      ?.filter((item) => new Date(item.end as string).getTime() >= Date.now())
+      ?.filter((item) => new Date(item.start as string).getTime() >= Date.now())
       .map((item) => {
         const startTs = new Date(item.start as string).getTime();
         const endTs = new Date(item.end as string).getTime();
@@ -118,7 +118,7 @@
           upcoming: true,
         };
       })
-      .sort((a, b) => a.startTs - b.startTs || a.endTs - b.endTs);
+      .sort((a, b) => b.startTs - a.startTs || b.endTs - a.endTs);
 
     const occurredObservationPoints =
       participantOccuredObservations.value.map((item: OccurredObservation) => ({
