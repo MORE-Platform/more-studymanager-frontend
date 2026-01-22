@@ -8,8 +8,8 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AuditLogEntry, AuditLogMetadata, DataExportInner, Study, StudyRole, StudyStatus } from '@gs';
-import { useAuditLogApi, useImportExportApi, useStudiesApi } from '../composable/useApi';
+import { AuditLogMetadata, AuditLogEntry, DataExportInner, Study, StudyRole, StudyStatus, DataExportInner, OccurredObservation, ObservationTimelineEvent, StudyTimeline} from '@gs';
+import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi, useOccurredObservationsApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
@@ -20,6 +20,8 @@ export const useStudyStore = defineStore('study', () => {
   const { studiesApi } = useStudiesApi();
   const { importExportApi } = useImportExportApi();
   const { auditLogApi } = useAuditLogApi();
+  const { calendarApi } = useCalendarApi();
+  const { occurredObservationsApi } = useOccurredObservationsApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
   const { handleToastErrors } = useToastService();
@@ -28,6 +30,8 @@ export const useStudyStore = defineStore('study', () => {
   const studies: Ref<Study[]> = ref([]);
   const auditLogMetadata: Ref<AuditLogMetadata | undefined> = ref();
   const auditLogEntries: Ref<Array<AuditLogEntry>> = ref([]);
+  const occurredObservations: Ref<Array<OccurredObservation>> = ref([]);
+  const participantTimelineObservations: Ref<Array<ObservationTimelineEvent>> = ref([]);
 
   // Actions
   async function getStudy(studyId: number): Promise<void> {
@@ -122,6 +126,32 @@ export const useStudyStore = defineStore('study', () => {
           handleIndividualError(e, 'cannot update study in studies'),
         );
     }
+  }
+
+  async function listOccurredObservations(studyId: number, participantId?: number, observationId?: number, from?: string, to?: string): Promise<void> {
+    await occurredObservationsApi.listOccurredObservations(studyId, participantId, observationId, from, to)
+      .then((response: AxiosResponse) => occurredObservations.value = response.data)
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, `cannot get occuredObservation on study ${studyId} (participant: ${participantId}, observation: ${observationId}, from: ${from}, to: ${to})`)
+      );
+  }
+
+  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
+    await calendarApi.getStudyTimeline(
+      studyId,
+      participantId,
+      studyGroup,
+      referenceDate,
+      studyStartDate,
+      studyEndDate,
+      undefined,
+    )
+      .then((response: AxiosResponse<StudyTimeline>) =>
+        participantTimelineObservations.value = response.data?.observations ?? []
+      )
+      .catch((e: AxiosError) =>
+        handleIndividualError(e, `cannot get observations in timeline for study ${studyId}, participant ${participantId}`)
+      )
   }
 
   const importStudy = (importedStudy: File): Promise<void> =>
@@ -257,6 +287,8 @@ export const useStudyStore = defineStore('study', () => {
     updateStudy,
     updateStudyStatus,
     listStudies,
+    listOccurredObservations,
+    occurredObservations,
     createStudy,
     deleteStudy,
     updateStudyInStudies,
@@ -270,5 +302,7 @@ export const useStudyStore = defineStore('study', () => {
     auditLogEntries,
     getAuditLogMetadata,
     exportAuditLog,
+    listParticipantObservationsInTimeline,
+    participantTimelineObservations
   };
 });
