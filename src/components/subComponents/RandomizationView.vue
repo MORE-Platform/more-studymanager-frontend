@@ -35,7 +35,7 @@
     maxDurationInMinutes: number;
   }>();
   const emits = defineEmits<{
-    (e: 'update:duration', value: number): void;
+    (e: 'update:duration', value: number | undefined): void;
   }>();
 
   function onChange(value?: number): void {
