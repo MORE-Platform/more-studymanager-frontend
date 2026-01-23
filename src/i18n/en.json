@@ -827,6 +827,20 @@
       "thursday": "Thursday",
       "tuesday": "Tuesday",
       "wednesday": "Wednesday"
+    },
+    "randomization": {
+      "label": "Random Events",
+      "title": "Event randomization",
+      "description": "This event will be randomly scheduled within the specified timeframe. The event duration is determined by the specified duration in minutes. The duration cannot be longer than the specified timeframe.",
+      "duration": "Duration (in minutes)",
+      "warning": "The specified duration cannot be longer than the specified timeframe.",
+      "maxDuration": "Max duration (in minutes): {maxDuration}",
+      "on": "On",
+      "off": "Off",
+      "toast": {
+        "title": "Schedule Error",
+        "message": "The specified duration has to be bigger than 0 and cannot be longer than the specified timeframe."
+      }
     }
   },
   "study": {
