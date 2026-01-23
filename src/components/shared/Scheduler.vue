@@ -220,7 +220,10 @@ Licensed under the Elastic License 2.0. */
     returnSchedule.value.random.state = newState;
   }
 
-  function onRandomDurationChange(newDuration: number): void {
+  function onRandomDurationChange(newDuration: number | undefined): void {
+    if (!newDuration) {
+      return;
+    }
     if (!returnSchedule.value.random) {
       returnSchedule.value.random = { state: false, duration: 0 };
     }
