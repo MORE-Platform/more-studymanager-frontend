@@ -530,10 +530,10 @@
     </div>
     <div class="flex flex-row items-center justify-start">
       <span>{{ $t('scheduler.randomization.label') }}:</span>
-      <Checkbox
+      <CustomCheckbox
         :model-value="!!returnSchedule.random?.state"
         class="ml-2"
-        :binary="true"
+        binary
         @update:model-value="onRandomStateChange"
       />
     </div>
