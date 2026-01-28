@@ -4,7 +4,7 @@
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from './CustomCheckbox.vue';
   import { Duration, UnitEnum, RelativeEvent } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '../../models/Scheduler';
@@ -519,7 +519,7 @@
       ]"
       @click="repeatChecked = !repeatChecked"
     >
-      <Checkbox
+      <CustomCheckbox
         v-model="repeatChecked"
         :disabled="!repetitionEnabled"
         binary

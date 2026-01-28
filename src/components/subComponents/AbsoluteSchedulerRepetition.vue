@@ -2,7 +2,7 @@
   import { useI18n } from 'vue-i18n';
   import { Frequency, RecurrenceRule } from '@gs';
   import { PropType, reactive, ref, Ref, watch } from 'vue';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from '../shared/CustomCheckbox.vue';
   import InputNumber from 'primevue/inputnumber';
   import SelectButton from 'primevue/selectbutton';
   import { MoreTableChoice } from '../../models/MoreTableModel';
@@ -118,31 +118,31 @@
   const rruleWeekdayOptions = [
     {
       label: t('scheduler.weekday.short.monday'),
-      value: t('scheduler.weekday.short.monday'),
+      value: 'MO',
     },
     {
       label: t('scheduler.weekday.short.tuesday'),
-      value: t('scheduler.weekday.short.tuesday'),
+      value: 'TU',
     },
     {
       label: t('scheduler.weekday.short.wednesday'),
-      value: t('scheduler.weekday.short.wednesday'),
+      value: 'WE',
     },
     {
       label: t('scheduler.weekday.short.thursday'),
-      value: t('scheduler.weekday.short.thursday'),
+      value: 'TH',
     },
     {
       label: t('scheduler.weekday.short.friday'),
-      value: t('scheduler.weekday.short.friday'),
+      value: 'FR',
     },
     {
       label: t('scheduler.weekday.short.saturday'),
-      value: t('scheduler.weekday.short.saturday'),
+      value: 'SA',
     },
     {
       label: t('scheduler.weekday.short.sunday'),
-      value: t('scheduler.weekday.short.sunday'),
+      value: 'SO',
     },
   ];
 
@@ -242,7 +242,7 @@
       <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
         <div class="flex flex-row items-center justify-start col-span-1">
           {{ $t('scheduler.labels.repeat') }}:
-          <Checkbox
+          <CustomCheckbox
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"

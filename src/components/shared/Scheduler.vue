@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
-  import Checkbox from 'primevue/checkbox';
+  import CustomCheckbox from './CustomCheckbox.vue';
   import { Event, RecurrenceRule } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
@@ -422,7 +422,7 @@ Licensed under the Elastic License 2.0. */
       <div class="col-span-7 col-start-2 grid grid-cols-2">
         <div class="flex flex-row items-center justify-start">
           {{ $t('scheduler.labels.event.oneDayObservation') }}:
-          <Checkbox
+          <CustomCheckbox
             v-model="singleDayEventCheckbox"
             class="ml-2"
             :binary="true"
@@ -431,7 +431,7 @@ Licensed under the Elastic License 2.0. */
         </div>
         <div class="flex flex-row items-center justify-start">
           <span>{{ $t('scheduler.labels.event.allDay') }}</span>
-          <Checkbox
+          <CustomCheckbox
             v-model="entireDayCheckbox"
             class="ml-2"
             :binary="true"
