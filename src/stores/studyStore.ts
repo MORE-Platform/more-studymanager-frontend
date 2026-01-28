@@ -8,7 +8,7 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import { AuditLogMetadata, AuditLogEntry, DataExportInner, Study, StudyRole, StudyStatus, DataExportInner, OccurredObservation, ObservationTimelineEvent, StudyTimeline} from '@gs';
+import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus, DataExportInner, OccurredObservation, ObservationTimelineEvent, StudyTimeline} from '@gs';
 import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi, useOccurredObservationsApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
