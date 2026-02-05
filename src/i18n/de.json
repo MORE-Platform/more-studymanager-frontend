@@ -937,6 +937,7 @@
       "roles": "Rolle(n)",
       "status": "Status",
       "studyGroup": "Studiengruppe {size}",
+      "observationGroup": "Datenerhebungs-Gruppe {size}",
       "studyId": "Studien-ID",
       "title": "Titel"
     },
@@ -1077,6 +1078,29 @@
       "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen."
     }
   },
+  "observationGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Datenerhebungs-Gruppe zu löschen:",
+        "warning": "Eine gelöschte Datenerhebungs-Gruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Gruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie."
+      },
+      "header": {
+        "create": "Datenerhebungs-Gruppe hinzufügen",
+        "delete": "Datenerhebungs-Gruppe löschen"
+      },
+      "msg": {
+        "delete": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?"
+      }
+    },
+    "plural": "Datenerhebungs-Gruppen",
+    "groupList": {
+      "description": "Datenerhebungs-Gruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventions zu gruppieren. Im Gegensatz zu den Studiengruppen, können diese multiplen Elementen zugewiesen werden. <b>Ein:e Teilnehmer:in, eine Datenerhebung und eine Intervention kann jeweils mehreren Datenerhebungs-Gruppen zugewiesen werden.</b> (Beisipel: Raucher, Diabetes Typ 2).",
+      "placeholder": {
+        "emptyGroupList": "Fügen Sie Datenerhebungs-Gruppen zu Ihrer Studie hinzu."
+      }
+    }
+  },
   "studyGroup": {
     "dialog": {
       "deleteMsg": {
@@ -1162,6 +1186,7 @@
       "deleteParticipantBtn": "Teilnehmer:in löschen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
+      "deleteObservationGroupBtn": "Datenerhebungs-Gruppe löschen",
       "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "goToStudy": "Studie öffnen",
       "saveChanges": "Änderungen speichern",

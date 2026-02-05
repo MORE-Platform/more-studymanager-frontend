@@ -136,7 +136,7 @@ export const useStudyStore = defineStore('study', () => {
       );
   }
 
-  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
+  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: number, studyStartDate?: string, studyEndDate?: string): Promise<void> {
     await calendarApi.getStudyTimeline(
       studyId,
       participantId,
