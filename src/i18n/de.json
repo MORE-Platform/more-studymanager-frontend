@@ -483,7 +483,33 @@
       "garmin": {
         "configProps": {},
         "description": "Diese Datenerhebung ermöglicht es, Gesundheitsdaten via Garmin Connect zu erhalten.",
-        "title": "Garmin"
+        "title": "Garmin (Veraltet)",
+        "heart-rate": {
+          "title": "Herzfrequenz (Garmin Connect)",
+          "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten von Garmin Connect zu sammeln."
+        },
+        "activity": {
+          "title": "Aktivität (Garmin Connect)",
+          "description": "Diese Datenerhebung ermöglicht es, Aktivitätsdaten von Garmin Connect zu sammeln."
+        },
+        "blood-pressure": {
+          "title": "Blutdruck (Garmin Connect)",
+          "description": "Diese Datenerhebung ermöglicht es, Blutdruckdaten von Garmin Connect zu sammeln."
+        },
+        "sleep": {
+          "title": "Schlaf (Garmin Connect)",
+          "description": "Diese Datenerhebung ermöglicht es, Schlafdaten von Garmin Connect zu sammeln."
+        },
+        "steps": {
+          "daily": {
+            "title": "Tägliche Schritte (Garmin Connect)",
+            "description": "Tägliche Schrittzählung von Garmin Connect."
+          },
+          "epoch": {
+            "title": "Epoch Schritte (Garmin Connect)",
+            "description": "Epoch Schrittzählung von Garmin Connect."
+          }
+        }
       }
     },
     "observationList": {
