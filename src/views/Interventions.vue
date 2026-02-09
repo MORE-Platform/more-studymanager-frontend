@@ -10,9 +10,11 @@ Licensed under the Elastic License 2.0. */
   import InterventionsList from '../components/InterventionsList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
 
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const accessRoles: StudyRole[] = [
     StudyRole.StudyAdmin,
@@ -36,6 +38,7 @@ Licensed under the Elastic License 2.0. */
           :study-groups="studyGroupStore.studyGroups"
           :study-id="studyStore.studyId"
           :study-status="studyStore.studyStatus"
+          :observation-groups="observationGroupStore.observationGroups"
         />
       </Suspense>
     </div>

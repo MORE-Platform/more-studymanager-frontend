@@ -31,6 +31,7 @@ Licensed under the Elastic License 2.0. */
   import { AxiosError } from 'axios';
   import { useErrorHandling } from '../../composable/useErrorHandling';
   import { useToastService } from '../../composable/toastService';
+  import MultiSelect from 'primevue/multiselect';
 
   const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
@@ -42,6 +43,7 @@ Licensed under the Elastic License 2.0. */
   const dialogRef: any = inject('dialogRef');
   const observation = dialogRef.value.data.observation as Observation;
   const groupStates = dialogRef.value.data.groupStates || [];
+  const observationGroupStates = dialogRef.value.data.observationGroupStates || [];
   const factory = dialogRef.value.data.factory;
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
@@ -56,6 +58,9 @@ Licensed under the Elastic License 2.0. */
       .map((json: any) => Property.fromJson(json))
       .map((p: Property<any>) => p.setValue(observation.properties?.[p.id])),
   );
+  const selectedObservationGroups = ref(
+    observation.observationGroupIds?.map((id) => observationGroupStates.value.find((group: MoreTableChoice) => group.value === id.toString())) ?? []
+  )
 
   const hidden: Ref<boolean> = ref(
     observation.hidden !== undefined
@@ -173,6 +178,7 @@ Licensed under the Elastic License 2.0. */
       title: title.value,
       purpose: purpose.value,
       participantInfo: participantInfo.value,
+      observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((group) => group.value) : [],
       type: observation.type,
       properties: props,
       schedule: scheduler.value,
@@ -316,18 +322,47 @@ Licensed under the Elastic License 2.0. */
           <h5 v-if="!editable" class="pb-2 font-bold">
             {{ $t('study.props.studyGroup') }}
           </h5>
-          <Dropdown
-            v-model="studyGroupId"
-            :options="groupStates"
-            option-label="label"
-            option-value="value"
-            :disabled="!editable"
-            :class="{ 'dropdown-has-value': studyGroupId }"
-            :placeholder="
-              getLabelForChoiceValue(studyGroupId, groupStates) ||
-              $t('global.placeholder.entireStudy')
-            "
-          />
+          <div class="flex gap-5">
+            <div>
+              <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
+              <Dropdown
+                v-model="studyGroupId"
+                :options="groupStates"
+                option-label="label"
+                option-value="value"
+                :disabled="!editable"
+                :class="{ 'dropdown-has-value': studyGroupId }"
+                :placeholder="
+                  getLabelForChoiceValue(studyGroupId, groupStates) ||
+                  $t('global.placeholder.entireStudy')
+                "
+              />
+            </div>
+            <div>
+              <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
+                <MultiSelect
+                  v-model="selectedObservationGroups"
+                  :options="observationGroupStates"
+                  option-label="label"
+                  option-value="value"
+                  :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
+                  :show-toggle-all="false"
+                  class="z-top custom-multiselect-root"
+                  :panel-class="'custom-multiselect-panel'"
+                >
+                  <template #value="{ value }">
+                    <span v-if="value?.length === 1">{{ observationGroupStates.find(
+                      (group: MoreTableChoice) => group.value === value[0]
+                    )?.label }}</span>
+                    <span v-else-if="value?.length >= 2"> {{ value.length }} {{ $t('global.placeholder.selected')}}</span>
+                    <span v-else class="text-gray-400">
+                      {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
+                    </span>
+                  </template>
+
+                </MultiSelect>
+              </div>
+          </div>
         </div>
 
         <div

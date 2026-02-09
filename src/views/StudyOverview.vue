@@ -39,7 +39,7 @@ Licensed under the Elastic License 2.0. */
 
   studyStore.getStudy(studyId);
   studyGroupStore.getStudyGroups(studyId);
-  observationGroupStore.getObservationGroups(studyId)
+  observationGroupStore.getObservationGroups(studyId);
 </script>
 
 <template>

@@ -137,7 +137,8 @@
       "entireStudy": "Gesamte Studie",
       "noGroup": "Keine Gruppe",
       "nothingSelected": "Nichts ausgewählt",
-      "optionsSelected": "Optionen ausgewählt"
+      "optionsSelected": "Optionen ausgewählt",
+      "selected": "ausgewählt"
     }
   },
   "inputModel": {

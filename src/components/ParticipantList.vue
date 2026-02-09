@@ -8,14 +8,15 @@ Licensed under the Elastic License 2.0. */
   import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
 
   import {
+    MoreParticipantListTableRow,
     MoreTableAction,
     MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
-    MoreTableSortOptions,
+    MoreTableSortOptions
   } from '../models/MoreTableModel';
-  import { Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
+  import { ObservationGroup, Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -30,18 +31,14 @@ Licensed under the Elastic License 2.0. */
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import { MenuOptions } from '../models/ComponentModels';
-  import {
-    ACTION_ID_DATA_HEALTH,
-    ACTION_ID_DELETE,
-    ACTION_ID_QR_CODE,
-    PARTICIPANT_COUNTS,
-  } from '../constants';
+  import { ACTION_ID_DATA_HEALTH, ACTION_ID_DELETE, ACTION_ID_QR_CODE, PARTICIPANT_COUNTS } from '../constants';
   import QrCodeDialog from './dialog/QrCodeDialog.vue';
   import ParticipantDetailsDialog from './dialog/ParticipantDetailsDialog.vue';
 
   const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
-  const participantsList: Ref<Participant[]> = ref([]);
+
+  const participantsList: Ref<MoreParticipantListTableRow[]> = ref([]);
   const loader = useLoader();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
@@ -57,6 +54,7 @@ Licensed under the Elastic License 2.0. */
       required: true,
     },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true}
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -80,6 +78,14 @@ Licensed under the Elastic License 2.0. */
     label: t('global.placeholder.noGroup'),
     value: null,
   } as MoreTableChoice);
+
+  const observationGroupStatuses: MoreTableChoice[] = props.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
 
   const participantsColumns: MoreTableColumn[] = [
     { field: 'participantId', header: t('global.labels.id'), sortable: true },
@@ -106,6 +112,19 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       placeholder: t('global.placeholder.noGroup'),
       columnWidth: '15vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: actionsVisible,
+        values: observationGroupStatuses
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw'
     },
     {
       field: 'start',
@@ -195,7 +214,15 @@ Licensed under the Elastic License 2.0. */
   async function listParticipant(): Promise<void> {
     participantsList.value = await participantsApi
       .listParticipants(props.studyId)
-      .then((response) => response.data)
+      .then((response) => {
+        return response.data.map((participant) => {
+          let observationChoices = participant?.observationGroupIds?.map((id) => observationGroupStatuses?.find((group) => group?.value === id.toString()))
+          return {
+            ...participant,
+            observationGroupValues: observationChoices
+          } as MoreParticipantListTableRow
+        }) ?? []
+      })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot list participants');
         return participantsList.value;
@@ -337,16 +364,21 @@ Licensed under the Elastic License 2.0. */
       .then(listParticipant);
   };
 
-  function changeValue(participant: Participant): void {
+  function changeValue(participant: MoreParticipantListTableRow): void {
     const i = participantsList.value.findIndex(
       (v) => v.participantId === participant.participantId,
     );
     if (i > -1) {
       participantsList.value[i] = participant;
+      const { observationGroupValues, ...newParticipant } = participant
+
       participantsApi.updateParticipant(
         participant.studyId as number,
         participant.participantId as number,
-        participant,
+        {
+          ...newParticipant,
+          observationGroupIds: observationGroupValues?.map((group: MoreTableChoice) => parseInt(group.value as string)) ?? []
+        }
       );
     }
   }
@@ -432,6 +464,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="participant-list">
     <MoreTable
+      v-if="!!observationGroupStatuses"
       row-id="participantId"
       :sort-options="sortOptions"
       :title="$t('participants.participantsList.title')"

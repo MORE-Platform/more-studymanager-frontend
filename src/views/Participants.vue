@@ -10,13 +10,22 @@ Licensed under the Elastic License 2.0. */
   import { StudyRole } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
+  import { onMounted } from 'vue';
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const accessRoles: StudyRole[] = [
     StudyRole.StudyAdmin,
     StudyRole.StudyOperator,
   ];
+
+onMounted(() => {
+  if(observationGroupStore.observationGroups.length === 0) {
+    observationGroupStore.getObservationGroups(studyStore.studyId)
+  }
+})
 </script>
 
 <template>
@@ -32,6 +41,7 @@ Licensed under the Elastic License 2.0. */
     >
       <ParticipantList
         :study-groups="studyGroupStore.studyGroups"
+        :observation-groups="observationGroupStore.observationGroups"
         :study-status="studyStore.studyStatus"
         :study-id="studyStore.studyId"
       ></ParticipantList>

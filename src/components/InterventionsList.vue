@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
-    ListComponentsComponentTypeEnum, Observation
+    ListComponentsComponentTypeEnum, Observation, ObservationGroup
   } from '@gs';
   import {
     MoreTableAction,
@@ -24,7 +24,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableChoice,
     MoreTableSortOptions,
-    RowSelectionMode,
+    RowSelectionMode, MoreInterventionListTableRow
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -45,12 +45,13 @@ Licensed under the Elastic License 2.0. */
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const interventionList: Ref<Intervention[]> = ref([]);
+  const interventionList: Ref<MoreInterventionListTableRow[]> = ref([]);
   const dialog = useDialog();
 
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true},
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
@@ -75,6 +76,14 @@ Licensed under the Elastic License 2.0. */
     label: t('global.placeholder.entireStudy'),
     value: null,
   } as MoreTableChoice);
+
+  const observationGroupStatuses: MoreTableChoice[] = props.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
@@ -113,6 +122,19 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '10vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: actionsVisible,
+        values: observationGroupStatuses
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw'
     },
   ];
 
@@ -206,6 +228,10 @@ Licensed under the Elastic License 2.0. */
                   studyId: intervention.studyId,
                   interventionId: intervention.interventionId,
                   studyGroupId: intervention.studyGroupId,
+                  observationGroupIds: intervention.observationGroupIds,
+                  observationGroupValues: intervention.observationGroupIds?.length
+                    ? intervention.observationGroupIds?.map((id) => observationGroupStatuses.find((group) => group.value === id.toString()))
+                    : [],
                   title: intervention.title,
                   purpose: intervention.purpose,
                   schedule: intervention.schedule,
@@ -285,12 +311,16 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function changeValue(intervention: Intervention): Promise<void> {
+  async function changeValue(intervention: MoreInterventionListTableRow): Promise<void> {
+    const {observationGroupValues, ...newIntervention} = intervention
     await interventionsApi
       .updateIntervention(
         props.studyId,
-        intervention.interventionId as number,
-        intervention,
+        newIntervention.interventionId as number,
+        {
+          ...newIntervention,
+          observationGroupIds: observationGroupValues?.map((group) => parseInt(group.value as string)) ?? []
+        },
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>
@@ -464,6 +494,7 @@ Licensed under the Elastic License 2.0. */
           dialog.open(InterventionDialog, {
             data: {
               groupStates: groupStatuses,
+              observationGroupStates: observationGroupStatuses,
               intervention: intervention,
               studyId: props.studyId,
               actionsData: actionsRes,

@@ -30,12 +30,22 @@ Licensed under the Elastic License 2.0. */
   import CustomCheckbox from './CustomCheckbox.vue';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { ComponentFactory, ParticipantStatus, StudyRole, StudyStatus, Visibility } from '@gs';
+  import {
+    ComponentFactory,
+    ParticipantStatus,
+    StudyRole,
+    StudyStatus,
+    Visibility,
+  } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
   import ExclamationIcon from './ExclamationIcon.vue';
 
-  import { ACTION_ID_DATA_HEALTH, ACTION_ID_DELETE, ACTION_ID_QR_CODE } from '../../constants';
+  import {
+    ACTION_ID_DATA_HEALTH,
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+  } from '../../constants';
 
   const dateFormat = useGlobalStore().getDateFormat;
 
@@ -268,32 +278,37 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getActionBtnBgColor(actionId: string, data: any): string {
-    if (actionId === ACTION_ID_DELETE) return 'btn-important'
-    else if (actionId === ACTION_ID_DATA_HEALTH && data && data.dataHealthIndicator) {
+    if (actionId === ACTION_ID_DELETE) return 'btn-important';
+    else if (
+      actionId === ACTION_ID_DATA_HEALTH &&
+      data &&
+      data.dataHealthIndicator
+    ) {
       switch (data.dataHealthIndicator) {
         case 'green':
-          return 'btn-accepted'
+          return 'btn-accepted';
         case 'orange':
-          return 'btn-warn'
+          return 'btn-warn';
         case 'red':
-          return 'btn-important'
-        default: return 'btn-warn'
+          return 'btn-important';
+        default:
+          return 'btn-warn';
       }
     }
-    return ''
+    return '';
   }
 
   function getDataHealthIcon(data: any): string | undefined {
     if (data.dataHealthIndicator) {
-      switch(data.dataHealthIndicator) {
+      switch (data.dataHealthIndicator) {
         case 'green':
-          return 'pi pi-check'
+          return 'pi pi-check';
         case 'orange':
-          return 'pi pi-exclamation-triangle'
+          return 'pi pi-exclamation-triangle';
         case 'red':
-          return 'pi pi-times'
+          return 'pi pi-times';
         default:
-          return 'pi pi-exclamation-triangle'
+          return 'pi pi-exclamation-triangle';
       }
     }
   }
@@ -447,6 +462,7 @@ Licensed under the Elastic License 2.0. */
             v-model="data[field]"
             :options="getColumnEditableValues(column.editable)"
             option-label="label"
+            option-value="value"
             :selection-limit="
               column.type === MoreTableFieldType.singleselect ? 1 : undefined
             "
@@ -455,8 +471,45 @@ Licensed under the Elastic License 2.0. */
               $t('global.placeholder.chooseDropdownOptionDefault')
             "
             :show-toggle-all="false"
-            class="z-top"
-          />
+            class="z-top custom-multiselect-root"
+            :panel-class="'custom-multiselect-panel'"
+          >
+            <template #value="{ value }">
+              <span v-if="MoreTableFieldType.multiselect && value?.length >= 2">
+                {{ value.length }} {{ $t('global.placeholder.selected') }}
+              </span>
+              <span
+                v-else-if="
+                  (column.type === MoreTableFieldType.singleselect && value) ||
+                  (column.type === MoreTableFieldType.multiselect &&
+                    value?.length === 1)
+                "
+              >
+                {{
+                  value?.length
+                    ? getColumnEditableValues(column.editable).find(
+                        (group) => group.value === value[0],
+                      )?.label
+                    : value
+                }}
+              </span>
+              <span
+                v-else-if="
+                  !value ||
+                  (MoreTableFieldType.multiselect && value.length === 0)
+                "
+                class="text-gray-400"
+              >
+                {{
+                  column.placeholder ??
+                  $t('global.placeholder.chooseDropdownOptionDefault')
+                }}
+              </span>
+              <span v-else>
+                {{ value }}
+              </span>
+            </template>
+          </MultiSelect>
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <CustomCheckbox
               v-if="getObservationVisibility(data['type'])?.changeable"
@@ -496,11 +549,14 @@ Licensed under the Elastic License 2.0. */
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
-            <span v-if="field === 'title'" class="flex flex-row gap-1.5 align-center">
+            <span
+              v-if="field === 'title'"
+              class="align-center flex flex-row gap-1.5"
+            >
               <span v-if="data['hasError']" class="title-has-warning mr-0.2">
                 <ExclamationIcon id="exclamationIcon" />
               </span>
-              {{ data[field]}}
+              {{ data[field] }}
             </span>
             <span
               v-else-if="
@@ -554,6 +610,16 @@ Licensed under the Elastic License 2.0. */
               "
             >
               <span
+                v-if="
+                  (MoreTableFieldType.singleselect && !data[field]) ||
+                  (MoreTableFieldType.multiselect && !data[field]) ||
+                  (MoreTableFieldType.multiselect && data[field]?.length === 0)
+                "
+                class="text-gray-400"
+              >
+                {{ column.placeholder ?? $t('global.placeholder.chooseDropdownOptionDefault') }}
+              </span>
+              <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
                   data[field],
                 )"
@@ -590,14 +656,23 @@ Licensed under the Elastic License 2.0. */
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
+                :icon="
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? (getDataHealthIcon(slotProps) ?? action.icon)
+                    : action.icon
+                "
                 :disabled="
-                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.dataHealthIndicator || slotProps.data?.dataHealthIndicator && slotProps.data.status === ParticipantStatus.New
-                  : rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? !slotProps.data?.dataHealthIndicator ||
+                      (slotProps.data?.dataHealthIndicator &&
+                        slotProps.data.status === ParticipantStatus.New)
+                    : rowIDsInEditMode.length
                       ? true
-                      : action.id === ACTION_ID_QR_CODE ?
-                        !(isVisible(action, slotProps.data) &&
-                        !!slotProps.data.registrationToken)
+                      : action.id === ACTION_ID_QR_CODE
+                        ? !(
+                            isVisible(action, slotProps.data) &&
+                            !!slotProps.data.registrationToken
+                          )
                         : !isVisible(action, slotProps.data)
                 "
                 :class="getActionBtnBgColor(action.id, slotProps.data)"
@@ -750,7 +825,8 @@ Licensed under the Elastic License 2.0. */
     padding: 5px;
   }
 
-  .title-has-warning, .title-has-warning #exclamationIcon {
+  .title-has-warning,
+  .title-has-warning #exclamationIcon {
     height: 18px;
     width: auto;
   }

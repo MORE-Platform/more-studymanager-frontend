@@ -13,6 +13,7 @@ import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi, useO
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
+import { useObservationGroupStore } from './observationGroupStore';
 import { DownloadData } from '../models/DataDownloadModel';
 import { useToastService } from '../composable/toastService';
 
@@ -24,6 +25,7 @@ export const useStudyStore = defineStore('study', () => {
   const { occurredObservationsApi } = useOccurredObservationsApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
   const { handleToastErrors } = useToastService();
   // State
   const study: Ref<Study> = ref({});
@@ -37,7 +39,11 @@ export const useStudyStore = defineStore('study', () => {
   async function getStudy(studyId: number): Promise<void> {
     study.value = await studiesApi
       .getStudy(studyId)
-      .then((response) => response.data)
+      .then((response) => {
+        if (response.data?.studyId)
+          observationGroupStore.getObservationGroups(response.data.studyId)
+        return response.data
+      })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot fetch study');
         return study.value;
@@ -82,6 +88,7 @@ export const useStudyStore = defineStore('study', () => {
       .then((response) => {
         studies.value.push(response.data);
         studyGroupStore.studyGroups = [];
+        observationGroupStore.observationGroups = [];
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot create study'),
@@ -136,11 +143,12 @@ export const useStudyStore = defineStore('study', () => {
       );
   }
 
-  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: number, studyStartDate?: string, studyEndDate?: string): Promise<void> {
+  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, observationGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
     await calendarApi.getStudyTimeline(
       studyId,
       participantId,
       studyGroup,
+      observationGroup,
       referenceDate,
       studyStartDate,
       studyEndDate,
