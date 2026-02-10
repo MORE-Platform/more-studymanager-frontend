@@ -478,61 +478,6 @@ Licensed under the Elastic License 2.0. */
             :show-toggle-all="false"
             class="z-top"
           />
-          <!--<MultiSelect
-            v-if="
-              column.type === MoreTableFieldType.multiselect ||
-              column.type === MoreTableFieldType.singleselect
-            "
-            v-model="data[field]"
-            :options="getColumnEditableValues(column.editable)"
-            option-label="label"
-            option-value="value"
-            :selection-limit="
-              column.type === MoreTableFieldType.singleselect ? 1 : undefined
-            "
-            :placeholder="
-              column.placeholder ??
-              $t('global.placeholder.chooseDropdownOptionDefault')
-            "
-            :show-toggle-all="false"
-            class="z-top custom-multiselect-root"
-            :panel-class="'custom-multiselect-panel'"
-          >
-            <template #value="{ value }">
-              <span v-if="MoreTableFieldType.multiselect && value?.length >= 2">
-                {{ value.length }} {{ $t('global.placeholder.selected') }}
-              </span>
-              <span
-                v-else-if="
-                  (column.type === MoreTableFieldType.singleselect && value) ||
-                  (column.type === MoreTableFieldType.multiselect &&
-                    value?.length === 1)
-                "
-              >
-                {{
-                  value?.length
-                    ? getColumnEditableValues(column.editable)?.find((group: MoreTableChoice) => group.value === value[0])?.label
-                    : value
-                }}
-
-              </span>
-              <span
-                v-else-if="
-                  !value ||
-                  (MoreTableFieldType.multiselect && value.length === 0)
-                "
-                class="text-gray-400"
-              >
-                {{
-                  column.placeholder ??
-                  $t('global.placeholder.chooseDropdownOptionDefault')
-                }}
-              </span>
-              <span v-else>
-                {{ value }}
-              </span>
-            </template>
-          </MultiSelect>-->
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <CustomCheckbox
               v-if="getObservationVisibility(data['type'])?.changeable"
@@ -643,34 +588,6 @@ Licensed under the Elastic License 2.0. */
               >{{ value }}</span
               >
             </span>
-
-            <!--
-            <span
-              v-if="
-                column.type === MoreTableFieldType.multiselect ||
-                column.type === MoreTableFieldType.singleselect
-              "
-            >
-              <span
-                v-if="
-                  (MoreTableFieldType.singleselect && !data[field]) ||
-                  (MoreTableFieldType.multiselect && !data[field]) ||
-                  (MoreTableFieldType.multiselect && data[field]?.length === 0)
-                "
-                class="text-gray-400"
-              >
-                {{ column.placeholder ?? $t('global.placeholder.chooseDropdownOptionDefault') }}
-              </span>
-              <span
-                v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field],
-                  getColumnEditableValues(column.editable)
-                )"
-                :key="index"
-                class="multiselect-item"
-                >{{ value }}</span
-              >
-            </span>-->
             <span
               v-if="column.type === MoreTableFieldType.showIcon"
               class="icon-box eye"

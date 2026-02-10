@@ -862,7 +862,7 @@
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
         "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
-        "howToCreateGroups": "Study and observation groups can be created on the Study tab. Created study and/or observation groups can then be assigned here for {for}."
+        "howToCreateGroups": "Study and observation groups can be created on the study tab and assigned here for {for}."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "

@@ -569,7 +569,7 @@ Licensed under the Elastic License 2.0. */
           {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
         </h5>
         <div v-if="editable" class="mb-2">
-          {{ $t('study.dialog.description.howToCreateGroups') }}
+          {{ $t('study.dialog.description.howToCreateGroups', {for: $t('intervention.plural')}) }}
         </div>
         <div class="flex gap-5">
         <div>
