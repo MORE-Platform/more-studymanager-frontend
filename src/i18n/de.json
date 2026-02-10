@@ -862,7 +862,7 @@
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
         "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
-        "howToCreateGroups": "Studien- und Datenerhebungsgruppen können über den Reiter Studie erstellet und für {for} zugewiesen werden."
+        "howToCreateGroups": "Studien- und Datenerhebungsgruppen können über den Reiter Studie erstellt und für {for} zugewiesen werden."
       },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
