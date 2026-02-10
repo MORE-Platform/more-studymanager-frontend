@@ -85,6 +85,10 @@ Licensed under the Elastic License 2.0. */
       }) as MoreTableChoice,
   );
 
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+  }
+
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents(ListComponentsComponentTypeEnum.Action)
@@ -230,7 +234,7 @@ Licensed under the Elastic License 2.0. */
                   studyGroupId: intervention.studyGroupId,
                   observationGroupIds: intervention.observationGroupIds,
                   observationGroupValues: intervention.observationGroupIds?.length
-                    ? intervention.observationGroupIds?.map((id) => id.toString())
+                    ? intervention.observationGroupIds?.map((id) => getObservationGroupItem(id))
                     : [],
                   title: intervention.title,
                   purpose: intervention.purpose,
@@ -319,7 +323,7 @@ Licensed under the Elastic License 2.0. */
         newIntervention.interventionId as number,
         {
           ...newIntervention,
-          observationGroupIds: observationGroupValues?.map((id: string) => parseInt(id)) ?? []
+          observationGroupIds: observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string)) ?? []
         },
       )
       .then(listInterventions)

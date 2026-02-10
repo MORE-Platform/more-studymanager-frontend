@@ -115,8 +115,6 @@ export const useObservationGroupStore = defineStore('observationGroup', () => {
     getObservationGroups,
     updateObservationGroup,
     getObservationGroup,
-    deleteObservationGroup,
-    //studyGroupMap,
-    //toStudyGroup,
+    deleteObservationGroup
   };
 });

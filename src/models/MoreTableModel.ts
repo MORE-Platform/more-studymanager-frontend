@@ -123,15 +123,15 @@ export interface MoreStudyGroupTableMap {
 }
 
 export interface MoreParticipantListTableRow extends Participant {
-  observationGroupValues?: string[]
+  observationGroupValues?: MoreTableChoice[]
 }
 
 export interface MoreInterventionListTableRow extends Intervention {
-  observationGroupValues?: string[]
+  observationGroupValues?: MoreTableChoice[]
 }
 
 export interface MoreObservationListTableRow extends Observation {
-  observationGroupValues?: string[]
+  observationGroupValues?: MoreTableChoice[]
 }
 
 export enum RowSelectionMode {

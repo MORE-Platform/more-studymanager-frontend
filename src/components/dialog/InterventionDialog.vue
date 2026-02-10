@@ -565,9 +565,12 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-start-0 col-span-8">
-        <h5 v-if="!editable" class="pb-2 font-bold">
-          {{ $t('study.props.studyGroup') }}
+        <h5 v-if="editable" class="pb-2 font-bold">
+          {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
         </h5>
+        <div v-if="editable" class="mb-2">
+          {{ $t('study.dialog.description.howToCreateGroups') }}
+        </div>
         <div class="flex gap-5">
         <div>
           <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
@@ -596,10 +599,10 @@ Licensed under the Elastic License 2.0. */
           </div>
           <div>
             <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
-            <div>{{selectedObservationGroups}}</div>
             <MultiSelect
               v-model="selectedObservationGroups"
               :options="observationGroupStates"
+              :disabled="!editable"
               option-label="label"
               option-value="value"
               :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"

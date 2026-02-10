@@ -211,6 +211,11 @@ Licensed under the Elastic License 2.0. */
       command: (): void => createParticipant(count),
     }),
   );
+
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+  }
+
   async function listParticipant(): Promise<void> {
     participantsList.value = await participantsApi
       .listParticipants(props.studyId)
@@ -218,7 +223,8 @@ Licensed under the Elastic License 2.0. */
         return response.data.map((participant) => {
           return {
             ...participant,
-            observationGroupValues: participant?.observationGroupIds?.map((id) => id.toString()) ?? []
+            observationGroupValues: participant?.observationGroupIds?.map((id: number) =>
+              getObservationGroupItem(id))
           } as MoreParticipantListTableRow
         }) ?? []
       })
@@ -376,7 +382,7 @@ Licensed under the Elastic License 2.0. */
         participant.participantId as number,
         {
           ...newParticipant,
-          observationGroupIds: observationGroupValues?.map((id: string) => parseInt(id)) ?? []
+          observationGroupIds: observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string)) ?? []
         }
       );
     }

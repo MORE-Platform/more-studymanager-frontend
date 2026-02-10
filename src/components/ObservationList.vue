@@ -254,6 +254,10 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+  }
+
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
       .listObservations(props.studyId)
@@ -265,7 +269,7 @@ Licensed under the Elastic License 2.0. */
             studyGroupId: observation.studyGroupId,
             observationGroupIds: observation.observationGroupIds,
             observationGroupValues: observation.observationGroupIds?.length
-              ? observation.observationGroupIds.map((id: number) => id.toString())
+              ? observation.observationGroupIds.map((id: number) => getObservationGroupItem(id))
               : [],
             title: observation.title,
             purpose: observation.purpose,
@@ -381,7 +385,7 @@ Licensed under the Elastic License 2.0. */
         newObservation.observationId as number,
         {
           ...newObservation,
-          observationGroupIds: fromDialog ? newObservation.observationGroupIds : observationGroupValues?.map((id: string) => parseInt(id))
+          observationGroupIds: fromDialog ? newObservation.observationGroupIds : observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string))
         },
       )
       .then(listObservations)

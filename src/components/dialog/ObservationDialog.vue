@@ -327,9 +327,12 @@ Licensed under the Elastic License 2.0. */
 
       <div class="col-start-0 col-span-8 flex items-center justify-between">
         <div>
-          <h5 v-if="!editable" class="pb-2 font-bold">
-            {{ $t('study.props.studyGroup') }}
+          <h5 v-if="editable" class="pb-2 font-bold">
+            {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
           </h5>
+          <div v-if="editable" class="mb-2">
+            {{ $t('study.dialog.description.howToCreateGroups') }}
+          </div>
           <div class="flex gap-5">
             <div>
               <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
@@ -348,10 +351,10 @@ Licensed under the Elastic License 2.0. */
             </div>
             <div>
               <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
-              <div>{{selectedObservationGroups}}</div>
                 <MultiSelect
                   v-model="selectedObservationGroups"
                   :options="observationGroupStates"
+                  :disabled="!editable"
                   option-label="label"
                   option-value="value"
                   :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
@@ -373,17 +376,14 @@ Licensed under the Elastic License 2.0. */
               </div>
           </div>
         </div>
+      </div>
 
+      <div
+        class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2"
+      >
         <div
           class="info-box relative flex cursor-pointer flex-row items-center"
         >
-          <span class="ml-1 inline">
-            {{ $t(`observation.props.hidden.${hidden}`) }}
-          </span>
-          <i
-            class="pi pi-info-circle color-primary mx-1"
-            :class="{ 'me-2': editable && factory.visibility.changeable }"
-          />
           <div
             v-if="editable && factory.visibility.changeable"
             class="flex items-center"
@@ -413,12 +413,15 @@ Licensed under the Elastic License 2.0. */
               {{ $t('observation.dialog.msg.hiddenInfo') }}
             </div>
           </div>
+          <span class="ml-2 inline">
+            {{ $t(`observation.props.hidden.${hidden}`) }}
+          </span>
+          <i
+            class="pi pi-info-circle color-primary mx-1"
+            :class="{ 'me-2': editable && factory.visibility.changeable }"
+          />
         </div>
-      </div>
-
-      <div
-        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
-      >
+        <div class="flex flex-row items-center justify-end text-right">
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
           <span v-else>{{ $t('global.labels.close') }}</span>
@@ -430,6 +433,7 @@ Licensed under the Elastic License 2.0. */
           :disabled="!editable"
           @click="checkRequiredFields()"
         />
+        </div>
       </div>
     </form>
   </div>

@@ -46,8 +46,10 @@ Licensed under the Elastic License 2.0. */
     ACTION_ID_DELETE,
     ACTION_ID_QR_CODE,
   } from '../../constants';
+  import { useI18n } from 'vue-i18n';
 
   const dateFormat = useGlobalStore().getDateFormat;
+  const { t } = useI18n();
 
   interface MoreTableProps {
     title?: string;
@@ -241,8 +243,12 @@ Licensed under the Elastic License 2.0. */
   function getLabelForMultiSelectValue(
     setValues: any,
     valueChoices?: MoreTableChoice[],
+    placeholder?: string
   ): string[] {
-    if (valueChoices) {
+    if (setValues?.length === 0) {
+      return placeholder ? [placeholder] : [t('global.placeholder.chooseDropdownOptionDefault')]
+    }
+    else if (valueChoices) {
       const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
         const valueLabel = valueChoices.find((vc) => vc.value === v);
@@ -462,6 +468,24 @@ Licensed under the Elastic License 2.0. */
             v-model="data[field]"
             :options="getColumnEditableValues(column.editable)"
             option-label="label"
+            :selection-limit="
+              column.type === MoreTableFieldType.singleselect ? 1 : undefined
+            "
+            :placeholder="
+              column.placeholder ??
+              $t('global.placeholder.chooseDropdownOptionDefault')
+            "
+            :show-toggle-all="false"
+            class="z-top"
+          />
+          <!--<MultiSelect
+            v-if="
+              column.type === MoreTableFieldType.multiselect ||
+              column.type === MoreTableFieldType.singleselect
+            "
+            v-model="data[field]"
+            :options="getColumnEditableValues(column.editable)"
+            option-label="label"
             option-value="value"
             :selection-limit="
               column.type === MoreTableFieldType.singleselect ? 1 : undefined
@@ -508,7 +532,7 @@ Licensed under the Elastic License 2.0. */
                 {{ value }}
               </span>
             </template>
-          </MultiSelect>
+          </MultiSelect>-->
           <div v-if="column.type === MoreTableFieldType.showIcon">
             <CustomCheckbox
               v-if="getObservationVisibility(data['type'])?.changeable"
@@ -602,6 +626,25 @@ Licensed under the Elastic License 2.0. */
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenText(data[field]) }}
             </span>
+
+            <span
+              v-if="
+                column.type === MoreTableFieldType.multiselect ||
+                column.type === MoreTableFieldType.singleselect
+              "
+            >
+              <span
+                v-for="(value, index) in getLabelForMultiSelectValue(
+                  data[field]
+                )"
+                :key="index"
+                class="multiselect-item"
+                :class="{'text-gray-300': MoreTableFieldType.multiselect && data[field]?.length === 0}"
+              >{{ value }}</span
+              >
+            </span>
+
+            <!--
             <span
               v-if="
                 column.type === MoreTableFieldType.multiselect ||
@@ -627,7 +670,7 @@ Licensed under the Elastic License 2.0. */
                 class="multiselect-item"
                 >{{ value }}</span
               >
-            </span>
+            </span>-->
             <span
               v-if="column.type === MoreTableFieldType.showIcon"
               class="icon-box eye"
