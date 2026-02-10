@@ -216,10 +216,9 @@ Licensed under the Elastic License 2.0. */
       .listParticipants(props.studyId)
       .then((response) => {
         return response.data.map((participant) => {
-          let observationChoices = participant?.observationGroupIds?.map((id) => observationGroupStatuses?.find((group) => group?.value === id.toString()))
           return {
             ...participant,
-            observationGroupValues: observationChoices
+            observationGroupValues: participant?.observationGroupIds?.map((id) => id.toString()) ?? []
           } as MoreParticipantListTableRow
         }) ?? []
       })
@@ -377,7 +376,7 @@ Licensed under the Elastic License 2.0. */
         participant.participantId as number,
         {
           ...newParticipant,
-          observationGroupIds: observationGroupValues?.map((group: MoreTableChoice) => parseInt(group.value as string)) ?? []
+          observationGroupIds: observationGroupValues?.map((id: string) => parseInt(id)) ?? []
         }
       );
     }

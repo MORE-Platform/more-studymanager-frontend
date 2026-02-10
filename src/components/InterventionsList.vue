@@ -230,7 +230,7 @@ Licensed under the Elastic License 2.0. */
                   studyGroupId: intervention.studyGroupId,
                   observationGroupIds: intervention.observationGroupIds,
                   observationGroupValues: intervention.observationGroupIds?.length
-                    ? intervention.observationGroupIds?.map((id) => observationGroupStatuses.find((group) => group.value === id.toString()))
+                    ? intervention.observationGroupIds?.map((id) => id.toString())
                     : [],
                   title: intervention.title,
                   purpose: intervention.purpose,
@@ -319,7 +319,7 @@ Licensed under the Elastic License 2.0. */
         newIntervention.interventionId as number,
         {
           ...newIntervention,
-          observationGroupIds: observationGroupValues?.map((group) => parseInt(group.value as string)) ?? []
+          observationGroupIds: observationGroupValues?.map((id: string) => parseInt(id)) ?? []
         },
       )
       .then(listInterventions)
@@ -494,7 +494,6 @@ Licensed under the Elastic License 2.0. */
           dialog.open(InterventionDialog, {
             data: {
               groupStates: groupStatuses,
-              observationGroupStates: observationGroupStatuses,
               intervention: intervention,
               studyId: props.studyId,
               actionsData: actionsRes,

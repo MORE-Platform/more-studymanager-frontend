@@ -32,18 +32,26 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../../composable/useErrorHandling';
   import { useToastService } from '../../composable/toastService';
   import MultiSelect from 'primevue/multiselect';
+  import { useObservationGroupStore } from '../../stores/observationGroupStore';
 
   const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
   const { componentsApi } = useComponentsApi();
   const { handleIndividualError } = useErrorHandling();
   const studyStore = useStudyStore();
+  const observationGroupStore = useObservationGroupStore();
   const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
   const observation = dialogRef.value.data.observation as Observation;
   const groupStates = dialogRef.value.data.groupStates || [];
-  const observationGroupStates = dialogRef.value.data.observationGroupStates || [];
+  const observationGroupStates: MoreTableChoice[] = observationGroupStore.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
   const factory = dialogRef.value.data.factory;
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
@@ -59,7 +67,7 @@ Licensed under the Elastic License 2.0. */
       .map((p: Property<any>) => p.setValue(observation.properties?.[p.id])),
   );
   const selectedObservationGroups = ref(
-    observation.observationGroupIds?.map((id) => observationGroupStates.value.find((group: MoreTableChoice) => group.value === id.toString())) ?? []
+    observation.observationGroupIds?.map((id: number) => id.toString()) ?? []
   )
 
   const hidden: Ref<boolean> = ref(
@@ -178,7 +186,7 @@ Licensed under the Elastic License 2.0. */
       title: title.value,
       purpose: purpose.value,
       participantInfo: participantInfo.value,
-      observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((group) => group.value) : [],
+      observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((id: string) => parseInt(id)) : [],
       type: observation.type,
       properties: props,
       schedule: scheduler.value,
@@ -340,6 +348,7 @@ Licensed under the Elastic License 2.0. */
             </div>
             <div>
               <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
+              <div>{{selectedObservationGroups}}</div>
                 <MultiSelect
                   v-model="selectedObservationGroups"
                   :options="observationGroupStates"

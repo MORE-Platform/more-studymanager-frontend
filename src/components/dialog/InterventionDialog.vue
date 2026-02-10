@@ -29,9 +29,11 @@ Licensed under the Elastic License 2.0. */
   import ActionProperty from './shared/ActionProperty.vue';
   import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
   import MultiSelect from 'primevue/multiselect';
+  import { useObservationGroupStore } from '../../stores/observationGroupStore';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
+  const observationGroupStore = useObservationGroupStore();
   const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
@@ -40,14 +42,20 @@ Licensed under the Elastic License 2.0. */
   const triggerData: Trigger = dialogRef.value.data?.triggerData;
   const groupStates: MoreTableChoice[] =
     dialogRef.value.data?.groupStates || [];
-  const observationGroupStates = dialogRef.value.data.observationGroupStates || [];
+  const observationGroupStates: MoreTableChoice[] = observationGroupStore.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
   const groupPlaceholder =
     dialogRef.value.data?.groupPlaceholder ||
     t('global.placeholder.entireStudy');
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
   const selectedObservationGroups = ref(
-    intervention.observationGroupIds?.map((id) => observationGroupStates.value.find((group: MoreTableChoice) => group.value === id.toString())) ?? []
+    intervention.observationGroupIds?.map((id: number) => id.toString()) ?? []
   )
 
   let propInputError: string = '';
@@ -230,7 +238,7 @@ Licensed under the Elastic License 2.0. */
             trigger: {},
             actions: [],
             studyGroupId: studyGroupId.value,
-            observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((group) => group.value) : [],
+            observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((id: string) => parseInt(id)) : [],
             schedule: intervention.schedule,
           } as Intervention;
 
@@ -588,6 +596,7 @@ Licensed under the Elastic License 2.0. */
           </div>
           <div>
             <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
+            <div>{{selectedObservationGroups}}</div>
             <MultiSelect
               v-model="selectedObservationGroups"
               :options="observationGroupStates"

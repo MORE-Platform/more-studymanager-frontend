@@ -487,11 +487,10 @@ Licensed under the Elastic License 2.0. */
               >
                 {{
                   value?.length
-                    ? getColumnEditableValues(column.editable).find(
-                        (group) => group.value === value[0],
-                      )?.label
+                    ? getColumnEditableValues(column.editable)?.find((group: MoreTableChoice) => group.value === value[0])?.label
                     : value
                 }}
+
               </span>
               <span
                 v-else-if="
@@ -622,6 +621,7 @@ Licensed under the Elastic License 2.0. */
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
                   data[field],
+                  getColumnEditableValues(column.editable)
                 )"
                 :key="index"
                 class="multiselect-item"

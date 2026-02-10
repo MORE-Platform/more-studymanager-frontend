@@ -265,7 +265,7 @@ Licensed under the Elastic License 2.0. */
             studyGroupId: observation.studyGroupId,
             observationGroupIds: observation.observationGroupIds,
             observationGroupValues: observation.observationGroupIds?.length
-              ? observation.observationGroupIds.map((id) => observationGroupStatuses?.find((group) => group.value === id.toString()))
+              ? observation.observationGroupIds.map((id: number) => id.toString())
               : [],
             title: observation.title,
             purpose: observation.purpose,
@@ -372,7 +372,7 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function updateObservation(observation: MoreObservationListTableRow): Promise<void> {
+  async function updateObservation(observation: MoreObservationListTableRow, fromDialog: boolean = false): Promise<void> {
     const {observationGroupValues, ...newObservation} = observation;
 
     await observationsApi
@@ -381,7 +381,7 @@ Licensed under the Elastic License 2.0. */
         newObservation.observationId as number,
         {
           ...newObservation,
-          observationGroupIds: observationGroupValues?.map((group) => parseInt(group.value as string))
+          observationGroupIds: fromDialog ? newObservation.observationGroupIds : observationGroupValues?.map((id: string) => parseInt(id))
         },
       )
       .then(listObservations)
@@ -422,7 +422,6 @@ Licensed under the Elastic License 2.0. */
     dialog.open(ObservationDialog, {
       data: {
         groupStates: groupStatuses,
-        observationGroupStates: observationGroupStatuses,
         observation: observation,
         factory: factoryForType(observation?.type),
         closeWithEscape: false,
@@ -447,7 +446,7 @@ Licensed under the Elastic License 2.0. */
             if (clone) {
               createObservation(options.data as Observation);
             } else {
-              updateObservation(options.data as Observation);
+              updateObservation(options.data as Observation, true);
             }
           } else {
             createObservation(options.data as Observation);
