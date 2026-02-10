@@ -205,6 +205,56 @@
     },
     "singular": "Integration"
   },
+  "interventionToken": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Sind Sie sicher, dass Sie diesen API-Trigger-Token löschen möchten?",
+        "intro": "Sie sind dabei, den folgenden API-Trigger-Token zu löschen:",
+        "warning": "Ein gelöschter Token kann nicht wiederhergestellt werden. Externe Systeme, die diesen Token verwenden, können keine Interventionen mehr auslösen."
+      },
+      "example": {
+        "endpointTitle": "Endpunkt-Details",
+        "filledExample": "Ausgefülltes Beispiel",
+        "title": "Beispiele",
+        "triggerTitle": "Intervention extern mit Ihrem Token auslösen",
+        "yourDomain": "DOMAIN",
+        "yourToken": "TOKEN"
+      },
+      "header": {
+        "create": "API-Trigger-Token erstellen",
+        "delete": "API-Trigger-Token löschen",
+        "tokenCopy": "Trigger-Token kopieren"
+      },
+      "label": {
+        "chooseIntervention": "Intervention auswählen",
+        "copySuccess": "Token erfolgreich in die Zwischenablage kopiert.",
+        "copyToken": "Token kopieren",
+        "tokenLabel": "Token-Bezeichnung"
+      },
+      "msg": {
+        "createdToken": "Bitte kopieren Sie Ihren Token, um Interventionen extern auslösen zu können. Der Token wird danach nicht mehr angezeigt. Wenn Sie einen Token verlieren, können Sie jederzeit einen neuen erstellen.",
+        "delete": "Ein gelöschter Token kann nicht wiederhergestellt werden. Sind Sie sicher, dass Sie diesen Token löschen möchten?"
+      },
+      "placeholder": {
+        "selectIntervention": "Bitte wählen Sie eine Intervention mit API-Trigger.",
+        "tokenLabelInput": "Bitte geben Sie eine Bezeichnung für Ihren Token ein."
+      }
+    },
+    "props": {
+      "created": "Erstellt",
+      "interventionTitle": "Intervention",
+      "tokenId": "Token-ID",
+      "tokenLabel": "Token-Bezeichnung"
+    },
+    "tokenList": {
+      "action": {
+        "add": "Trigger-Token erstellen"
+      },
+      "description": "API-Trigger-Tokens ermöglichen es externen Systemen, Interventionen ohne Benutzerauthentifizierung auszulösen.",
+      "emptyListMsg": "Noch keine API-Trigger-Tokens vorhanden. Erstellen Sie zuerst eine Intervention mit einem API-Trigger-Typ.",
+      "title": "API-Trigger-Tokens"
+    }
+  },
   "intervention": {
     "description": {
       "provideActionConfig": "Fügen Sie die Handlungs-Konfigurations hinzu.",
