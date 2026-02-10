@@ -1663,6 +1663,8 @@ components:
         value:
           type: integer
         unit:
+          $ref: '#/components/schemas/DurationUnit'
+    DurationUnit:
           type: string
           description: unit of time
           enum:
