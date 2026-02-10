@@ -70,6 +70,7 @@ export enum MoreTableFieldType {
   string,
   number,
   choice,
+  multipleChoice,
   calendar,
   multiselect,
   singleselect,
@@ -119,6 +120,18 @@ export interface MoreStudyGroupTableMap {
   numberOfParticipants?: number;
   created?: string;
   modified?: string;
+}
+
+export interface MoreParticipantListTableRow extends Participant {
+  observationGroupValues?: MoreTableChoice[]
+}
+
+export interface MoreInterventionListTableRow extends Intervention {
+  observationGroupValues?: MoreTableChoice[]
+}
+
+export interface MoreObservationListTableRow extends Observation {
+  observationGroupValues?: MoreTableChoice[]
 }
 
 export enum RowSelectionMode {

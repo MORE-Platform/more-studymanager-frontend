@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   version: 1.0.0
   title: StudyManager API
@@ -350,6 +350,10 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/Id'
+        - name: observationGroup
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
         - name: referenceDate
           in: query
           description: reference date used to calculate relative schedules
@@ -475,6 +479,110 @@ paths:
           description: Study group deleted
         '404':
           description: Not found
+
+  /studies/{studyId}/observationGroups:
+    post:
+      tags:
+        - observationGroups
+      operationId: createObservationGroup
+      description: Create a new observation group for a study
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationGroup'
+      responses:
+        '201':
+          description: Observation group successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '400':
+          description: Observation group creation failed because of a bad request
+        '500':
+          description: Error while creating the observation group
+    get:
+      tags:
+        - observationGroups
+      description: List all observation groups for a study
+      operationId: listObservationGroups
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully listed all observation groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationGroup'
+        '404':
+          description: No study for the parsed studyId found
+
+  /studies/{studyId}/observationGroups/{observationGroupId}:
+    get:
+      tags:
+        - observationGroups
+      description: Get observation group information
+      operationId: getObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      responses:
+        '200':
+          description: Successfully returned observation group information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - observationGroups
+      description: Update a observation group
+      operationId: updateObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationGroup'
+      responses:
+        '200':
+          description: Successfully updated observation group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '400':
+          description: Could not update study group because of a bad request
+        '404':
+          description: Not found
+        '500':
+          description: Error while updating the observation group
+    delete:
+      tags:
+        - observationGroups
+      description: Delete a observation group
+      operationId: deleteObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      responses:
+        '200':
+          description: Observation group deleted
+        '404':
+          description: Not found
+        '500':
+          description: Error while deleting the observation group
 
   /studies/{studyId}/participants:
     post:
@@ -1657,6 +1765,36 @@ components:
           type: string
           format: date-time
           readOnly: true
+    ObservationGroup:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        observationGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        numberOfParticipants:
+          type: integer
+          readOnly: true
+        numberOfObservations:
+          type: integer
+          readOnly: true
+        numberOfInterventions:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
     StudyDuration:
       type: object
       properties:
@@ -1701,6 +1839,12 @@ components:
           type: string
           format: date-time
           readOnly: true
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the participant is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
         created:
           type: string
           format: date-time
@@ -1746,11 +1890,6 @@ components:
             - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
           discriminator:
             propertyName: type
-            # mapping:
-            #   event:
-            #     $ref: './Event.yaml/#/components/schemas/Event'
-            #   relativeEvent:
-            #     $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
         created:
           type: string
           format: date-time
@@ -1764,6 +1903,12 @@ components:
         noSchedule:
           type: boolean
           default: false
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the observation is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
 
     OccurredObservation:
       type: object
@@ -1990,6 +2135,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Action'
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the intervention is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
         created:
           type: string
           format: date-time
@@ -2059,6 +2210,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StudyGroup'
+        observationGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationGroup'
         observations:
           type: array
           items:
@@ -2081,6 +2236,11 @@ components:
       properties:
         studyGroup:
           type: integer
+        observationGroups:
+          type: array
+          items:
+            type: integer
+          uniqueItems: true
 
     IntegrationInfo:
       type: object
@@ -2436,6 +2596,13 @@ components:
       required: true
     StudyGroupId:
       name: studyGroupId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
+    ObservationGroupId:
+      name: observationGroupId
       in: path
       schema:
         type: integer

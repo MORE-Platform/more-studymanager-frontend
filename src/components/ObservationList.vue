@@ -9,21 +9,22 @@ Licensed under the Elastic License 2.0. */
   import {
     ComponentFactory,
     Event,
-    Observation,
+    Observation, ObservationGroup,
     ObservationSchedule,
     RelativeEvent,
     StudyGroup,
     StudyRole,
-    StudyStatus,
+    StudyStatus
   } from '@gs';
   import {
+    MoreObservationListTableRow,
     MoreTableAction,
     MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableSortOptions,
-    RowSelectionMode,
+    RowSelectionMode
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -46,13 +47,14 @@ Licensed under the Elastic License 2.0. */
   const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const observationList: Ref<Observation[]> = ref([]);
+  const observationList: Ref<MoreObservationListTableRow[]> = ref([]);
   const dialog = useDialog();
 
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
+    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true}
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -76,6 +78,14 @@ Licensed under the Elastic License 2.0. */
     label: t('global.placeholder.entireStudy'),
     value: null,
   } as MoreTableChoice);
+
+  const observationGroupStatuses: MoreTableChoice[] = props.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
 
   async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
@@ -126,6 +136,19 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '5vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: actionsVisible,
+        values: observationGroupStatuses
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw'
     },
     {
       field: 'hidden',
@@ -231,6 +254,10 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+  }
+
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
       .listObservations(props.studyId)
@@ -240,6 +267,10 @@ Licensed under the Elastic License 2.0. */
             studyId: observation.studyId,
             observationId: observation.observationId,
             studyGroupId: observation.studyGroupId,
+            observationGroupIds: observation.observationGroupIds,
+            observationGroupValues: observation.observationGroupIds?.length
+              ? observation.observationGroupIds.map((id: number) => getObservationGroupItem(id))
+              : [],
             title: observation.title,
             purpose: observation.purpose,
             participantInfo: observation.participantInfo,
@@ -345,12 +376,17 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function updateObservation(observation: Observation): Promise<void> {
+  async function updateObservation(observation: MoreObservationListTableRow, fromDialog: boolean = false): Promise<void> {
+    const {observationGroupValues, ...newObservation} = observation;
+
     await observationsApi
       .updateObservation(
         props.studyId,
-        observation.observationId as number,
-        observation,
+        newObservation.observationId as number,
+        {
+          ...newObservation,
+          observationGroupIds: fromDialog ? newObservation.observationGroupIds : observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string))
+        },
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
@@ -414,7 +450,7 @@ Licensed under the Elastic License 2.0. */
             if (clone) {
               createObservation(options.data as Observation);
             } else {
-              updateObservation(options.data as Observation);
+              updateObservation(options.data as Observation, true);
             }
           } else {
             createObservation(options.data as Observation);

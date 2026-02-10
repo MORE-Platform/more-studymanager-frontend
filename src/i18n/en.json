@@ -137,7 +137,8 @@
       "entireStudy": "Entire study",
       "noGroup": "No group",
       "nothingSelected": "Nothing selected",
-      "optionsSelected": "options selected"
+      "optionsSelected": "options selected",
+      "selected": "selected"
     }
   },
   "inputModel": {
@@ -886,7 +887,8 @@
         "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks. The participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
-        "study": "Enter the base information of your study to provide basic information for collaborators and participants."
+        "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "howToCreateGroups": "Study and observation groups can be created on the study tab and assigned here for {for}."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
@@ -906,7 +908,8 @@
         "institute": "Institute",
         "studyEnd": "Study end",
         "studyStart": "Study start",
-        "studyTitle": "Study title"
+        "studyTitle": "Study title",
+        "chooseGroups": "Assign groups"
       },
       "msg": {
         "delete": "A deleted study can't be restored. Are you sure you want to delete your study?",
@@ -963,6 +966,7 @@
       "roles": "Role(s)",
       "status": "Status",
       "studyGroup": "Study group {size}",
+      "observationGroup": "Observation group {size}",
       "studyId": "Study ID",
       "title": "Title"
     },
@@ -1103,6 +1107,29 @@
       "searchCollaborators": "Type to search collaborators"
     }
   },
+  "observationGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this observation group?",
+        "intro": "You are about to delete the following observation group:",
+        "warning": "A deleted observation group can't be restored. All information and settings of the observation group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study."
+      },
+      "header": {
+        "create": "Add observation group",
+        "delete": "Delete observation group"
+      },
+      "msg": {
+        "delete": "Do you really want to delete this observation group?"
+      }
+    },
+    "plural": "Observation groups",
+    "groupList": {
+      "description": "Observation groups are used to group participants, observations, and/or interventions. Unlike study groups, they can be assigned to multiple elements. <b>A participant, an observation, and an intervention can each be assigned to multiple observation groups.</b> (Example: smokers, type 2 diabetes).",
+      "placeholder": {
+        "emptyGroupList": "Add observatoin groups to your study to use multi-group functionalities"
+      }
+    }
+  },
   "studyGroup": {
     "dialog": {
       "deleteMsg": {
@@ -1112,7 +1139,7 @@
       },
       "header": {
         "create": "Add study group",
-        "delete": "Delete group"
+        "delete": "Delete study group"
       },
       "msg": {
         "delete": "Do you really want to delete this study group?"
@@ -1188,6 +1215,7 @@
       "deleteParticipantBtn": "Delete participant",
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
+      "deleteObservationGroupBtn": "Delete observation group",
       "editBtn": "Edit shown properties.",
       "goToStudy": "Go to study",
       "saveChanges": "Save changes",

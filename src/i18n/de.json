@@ -137,7 +137,8 @@
       "entireStudy": "Gesamte Studie",
       "noGroup": "Keine Gruppe",
       "nothingSelected": "Nichts ausgewählt",
-      "optionsSelected": "Optionen ausgewählt"
+      "optionsSelected": "Optionen ausgewählt",
+      "selected": "ausgewählt"
     }
   },
   "inputModel": {
@@ -886,7 +887,8 @@
         "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen. Die aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
-        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird."
+        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+        "howToCreateGroups": "Studien- und Datenerhebungsgruppen können über den Reiter Studie erstellt und für {for} zugewiesen werden."
       },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
@@ -906,7 +908,8 @@
         "institute": "Institut",
         "studyEnd": "Studienende",
         "studyStart": "Studienstart",
-        "studyTitle": "Studientitel"
+        "studyTitle": "Studientitel",
+        "chooseGroups": "Gruppen zuweisen"
       },
       "msg": {
         "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?",
@@ -963,6 +966,8 @@
       "roles": "Rolle(n)",
       "status": "Status",
       "studyGroup": "Studiengruppe {size}",
+      "groups": "Gruppen",
+      "observationGroup": "Datenerhebungs-Gruppe {size}",
       "studyId": "Studien-ID",
       "title": "Titel"
     },
@@ -1103,6 +1108,29 @@
       "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen."
     }
   },
+  "observationGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Datenerhebungs-Gruppe zu löschen:",
+        "warning": "Eine gelöschte Datenerhebungs-Gruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Gruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie."
+      },
+      "header": {
+        "create": "Datenerhebungs-Gruppe hinzufügen",
+        "delete": "Datenerhebungs-Gruppe löschen"
+      },
+      "msg": {
+        "delete": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?"
+      }
+    },
+    "plural": "Datenerhebungs-Gruppen",
+    "groupList": {
+      "description": "Datenerhebungs-Gruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventions zu gruppieren. Im Gegensatz zu den Studiengruppen, können diese multiplen Elementen zugewiesen werden. <b>Ein:e Teilnehmer:in, eine Datenerhebung und eine Intervention kann jeweils mehreren Datenerhebungs-Gruppen zugewiesen werden.</b> (Beisipel: Raucher, Diabetes Typ 2).",
+      "placeholder": {
+        "emptyGroupList": "Fügen Sie Datenerhebungs-Gruppen zu Ihrer Studie hinzu."
+      }
+    }
+  },
   "studyGroup": {
     "dialog": {
       "deleteMsg": {
@@ -1188,6 +1216,7 @@
       "deleteParticipantBtn": "Teilnehmer:in löschen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
+      "deleteObservationGroupBtn": "Datenerhebungs-Gruppe löschen",
       "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "goToStudy": "Studie öffnen",
       "saveChanges": "Änderungen speichern",
