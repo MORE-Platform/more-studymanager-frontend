@@ -45,6 +45,7 @@ Licensed under the Elastic License 2.0. */
   import { useGlobalStore } from '../stores/globalStore';
   import { DropdownOption } from '../models/Common';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
   import useLoader from '../composable/useLoader';
   import { ComponentFactory, Participant } from '@gs/models';
 
@@ -57,6 +58,7 @@ Licensed under the Elastic License 2.0. */
   const dateFormat = useGlobalStore().getDateFormat;
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const props = defineProps({
     studyId: {
@@ -97,6 +99,23 @@ Licensed under the Elastic License 2.0. */
         ({
           label: studyGroup.title,
           value: studyGroup.studyGroupId?.toString(),
+        }) as DropdownOption,
+    ),
+  );
+
+  const observationGroupOptions: Ref<DropdownOption[]> = ref([
+    {
+      label: t('global.placeholder.entireStudy'),
+      value: undefined,
+    } as DropdownOption,
+  ]);
+
+  observationGroupOptions.value.push(
+    ...observationGroupStore.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
         }) as DropdownOption,
     ),
   );

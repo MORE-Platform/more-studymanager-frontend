@@ -1123,7 +1123,11 @@
         "delete": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?"
       }
     },
+    "placeholder": {
+      "chooseGroup": "Gruppe wählen"
+    },
     "plural": "Datenerhebungs-Gruppen",
+    "singular": "Datenerhebungs-Gruppe",
     "groupList": {
       "description": "Datenerhebungs-Gruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventions zu gruppieren. Im Gegensatz zu den Studiengruppen, können diese multiplen Elementen zugewiesen werden. <b>Ein:e Teilnehmer:in, eine Datenerhebung und eine Intervention kann jeweils mehreren Datenerhebungs-Gruppen zugewiesen werden.</b> (Beisipel: Raucher, Diabetes Typ 2).",
       "placeholder": {
@@ -1161,7 +1165,7 @@
       }
     },
     "placeholder": {
-      "chooseGroup": "Studiengruppe auswählen"
+      "chooseGroup": "Gruppe wählen"
     },
     "plural": "Studiengruppen",
     "singular": "Studiengruppe"

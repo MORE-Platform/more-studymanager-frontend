@@ -17,11 +17,11 @@ Licensed under the Elastic License 2.0. */
   import {
     ComponentFactory,
     InterventionTimelineEvent,
-    ListComponentsComponentTypeEnum,
+    ListComponentsComponentTypeEnum, ObservationGroup,
     ObservationTimelineEvent,
     Participant,
     StudyGroup,
-    StudyTimeline,
+    StudyTimeline
   } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
   import {
@@ -48,11 +48,13 @@ Licensed under the Elastic License 2.0. */
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true }
   });
 
   const vueCalLocale = locale.value.split('-')[0];
   const filterRelativeStartDate = ref();
   const filterStudyGroup = ref();
+  const filterObservationGroup = ref();
   const filterParticipant = ref();
   const filterObservationAndIntervention = ref();
   const showFullTimeline = ref(false);
@@ -94,6 +96,23 @@ Licensed under the Elastic License 2.0. */
         ({
           label: studyGroup.title,
           value: studyGroup.studyGroupId?.toString(),
+        }) as DropdownOption,
+    ),
+  );
+
+  const observationGroupOptions: Ref<DropdownOption[]> = ref([
+    {
+      label: t('global.placeholder.entireStudy'),
+      value: undefined,
+    } as DropdownOption,
+  ]);
+
+  observationGroupOptions.value.push(
+    ...props.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
         }) as DropdownOption,
     ),
   );
@@ -276,41 +295,58 @@ Licensed under the Elastic License 2.0. */
     return translation;
   }
 
-  function onStudyGroupFilterChange(e: DropdownChangeEvent): void {
-    const filteredOptions: DropdownOption[] = [];
-    const filteredParticipants: Participant[] = [];
+  type ParticipantGroupField = 'studyGroupId' | 'observationGroupId';
 
-    filteredOptions.push({
-      label: t('participants.placeholder.allParticipants'),
-      value: undefined,
-    } as DropdownOption);
+  function rebuildParticipantOptionsByGroup(
+    field: ParticipantGroupField,
+    selectedId?: string | undefined, // kommt aus Dropdown als string
+  ): void {
+    const id = selectedId ? parseInt(selectedId) : undefined;
 
-    if (e.value) {
-      filteredParticipants.push(
-        ...participantsList.filter(
-          (participant) => participant.studyGroupId === parseInt(e.value),
-        ),
-      );
-    } else {
-      filteredParticipants.push(...participantsList);
-    }
+    const filteredParticipants = id
+      ? participantsList.filter((p) => (p as any)[field] === id)
+      : participantsList;
 
-    filteredOptions.push(
+    participantOptions.value = [
+      {
+        label: t('participants.placeholder.allParticipants'),
+        value: undefined,
+      } as DropdownOption,
       ...filteredParticipants.map(
-        (filteredParticipant) =>
+        (p) =>
           ({
-            label: filteredParticipant.alias,
-            value: filteredParticipant.participantId?.toString(),
+            label: p.alias,
+            value: p.participantId?.toString(),
           }) as DropdownOption,
       ),
-    );
+    ];
 
-    participantOptions.value = filteredOptions;
-    listTimeline();
+    // reset falls ungültig
+    if (
+      filterParticipant.value &&
+      !filteredParticipants.some(
+        (p) => p.participantId?.toString() === filterParticipant.value,
+      )
+    ) {
+      filterParticipant.value = undefined;
+    }
   }
+
 
   function onParticipantFilterChange(e: DropdownChangeEvent): void {
     filterStudyGroup.value = getStudyGroupIdByParticipantId(parseInt(e.value));
+    listTimeline();
+  }
+
+  function onObservationGroupFilterChange(e: DropdownChangeEvent): void {
+    filterObservationGroup.value = e.value;
+    rebuildParticipantOptionsByGroup('observationGroupId', e.value);
+    listTimeline();
+  }
+
+  function onStudyGroupFilterChange(e: DropdownChangeEvent): void {
+    filterStudyGroup.value = e.value;
+    rebuildParticipantOptionsByGroup('studyGroupId', e.value);
     listTimeline();
   }
 
@@ -354,6 +390,7 @@ Licensed under the Elastic License 2.0. */
   function clearAllFilters(): void {
     filterRelativeStartDate.value = undefined;
     filterStudyGroup.value = undefined;
+    filterObservationGroup.value = undefined;
     filterParticipant.value = undefined;
     filterObservationAndIntervention.value = [];
     listTimeline();
@@ -422,6 +459,7 @@ Licensed under the Elastic License 2.0. */
         props.studyId,
         filterParticipant.value,
         filterStudyGroup.value,
+        filterObservationGroup.value,
         filterRelativeStartDate.value,
         studyStartDate,
         studyEndDate,
@@ -512,6 +550,18 @@ Licensed under the Elastic License 2.0. */
           class="ml-1"
           :disabled="filterParticipant !== undefined"
           @change="onStudyGroupFilterChange"
+        />
+      </div>
+      <div class="flex-row-center">
+        {{ $t('observationGroup.singular') }}:
+        <Dropdown
+          v-model="filterObservationGroup"
+          :options="observationGroupOptions"
+          option-label="label"
+          option-value="value"
+          :placeholder="$t('observationGroup.placeholder.chooseGroup')"
+          class="ml-1"
+          @change="onObservationGroupFilterChange"
         />
       </div>
       <div class="flex-row-center">
