@@ -33,7 +33,6 @@ Licensed under the Elastic License 2.0. */
   import { useToastService } from '../../composable/toastService';
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
-  import VisibilityToggle from '../subComponents/VisibilityToggle.vue';
   import ObservationToggle from '../subComponents/ObservationToggle.vue';
 
   const { handleToastErrors, showErrorToast } = useToastService();
