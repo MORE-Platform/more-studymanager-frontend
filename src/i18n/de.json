@@ -432,7 +432,8 @@
       },
       "msg": {
         "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
-        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
+        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt.",
+        "reminderInfo": "Wenn eine Datenerhebung eine Erinnerung hat, wird eine Benachrichtigung gesendet, wenn die Datenerhebung gestartet wird."
       }
     },
     "error": {
@@ -531,6 +532,10 @@
       "hidden": {
         "false": "Nicht versteckt",
         "true": "Versteckt"
+      },
+      "reminder": {
+        "false": "Keine Erinnerung",
+        "true": "Erinnerung"
       },
       "noSchedule": "Keine Planzeit",
       "observationType": {

@@ -288,6 +288,7 @@ Licensed under the Elastic License 2.0. */
             hidden: observation.hidden,
             noSchedule: observation.noSchedule,
             hasRepetition: getScheduleHasRepetition(observation.schedule),
+            reminder: observation.reminder
           };
         });
       })

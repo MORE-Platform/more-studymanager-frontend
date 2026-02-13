@@ -33,6 +33,7 @@ Licensed under the Elastic License 2.0. */
   import { useToastService } from '../../composable/toastService';
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
+  import ObservationToggle from '../subComponents/ObservationToggle.vue';
 
   const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
@@ -45,13 +46,14 @@ Licensed under the Elastic License 2.0. */
   const dialogRef: any = inject('dialogRef');
   const observation = dialogRef.value.data.observation as Observation;
   const groupStates = dialogRef.value.data.groupStates || [];
-  const observationGroupStates: MoreTableChoice[] = observationGroupStore.observationGroups.map(
-    (observationGroup) =>
-      ({
-        label: observationGroup.title,
-        value: observationGroup.observationGroupId?.toString(),
-      }) as MoreTableChoice,
-  );
+  const observationGroupStates: MoreTableChoice[] =
+    observationGroupStore.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as MoreTableChoice,
+    );
   const factory = dialogRef.value.data.factory;
   const editable =
     studyStore.study.status === StudyStatus.Draft ||
@@ -67,13 +69,17 @@ Licensed under the Elastic License 2.0. */
       .map((p: Property<any>) => p.setValue(observation.properties?.[p.id])),
   );
   const selectedObservationGroups = ref(
-    observation.observationGroupIds?.map((id: number) => id.toString()) ?? []
-  )
+    observation.observationGroupIds?.map((id: number) => id.toString()) ?? [],
+  );
 
   const hidden: Ref<boolean> = ref(
     observation.hidden !== undefined
       ? observation.hidden
       : factory.visibility.hiddenByDefault,
+  );
+
+  const reminder: Ref<boolean> = ref(
+    observation.reminder !== undefined ? observation.reminder : false,
   );
 
   const scheduler: Ref<ObservationSchedule> = ref(
@@ -186,12 +192,15 @@ Licensed under the Elastic License 2.0. */
       title: title.value,
       purpose: purpose.value,
       participantInfo: participantInfo.value,
-      observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((id: string) => parseInt(id)) : [],
+      observationGroupIds: selectedObservationGroups.value?.length
+        ? selectedObservationGroups.value.map((id: string) => parseInt(id))
+        : [],
       type: observation.type,
       properties: props,
       schedule: scheduler.value,
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
+      reminder: reminder.value,
     } as Observation;
 
     if (!isObjectEmpty(scheduler.value)) {
@@ -236,10 +245,10 @@ Licensed under the Elastic License 2.0. */
   }
   function extractCurrentLimeDomain(): string {
     const hostnameParts = window.location.hostname.split('.');
-    return hostnameParts.slice(1).join('.') ? `https://lime.${hostnameParts.slice(1).join('.')}/admin/` : 'https://lime.platform-test.more.redlink.io/';
+    return hostnameParts.slice(1).join('.')
+      ? `https://lime.${hostnameParts.slice(1).join('.')}/admin/`
+      : 'https://lime.platform-test.more.redlink.io/';
   }
-
-
 </script>
 
 <template>
@@ -247,7 +256,10 @@ Licensed under the Elastic License 2.0. */
     <div class="mb-4" :class="{ 'pb-4': !editable }">
       <h5 class="mb-1">{{ $t(factory.title) }}</h5>
       <!-- eslint-disable vue/no-v-html -->
-      <h6 v-if="factory.description" v-html="$t(factory.description, {link: extractCurrentLimeDomain()})"></h6>
+      <h6
+        v-if="factory.description"
+        v-html="$t(factory.description, { link: extractCurrentLimeDomain() })"
+      ></h6>
     </div>
 
     <form
@@ -328,14 +340,22 @@ Licensed under the Elastic License 2.0. */
       <div class="col-start-0 col-span-8 flex items-center justify-between">
         <div>
           <h5 v-if="editable" class="pb-2 font-bold">
-            {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
+            {{
+              editable
+                ? $t('study.dialog.label.chooseGroups')
+                : $t('study.props.groups')
+            }}
           </h5>
           <div v-if="editable" class="mb-2">
-            {{ $t('study.dialog.description.howToCreateGroups', {for: $t('studyNavigation.tabs.observations')}) }}
+            {{
+              $t('study.dialog.description.howToCreateGroups', {
+                for: $t('studyNavigation.tabs.observations'),
+              })
+            }}
           </div>
           <div class="flex gap-5">
             <div>
-              <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
+              <div class="mb-1">{{ $t('studyGroup.plural') }}</div>
               <Dropdown
                 v-model="studyGroupId"
                 :options="groupStates"
@@ -351,87 +371,72 @@ Licensed under the Elastic License 2.0. */
             </div>
             <div>
               <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
-                <MultiSelect
-                  v-model="selectedObservationGroups"
-                  :options="observationGroupStates"
-                  :disabled="!editable"
-                  option-label="label"
-                  option-value="value"
-                  :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
-                  :show-toggle-all="false"
-                  class="z-top custom-multiselect-root"
-                  :panel-class="'custom-multiselect-panel'"
-                >
-                  <template #value="{ value }">
-                    <span v-if="value?.length > 0">{{ value.map((item: string) => observationGroupStates.find(
-                      (group: MoreTableChoice) => group.value === item
-                    )?.label).join(', ')  }}</span>
-                    <span v-else class="text-gray-400">
-                      {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
-                    </span>
-                  </template>
-
-                </MultiSelect>
-              </div>
+              <MultiSelect
+                v-model="selectedObservationGroups"
+                :options="observationGroupStates"
+                :disabled="!editable"
+                option-label="label"
+                option-value="value"
+                :placeholder="
+                  $t('global.placeholder.chooseDropdownOptionDefault')
+                "
+                :show-toggle-all="false"
+                class="z-top custom-multiselect-root"
+                :panel-class="'custom-multiselect-panel'"
+              >
+                <template #value="{ value }">
+                  <span v-if="value?.length > 0">{{
+                    value
+                      .map(
+                        (item: string) =>
+                          observationGroupStates.find(
+                            (group: MoreTableChoice) => group.value === item,
+                          )?.label,
+                      )
+                      .join(', ')
+                  }}</span>
+                  <span v-else class="text-gray-400">
+                    {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
+                  </span>
+                </template>
+              </MultiSelect>
+            </div>
           </div>
         </div>
       </div>
 
-      <div
-        class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2"
-      >
-        <div
-          class="info-box relative flex cursor-pointer flex-row items-center"
-        >
-          <div
-            v-if="editable && factory.visibility.changeable"
-            class="flex items-center"
-          >
-            <div class="icon-box eye">
-              <span
-                class="pi cursor-pointer"
-                :class="hidden ? 'pi-eye-slash' : 'pi-eye'"
-                @click="hidden = !hidden"
-              />
-            </div>
-          </div>
-          <div v-else class="icon-box eye preview">
-            <span
-              class="pi"
-              :class="
-                observation.hidden
-                  ? 'pi-eye color-approved'
-                  : 'pi-eye-slash color-important'
-              "
-            />
-          </div>
-          <div class="inline">
-            <div
-              class="info-box-hidden pointer-events-none absolute bottom-full right-0 bg-white p-5 text-center opacity-0"
-            >
-              {{ $t('observation.dialog.msg.hiddenInfo') }}
-            </div>
-          </div>
-          <span class="ml-2 inline">
-            {{ $t(`observation.props.hidden.${hidden}`) }}
-          </span>
-          <i
-            class="pi pi-info-circle color-primary mx-1"
-            :class="{ 'me-2': editable && factory.visibility.changeable }"
+      <div class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2">
+        <div class="flex flex-wrap gap-3 justify-items-center">
+          <ObservationToggle
+            v-model="hidden"
+            :editable="editable"
+            :changeable="factory.visibility.changeable"
+            :info-text="$t('observation.dialog.msg.hiddenInfo')"
+            :label="$t(`observation.props.hidden.${hidden}`)"
+            enabled-icon="pi-eye-slash"
+            disabled-icon="pi-eye"
+          />
+          <ObservationToggle
+            v-model="reminder"
+            :editable="editable"
+            :info-text="$t('observation.dialog.msg.reminderInfo')"
+            :label="$t(`observation.props.reminder.${reminder}`)"
+            enabled-icon="pi-bell"
+            disabled-icon="pi-bell-slash"
           />
         </div>
         <div class="flex flex-row items-center justify-end text-right">
-        <Button class="btn-gray" @click="cancel()">
-          <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
-          <span v-else>{{ $t('global.labels.close') }}</span>
-        </Button>
-        <Button
-          v-if="editable"
-          :type="editable ? 'submit' : 'button'"
-          :label="$t('global.labels.save')"
-          :disabled="!editable"
-          @click="checkRequiredFields()"
-        />
+          <Button class="btn-gray" @click="cancel()">
+            <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
+            <span v-else>{{ $t('global.labels.close') }}</span>
+          </Button>
+          <Button
+            v-if="editable"
+            :type="editable ? 'submit' : 'button'"
+            :label="$t('global.labels.save')"
+            :disabled="!editable"
+            @click="checkRequiredFields()"
+          />
         </div>
       </div>
     </form>
