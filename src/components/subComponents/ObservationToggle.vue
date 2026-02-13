@@ -1,23 +1,31 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
+
   interface Props {
     modelValue: boolean;
     editable?: boolean;
+    changeable?: boolean;
     infoText?: string;
     label?: string;
+    enabledIcon: string;
+    disabledIcon: string;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     editable: true,
+    changeable: true,
     infoText: '',
     label: undefined,
   });
+
+  const isInteractive = computed(() => props.editable && props.changeable);
 
   const emit = defineEmits<{
     (e: 'update:modelValue', value: boolean): void;
   }>();
 
-  function toggleReminder(): void {
-    if (props.editable) {
+  function toggleValue(): void {
+    if (isInteractive.value) {
       emit('update:modelValue', !props.modelValue);
     }
   }
@@ -26,13 +34,13 @@
 <template>
   <div
     class="info-box relative flex cursor-pointer flex-row items-center"
-    :class="{ 'cursor-not-allowed': !editable }"
+    :class="{ 'cursor-not-allowed': !isInteractive }"
   >
-    <div v-if="editable" class="flex items-center" @click="toggleReminder">
+    <div v-if="isInteractive" class="flex items-center" @click="toggleValue">
       <div class="icon-box reminder">
         <span
           class="pi cursor-pointer"
-          :class="modelValue ? 'pi-bell' : 'pi-bell-slash'"
+          :class="modelValue ? `${enabledIcon}` : `${disabledIcon}`"
         />
       </div>
     </div>
@@ -41,17 +49,10 @@
         class="pi"
         :class="
           modelValue
-            ? 'pi-bell color-approved'
-            : 'pi-bell-slash color-important'
+            ? `${enabledIcon} color-approved`
+            : `${disabledIcon} color-important`
         "
       />
-    </div>
-    <div v-if="infoText" class="inline">
-      <div
-        class="info-box-hidden pointer-events-none absolute bottom-full right-0 bg-white p-5 text-center opacity-0"
-      >
-        {{ infoText }}
-      </div>
     </div>
     <span v-if="label" class="ml-2 inline">
       <slot name="label">
@@ -60,18 +61,29 @@
     </span>
     <i
       class="pi pi-info-circle color-primary mx-1"
-      :class="{ 'me-2': editable }"
+      :class="{ 'me-2': isInteractive }"
     />
+    <div
+      v-if="infoText"
+      class="info-box-hidden pointer-events-none absolute bottom-full bg-white p-5 text-center opacity-0"
+    >
+      {{ infoText }}
+    </div>
   </div>
 </template>
 
 <style scoped lang="postcss">
   .info-box {
     &-hidden {
-      width: 20vw;
+      width: max-content;
+      max-width: 300px;
       border: 1px solid var(--bluegray-200);
       transition: ease-in-out opacity 0.25s;
       box-shadow: 1px 1px 5px var(--bluegray-200);
+      left: 0;
+      white-space: normal;
+      z-index: 100000;
+      margin-bottom: 0.5rem;
     }
 
     &:hover {

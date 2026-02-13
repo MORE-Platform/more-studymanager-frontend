@@ -34,7 +34,7 @@ Licensed under the Elastic License 2.0. */
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
   import VisibilityToggle from '../subComponents/VisibilityToggle.vue';
-  import ReminderToggle from '../subComponents/ReminderToggle.vue';
+  import ObservationToggle from '../subComponents/ObservationToggle.vue';
 
   const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
@@ -407,19 +407,23 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2">
-        <div class="flex flex-col flex-wrap gap-3">
-          <VisibilityToggle
+        <div class="flex flex-wrap gap-3 justify-items-center">
+          <ObservationToggle
             v-model="hidden"
             :editable="editable"
             :changeable="factory.visibility.changeable"
             :info-text="$t('observation.dialog.msg.hiddenInfo')"
             :label="$t(`observation.props.hidden.${hidden}`)"
+            enabled-icon="pi-eye-slash"
+            disabled-icon="pi-eye"
           />
-          <ReminderToggle
+          <ObservationToggle
             v-model="reminder"
             :editable="editable"
             :info-text="$t('observation.dialog.msg.reminderInfo')"
             :label="$t(`observation.props.reminder.${reminder}`)"
+            enabled-icon="pi-bell"
+            disabled-icon="pi-bell-slash"
           />
         </div>
         <div class="flex flex-row items-center justify-end text-right">
