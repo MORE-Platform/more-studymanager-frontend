@@ -474,7 +474,7 @@
       },
       "simpleQuestion": {
         "configProps": {
-          "answerDesc": "Possible answers (min. 2, max. 5)",
+          "answerDesc": "Possible answers (min. 2, max. 10)",
           "answerName": "Answers",
           "questionDesc": "The question you want to ask.",
           "questionName": "Question"
