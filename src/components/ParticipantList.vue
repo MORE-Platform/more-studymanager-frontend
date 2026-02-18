@@ -134,14 +134,7 @@ Licensed under the Elastic License 2.0. */
       placeholder: '-',
       columnWidth: '10vw',
     },
-    {
-      field: 'dataHealth',
-      header: 'test',
-      type: MoreTableFieldType.string,
-      sortable: true,
-      placeholder: 'orange',
-      columnWidth: '5vw'
-    },
+
   ];
 
   const rowActions: MoreTableAction[] = [
