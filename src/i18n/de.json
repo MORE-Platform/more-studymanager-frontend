@@ -474,13 +474,23 @@
       },
       "simpleQuestion": {
         "configProps": {
-          "answerDesc": "Mögliche Antworten (min. 2, max.5)",
+          "answerDesc": "Mögliche Antworten (min. 2, max. 10)",
           "answerName": "Antworten",
-          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
+          "questionDesc": "Die Frage, die Sie stellen möchten.",
           "questionName": "Frage"
         },
-        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
+        "description": "Diese Datenerhebung ermöglicht es, eine einfache Single-Choice Frage zu erstellen.",
         "title": "Einfache Frage"
+      },
+      "multipleChoiceQuestion": {
+        "configProps": {
+          "answerDesc": "Mögliche Antworten (min. 2, max. 10)",
+          "answerName": "Antowrten",
+          "questionDesc": "Die Frage, die Sie stellen möchten.",
+          "questionName": "Mehrfachauswahl Frage"
+        },
+        "description": "Diese Datenerhebung ermöglicht es, eine Multiple-Choice Frage (mehrfache Antworten auswählbar) zu erstellen.",
+        "title": "Einfache Frage (Mehrfachauswahl)"
       },
       "garmin": {
         "configProps": {},
