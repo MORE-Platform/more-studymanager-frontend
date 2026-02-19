@@ -1,7 +1,14 @@
 <script setup lang="ts">
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
-  import { computed, ComputedRef, onBeforeMount, onBeforeUnmount, Ref, ref } from 'vue';
+  import {
+    computed,
+    ComputedRef,
+    onBeforeMount,
+    onBeforeUnmount,
+    Ref,
+    ref,
+  } from 'vue';
   import { DropdownOption } from '../../models/Common';
   import { ComponentFactory, Observation, Participant } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
@@ -141,15 +148,17 @@
     getObservationList();
   }
 
-  const isDownloadDataLoading = ref<boolean>(false)
+  const isDownloadDataLoading = ref<boolean>(false);
   function downloadStudyData(): void {
-    isDownloadDataLoading.value = true
-    studyStore.exportStudyData({
-      studyId: studyStore.studyId,
-      ...getDownloadFilters(),
-    }).then(() => {
-      isDownloadDataLoading.value = false
-    });
+    isDownloadDataLoading.value = true;
+    studyStore
+      .exportStudyData({
+        studyId: studyStore.studyId,
+        ...getDownloadFilters(),
+      })
+      .then(() => {
+        isDownloadDataLoading.value = false;
+      });
   }
 
   function getDownloadFilters(): DownloadDataFilter {
@@ -164,7 +173,7 @@
 
     if (filterDateRange.value && filterDateRange.value.length > 1) {
       filterValues.from = filterDateRange.value[0];
-      const toDate = filterDateRange.value[1];
+      const toDate = filterDateRange.value[1] ?? filterDateRange.value[0];
       toDate.setHours(23, 59, 59);
       filterValues.to = toDate;
     }
@@ -175,10 +184,6 @@
   const disableStudyGroupFilter: ComputedRef<boolean> = computed(() => {
     return filterParticipant.value.length > 0;
   });
-
-  const disableObservationGroupFilter: ComputedRef<boolean> = computed(() => {
-    return filterObservationGroup.value.length > 0;
-  })
 
   const disableParticipantFilter: ComputedRef<boolean> = computed(() => {
     return filterStudyGroup.value.length > 0;
@@ -201,7 +206,7 @@
       data: {
         message: t('monitoringData.dialog.msg.downloadStudyData'),
         cancelBtn: t('monitoringData.dialog.waitForDownload'),
-        approveBtn: t('monitoringData.dialog.navigatePage')
+        approveBtn: t('monitoringData.dialog.navigatePage'),
       },
       props: {
         header: t('monitoringData.dialog.header.downloadStudyData'),
@@ -215,40 +220,40 @@
         modal: true,
         draggable: false,
       },
-      onClose: (options) =>{
+      onClose: (options) => {
         if (options?.data) {
           if (pendingRoute.value) {
-            isDownloadDataLoading.value = false
-            router.push(pendingRoute.value)
+            isDownloadDataLoading.value = false;
+            router.push(pendingRoute.value);
           }
         }
-        pendingRoute.value = null
-      }
-    })
+        pendingRoute.value = null;
+      },
+    });
   }
 
   onBeforeRouteLeave((to, from, next) => {
     if (isDownloadDataLoading.value) {
-      pendingRoute.value = to
-      interceptPageNavigation()
+      pendingRoute.value = to;
+      interceptPageNavigation();
       // preventNavigation
-      next(false)
+      next(false);
     } else {
       // navigate
-      next()
+      next();
     }
-  })
+  });
 
   onBeforeMount(() => {
     window.addEventListener('beforeunload', (e) => {
-      if (isDownloadDataLoading.value) e.preventDefault() }
-    )
-  })
+      if (isDownloadDataLoading.value) e.preventDefault();
+    });
+  });
   onBeforeUnmount(() => {
     window.removeEventListener('beforeunload', (e) => {
-      if (isDownloadDataLoading.value) e.preventDefault() }
-    )
-  })
+      if (isDownloadDataLoading.value) e.preventDefault();
+    });
+  });
 </script>
 
 <template>
@@ -269,10 +274,12 @@
         @click="clearAllFilters"
       />
     </div>
-    <div class="mb-3 flex flex-row items-center justify-between gap-5 mt-2">
+    <div class="mb-3 mt-2 flex flex-row items-center justify-between gap-5">
       <div class="flex flex-col gap-3">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2 lg:gap-5">
-          <div class="lg:col-span-2 flex flex-row items-center gap-2">
+        <div
+          class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+        >
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
             {{ $t('monitoring.labels.dateRange') }}:
             <Calendar
               v-model="filterDateRange"
@@ -285,7 +292,7 @@
               class="w-full"
             />
           </div>
-          <div class="lg:col-span-2 flex flex-row items-center gap-2">
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
             {{ $t('participants.plural') }}:
             <MultiSelect
               v-model="filterParticipant"
@@ -299,11 +306,11 @@
               :empty-message="$t('global.labels.noRecords')"
               :max-selected-labels="1"
               :selected-items-label="`{0} ${$t(
-              'global.placeholder.optionsSelected',
-            )}`"
+                'global.placeholder.optionsSelected',
+              )}`"
             />
           </div>
-          <div class="lg:col-span-2 flex flex-row items-center gap-2">
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
             {{ $t('observation.plural') }}:
             <MultiSelect
               v-model="filterObservation"
@@ -315,14 +322,16 @@
               :empty-message="$t('global.labels.noRecords')"
               :max-selected-labels="0"
               :selected-items-label="`{0} ${$t(
-              'global.placeholder.optionsSelected',
-            )}`"
+                'global.placeholder.optionsSelected',
+              )}`"
             ></MultiSelect>
           </div>
         </div>
-        <div class="flex flex-col lg:flex-row gap-3">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-2 lg:gap-5">
-            <div class="lg:col-span-2 flex flex-row items-center gap-2">
+        <div class="flex flex-col gap-3 lg:flex-row">
+          <div
+            class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+          >
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
               {{ $t('studyGroup.plural') }}:
               <MultiSelect
                 v-model="filterStudyGroup"
@@ -339,8 +348,8 @@
                 )}`"
               />
             </div>
-            <div class="lg:col-span-2 flex flex-row items-center gap-2">
-              {{ $t('studyGroup.plural') }}:
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('observationGroup.plural') }}:
               <MultiSelect
                 v-model="filterObservationGroup"
                 :options="observationGroupOptions"
@@ -348,7 +357,6 @@
                 option-value="value"
                 :placeholder="$t('observationGroup.placeholder.chooseGroup')"
                 class="w-full"
-                :disabled="disableObservationGroupFilter"
                 :empty-message="$t('global.labels.noRecords')"
                 :max-selected-labels="1"
                 :selected-items-label="`{0} ${$t(
@@ -369,10 +377,10 @@
         @click="downloadStudyData()"
       >
         <span class="p-button-icon p-button-icon-left pi pi-download"></span>
-      <span>{{t('study.studyList.labels.exportStudyData')}}</span>
+        <span>{{ t('study.studyList.labels.exportStudyData') }}</span>
         <ProgressSpinner
           v-if="isDownloadDataLoading"
-          class="!text-white ml-2"
+          class="ml-2 !text-white"
           style="width: 25px; height: 25px"
           stroke-width="6"
           fill="transparent"
@@ -385,6 +393,6 @@
 
 <style scoped lang="postcss">
   :deep(.p-progress-spinner-circle) {
-    stroke: currentColor!important;
+    stroke: currentColor !important;
   }
 </style>
