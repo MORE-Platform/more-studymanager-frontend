@@ -359,6 +359,7 @@
                 class="w-full"
                 :empty-message="$t('global.labels.noRecords')"
                 :max-selected-labels="1"
+                :disabled="disableStudyGroupFilter"
                 :selected-items-label="`{0} ${$t(
                   'global.placeholder.optionsSelected',
                 )}`"
