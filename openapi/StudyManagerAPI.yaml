@@ -1293,6 +1293,12 @@ paths:
             type: array
             items:
               type: integer
+        - name: observationGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
         - name: participantId
           in: query
           schema:

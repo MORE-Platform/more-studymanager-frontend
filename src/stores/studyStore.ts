@@ -188,6 +188,7 @@ export const useStudyStore = defineStore('study', () => {
     studyGroupId,
     participantId,
     observationId,
+    observationGroupId,
     from,
     to,
   }: DownloadData): Promise<void> {
@@ -209,6 +210,7 @@ export const useStudyStore = defineStore('study', () => {
               studyGroupId,
               participantId,
               observationId,
+              observationGroupId,
               from,
               to,
               { responseType: 'blob' },

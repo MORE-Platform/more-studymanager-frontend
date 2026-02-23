@@ -1137,7 +1137,11 @@
         "delete": "Do you really want to delete this observation group?"
       }
     },
+    "placeholder": {
+      "chooseGroup": "Choose a group"
+    },
     "plural": "Observation groups",
+    "singular": "Observation group",
     "groupList": {
       "description": "Observation groups are used to group participants, observations, and/or interventions. Unlike study groups, they can be assigned to multiple elements. <b>A participant, an observation, and an intervention can each be assigned to multiple observation groups.</b> (Example: smokers, type 2 diabetes).",
       "placeholder": {
