@@ -432,7 +432,8 @@
       },
       "msg": {
         "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation:",
-        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app."
+        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app.",
+        "reminderInfo": "If an observation has a reminder, a notification will be sent when the observation starts."
       }
     },
     "error": {
@@ -473,13 +474,23 @@
       },
       "simpleQuestion": {
         "configProps": {
-          "answerDesc": "Possible answers (min. 2, max.5)",
+          "answerDesc": "Possible answers (min. 2, max. 10)",
           "answerName": "Answers",
           "questionDesc": "The question you want to ask.",
           "questionName": "Question"
         },
-        "description": "This observation enables you to create a simple multiple choice question.",
+        "description": "This observation enables you to create a simple single choice question.",
         "title": "Simple Question"
+      },
+      "multipleChoiceQuestion": {
+        "configProps": {
+          "answerDesc": "Possible answers (min. 2, max. 10)",
+          "answerName": "Answers",
+          "questionDesc": "The question you want to ask..",
+          "questionName": "Multiple Choice Question"
+        },
+        "description": "This observation enables you to create a multiple choice question (user can choose multiple answers).",
+        "title": "Multiple Choice Question"
       },
       "garmin": {
         "configProps": {},
@@ -531,6 +542,10 @@
       "hidden": {
         "false": "Not hidden",
         "true": "Hidden"
+      },
+      "reminder": {
+        "false": "No reminder",
+        "true": "Reminder"
       },
       "noSchedule": "No Schedule",
       "observationType": {

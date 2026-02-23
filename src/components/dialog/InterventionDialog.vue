@@ -611,10 +611,9 @@ Licensed under the Elastic License 2.0. */
               :panel-class="'custom-multiselect-panel'"
             >
               <template #value="{ value }">
-                      <span v-if="value?.length === 1">{{ observationGroupStates.find(
-                        (group: MoreTableChoice) => group.value === value[0]
-                      )?.label }}</span>
-                <span v-else-if="value?.length >= 2">{{ value.length }} {{ $t('global.placeholder.selected') }}</span>
+                      <span v-if="value?.length > 0">{{ value.map((item: string) => observationGroupStates.find(
+                        (group: MoreTableChoice) => group.value === item
+                      )?.label).join(', ')  }}</span>
                 <span v-else class="text-gray-400">
                         {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
                       </span>
