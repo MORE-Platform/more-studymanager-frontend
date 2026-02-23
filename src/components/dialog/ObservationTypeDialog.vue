@@ -34,7 +34,6 @@ Licensed under the Elastic License 2.0. */
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
   import ObservationToggle from '../subComponents/ObservationToggle.vue';
-  import { extractCurrentLimeDomain } from '../../utils/limeSurveyUtils';
 
   const { handleToastErrors, showErrorToast } = useToastService();
   const dialog = useDialog();
@@ -244,6 +243,12 @@ Licensed under the Elastic License 2.0. */
   function updateProperty(item: PropertyEmit): void {
     properties.value[item.index].value = item.value;
   }
+  function extractCurrentLimeDomain(): string {
+    const hostnameParts = window.location.hostname.split('.');
+    return hostnameParts.slice(1).join('.')
+      ? `https://lime.${hostnameParts.slice(1).join('.')}/admin/`
+      : 'https://lime.platform-test.more.redlink.io/';
+  }
 </script>
 
 <template>
@@ -401,7 +406,7 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2">
-        <div class="flex flex-wrap gap-3 justify-items-center">
+        <div class="flex flex-wrap justify-items-center gap-3">
           <ObservationToggle
             v-model="hidden"
             :editable="editable"

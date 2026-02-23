@@ -497,28 +497,28 @@
         "description": "This observation enables you to collect health data via the Garmin Connect.",
         "title": "Garmin (Deprecated)",
         "heart-rate": {
-          "title": "Heart Rate (Garmin Connect)",
+          "title": "Garmin Heart Rate",
           "description": "This observation enables you to collect heart rate data from Garmin Connect."
         },
         "activity": {
-          "title": "Activity (Garmin Connect)",
+          "title": "Garmin Activity",
           "description": "This observation enables you to collect activity data from Garmin Connect."
         },
         "blood-pressure": {
-          "title": "Blood Pressure (Garmin Connect)",
+          "title": "Garmin Blood Pressure",
           "description": "This observation enables you to collect blood pressure data from Garmin Connect."
         },
         "sleep": {
-          "title": "Sleep (Garmin Connect)",
+          "title": "Garmin Sleep",
           "description": "This observation enables you to collect sleep data from Garmin Connect."
         },
         "steps": {
           "daily": {
-            "title": "Daily Steps (Garmin Connect)",
+            "title": "Garmin Daily Steps",
             "description": "Daily step count data from Garmin Connect."
           },
           "epoch": {
-            "title": "Epoch Steps (Garmin Connect)",
+            "title": "Garmin Epoch Steps",
             "description": "Epoch step count data from Garmin Connect."
           }
         }
