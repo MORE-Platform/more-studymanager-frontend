@@ -1,4 +1,3 @@
-/* Copyright UMM */
 <script setup lang="ts">
   import { useObservationGroupStore } from '../stores/observationGroupStore';
   import { useDialog } from 'primevue/usedialog';
