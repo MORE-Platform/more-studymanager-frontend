@@ -241,6 +241,25 @@ Licensed under the Elastic License 2.0. */
         <div class="col-span-1 py-2">
           {{ getDateValues('dtend') }}
         </div>
+        <div class="col-span-1 py-2 font-medium">
+          {{ $t('scheduler.randomization.title') }}
+        </div>
+        <div class="col-span-1 py-2">
+          {{
+            !!scheduler.random?.state
+              ? $t('scheduler.randomization.on')
+              : $t('scheduler.randomization.off')
+          }}
+        </div>
+        <div
+          v-if="!!scheduler.random?.state"
+          class="col-span-1 py-2 font-medium"
+        >
+          {{ $t('scheduler.randomization.duration') }}
+        </div>
+        <div v-if="!!scheduler.random?.state" class="col-span-1 py-2">
+          {{ scheduler.random?.duration ?? 0 }}
+        </div>
         <div
           v-if="getRepetitionValue('weekdays')"
           class="col-span-2 py-2"
@@ -250,7 +269,7 @@ Licensed under the Elastic License 2.0. */
 
       <div
         v-if="getRepetitionValue('every') !== ''"
-        class="text-bold col-span-2 grid"
+        class="text-bold col-span-2 grid h-fit"
       >
         <div class="color-primary col-span-2 border-b-2 py-3 pl-3 font-bold">
           {{ $t('scheduler.preview.title.repeatEvent') }}

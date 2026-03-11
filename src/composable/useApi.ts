@@ -21,7 +21,8 @@ import {
   ConfigurationApi,
   CalendarApi,
   AuditLogApi,
-  OccurredObservationsApi
+  OccurredObservationsApi,
+  ObservationGroupsApi
 } from '@gs';
 
 const apiConfig = {
@@ -45,6 +46,7 @@ let dataApi: DataApi;
 let uiConfigApi: ConfigurationApi;
 let auditLogApi: AuditLogApi;
 let occurredObservationsApi: OccurredObservationsApi;
+let observationGroupsApi: ObservationGroupsApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi;
@@ -169,5 +171,14 @@ export function useOccurredObservationsApi(): {
   occurredObservationsApi = occurredObservationsApi || new OccurredObservationsApi(apiConfig);
   return {
     occurredObservationsApi,
+  };
+}
+
+export function useObservationGroupsApi(): {
+  observationGroupsApi: ObservationGroupsApi;
+} {
+  observationGroupsApi = observationGroupsApi || new ObservationGroupsApi(apiConfig);
+  return {
+    observationGroupsApi,
   };
 }

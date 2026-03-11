@@ -30,14 +30,26 @@ Licensed under the Elastic License 2.0. */
   import CustomCheckbox from './CustomCheckbox.vue';
   import { FilterMatchMode } from 'primevue/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { ComponentFactory, ParticipantStatus, StudyRole, StudyStatus, Visibility } from '@gs';
+  import {
+    ComponentFactory,
+    ParticipantStatus,
+    StudyRole,
+    StudyStatus,
+    Visibility,
+  } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
   import ExclamationIcon from './ExclamationIcon.vue';
 
-  import { ACTION_ID_DATA_HEALTH, ACTION_ID_DELETE, ACTION_ID_QR_CODE } from '../../constants';
+  import {
+    ACTION_ID_DATA_HEALTH,
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+  } from '../../constants';
+  import { useI18n } from 'vue-i18n';
 
   const dateFormat = useGlobalStore().getDateFormat;
+  const { t } = useI18n();
 
   interface MoreTableProps {
     title?: string;
@@ -231,8 +243,12 @@ Licensed under the Elastic License 2.0. */
   function getLabelForMultiSelectValue(
     setValues: any,
     valueChoices?: MoreTableChoice[],
+    placeholder?: string
   ): string[] {
-    if (valueChoices) {
+    if (setValues?.length === 0) {
+      return placeholder ? [placeholder] : [t('global.placeholder.chooseDropdownOptionDefault')]
+    }
+    else if (valueChoices) {
       const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
         const valueLabel = valueChoices.find((vc) => vc.value === v);
@@ -268,32 +284,37 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getActionBtnBgColor(actionId: string, data: any): string {
-    if (actionId === ACTION_ID_DELETE) return 'btn-important'
-    else if (actionId === ACTION_ID_DATA_HEALTH && data && data.dataHealthIndicator) {
+    if (actionId === ACTION_ID_DELETE) return 'btn-important';
+    else if (
+      actionId === ACTION_ID_DATA_HEALTH &&
+      data &&
+      data.dataHealthIndicator
+    ) {
       switch (data.dataHealthIndicator) {
         case 'green':
-          return 'btn-accepted'
+          return 'btn-accepted';
         case 'orange':
-          return 'btn-warn'
+          return 'btn-warn';
         case 'red':
-          return 'btn-important'
-        default: return 'btn-warn'
+          return 'btn-important';
+        default:
+          return 'btn-warn';
       }
     }
-    return ''
+    return '';
   }
 
   function getDataHealthIcon(data: any): string | undefined {
     if (data.dataHealthIndicator) {
-      switch(data.dataHealthIndicator) {
+      switch (data.dataHealthIndicator) {
         case 'green':
-          return 'pi pi-check'
+          return 'pi pi-check';
         case 'orange':
-          return 'pi pi-exclamation-triangle'
+          return 'pi pi-exclamation-triangle';
         case 'red':
-          return 'pi pi-times'
+          return 'pi pi-times';
         default:
-          return 'pi pi-exclamation-triangle'
+          return 'pi pi-exclamation-triangle';
       }
     }
   }
@@ -496,11 +517,14 @@ Licensed under the Elastic License 2.0. */
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
-            <span v-if="field === 'title'" class="flex flex-row gap-1.5 align-center">
+            <span
+              v-if="field === 'title'"
+              class="align-center flex flex-row gap-1.5"
+            >
               <span v-if="data['hasError']" class="title-has-warning mr-0.2">
                 <ExclamationIcon id="exclamationIcon" />
               </span>
-              {{ data[field]}}
+              {{ data[field] }}
             </span>
             <span
               v-else-if="
@@ -547,6 +571,7 @@ Licensed under the Elastic License 2.0. */
             <span v-if="column.type === MoreTableFieldType.longtext"
               >{{ shortenText(data[field]) }}
             </span>
+
             <span
               v-if="
                 column.type === MoreTableFieldType.multiselect ||
@@ -555,11 +580,12 @@ Licensed under the Elastic License 2.0. */
             >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field],
+                  data[field]
                 )"
                 :key="index"
                 class="multiselect-item"
-                >{{ value }}</span
+                :class="{'text-gray-300': MoreTableFieldType.multiselect && data[field]?.length === 0}"
+              >{{ value }}</span
               >
             </span>
             <span
@@ -590,14 +616,23 @@ Licensed under the Elastic License 2.0. */
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :icon="action.id === ACTION_ID_DATA_HEALTH ? getDataHealthIcon(slotProps) ?? action.icon : action.icon"
+                :icon="
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? (getDataHealthIcon(slotProps) ?? action.icon)
+                    : action.icon
+                "
                 :disabled="
-                  action.id === ACTION_ID_DATA_HEALTH ? !slotProps.data?.dataHealthIndicator || slotProps.data?.dataHealthIndicator && slotProps.data.status === ParticipantStatus.New
-                  : rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? !slotProps.data?.dataHealthIndicator ||
+                      (slotProps.data?.dataHealthIndicator &&
+                        slotProps.data.status === ParticipantStatus.New)
+                    : rowIDsInEditMode.length
                       ? true
-                      : action.id === ACTION_ID_QR_CODE ?
-                        !(isVisible(action, slotProps.data) &&
-                        !!slotProps.data.registrationToken)
+                      : action.id === ACTION_ID_QR_CODE
+                        ? !(
+                            isVisible(action, slotProps.data) &&
+                            !!slotProps.data.registrationToken
+                          )
                         : !isVisible(action, slotProps.data)
                 "
                 :class="getActionBtnBgColor(action.id, slotProps.data)"
@@ -750,7 +785,8 @@ Licensed under the Elastic License 2.0. */
     padding: 5px;
   }
 
-  .title-has-warning, .title-has-warning #exclamationIcon {
+  .title-has-warning,
+  .title-has-warning #exclamationIcon {
     height: 18px;
     width: auto;
   }

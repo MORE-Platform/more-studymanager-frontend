@@ -21,13 +21,13 @@ server {
 
     # Proxy API and other backend services
     location /api {
-        proxy_pass ${MORE_BACKEND_URL}/api;
+        proxy_pass ${VITE_MORE_BACKEND_URL}/api;
     }
     location /login {
-        proxy_pass ${MORE_BACKEND_URL}/login;
+        proxy_pass ${VITE_MORE_BACKEND_URL}/login;
     }
     location /logout {
-        proxy_pass ${MORE_BACKEND_URL}/logout;
+        proxy_pass ${VITE_MORE_BACKEND_URL}/logout;
     }
 
 }

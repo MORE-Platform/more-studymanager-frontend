@@ -127,7 +127,7 @@
       "time": "Zeit",
       "to": "zu",
       "leavePage": "Möchten Sie die Seite wirklich verlassen?",
-      "dataHealth": "Data-Health"
+      "dataHealth": "Datenqualität"
     },
     "placeholder": {
       "all": "Alle",
@@ -137,7 +137,8 @@
       "entireStudy": "Gesamte Studie",
       "noGroup": "Keine Gruppe",
       "nothingSelected": "Nichts ausgewählt",
-      "optionsSelected": "Optionen ausgewählt"
+      "optionsSelected": "Optionen ausgewählt",
+      "selected": "ausgewählt"
     }
   },
   "inputModel": {
@@ -431,7 +432,8 @@
       },
       "msg": {
         "delete": "Eine gelöschte Datenerhebung kann nicht mehr wiederhergestellt werden! Möchten Sie die Datenerhebung wirklich löschen?",
-        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt."
+        "hiddenInfo": "Wenn eine Datenerhebung versteckt ist, wird es, sofern der oder die Teilnehmer:in eingelogged ist, automatisch im Hintergrund gestartet. Die Datenerhebung wird dann nicht auf dem Dashboard Screen der App angezeigt.",
+        "reminderInfo": "Wenn eine Datenerhebung eine Erinnerung hat, wird eine Benachrichtigung gesendet, wenn die Datenerhebung gestartet wird."
       }
     },
     "error": {
@@ -472,13 +474,54 @@
       },
       "simpleQuestion": {
         "configProps": {
-          "answerDesc": "Mögliche Antworten (min. 2, max.5)",
+          "answerDesc": "Mögliche Antworten (min. 2, max. 10)",
           "answerName": "Antworten",
-          "questionDesc": "Die Frage, die Sie stellen stellen möchten.",
+          "questionDesc": "Die Frage, die Sie stellen möchten.",
           "questionName": "Frage"
         },
-        "description": "Diese Datenerhebung ermöglicht es, eine einfache Multiple-Choice Frage zu erstellen.",
+        "description": "Diese Datenerhebung ermöglicht es, eine einfache Single-Choice Frage zu erstellen.",
         "title": "Einfache Frage"
+      },
+      "multipleChoiceQuestion": {
+        "configProps": {
+          "answerDesc": "Mögliche Antworten (min. 2, max. 10)",
+          "answerName": "Antowrten",
+          "questionDesc": "Die Frage, die Sie stellen möchten.",
+          "questionName": "Mehrfachauswahl Frage"
+        },
+        "description": "Diese Datenerhebung ermöglicht es, eine Multiple-Choice Frage (mehrfache Antworten auswählbar) zu erstellen.",
+        "title": "Einfache Frage (Mehrfachauswahl)"
+      },
+      "garmin": {
+        "configProps": {},
+        "description": "Diese Datenerhebung ermöglicht es, Gesundheitsdaten via Garmin Connect zu erhalten.",
+        "title": "Garmin (Veraltet)",
+        "heart-rate": {
+          "title": "Garmin Herzfrequenz",
+          "description": "Diese Datenerhebung ermöglicht es, Herzfrequenzdaten von Garmin Connect zu sammeln."
+        },
+        "activity": {
+          "title": "Garmin Aktivität",
+          "description": "Diese Datenerhebung ermöglicht es, Aktivitätsdaten von Garmin Connect zu sammeln."
+        },
+        "blood-pressure": {
+          "title": "Garmin Blutdruck",
+          "description": "Diese Datenerhebung ermöglicht es, Blutdruckdaten von Garmin Connect zu sammeln."
+        },
+        "sleep": {
+          "title": "Garmin Schlaf",
+          "description": "Diese Datenerhebung ermöglicht es, Schlafdaten von Garmin Connect zu sammeln."
+        },
+        "steps": {
+          "daily": {
+            "title": "Garmin Tägliche Schritte",
+            "description": "Tägliche Schrittzählung von Garmin Connect."
+          },
+          "epoch": {
+            "title": "Garmin Epoch Schritte",
+            "description": "Epoch Schrittzählung von Garmin Connect."
+          }
+        }
       }
     },
     "observationList": {
@@ -499,6 +542,10 @@
       "hidden": {
         "false": "Nicht versteckt",
         "true": "Versteckt"
+      },
+      "reminder": {
+        "false": "Keine Erinnerung",
+        "true": "Erinnerung"
       },
       "noSchedule": "Keine Planzeit",
       "observationType": {
@@ -823,8 +870,22 @@
       },
       "sunday": "Sonntag",
       "thursday": "Donnerstag",
-      "tuesday": "Dientstag",
+      "tuesday": "Dienstag",
       "wednesday": "Mittwoch"
+    },
+    "randomization": {
+      "label": "Zufällige Events",
+      "title": "Event Randomisierung",
+      "description": "Dieses Event wird innerhalb des angegebenen Zeitraums zufällig ausgeführt. Die Länge des Events wird durch die angegebene Dauer in Minuten bestimmt. Die Dauer kann nicht länger sein, als der angegebene Zeitraum.",
+      "duration": "Dauer (in Minuten)",
+      "warning": "Die angegebene Dauer darf nicht länger sein als der angegebene Zeitraum.",
+      "maxDuration": "Maximale Dauer (in Minuten): {maxDuration}",
+      "on": "An",
+      "off": "Aus",
+      "toast": {
+        "title": "Fehler in der Zeitplannung",
+        "message": "Die angegebene Dauer muss größer als 0 sein und darf nicht länger als der angegebene Zeitraum sein."
+      }
     }
   },
   "study": {
@@ -841,7 +902,8 @@
         "durationExample": "Studienbeginn: {egStartDate} - Studienende: {egEndDate} (5 Monate) - Studiendauer: 4 Wochen. Die aktive Teilnahmezeit des Teilnehmers an der Studie ist auf 4 Wochen begrenzt. Dies wird durch das Login-Datum bestimmt.",
         "participantInfo": "Die Teilnehmerinformation wird in der App den Teilnehmer:innen angezeigt. Sie soll eine kurze Beschreibung über die Studie und ihren Aufgaben enthalten. Es enthält auch die Nutzungsbedingungen und die Datenschutzrichtlinie der Organisation, die die Studie durchführt.",
         "purpose": "Die Zielsetzung gibt Informationen über die Studie. Diese Information ist nur den Studien-Mitarbeitern zugänglich.",
-        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird."
+        "study": "Fügen Sie eine Beschreibung der Studie hinzu, die Ihren Studienmitarbeitern als Erkärung angezeigt wird.",
+        "howToCreateGroups": "Studien- und Datenerhebungsgruppen können über den Reiter Studie erstellt und für {for} zugewiesen werden."
       },
       "error": {
         "missedFieldsMsg": "Bitte füllen sie folgende Informationsfelder aus: "
@@ -861,7 +923,8 @@
         "institute": "Institut",
         "studyEnd": "Studienende",
         "studyStart": "Studienstart",
-        "studyTitle": "Studientitel"
+        "studyTitle": "Studientitel",
+        "chooseGroups": "Gruppen zuweisen"
       },
       "msg": {
         "delete": "Eine gelöschte Studie kann nicht wiederhergestellt werden. Möchten Sie die Studie wirklich löschen?",
@@ -918,6 +981,8 @@
       "roles": "Rolle(n)",
       "status": "Status",
       "studyGroup": "Studiengruppe {size}",
+      "groups": "Gruppen",
+      "observationGroup": "Datenerhebungs-Gruppe {size}",
       "studyId": "Studien-ID",
       "title": "Titel"
     },
@@ -1058,6 +1123,33 @@
       "searchCollaborators": "Tippen, um einen Studien-Mitarbeiter zu suchen."
     }
   },
+  "observationGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?",
+        "intro": "Sie sind kurz davor folgende Datenerhebungs-Gruppe zu löschen:",
+        "warning": "Eine gelöschte Datenerhebungs-Gruppe kann nicht wiederhergestellt werden. Jegliche Informationen und Einstellungen der Gruppe werden gelöscht. Alle Teilnehmer:innen, Datenerhebungsmodelle und Interventionen, die zu dieser Gruppe verlinkt waren, verlieren ihre Gruppenverlinkung und wirken wieder auf die gesamte Studie."
+      },
+      "header": {
+        "create": "Datenerhebungs-Gruppe hinzufügen",
+        "delete": "Datenerhebungs-Gruppe löschen"
+      },
+      "msg": {
+        "delete": "Möchten Sie die Datenerhebungs-Gruppe wirklich löschen?"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Gruppe wählen"
+    },
+    "plural": "Datenerhebungs-Gruppen",
+    "singular": "Datenerhebungs-Gruppe",
+    "groupList": {
+      "description": "Datenerhebungs-Gruppen werden verwendet, um Teilnehmer:innen, Datenerhebungen und/oder Interventions zu gruppieren. Im Gegensatz zu den Studiengruppen, können diese multiplen Elementen zugewiesen werden. <b>Ein:e Teilnehmer:in, eine Datenerhebung und eine Intervention kann jeweils mehreren Datenerhebungs-Gruppen zugewiesen werden.</b> (Beisipel: Raucher, Diabetes Typ 2).",
+      "placeholder": {
+        "emptyGroupList": "Fügen Sie Datenerhebungs-Gruppen zu Ihrer Studie hinzu."
+      }
+    }
+  },
   "studyGroup": {
     "dialog": {
       "deleteMsg": {
@@ -1088,7 +1180,7 @@
       }
     },
     "placeholder": {
-      "chooseGroup": "Studiengruppe auswählen"
+      "chooseGroup": "Gruppe wählen"
     },
     "plural": "Studiengruppen",
     "singular": "Studiengruppe"
@@ -1143,6 +1235,7 @@
       "deleteParticipantBtn": "Teilnehmer:in löschen",
       "deleteStudyBtn": "Studie löschen",
       "deleteStudyGroupBtn": "Studiengruppe löschen",
+      "deleteObservationGroupBtn": "Datenerhebungs-Gruppe löschen",
       "editBtn": "Bearbeiten Sie die gezeigten Eckdaten.",
       "goToStudy": "Studie öffnen",
       "saveChanges": "Änderungen speichern",

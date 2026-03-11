@@ -23,6 +23,7 @@ export default tseslint.config(
       'docs',
       'src/generated-sources',
       '**/*.gitignore',
+      'vite.config.ts',
     ],
   },
   {

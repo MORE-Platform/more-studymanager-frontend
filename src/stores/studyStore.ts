@@ -8,19 +8,12 @@
  */
 import { computed, ComputedRef, ref, Ref } from 'vue';
 import { defineStore } from 'pinia';
-import {
-  AuditLogMetadata,
-  AuditLogEntry,
-  Study,
-  StudyRole,
-  StudyStatus,
-  DataExportInner,
-  OccurredObservation, ObservationTimelineEvent, StudyTimeline
-} from '@gs';
+import { AuditLogMetadata, AuditLogEntry, Study, StudyRole, StudyStatus, DataExportInner, OccurredObservation, ObservationTimelineEvent, StudyTimeline} from '@gs';
 import { useAuditLogApi, useCalendarApi, useImportExportApi, useStudiesApi, useOccurredObservationsApi } from '../composable/useApi';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useErrorHandling } from '../composable/useErrorHandling';
 import { useStudyGroupStore } from './studyGroupStore';
+import { useObservationGroupStore } from './observationGroupStore';
 import { DownloadData } from '../models/DataDownloadModel';
 import { useToastService } from '../composable/toastService';
 
@@ -32,6 +25,7 @@ export const useStudyStore = defineStore('study', () => {
   const { occurredObservationsApi } = useOccurredObservationsApi();
   const { handleIndividualError } = useErrorHandling();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
   const { handleToastErrors } = useToastService();
   // State
   const study: Ref<Study> = ref({});
@@ -45,7 +39,11 @@ export const useStudyStore = defineStore('study', () => {
   async function getStudy(studyId: number): Promise<void> {
     study.value = await studiesApi
       .getStudy(studyId)
-      .then((response) => response.data)
+      .then((response) => {
+        if (response.data?.studyId)
+          observationGroupStore.getObservationGroups(response.data.studyId)
+        return response.data
+      })
       .catch((e: AxiosError) => {
         handleIndividualError(e, 'cannot fetch study');
         return study.value;
@@ -90,6 +88,7 @@ export const useStudyStore = defineStore('study', () => {
       .then((response) => {
         studies.value.push(response.data);
         studyGroupStore.studyGroups = [];
+        observationGroupStore.observationGroups = [];
       })
       .catch((e: AxiosError) =>
         handleIndividualError(e, 'cannot create study'),
@@ -144,11 +143,12 @@ export const useStudyStore = defineStore('study', () => {
       );
   }
 
-  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
+  async function listParticipantObservationsInTimeline(studyId: number, participantId: number, studyGroup?: number, observationGroup?: number, referenceDate?: string, studyStartDate?: string, studyEndDate?: string): Promise<void> {
     await calendarApi.getStudyTimeline(
       studyId,
       participantId,
       studyGroup,
+      observationGroup,
       referenceDate,
       studyStartDate,
       studyEndDate,
@@ -188,6 +188,7 @@ export const useStudyStore = defineStore('study', () => {
     studyGroupId,
     participantId,
     observationId,
+    observationGroupId,
     from,
     to,
   }: DownloadData): Promise<void> {
@@ -202,25 +203,36 @@ export const useStudyStore = defineStore('study', () => {
       )
       .then(async (rs) => {
         if (rs && rs?.data?.token) {
-          await importExportApi.exportStudyData(
-            studyId,
-            rs.data.token,
-            studyGroupId,
-            participantId,
-            observationId,
-            from,
-            to
-          ).then((response) => {
-            window.open(response.headers.location);
-            const filename: string = 'study_data_' + studyId + '.json';
-            downloadJSON(filename, response.data);
+          await importExportApi
+            .exportStudyData(
+              studyId,
+              rs.data.token,
+              studyGroupId,
+              observationGroupId,
+              participantId,
+              observationId,
+              from,
+              to,
+              { responseType: 'blob' },
+            )
+            .then((response) => {
+              const blob = response.data as unknown as Blob;
 
-          }).catch((e: AxiosError) => {
-            handleIndividualError(
-              e,
-              'cannot export data despite of existing download token',
-            );
-          } );
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `study_data_${studyId}.json`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            })
+            .catch((e: AxiosError) => {
+              handleIndividualError(
+                e,
+                'cannot export data despite of existing download token',
+              );
+            });
         }
       })
       .catch((e: AxiosError) => {
@@ -232,11 +244,12 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function exportAuditLog(studyId: number): Promise<void> {
-    await auditLogApi.exportAuditLog(studyId)
-      .then((response:AxiosResponse<AuditLogEntry[]>) => {
+    await auditLogApi
+      .exportAuditLog(studyId)
+      .then((response: AxiosResponse<AuditLogEntry[]>) => {
         window.open(response.headers.location);
         const filename: string = `study_auditlog_${studyId}.json`;
-        downloadJSON(filename, response.data)
+        downloadJSON(filename, response.data);
       })
       .catch((e: AxiosError) => {
         handleIndividualError(
@@ -263,8 +276,9 @@ export const useStudyStore = defineStore('study', () => {
   }
 
   async function getAuditLogMetadata(studyId: number): Promise<void> {
-    auditLogMetadata.value = await auditLogApi.getAuditLogMetadata(studyId)
-      .then((response: AxiosResponse) => response.data)
+    auditLogMetadata.value = await auditLogApi
+      .getAuditLogMetadata(studyId)
+      .then((response: AxiosResponse) => response.data);
   }
 
   // Getters
