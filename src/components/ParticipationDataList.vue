@@ -6,7 +6,8 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import Dropdown, { DropdownChangeEvent } from 'primevue/select';
+  import Dropdown from 'primevue/select';
+  import type { SelectChangeEvent as DropdownChangeEvent } from 'primevue/select';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import Chart from 'primevue/chart';
@@ -740,7 +741,7 @@ Licensed under the Elastic License 2.0. */
             class="pt-8"
             @update:active-index="onTabChange(observationId, $event)"
           >
-            <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
+            <TabPanel value="latestDataPoints" :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"
                 row-id="observationId"
@@ -754,6 +755,7 @@ Licensed under the Elastic License 2.0. */
             </TabPanel>
             <TabPanel
               v-if="observationsViewData[observationId]"
+              value="visualization"
               :header="$t('monitoring.labels.visualization')"
             >
               <Dropdown

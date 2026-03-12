@@ -44,13 +44,13 @@ Licensed under the Elastic License 2.0. */
       class="container rounded-lg bg-white p-10"
     >
       <TabView v-model:active-index="activeIndex">
-        <TabPanel :header="$t('monitoringData.tabs.lastDataPoints')">
+        <TabPanel value="0" :header="$t('monitoringData.tabs.lastDataPoints')">
           <DatapointList :study-id="studyStore.studyId" class="mb-14" />
         </TabPanel>
-        <TabPanel :header="$t('monitoringData.tabs.recordedObservation')">
+        <TabPanel value="1" :header="$t('monitoringData.tabs.recordedObservation')">
           <ParticipationDataList :study-id="studyStore.studyId" :pause-data-refresh="activeIndex !== 1"/>
         </TabPanel>
-        <TabPanel :header="$t('monitoringData.tabs.dataDownload')">
+        <TabPanel value="2" :header="$t('monitoringData.tabs.dataDownload')">
           <Suspense>
             <DataDownload />
           </Suspense>
@@ -60,6 +60,7 @@ Licensed under the Elastic License 2.0. */
             studyStore.studyUserRoles.some((r: StudyRole) =>
             auditLogAccessRoles.includes(r),
             )"
+          value="3"
           :header="$t('monitoringData.tabs.auditLog')">
           <AuditLogDownload :study-id="studyStore.studyId" :is-active="activeIndex === 3"/>
         </TabPanel>

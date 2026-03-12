@@ -508,8 +508,8 @@ Licensed under the Elastic License 2.0. */
             @keydown.enter="filterCallback()"
           />
         </template>
-        <template #body="{ data, field }">
-          <div v-if="data[field] === null" class="placeholder">
+        <template #body="{ data, field }: { data: any, field: any }">
+          <div v-if="(data as any)[field] === null" class="placeholder">
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
@@ -517,10 +517,10 @@ Licensed under the Elastic License 2.0. */
               v-if="field === 'title'"
               class="align-center flex flex-row gap-1.5"
             >
-              <span v-if="data['hasError']" class="title-has-warning mr-0.2">
+              <span v-if="(data as any)['hasError']" class="title-has-warning mr-0.2">
                 <ExclamationIcon id="exclamationIcon" />
               </span>
-              {{ data[field] }}
+              {{ (data as any)[field] }}
             </span>
             <span
               v-else-if="
@@ -533,7 +533,7 @@ Licensed under the Elastic License 2.0. */
               <span v-if="column.arrayLabels">
                 <span
                   v-for="(value, index) in getLabelForMultiSelectValue(
-                    data[field],
+                    (data as any)[field],
                     column.arrayLabels,
                   )"
                   :key="index"
@@ -541,31 +541,31 @@ Licensed under the Elastic License 2.0. */
                   >{{ value }}</span
                 >
               </span>
-              <span v-else>{{ data[field] }}</span>
+              <span v-else>{{ (data as any)[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.statusString">
-              {{ $t(`study.statusStrings.${data[field]}`) }}
+              {{ $t(`study.statusStrings.${(data as any)[field]}`) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(
-                data[field],
+                (data as any)[field],
                 getColumnEditableValues(column.editable),
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
-              {{ $d(new Date(data[`__internalValue_${field}`]), 'short') }}
+              {{ $d(new Date((data as any)[`__internalValue_${field}`]), 'short') }}
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
-              <span v-if="!data[field]"> - </span>
-              <span v-else-if="data[field] && data[field] !== '-'">
-                {{ $d(new Date(data[field]), 'long') }}
+              <span v-if="!(data as any)[field]"> - </span>
+              <span v-else-if="(data as any)[field] && (data as any)[field] !== '-'">
+                {{ $d(new Date((data as any)[field]), 'long') }}
               </span>
               <span v-else>
-                {{ data[field] }}
+                {{ (data as any)[field] }}
               </span>
             </span>
             <span v-if="column.type === MoreTableFieldType.longtext"
-              >{{ shortenText(data[field]) }}
+              >{{ shortenText((data as any)[field]) }}
             </span>
 
             <span
@@ -576,11 +576,11 @@ Licensed under the Elastic License 2.0. */
             >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field]
+                  (data as any)[field]
                 )"
                 :key="index"
                 class="multiselect-item"
-                :class="{'text-gray-300': MoreTableFieldType.multiselect && data[field]?.length === 0}"
+                :class="{'text-gray-300': MoreTableFieldType.multiselect && (data as any)[field]?.length === 0}"
               >{{ value }}</span
               >
             </span>
@@ -589,7 +589,7 @@ Licensed under the Elastic License 2.0. */
               class="icon-box eye"
             >
               <span
-                v-if="data[field]"
+                v-if="(data as any)[field]"
                 class="pi pi-eye-slash color-important"
               />
               <span v-else class="pi pi-eye color-approved" />
@@ -598,7 +598,7 @@ Licensed under the Elastic License 2.0. */
               v-if="column.type === MoreTableFieldType.binaryIcon"
               class="icon-box eye"
             >
-              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-if="(data as any)[field]" class="pi pi-check color-approved" />
               <span v-else class="pi pi-times color-important" />
             </span>
           </div>
