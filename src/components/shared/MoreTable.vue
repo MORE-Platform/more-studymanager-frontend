@@ -27,8 +27,8 @@ Licensed under the Elastic License 2.0. */
   import Calendar from 'primevue/calendar';
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
-  import CustomCheckbox from './CustomCheckbox.vue';
-  import { FilterMatchMode } from 'primevue/api';
+  import Checkbox from 'primevue/checkbox';
+  import { FilterMatchMode } from '@primevue/core/api';
   import { dateToDateString } from '../../utils/dateUtils';
   import {
     ComponentFactory,
@@ -324,14 +324,14 @@ Licensed under the Elastic License 2.0. */
   <div class="more-table">
     <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
-        <h3 v-if="title" class="font-semibold">{{ title }}</h3>
-        <h4 v-if="subtitle" class="text-base">
+        <h3 v-if="title" class="font-bold">{{ title }}</h3>
+        <h4 v-if="subtitle" class="!text-lg">
           <!-- eslint-disable vue/no-v-html -->
           <span v-html="subtitle" />
         </h4>
       </div>
       <div
-        class="actions table-actions ml-2.5 flex flex-row items-center justify-end"
+        class="actions table-actions ml-2.5 flex flex-row items-center justify-end gap-2"
       >
         <slot
           name="tableActions"
@@ -363,14 +363,16 @@ Licensed under the Elastic License 2.0. */
         :frozen="true"
       >
         <template #body="slotProps">
-          <div v-for="action in frontRowActions" :key="action.id">
-            <Button
-              v-if="isVisible(action, slotProps.data)"
-              v-tooltip.bottom="action.tooltip ?? undefined"
-              type="button"
-              :icon="action.icon"
-              @click="rowActionHandler(action, slotProps.data)"
-            />
+          <div class="flex flex-row gap-0.5">
+            <div v-for="action in frontRowActions" :key="action.id">
+              <Button
+                v-if="isVisible(action, slotProps.data)"
+                v-tooltip.bottom="action.tooltip ?? undefined"
+                type="button"
+                :icon="action.icon"
+                @click="rowActionHandler(action, slotProps.data)"
+              />
+            </div>
           </div>
         </template>
       </Column>
@@ -479,18 +481,12 @@ Licensed under the Elastic License 2.0. */
             class="z-top"
           />
           <div v-if="column.type === MoreTableFieldType.showIcon">
-            <CustomCheckbox
+            <Checkbox
               v-if="getObservationVisibility(data['type'])?.changeable"
               v-model="data[field]"
               :binary="true"
               class="icon-checkbox show-icon"
-            >
-              <template #icon>
-                <div class="p-checkbox-box">
-                  <span class="p-checkbox-icon pi pi-check"></span>
-                </div>
-              </template>
-            </CustomCheckbox>
+            />
             <div v-else class="icon-box eye">
               <span
                 v-if="data[field]"
@@ -611,7 +607,7 @@ Licensed under the Elastic License 2.0. */
 
       <Column key="actions" class="row-actions" :frozen="true">
         <template #body="slotProps">
-          <div v-if="!isRowInEditMode(slotProps.data)">
+          <div v-if="!isRowInEditMode(slotProps.data)" class="flex flex-row gap-0.5">
             <div v-for="action in rowActions" :key="action.id">
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
@@ -668,9 +664,9 @@ Licensed under the Elastic License 2.0. */
               </Button>
             </div>
           </div>
-          <div v-else-if="isRowInEditMode(slotProps.data)" class="items-center">
+          <div v-else-if="isRowInEditMode(slotProps.data)" class="flex flex-row items-center gap-2">
             <div class="error pi pi-exclamation-circle big" />
-            <div class="error mx-2">{{ $t('moreTable.saveLine') }}</div>
+            <div class="error">{{ $t('moreTable.saveLine') }}</div>
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
               type="button"
@@ -696,7 +692,7 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  @import '../../styles/components/eye-checkbox.pcss';
+  @import '../../styles/components/eye-checkbox.css';
 
   .pi.big {
     font-size: 1.2rem;

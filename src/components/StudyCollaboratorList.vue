@@ -343,14 +343,15 @@ Licensed under the Elastic License 2.0. */
       <template #tableActions>
         <div>
           <Dropdown
-            class="button p-button dropdown-search flex items-center text-nowrap !p-0"
+            class="button p-button dropdown-search flex items-center text-nowrap !p-0 bg-primary"
             :filter="true"
             auto-filter-focus
             :options="collaboratorList"
             option-label="label"
             option-value="value"
             :disabled="!editAccess"
-            panel-class="dropdown-search-panel "
+            panel-class="dropdown-search-panel"
+            :placeholder="t('studyCollaborator.placeholder.addCollaborator')"
             :empty-message="
               t('studyCollaborator.placeholder.searchCollaborators')
             "

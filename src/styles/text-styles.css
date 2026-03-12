@@ -1,6 +1,7 @@
 body {
   font-family: var(--font-family);
   color: var(--text-color);
+  line-height: 1.5;
 }
 
 h1,h4 {
@@ -16,7 +17,7 @@ h2 {
 
 h3 {
   font-size: 1.25rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--primary-color);
 
   span {

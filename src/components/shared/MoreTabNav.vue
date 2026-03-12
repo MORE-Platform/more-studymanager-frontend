@@ -220,13 +220,14 @@ Licensed under the Elastic License 2.0. */
     }
 
     .bg-blue-500 {
-      background-color: var(--primary-color) !important;
+      background-color: var(--primary-color);
+      color: var(--gray-50);
     }
 
     .tab-inactive {
       pointer-events: none;
       a {
-        font-size: calc(var(--default-font-size) / 0.8) !important;
+        font-size: calc(var(--default-font-size) / 0.8);
         font-weight: 350;
       }
     }

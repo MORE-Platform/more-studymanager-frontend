@@ -1,0 +1,15 @@
+@import 'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap';
+
+@import './styles/normalize.css';
+@import './index.css';
+
+@import 'primeicons/primeicons.css';
+@import "./styles/more-light/theme.css";
+
+@import './styles/text-styles.css';
+@import './styles/layout.css';
+@import './styles/btn.css';
+@import './styles/components/moreTable-dialogs.css';
+@import './styles/components/info-box.css';
+
+@import './styles/print.css';

@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig, loadEnv } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 
@@ -7,7 +8,7 @@ import { resolve } from 'path';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [vue()],
+    plugins: [vue(), tailwindcss()],
     build: {
       //TODO maybe remove on cleanup session
       target: 'esnext',
@@ -21,6 +22,7 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@gs': resolve(__dirname, './src/generated-sources'),
+        '@': resolve(__dirname, './src'),
       },
     },
     server: {

@@ -6,7 +6,7 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import Dropdown, { DropdownChangeEvent } from 'primevue/dropdown';
+  import Dropdown, { DropdownChangeEvent } from 'primevue/select';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import Chart from 'primevue/chart';
@@ -679,6 +679,7 @@ Licensed under the Elastic License 2.0. */
               autocomplete="off"
               selection-mode="range"
               :manual-input="false"
+              class="ml-1"
               :date-format="dateFormat"
               :placeholder="`${dateFormat} - ${dateFormat}`"
               :disabled="disableVisualizationFilter"

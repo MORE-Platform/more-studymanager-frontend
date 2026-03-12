@@ -274,7 +274,7 @@
         @click="clearAllFilters"
       />
     </div>
-    <div class="mb-3 mt-2 flex flex-row items-center justify-between gap-5">
+    <div class="mt-2 mb-3 flex flex-row items-center justify-between gap-5">
       <div class="flex flex-col gap-3">
         <div
           class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
@@ -301,6 +301,7 @@
               option-value="value"
               :placeholder="$t('participants.placeholder.chooseParticipant')"
               class="w-full"
+              :show-toggle-all="false"
               filter
               :disabled="disableParticipantFilter"
               :empty-message="$t('global.labels.noRecords')"
@@ -317,6 +318,7 @@
               :options="observationOptions"
               option-label="label"
               option-value="value"
+              :show-toggle-all="false"
               :placeholder="$t('timeline.labels.chooseType')"
               class="w-full"
               :empty-message="$t('global.labels.noRecords')"
@@ -324,7 +326,7 @@
               :selected-items-label="`{0} ${$t(
                 'global.placeholder.optionsSelected',
               )}`"
-            ></MultiSelect>
+            />
           </div>
         </div>
         <div class="flex flex-col gap-3 lg:flex-row">
@@ -341,6 +343,7 @@
                 :placeholder="$t('studyGroup.placeholder.chooseGroup')"
                 class="w-full"
                 :disabled="disableStudyGroupFilter"
+                :show-toggle-all="false"
                 :empty-message="$t('global.labels.noRecords')"
                 :max-selected-labels="1"
                 :selected-items-label="`{0} ${$t(
@@ -359,6 +362,7 @@
                 class="w-full"
                 :empty-message="$t('global.labels.noRecords')"
                 :max-selected-labels="1"
+                :show-toggle-all="false"
                 :disabled="disableStudyGroupFilter"
                 :selected-items-label="`{0} ${$t(
                   'global.placeholder.optionsSelected',

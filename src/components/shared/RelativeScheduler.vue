@@ -4,7 +4,7 @@
   import Button from 'primevue/button';
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
-  import CustomCheckbox from './CustomCheckbox.vue';
+  import Checkbox from 'primevue/checkbox';
   import { Duration, UnitEnum, RelativeEvent } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '../../models/Scheduler';
@@ -436,9 +436,11 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
             "
             :min="1"
-            @input="
-              clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd']);
-              startOffset.value = ($event?.value || 1) as number;
+            @update:model-value="
+              (val) => {
+                clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd']);
+                startOffset.value = (val || 1) as number;
+              }
             "
           />
         </div>
@@ -476,9 +478,11 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
             "
             :min="1"
-            @input="
-              clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection']);
-              endOffset.value = ($event?.value || 1) as number;
+            @update:model-value="
+              (val) => {
+                clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection']);
+                endOffset.value = (val || 1) as number;
+              }
             "
           />
         </div>
@@ -519,18 +523,18 @@
       ]"
       @click="repeatChecked = !repeatChecked"
     >
-      <CustomCheckbox
+      <Checkbox
         v-model="repeatChecked"
         :disabled="!repetitionEnabled"
         binary
-        @input="calcRepetition()"
+        @update:model-value="calcRepetition()"
         @click.stop
       />
       <span class="ms-2">{{ $t('scheduler.dialog.repeatEvent') }}</span>
     </div>
     <div class="flex flex-row items-center justify-start">
       <span>{{ $t('scheduler.randomization.label') }}:</span>
-      <CustomCheckbox
+      <Checkbox
         :model-value="!!returnSchedule.random?.state"
         class="ml-2"
         binary
@@ -552,9 +556,11 @@
               $t('scheduler.dialog.relativeSchedule.placeholder.enterNumber')
             "
             :min="1"
-            @input="
-              clearError(['rrruleFreq', 'frequencyError']);
-              frequency = ($event?.value || 1) as number;
+            @update:model-value="
+              (val) => {
+                clearError(['rrruleFreq', 'frequencyError']);
+                frequency = (val || 1) as number;
+              }
             "
           />
           <Dropdown
@@ -563,7 +569,7 @@
             :option-label="'label'"
             :option-value="'value'"
             class="col-span-3 ml-4"
-            @input="clearError(['rrruleFreq', 'frequencyError'])"
+            @update:model-value="clearError(['rrruleFreq', 'frequencyError'])"
           />
         </div>
         <ErrorLabel
@@ -582,9 +588,11 @@
             "
             class="z-10"
             :min="1"
-            @input="
-              clearError(['rrruleEndAfter', 'frequencyEndError']);
-              endRep = ($event?.value || 1) as number;
+            @update:model-value="
+              (val) => {
+                clearError(['rrruleEndAfter', 'frequencyEndError']);
+                endRep = (val || 1) as number;
+              }
             "
           />
           <Dropdown
@@ -593,7 +601,7 @@
             option-label="label"
             option-value="value"
             class="z-10 col-span-3 ml-4"
-            @input="clearError(['rrruleEndAfter', 'frequencyEndError'])"
+            @update:model-value="clearError(['rrruleEndAfter', 'frequencyEndError'])"
           />
         </div>
         <ErrorLabel

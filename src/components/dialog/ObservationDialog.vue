@@ -262,14 +262,14 @@ Licensed under the Elastic License 2.0. */
       class="grid grid-cols-8 items-center gap-4"
       @submit.prevent="validate()"
     >
-      <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
+      <div class="col-span-8 col-start-0" :class="{ 'pb-4': !editable }">
         <h5 class="mb-1">
           {{ $t('observation.dialog.label.observationTitle') }}*
         </h5>
         <div v-if="getError('title')" class="error mb-4">
           {{ getError('title') }}
         </div>
-        <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
+        <div class="col-span-8 col-start-0" :class="{ 'pb-4': !editable }">
           <InputText
             v-model="title"
             type="text"
@@ -289,7 +289,7 @@ Licensed under the Elastic License 2.0. */
         @remove-scheduler="removeScheduler"
       />
 
-      <div class="col-start-0 col-span-8">
+      <div class="col-span-8 col-start-0">
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
@@ -299,7 +299,7 @@ Licensed under the Elastic License 2.0. */
           :disabled="!editable"
         ></Textarea>
       </div>
-      <div class="col-start-0 col-span-8">
+      <div class="col-span-8 col-start-0">
         <h5 :class="getError('participantInfo') ? 'mb-1' : 'mb-2'">
           {{ $t('study.props.participantInfo') }}*
         </h5>
@@ -315,9 +315,9 @@ Licensed under the Elastic License 2.0. */
           :disabled="!editable"
         ></Textarea>
       </div>
-      <div v-if="properties.length" class="col-start-0 col-span-8">
+      <div v-if="properties.length" class="col-span-8 col-start-0">
         <h5 class="mb-2">{{ $t('global.labels.config') }}</h5>
-        <div class="col-start-0 col-span-8">
+        <div class="col-span-8 col-start-0">
           <div v-if="properties">
             <PropertyInputs
               :editable="editable"
@@ -332,7 +332,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 col-span-8 flex items-center justify-between">
+      <div class="col-span-8 col-start-0 flex items-center justify-between">
         <div>
           <h5 v-if="editable" class="pb-2 font-bold">
             {{
@@ -400,8 +400,8 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 buttons col-span-8 mt-1 grid grid-cols-2">
-        <div class="flex flex-wrap gap-3 justify-items-center">
+      <div class="buttons col-span-8 col-start-0 mt-1 grid grid-cols-2">
+        <div class="flex flex-wrap justify-items-center gap-3">
           <ObservationToggle
             v-model="hidden"
             :editable="editable"
@@ -439,8 +439,8 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  @import '../../styles/components/moreTable-dialogs.pcss';
-  @import '../../styles/components/eye-checkbox.pcss';
+  @import '../../styles/components/moreTable-dialogs.css';
+  @import '../../styles/components/eye-checkbox.css';
 
   .dialog {
     :deep(.dropdown-has-value .p-dropdown-label) {

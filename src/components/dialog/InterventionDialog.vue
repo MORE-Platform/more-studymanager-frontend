@@ -644,7 +644,7 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped lang="postcss">
-  @import '../../styles/components/moreTable-dialogs.pcss';
+  @import '../../styles/components/moreTable-dialogs.css';
 
   :deep(.dropdown-has-value .p-dropdown-label) {
     color: var(--text-color);

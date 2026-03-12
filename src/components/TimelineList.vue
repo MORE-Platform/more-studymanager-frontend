@@ -11,17 +11,19 @@ Licensed under the Elastic License 2.0. */
   import Calendar from 'primevue/calendar';
   import DynamicDialog from 'primevue/dynamicdialog';
   import { useDialog } from 'primevue/usedialog';
-  import Dropdown, { DropdownChangeEvent } from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
   import Button from 'primevue/button';
+  import Dropdown from 'primevue/dropdown';
+  import { DropdownChangeEvent } from 'primevue/dropdown';
   import {
     ComponentFactory,
     InterventionTimelineEvent,
-    ListComponentsComponentTypeEnum, ObservationGroup,
+    ListComponentsComponentTypeEnum,
+    ObservationGroup,
     ObservationTimelineEvent,
     Participant,
     StudyGroup,
-    StudyTimeline
+    StudyTimeline,
   } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
   import {
@@ -48,7 +50,10 @@ Licensed under the Elastic License 2.0. */
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
-    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true }
+    observationGroups: {
+      type: Array as PropType<Array<ObservationGroup>>,
+      required: true,
+    },
   });
 
   const vueCalLocale = locale.value.split('-')[0];
@@ -332,7 +337,6 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-
   function onParticipantFilterChange(e: DropdownChangeEvent): void {
     filterStudyGroup.value = getStudyGroupIdByParticipantId(parseInt(e.value));
     listTimeline();
@@ -513,86 +517,106 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div class="title w-full">
-    <div class="flex-row-center justify-between">
+    <div class="flex justify-between">
       <h3 class="mb-1 font-bold">{{ $t('global.labels.filter') }}</h3>
       <div class="flex gap-1">
         <Button @click="showFullTimeline = !showFullTimeline">
-          {{ showFullTimeline ? $t('timeline.labels.collapseTimeline') : $t('timeline.labels.showFullTimeline') }}
+          {{
+            showFullTimeline
+              ? $t('timeline.labels.collapseTimeline')
+              : $t('timeline.labels.showFullTimeline')
+          }}
         </Button>
         <Button icon="pi pi-filter-slash" @click="clearAllFilters" />
       </div>
     </div>
-    <div class="flex-row-center mb-3 justify-start gap-5">
-      <div class="flex-row-center">
-        <span>{{ $t('timeline.labels.relativeDate') }}:</span>
-        <span
-          v-tooltip.bottom="$t('tooltips.timeline.relativeDateInfo')"
-          class="pi pi-info-circle color-primary mx-1"
-        ></span>
-        <Calendar
-          v-model="filterRelativeStartDate"
-          :min-date="new Date(studyStore.study.plannedStart as string)"
-          :max-date="new Date(studyStore.study.plannedEnd as string)"
-          autocomplete="off"
-          :date-format="dateFormat"
-          :placeholder="dateFormat"
-          @date-select="listTimeline"
-        />
-      </div>
-      <div class="flex-row-center">
-        {{ $t('studyGroup.singular') }}:
-        <Dropdown
-          v-model="filterStudyGroup"
-          :options="studyGroupOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('studyGroup.placeholder.chooseGroup')"
-          class="ml-1"
-          :disabled="filterParticipant !== undefined"
-          @change="onStudyGroupFilterChange"
-        />
-      </div>
-      <div class="flex-row-center">
-        {{ $t('observationGroup.singular') }}:
-        <Dropdown
-          v-model="filterObservationGroup"
-          :options="observationGroupOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('observationGroup.placeholder.chooseGroup')"
-          class="ml-1"
-          @change="onObservationGroupFilterChange"
-        />
-      </div>
-      <div class="flex-row-center">
-        {{ $t('participants.singular') }}:
-        <Dropdown
-          v-model="filterParticipant"
-          :options="participantOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('participants.placeholder.chooseParticipant')"
-          class="ml-1"
-          filter
-          @change="onParticipantFilterChange"
-        />
-      </div>
-      <div class="flex-row-center">
-        {{ $t('timeline.labels.type') }}:
-        <MultiSelect
-          v-model="filterObservationAndIntervention"
-          :options="observationAndInterventionOptions"
-          option-group-label="label"
-          option-group-children="items"
-          option-label="label"
-          option-value="value"
-          :placeholder="$t('timeline.labels.chooseType')"
-          class="ml-1"
-          :max-selected-labels="1"
-          :selected-items-label="`{0} ${$t(
-            'global.placeholder.optionsSelected',
-          )}`"
-        />
+
+    <!-- new layout -->
+    <div class="mt-2 mb-3 flex flex-row items-center justify-between gap-5">
+      <div class="flex flex-col gap-3">
+        <div
+          class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+        >
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
+            {{ $t('timeline.labels.relativeDate') }}:
+            <span
+              v-tooltip.bottom="$t('tooltips.timeline.relativeDateInfo')"
+              class="pi pi-info-circle color-primary mx-1"
+            ></span>
+            <Calendar
+              v-model="filterRelativeStartDate"
+              :min-date="new Date(studyStore.study.plannedStart as string)"
+              :max-date="new Date(studyStore.study.plannedEnd as string)"
+              autocomplete="off"
+              class="w-full"
+              :date-format="dateFormat"
+              :placeholder="dateFormat"
+              @date-select="listTimeline"
+            />
+          </div>
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
+            {{ $t('participants.singular') }}:
+            <Dropdown
+              v-model="filterParticipant"
+              :options="participantOptions"
+              option-label="label"
+              option-value="value"
+              :placeholder="$t('participants.placeholder.chooseParticipant')"
+              class="ml-1 w-full"
+              filter
+              @change="onParticipantFilterChange"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-3 lg:flex-row">
+          <div
+            class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+          >
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('studyGroup.singular') }}:
+              <Dropdown
+                v-model="filterStudyGroup"
+                :options="studyGroupOptions"
+                option-label="label"
+                option-value="value"
+                :placeholder="$t('studyGroup.placeholder.chooseGroup')"
+                class="ml-1 w-full"
+                :disabled="filterParticipant !== undefined"
+                @change="onStudyGroupFilterChange"
+              />
+            </div>
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('observationGroup.singular') }}:
+              <Dropdown
+                v-model="filterObservationGroup"
+                :options="observationGroupOptions"
+                option-label="label"
+                option-value="value"
+                :placeholder="$t('observationGroup.placeholder.chooseGroup')"
+                class="ml-1 w-full"
+                @change="onObservationGroupFilterChange"
+              />
+            </div>
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('timeline.labels.type') }}:
+              <MultiSelect
+                v-model="filterObservationAndIntervention"
+                :options="observationAndInterventionOptions"
+                option-group-label="label"
+                option-group-children="items"
+                option-label="label"
+                option-value="value"
+                :show-toggle-all="false"
+                :placeholder="$t('timeline.labels.chooseType')"
+                class="ml-1 w-full"
+                :max-selected-labels="1"
+                :selected-items-label="`{0} ${$t(
+                  'global.placeholder.optionsSelected',
+                )}`"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -610,8 +634,8 @@ Licensed under the Elastic License 2.0. */
     overlaps-per-time-step
     :min-event-width="30"
     today-button
-    :time-from="showFullTimeline ? 0: 8*60"
-    :time-to="showFullTimeline ? 24*60 : 19*60 "
+    :time-from="showFullTimeline ? 0 : 8 * 60"
+    :time-to="showFullTimeline ? 24 * 60 : 19 * 60"
     :time-step="showFullTimeline ? 30 : 15"
     hide-weekends
   >
