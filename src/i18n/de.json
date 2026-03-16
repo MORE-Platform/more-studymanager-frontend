@@ -522,6 +522,10 @@
             "description": "Epoch Schrittzählung von Garmin Connect."
           }
         }
+      },
+      "appUsage": {
+        "title": "App-Nutzungstracking",
+        "description": "Diese Datenerhebung ermöglicht es, die App-Nutzung der Teilnehmer:innen zu erfassen. Die Nutzer:innen müssen dem zustimmen, andernfalls werden diese Daten nicht erfasst."
       }
     },
     "observationList": {
