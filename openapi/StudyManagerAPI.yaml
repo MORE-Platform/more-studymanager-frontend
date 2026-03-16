@@ -1809,12 +1809,12 @@ components:
         unit:
           $ref: '#/components/schemas/DurationUnit'
     DurationUnit:
-      type: string
-      description: unit of time
-      enum:
-        - MINUTE
-        - HOUR
-        - DAY
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
     Participant:
       type: object
       properties:
@@ -2520,6 +2520,11 @@ components:
           description: |
             alternative title for better identification (informational only)
           type: string
+        gatewayUrl:
+          description: |
+            base-url of the data-gateway for external integrations
+          type: string
+          format: uri
         auth:
           type: object
           title: KeycloakSettings

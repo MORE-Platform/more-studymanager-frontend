@@ -8,6 +8,7 @@ Licensed under the Elastic License 2.0. */
   import StudyHeader from '../components/shared/StudyHeader.vue';
   import { StudyRole } from '@gs';
   import InterventionsList from '../components/InterventionsList.vue';
+  import InterventionTokenList from '../components/InterventionTokenList.vue';
   import { useStudyStore } from '../stores/studyStore';
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { useObservationGroupStore } from '../stores/observationGroupStore';
@@ -41,6 +42,10 @@ Licensed under the Elastic License 2.0. */
           :observation-groups="observationGroupStore.observationGroups"
         />
       </Suspense>
+      <InterventionTokenList
+        :study-id="studyStore.studyId"
+        :study-status="studyStore.studyStatus"
+      />
     </div>
   </div>
 </template>

@@ -4,6 +4,12 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
+  import { inject } from 'vue';
+  import { FrontendConfiguration } from '@gs';
+
+  const uiConfig = inject<FrontendConfiguration>('uiConfig');
+  const gatewayUrl = uiConfig?.gatewayUrl || window.location.origin;
+
   const props = defineProps({
     token: {
       type: String,
@@ -45,7 +51,7 @@ Licensed under the Elastic License 2.0. */
       <code>
         <small>
           curl -X POST
-          https://data.platform-test.more.redlink.io/api/v1/external/bulk \
+          {{ gatewayUrl }}/api/v1/external/bulk \
           <br />
           -H "Content-Type: application/json" \ <br />
           -H "More-Api-Token: {{ props.token }}" \ <br />
@@ -77,7 +83,7 @@ Licensed under the Elastic License 2.0. */
       <code>
         <small>
           curl -X GET
-          https://data.platform-test.more.redlink.io/api/v1/external/participants
+          {{ gatewayUrl }}/api/v1/external/participants
           \ <br />
           -H "More-Api-Token: {{ props.token }}"
         </small>
