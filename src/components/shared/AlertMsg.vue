@@ -67,12 +67,13 @@ Licensed under the Elastic License 2.0. */
   >
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .message {
     position: fixed;
-    top: 30px;
+    top: 60px;
     right: 10px;
-    transform: translate(-50%, -50%);
-    transition: opacity ease-in-out 0.5s;
+    transition: opacity ease-in 0.02s;
+    z-index: 1000;
+    padding: 10px;
   }
 </style>

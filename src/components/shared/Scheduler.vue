@@ -475,7 +475,7 @@ Licensed under the Elastic License 2.0. */
         class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
-          class="btn-gray !mr-3"
+          class="btn-gray mr-3"
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
@@ -485,34 +485,34 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.highlight input) {
-    background-color: var(--red-200) !important;
+<style scoped>
+:deep(.highlight input) {
+  background-color: var(--red-200);
+}
+
+.scheduler {
+  min-height: 37.5rem;
+
+  input::placeholder {
+    color: var(--bluegray-300);
   }
 
-  .scheduler {
-    min-height: 37.5rem;
-
-    input::placeholder {
-      color: var(--bluegray-300);
-    }
-
-    h6 {
-      color: var(--primary-color);
-    }
+  h6 {
+    color: var(--primary-color);
   }
+}
 
-  :deep(.input-error input) {
-    background: var(--red-200);
-  }
+:deep(.input-error input) {
+  background: var(--red-200);
+}
 
-  .examples {
-    border: 1px solid var(--surface-50);
-    border-radius: 6px;
-    background-color: var(--surface-50);
-  }
+.examples {
+  border: 1px solid var(--surface-50);
+  border-radius: 6px;
+  background-color: var(--surface-50);
+}
 
-  :deep(.calendar-warning) {
-    border: var(--border-weight) var(--border-style) var(--yellow-600);
-  }
+:deep(.calendar-warning) {
+  border: var(--border-weight) var(--border-style) var(--yellow-600);
+}
 </style>

@@ -1,15 +1,21 @@
 @import 'https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap';
 
-@import './styles/normalize.css';
-@import './index.css';
+@layer tailwind-utilities {
+  @tailwind utilities;
+}
 
-@import 'primeicons/primeicons.css';
-@import "./styles/more-light/theme.css";
+@layer tailwind, theme, primevue, more-styles, app-styles;
 
-@import './styles/text-styles.css';
-@import './styles/layout.css';
-@import './styles/btn.css';
-@import './styles/components/moreTable-dialogs.css';
-@import './styles/components/info-box.css';
+@import './index.css' layer(tailwind);
 
-@import './styles/print.css';
+@import './styles/normalize.css' layer(more-styles);
+@import 'primeicons/primeicons.css' layer(more-styles);
+@import "./styles/more-light/theme.css" layer(more-styles);
+
+@import './styles/text-styles.css' layer(more-styles);
+@import './styles/layout.css' layer(more-styles);
+@import './styles/btn.css' layer(more-styles);
+@import './styles/components/moreTable-dialogs.css' layer(more-styles);
+@import './styles/components/info-box.css' layer(more-styles);
+
+@import './styles/print.css' layer(more-styles);

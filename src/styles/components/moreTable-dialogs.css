@@ -33,14 +33,14 @@
 /* custom dialog: contentClass: "more-dialog" in dialog.open props*/
 /*.p-dialog-header:has(+.more-dialog) {  */
 .p-dialog-header {
-  background-color: var(--gray-100)!important;
-  border-bottom: 1px solid var(--gray-200)!important;
-  padding-top: 15px!important;
-  padding-bottom: 15px!important;
+  background-color: var(--gray-100);
+  border-bottom: 1px solid var(--gray-200);
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 /*.p-dialog-content.more-dialog {*/
 .p-dialog-content {
-  padding-top: 20px!important;
+  padding-top: 20px;
 }
 
 /* active inactive study - disabled editable dialog  */
@@ -49,11 +49,11 @@
   :deep(textarea[disabled]),
   :deep(dropdown[disabled]) {
     border: none;
-    color: var(--text-color) !important;
+    color: var(--text-color);
     opacity: 1;
     font-size: calc(var(--default-font-size) * 1.1);
     padding: 0;
-    height: auto !important;
+    height: auto;
 
     &.border-disabled {
       border: 1px solid var(--gray-200);
@@ -70,7 +70,7 @@
   }
   :deep(.p-dropdown.p-disabled .p-dropdown-label.p-placeholder) {
     color: var(--text-color);
-    font-size: calc(var(--default-font-size) * 1.1) !important;
+    font-size: calc(var(--default-font-size) * 1.1);
     padding: 0;
   }
   :deep(.p-dropdown.p-disabled .p-dropdown-trigger) {

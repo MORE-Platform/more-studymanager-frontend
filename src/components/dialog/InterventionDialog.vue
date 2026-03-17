@@ -643,23 +643,23 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  @import '../../styles/components/moreTable-dialogs.css';
+<style scoped>
+@import '../../styles/components/moreTable-dialogs.css';
 
-  :deep(.dropdown-has-value .p-dropdown-label) {
-    color: var(--text-color);
-  }
+:deep(.dropdown-btn .p-dropdown-label) {
+  color: white!important;
+}
 
-  .dropdown-btn {
-    background-color: var(--primary-color);
+.dropdown-btn {
+  background-color: var(--primary-color);
+  color: white;
+  :deep(.p-dropdown-label),
+  :deep(.p-dropdown-trigger-icon) {
     color: white;
-    :deep(.p-dropdown-label),
-    :deep(.p-dropdown-trigger-icon) {
-      color: white;
-    }
   }
+}
 
-  .dialog #interventionDialogForm .section-group .section-content {
-    border: 1px solid var(--bluegray-50);
-  }
+.dialog #interventionDialogForm .section-group .section-content {
+  border: 1px solid var(--bluegray-50);
+}
 </style>

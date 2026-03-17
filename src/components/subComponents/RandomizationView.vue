@@ -47,5 +47,3 @@
     emits('update:duration', value);
   }
 </script>
-
-<style scoped lang="postcss"></style>

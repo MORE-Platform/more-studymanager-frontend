@@ -26,11 +26,11 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .study-header {
     .title-block {
       h1 {
-        font-size: 1.75rem;
+        font-size: 2rem;
         color: var(--primary-color);
       }
     }

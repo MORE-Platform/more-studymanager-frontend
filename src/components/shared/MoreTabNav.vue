@@ -207,7 +207,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .more-tab-nav {
     margin-top: -0.938rem;
     .tab-parent {

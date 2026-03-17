@@ -127,109 +127,109 @@ Licensed under the Elastic License 2.0. */
   </header>
 </template>
 
-<style scoped lang="postcss">
-  header {
+<style scoped>
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 1000;
+
+  &.draft,
+  &.preview,
+  &.paused-preview,
+  &.active,
+  &.paused,
+  &.closed {
+    border-bottom: 2px solid;
+  }
+
+  &.draft {
+    border-color: var(--gray-400);
+  }
+  &.preview {
+    border-color: var(--green-400);
+    border-style: dashed;
+  }
+  &.paused-preview {
+    border-color: var(--red-400);
+    border-style: dashed;
+  }
+  &.active {
+    border-color: var(--green-400);
+  }
+  &.paused {
+    border-color: var(--red-400);
+  }
+  &.closed {
+    border-color: var(--blue-400);
+  }
+
+  .loader {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: white;
     z-index: 1000;
+    width: 100%;
+    top: 62px;
+  }
 
-    &.draft,
-    &.preview,
-    &.paused-preview,
-    &.active,
-    &.paused,
-    &.closed {
-      border-bottom: 2px solid;
-    }
-
-    &.draft {
-      border-color: var(--gray-400);
-    }
-    &.preview {
-      border-color: var(--green-400);
-      border-style: dashed;
-    }
-    &.paused-preview {
-      border-color: var(--red-400);
-      border-style: dashed;
-    }
-    &.active {
-      border-color: var(--green-400);
-    }
-    &.paused {
-      border-color: var(--red-400);
-    }
-    &.closed {
-      border-color: var(--blue-400);
+  .logo {
+    svg {
+      transition: ease-in-out 0.2s;
+      fill: var(--primary-color);
     }
 
-    .loader {
-      position: fixed;
-      z-index: 1000;
-      width: 100%;
-      top: 62px;
+    &:hover svg {
+      fill: var(--primary-700);
     }
+  }
+  .logo svg,
+  .user svg {
+    height: 2.813rem;
+    width: auto;
+  }
+  .logout,
+  .back-to-dashboard {
+    color: var(--text-color);
+    padding: 0 7px;
 
-    .logo {
-      svg {
-        transition: ease-in-out 0.2s;
-        fill: var(--primary-color);
-      }
-
-      &:hover svg {
-        fill: var(--primary-700);
-      }
-    }
-    .logo svg,
-    .user svg {
-      height: 2.813rem;
-      width: auto;
-    }
-    .logout,
-    .back-to-dashboard {
+    a,
+    button {
       color: var(--text-color);
-      padding: 0 7px;
+      position: relative;
 
-      a,
-      button {
-        color: var(--text-color);
-        position: relative;
-
-        &:hover,
-        &:active,
-        &:focus {
-          color: var(--primary-color);
-
-          &:after {
-            opacity: 1;
-          }
-        }
+      &:hover,
+      &:active,
+      &:focus {
+        color: var(--primary-color);
 
         &:after {
-          position: absolute;
-          content: '';
-          height: 2px;
-          width: 100%;
-          background-color: var(--primary-color);
-          bottom: 0;
-          left: 0;
-          opacity: 0;
+          opacity: 1;
         }
       }
 
-      &.active {
-        a,
-        button {
-          color: var(--primary-color);
+      &:after {
+        position: absolute;
+        content: '';
+        height: 2px;
+        width: 100%;
+        background-color: var(--primary-color);
+        bottom: 0;
+        left: 0;
+        opacity: 0;
+      }
+    }
 
-          &:after {
-            opacity: 1;
-          }
+    &.active {
+      a,
+      button {
+        color: var(--primary-color);
+
+        &:after {
+          opacity: 1;
         }
       }
     }
   }
+}
 </style>

@@ -396,8 +396,8 @@
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.p-progress-spinner-circle) {
-    stroke: currentColor !important;
+    stroke: currentColor;
   }
 </style>

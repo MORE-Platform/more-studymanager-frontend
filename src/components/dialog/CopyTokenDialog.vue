@@ -63,7 +63,7 @@ Licensed under the Elastic License 2.0. */
   />
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .msg-position {
     height: fit-content;
   }

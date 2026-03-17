@@ -798,35 +798,35 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.more-table) {
-    .flex {
-      margin: 0;
-    }
+<style scoped>
+:deep(.more-table) {
+  .flex {
+    margin: 0;
   }
+}
 
-  :deep(.p-accordion-header) {
-    a {
-      padding: 0.5rem 0 1rem 0 !important;
-      font-size: 1.1rem;
-      font-weight: normal;
-      color: var(--primary-color) !important;
-      border: transparent !important;
-      border-bottom: 1px solid var(--surface-c) !important;
-      background: transparent !important;
+:deep(.p-accordion-header) {
+  a {
+    padding: 0.5rem 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: normal;
+    color: var(--primary-color);
+    border: transparent;
+    border-bottom: 1px solid var(--surface-c);
+    background: transparent;
 
-      &:focus,
-      &:active {
-        border: transparent !important;
-      }
-    }
-    .p-accordion-toggle-icon {
-      position: absolute;
-      right: 0;
+    &:focus,
+    &:active {
+      border: transparent;
     }
   }
-  :deep(.p-accordion-content) {
-    border: transparent !important;
-    padding: 0 !important;
+  .p-accordion-toggle-icon {
+    position: absolute;
+    right: 0;
   }
+}
+:deep(.p-accordion-content) {
+  border: transparent;
+  padding: 0;
+}
 </style>

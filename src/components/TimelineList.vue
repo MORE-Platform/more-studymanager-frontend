@@ -685,31 +685,31 @@ Licensed under the Elastic License 2.0. */
   <DynamicDialog></DynamicDialog>
 </template>
 
-<style scoped lang="postcss">
-  .flex-row-center {
-    @apply flex flex-row items-center;
-  }
+<style scoped>
+.flex-row-center {
+  @apply flex flex-row items-center;
+}
 
-  .vuecal :deep(.vuecal__event) {
-    &.observation {
-      background-color: var(--green-100);
-      border: 1px solid var(--primary-200);
-    }
-    &.intervention {
-      background-color: var(--yellow-100);
-      border: 1px solid var(--primary-200);
-    }
-    &.study-date {
-      background-color: var(--primary-500);
-      color: white;
-    }
-    &.study-range {
-      background-color: var(--primary-200);
-      color: white;
-    }
-    &.participant-joined {
-      background-color: var(--red-600);
-      color: white;
-    }
+.vuecal :deep(.vuecal__event) {
+  &.observation {
+    background-color: var(--green-100);
+    border: 1px solid var(--primary-200);
   }
+  &.intervention {
+    background-color: var(--yellow-100);
+    border: 1px solid var(--primary-200);
+  }
+  &.study-date {
+    background-color: var(--primary-500);
+    color: white;
+  }
+  &.study-range {
+    background-color: var(--primary-200);
+    color: white;
+  }
+  &.participant-joined {
+    background-color: var(--red-600);
+    color: white;
+  }
+}
 </style>

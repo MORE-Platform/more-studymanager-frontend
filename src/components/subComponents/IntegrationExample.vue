@@ -86,7 +86,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .integration-example .example-box {
     border: 1px solid var(--surface-50);
     border-radius: 6px;

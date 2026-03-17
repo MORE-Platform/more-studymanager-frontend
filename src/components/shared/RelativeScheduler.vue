@@ -638,7 +638,7 @@
         class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
-          class="btn-gray !mr-3"
+          class="btn-gray mr-3"
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
@@ -652,24 +652,24 @@
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.highlight input) {
-    background-color: var(--red-200) !important;
+<style scoped>
+:deep(.highlight input) {
+  background-color: var(--red-200);
+}
+
+.scheduler {
+  min-height: 37.5rem;
+
+  input::placeholder {
+    color: var(--bluegray-300);
   }
 
-  .scheduler {
-    min-height: 37.5rem;
-
-    input::placeholder {
-      color: var(--bluegray-300);
-    }
-
-    h6 {
-      color: var(--primary-color);
-    }
+  h6 {
+    color: var(--primary-color);
   }
+}
 
-  :deep(.input-error input) {
-    background: var(--red-200);
-  }
+:deep(.input-error input) {
+  background: var(--red-200);
+}
 </style>

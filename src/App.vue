@@ -25,8 +25,8 @@ Licensed under the Elastic License 2.0. */
   <Footer />
 </template>
 
-<style scoped lang="postcss">
-  main {
-    min-height: 85vh;
-  }
+<style scoped>
+main {
+  min-height: 85vh;
+}
 </style>

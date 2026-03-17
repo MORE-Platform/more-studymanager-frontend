@@ -691,99 +691,99 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  @import '../../styles/components/eye-checkbox.css';
+<style scoped>
+@import '../../styles/components/eye-checkbox.css';
 
-  .pi.big {
-    font-size: 1.2rem;
+.pi.big {
+  font-size: 1.2rem;
+}
+
+:deep(.dropdown-has-value .p-dropdown-label) {
+  color: var(--text-color);
+}
+
+.more-table {
+  :deep(.p-datatable-loading-overlay) {
+    filter: blur(5px);
+    background-color: #ffffff99;
   }
 
-  :deep(.dropdown-has-value .p-dropdown-label) {
-    color: var(--text-color) !important;
+  :deep(.p-datatable .p-datatable-tbody > tr:focus) {
+    outline: none;
   }
 
-  .more-table {
-    :deep(.p-datatable-loading-overlay) {
-      filter: blur(5px);
-      background-color: #ffffff99;
+  :deep(.pi-exclamation-circle.big:before) {
+    font-size: 30px;
+  }
+
+  table tbody tr {
+    font-size: 0.906rem;
+    @apply cursor-pointer;
+
+    td:last-child {
+      width: 1%;
+      white-space: nowrap;
+    }
+  }
+
+  :deep(td.row-actions) {
+    pointer-events: none;
+
+    div {
+      display: flex;
+      justify-content: flex-end;
     }
 
-    :deep(.p-datatable .p-datatable-tbody > tr:focus) {
-      outline: none;
+    button {
+      margin: 0 0.188rem;
     }
 
-    :deep(.pi-exclamation-circle.big:before) {
-      font-size: 30px;
-    }
+    .p-button {
+      pointer-events: all;
 
-    table tbody tr {
-      font-size: 0.906rem !important;
-      @apply cursor-pointer;
-
-      td:last-child {
-        width: 1%;
-        white-space: nowrap;
-      }
-    }
-
-    :deep(td.row-actions) {
-      pointer-events: none;
-
-      div {
-        display: flex;
-        justify-content: flex-end;
-      }
-
-      button {
-        margin: 0 0.188rem;
-      }
-
-      .p-button {
-        pointer-events: all;
-
-        &.p-disabled {
-          pointer-events: none;
-        }
-      }
-    }
-
-    .placeholder {
-      font-style: italic;
-      color: #ccc;
-    }
-
-    .p-multiselect {
-      width: 100%;
-      z-index: 1000;
-    }
-
-    .p-checkbox .p-checkbox-box {
-      border-radius: 50%;
-    }
-
-    .multiselect-item {
-      &:after {
-        content: ', ';
-      }
-
-      &:last-of-type:after {
-        content: '';
+      &.p-disabled {
+        pointer-events: none;
       }
     }
   }
 
-  .table-title-width .title {
-    max-width: 80%;
+  .placeholder {
+    font-style: italic;
+    color: #ccc;
   }
 
-  :deep(.icon-checkbox.p-checkbox.show-icon) {
-    height: 100%;
-    padding: 5px;
+  .p-multiselect {
+    width: 100%;
+    z-index: 1000;
   }
 
-  .title-has-warning,
-  .title-has-warning #exclamationIcon {
-    height: 18px;
-    width: auto;
+  .p-checkbox .p-checkbox-box {
+    border-radius: 50%;
   }
+
+  .multiselect-item {
+    &:after {
+      content: ', ';
+    }
+
+    &:last-of-type:after {
+      content: '';
+    }
+  }
+}
+
+.table-title-width .title {
+  max-width: 80%;
+}
+
+:deep(.icon-checkbox.p-checkbox.show-icon) {
+  height: 100%;
+  padding: 5px;
+}
+
+.title-has-warning,
+.title-has-warning #exclamationIcon {
+  height: 18px;
+  width: auto;
+}
 </style>

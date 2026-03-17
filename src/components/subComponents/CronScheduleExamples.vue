@@ -125,51 +125,51 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  .cron-schedule-examples .examples {
+<style scoped>
+.cron-schedule-examples .examples {
+  border: 1px solid var(--surface-50);
+  border-radius: 6px;
+  background-color: var(--surface-50);
+}
+
+:deep(.p-accordion) {
+  .p-accordion-header-link {
+    border: 1px solid var(--surface-100);
+    background: var(--surface-50);
+    transition: ease-in-out 0.35s;
+
+    &:hover {
+      background: var(--surface-100);
+    }
+  }
+  .p-accordion-content {
+    background: var(--surface-50);
     border: 1px solid var(--surface-50);
-    border-radius: 6px;
-    background-color: var(--surface-50);
+    padding: 1rem 1.5rem 1.5rem;
   }
+}
 
-  :deep(.p-accordion) {
-    .p-accordion-header-link {
-      border: 1px solid var(--surface-100);
-      background: var(--surface-50);
-      transition: ease-in-out 0.35s;
+:deep(.p-datatable-wrapper tr) {
+  th {
+    padding-top: 0;
+    padding-bottom: 7px;
 
-      &:hover {
-        background: var(--surface-100);
-      }
-    }
-    .p-accordion-content {
-      background: var(--surface-50);
-      border: 1px solid var(--surface-50);
-      padding: 1rem 1.5rem 1.5rem;
+    .p-column-title {
+      width: 100%;
     }
   }
+  td,
+  th {
+    text-align: center;
 
-  :deep(.p-datatable-wrapper tr) {
-    th {
-      padding-top: 0;
-      padding-bottom: 7px;
-
-      .p-column-title {
-        width: 100%;
-      }
-    }
-    td,
-    th {
-      text-align: center;
-
-      &:first-of-type {
-        font-weight: 500;
-        text-align: left;
-      }
-    }
-
-    td:first-of-type {
-      color: var(--primary-color);
+    &:first-of-type {
+      font-weight: 500;
+      text-align: left;
     }
   }
+
+  td:first-of-type {
+    color: var(--primary-color);
+  }
+}
 </style>

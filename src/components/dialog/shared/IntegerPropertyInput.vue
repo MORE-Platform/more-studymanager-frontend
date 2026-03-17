@@ -54,7 +54,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.p-inputnumber) {
     border: transparent;
     padding: 0;

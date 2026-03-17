@@ -8,6 +8,7 @@
  */
 import { createApp } from 'vue';
 import App from './App.vue';
+import '../tailwind.config.ts';
 
 // Styles
 import './style.css';
@@ -24,6 +25,9 @@ import ToastService from 'primevue/toastservice';
 const MyPreset = definePreset(Aura, {
   primitive: {
     fontFamily: 'Rubik, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  },
+  options: {
+    cssLayer: false
   },
   semantic: {
     borderRadius: {
@@ -203,8 +207,12 @@ app.use(PrimeVue, {
     preset: MyPreset,
     options: {
       darkModeSelector: false,
+      cssLayer: {
+        name: 'primevue',
+        order: 'theme, primevue, tailwind, more-styles, app-styles',
+      },
     }
-  }
+  },
 });
 app.use(ConfirmationService);
 app.use(DialogService);
