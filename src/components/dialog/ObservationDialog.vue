@@ -443,7 +443,7 @@ Licensed under the Elastic License 2.0. */
 @import '../../styles/components/eye-checkbox.css';
 
 .dialog {
-  :deep(.dropdown-has-value .p-dropdown-label) {
+  :deep(.dropdown-has-value .p-select-label) {
     color: var(--text-color);
   }
 

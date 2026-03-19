@@ -342,6 +342,7 @@ Licensed under the Elastic License 2.0. */
     <AlertMsg
       :show-msg="alert.showMessage"
       :message="alert.message"
+      :class="alert.showMessage ? 'block' : 'hidden'"
       type="msg"
       severity-type="success"
       style-modifier="msgPosition"

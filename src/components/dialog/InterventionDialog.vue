@@ -591,7 +591,7 @@ Licensed under the Elastic License 2.0. */
             "
           >
             <template #option="optionProps">
-              <div class="p-dropdown-car-option">
+              <div class="p-select-car-option">
                 <span>{{ optionProps.option.label }}</span>
               </div>
             </template>
@@ -646,15 +646,15 @@ Licensed under the Elastic License 2.0. */
 <style scoped>
 @import '../../styles/components/moreTable-dialogs.css';
 
-:deep(.dropdown-btn .p-dropdown-label) {
+:deep(.dropdown-btn .p-select-label) {
   color: white!important;
 }
 
 .dropdown-btn {
   background-color: var(--primary-color);
   color: white;
-  :deep(.p-dropdown-label),
-  :deep(.p-dropdown-trigger-icon) {
+  :deep(.p-select-label),
+  :deep(.p-select-trigger-icon) {
     color: white;
   }
 }

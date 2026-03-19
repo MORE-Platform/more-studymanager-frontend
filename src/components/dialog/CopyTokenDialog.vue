@@ -56,6 +56,7 @@ Licensed under the Elastic License 2.0. */
   <AlertMsg
     :show-msg="showMessage"
     :message="t('integration.dialog.label.copySuccess')"
+    :class="showMessage ? 'block' : 'hidden'"
     type="msg"
     severity-type="success"
     style-modifier="msg-position"

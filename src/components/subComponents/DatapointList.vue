@@ -187,7 +187,7 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped>
-  :deep(.p-dropdown) {
+  :deep(.p-select) {
     min-width: 14rem;
 
     &.small {

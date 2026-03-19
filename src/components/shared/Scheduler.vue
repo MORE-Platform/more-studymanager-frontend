@@ -367,7 +367,7 @@ Licensed under the Elastic License 2.0. */
         :max-date="maxDate"
         :manual-input="false"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         time-only
       />
 
@@ -403,7 +403,7 @@ Licensed under the Elastic License 2.0. */
         :min-date="minDate"
         :max-date="maxDate"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         :class="{
           'calendar-warning': getErrorOrWarning(
             'warning',

@@ -503,7 +503,7 @@ Licensed under the Elastic License 2.0. */
           <InputText
             v-model="filterModel.value"
             type="text"
-            class="p-column-filter"
+            class="p-datatable-column-filter"
             :placeholder="`${$t('moreTable.filterBy')} ${column.header.toLowerCase()}`"
             @keydown.enter="filterCallback()"
           />
@@ -698,7 +698,7 @@ Licensed under the Elastic License 2.0. */
   font-size: 1.2rem;
 }
 
-:deep(.dropdown-has-value .p-dropdown-label) {
+:deep(.dropdown-has-value .p-select-label) {
   color: var(--text-color);
 }
 

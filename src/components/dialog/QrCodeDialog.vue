@@ -137,11 +137,11 @@ Licensed under the Elastic License 2.0. */
       :disabled="!registrationUrl"
       @click.prevent="download()"
     />
-
     <AlertMsg
       :show-msg="showMessage"
       :message="t('participants.dialog.msg.alert')"
       class="qr-code-message"
+      :class="showMessage ? 'block' : 'hidden'"
       type="msg"
       severity-type="success"
       style-modifier="msg-position"

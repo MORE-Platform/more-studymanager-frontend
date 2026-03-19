@@ -154,7 +154,7 @@ Licensed under the Elastic License 2.0. */
     padding-top: 0;
     padding-bottom: 7px;
 
-    .p-column-title {
+    .p-datatable-column-title {
       width: 100%;
     }
   }
