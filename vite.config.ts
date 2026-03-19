@@ -2,13 +2,26 @@
 import { defineConfig, loadEnv } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [vue(), tailwindcss()],
+    plugins: [
+      vue(),
+      tailwindcss(),
+      VueI18nPlugin({
+        include: resolve(__dirname, './src/i18n/*.json'),
+        fullInstall: false,
+        compositionOnly: true,
+        strictMessage: false,
+      }),
+    ],
     build: {
       //TODO maybe remove on cleanup session
       target: 'esnext',
@@ -23,6 +36,7 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@gs': resolve(__dirname, './src/generated-sources'),
         '@': resolve(__dirname, './src'),
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.runtime.esm-browser.js',
       },
     },
     server: {
