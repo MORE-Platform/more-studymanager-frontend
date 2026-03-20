@@ -74,7 +74,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .table-data-preview {
     :deep(.p-datatable) {
       .row-actions {

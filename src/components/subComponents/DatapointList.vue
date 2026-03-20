@@ -186,8 +186,8 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.p-dropdown) {
+<style scoped>
+  :deep(.p-select) {
     min-width: 14rem;
 
     &.small {

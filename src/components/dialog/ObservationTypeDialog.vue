@@ -443,38 +443,23 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  @import '../../styles/components/moreTable-dialogs.pcss';
-  @import '../../styles/components/eye-checkbox.pcss';
+<style scoped>
+@import '../../styles/components/moreTable-dialogs.css';
+@import '../../styles/components/eye-checkbox.css';
 
-  .dialog {
-    :deep(.dropdown-has-value .p-dropdown-label) {
-      color: var(--text-color);
+.dialog {
+  :deep(.dropdown-has-value .p-select-label) {
+    color: var(--text-color);
+  }
+
+  .day {
+    &:after {
+      content: ', ';
     }
 
-    .day {
-      &:after {
-        content: ', ';
-      }
-
-      &:last-of-type:after {
-        content: '';
-      }
-    }
-
-    .info-box {
-      &-hidden {
-        width: 20vw;
-        border: 1px solid var(--bluegray-200);
-        transition: ease-in-out opacity 0.25s;
-        box-shadow: 1px 1px 5px var(--bluegray-200);
-      }
-
-      &:hover {
-        .info-box-hidden {
-          opacity: 1;
-        }
-      }
+    &:last-of-type:after {
+      content: '';
     }
   }
+}
 </style>

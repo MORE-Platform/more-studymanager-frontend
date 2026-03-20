@@ -343,14 +343,25 @@ Licensed under the Elastic License 2.0. */
       <template #tableActions>
         <div>
           <Dropdown
-            class="button p-button dropdown-search flex items-center text-nowrap !p-0"
+            class="button p-button dropdown-search bg-primary flex items-center text-nowrap"
             :filter="true"
             auto-filter-focus
             :options="collaboratorList"
             option-label="label"
             option-value="value"
             :disabled="!editAccess"
-            panel-class="dropdown-search-panel "
+            panel-class="dropdown-search-panel p-2"
+            :placeholder="t('studyCollaborator.placeholder.addCollaborator')"
+            :pt="{
+              panel: { class: 'dropdown-search-panel p-2' },
+              filterContainer: { class: 'p-2 pt-2 m-2' },
+              filterInput: { class: 'pl-10 pr-3 py-2' },
+              emptyMessage: { class: 'px-4 py-3' },
+              dropdown: { class: 'text-white' },
+              filterIcon: {
+                style: 'top:50%; transform:translateY(-50%); margin-top:0',
+              },
+            }"
             :empty-message="
               t('studyCollaborator.placeholder.searchCollaborators')
             "
@@ -360,7 +371,7 @@ Licensed under the Elastic License 2.0. */
             @filter="filterActionHandler($event.value)"
           >
             <template #value>
-              <span class="pi pi-search ml-1 mr-2 text-white"></span>
+              <span class="pi pi-search mr-2 ml-1 text-white"></span>
               <span class="text-white">
                 {{ t('studyCollaborator.placeholder.addCollaborator') }}
               </span>
@@ -369,15 +380,13 @@ Licensed under the Elastic License 2.0. */
               <span class="pi pi-angle-down text-white"></span>
             </template>
             <template #option="slotProps">
-              <template
-                v-for="(item, key) in slotProps"
-                :key="key"
-              >
+              <template v-for="(item, key) in slotProps" :key="key">
                 <div
                   v-if="key === 'option'"
-                  class="w-full"
-                  @click="openAddCollaboratorDialog(slotProps.option)">
-                  <span class="color-primary font-medium" >
+                  class="my-2 w-full px-4"
+                  @click="openAddCollaboratorDialog(slotProps.option)"
+                >
+                  <span class="color-primary font-medium">
                     {{ item.label }}
                   </span>
                   <span v-if="item.institution" class="block">

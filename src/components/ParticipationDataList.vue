@@ -6,7 +6,8 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import Dropdown, { DropdownChangeEvent } from 'primevue/dropdown';
+  import Dropdown from 'primevue/select';
+  import type { SelectChangeEvent as DropdownChangeEvent } from 'primevue/select';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import Chart from 'primevue/chart';
@@ -679,6 +680,7 @@ Licensed under the Elastic License 2.0. */
               autocomplete="off"
               selection-mode="range"
               :manual-input="false"
+              class="ml-1"
               :date-format="dateFormat"
               :placeholder="`${dateFormat} - ${dateFormat}`"
               :disabled="disableVisualizationFilter"
@@ -739,7 +741,7 @@ Licensed under the Elastic License 2.0. */
             class="pt-8"
             @update:active-index="onTabChange(observationId, $event)"
           >
-            <TabPanel :header="$t('monitoring.labels.latestDataPoints')">
+            <TabPanel value="latestDataPoints" :header="$t('monitoring.labels.latestDataPoints')">
               <MoreTable
                 v-if="observationData.length"
                 row-id="observationId"
@@ -753,6 +755,7 @@ Licensed under the Elastic License 2.0. */
             </TabPanel>
             <TabPanel
               v-if="observationsViewData[observationId]"
+              value="visualization"
               :header="$t('monitoring.labels.visualization')"
             >
               <Dropdown
@@ -795,35 +798,35 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.more-table) {
-    .flex {
-      margin: 0;
-    }
+<style scoped>
+:deep(.more-table) {
+  .flex {
+    margin: 0;
   }
+}
 
-  :deep(.p-accordion-header) {
-    a {
-      padding: 0.5rem 0 1rem 0 !important;
-      font-size: 1.1rem;
-      font-weight: normal;
-      color: var(--primary-color) !important;
-      border: transparent !important;
-      border-bottom: 1px solid var(--surface-c) !important;
-      background: transparent !important;
+:deep(.p-accordion-header) {
+  a {
+    padding: 0.5rem 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: normal;
+    color: var(--primary-color);
+    border: transparent;
+    border-bottom: 1px solid var(--surface-c);
+    background: transparent;
 
-      &:focus,
-      &:active {
-        border: transparent !important;
-      }
-    }
-    .p-accordion-toggle-icon {
-      position: absolute;
-      right: 0;
+    &:focus,
+    &:active {
+      border: transparent;
     }
   }
-  :deep(.p-accordion-content) {
-    border: transparent !important;
-    padding: 0 !important;
+  .p-accordion-toggle-icon {
+    position: absolute;
+    right: 0;
   }
+}
+:deep(.p-accordion-content) {
+  border: transparent;
+  padding: 0;
+}
 </style>

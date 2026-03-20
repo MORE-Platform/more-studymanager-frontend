@@ -8,9 +8,9 @@
   html, body, .p-dialog-mask, .p-dialog-header, .p-dialog-content {
     color: black;
     background-color: white;
-    border: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    border: none;
+    padding: 0;
+    margin: 0;
     display: block;
     height: 100%;
     width: 400px;

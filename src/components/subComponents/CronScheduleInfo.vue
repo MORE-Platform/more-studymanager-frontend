@@ -68,7 +68,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .info-circle {
     transition: ease-in-out all 0.25s;
     color: var(--primary-color);

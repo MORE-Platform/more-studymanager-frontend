@@ -354,7 +354,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .examples {
     background-color: var(--gray-100);
   }

@@ -72,7 +72,7 @@
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .info-box {
     &-hidden {
       width: max-content;

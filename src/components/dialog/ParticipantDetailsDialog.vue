@@ -214,12 +214,12 @@
             </div>
           </template>
 
-          <template v-else #body="{ data, field }">
+          <template v-else #body="{ data, field }: { data: any, field: any }">
             <div
               class="px-2 py-3"
-              :class="{ 'bg-gray-100 text-gray-500': data.upcoming }"
+              :class="{ 'bg-gray-100 text-gray-500': (data as any).upcoming }"
             >
-              {{ data[field] }}
+              {{ (data as any)[field] }}
             </div>
           </template>
         </Column>

@@ -8,23 +8,18 @@
  */
 import { createApp } from 'vue';
 import App from './App.vue';
-import './index.pcss';
+import '../tailwind.config.ts';
 
-// Tailwind + deine Overrides -> set theme and ovverride with brand colors -> flexibility to switch themes later
-// animations and optimization run over the theme since the last update, so we need a basic theme before overriding it with our brand colors
-import 'primevue/resources/themes/lara-light-blue/theme.css';
-import "primevue/resources/primevue.min.css";
-import '../src/styles/more-light/theme.pcss';
-import '../src/style.pcss';
+// Styles
+import './style.css';
 
 // PrimeVue
 import PrimeVue from 'primevue/config';
+import { MorePreset } from './styles/more-light/theme-preset';
 import Tooltip from 'primevue/tooltip';
 import ConfirmationService from 'primevue/confirmationservice';
 import DialogService from 'primevue/dialogservice';
 import ToastService from 'primevue/toastservice';
-
-
 
 // Router
 import { Router } from './router';
@@ -116,7 +111,18 @@ app.provide('authService', authService);
 
 app.use(i18n);
 app.use(Router);
-app.use(PrimeVue);
+app.use(PrimeVue, {
+  theme: {
+    preset: MorePreset,
+    options: {
+      darkModeSelector: false,
+      cssLayer: {
+        name: 'primevue',
+        order: 'theme, primevue, tailwind, more-styles, app-styles',
+      },
+    }
+  },
+});
 app.use(ConfirmationService);
 app.use(DialogService);
 app.use(ToastService);

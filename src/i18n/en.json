@@ -522,6 +522,10 @@
             "description": "Epoch step count data from Garmin Connect."
           }
         }
+      },
+      "appUsage": {
+        "title": "App usage",
+        "description": "Track app usage in More participant app."
       }
     },
     "observationList": {

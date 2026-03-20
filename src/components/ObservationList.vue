@@ -605,7 +605,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.table-title-width) {
     .title {
       max-width: 80%;

@@ -531,7 +531,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.width-50 .title) {
     width: 50%;
   }

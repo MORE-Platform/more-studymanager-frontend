@@ -7,7 +7,7 @@ Licensed under the Elastic License 2.0. */
   import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
-  import CustomCheckbox from './CustomCheckbox.vue';
+  import Checkbox from 'primevue/checkbox';
   import { Event, RecurrenceRule } from '@gs';
   import { useI18n } from 'vue-i18n';
   import { useStudyStore } from '../../stores/studyStore';
@@ -367,7 +367,7 @@ Licensed under the Elastic License 2.0. */
         :max-date="maxDate"
         :manual-input="false"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         time-only
       />
 
@@ -403,7 +403,7 @@ Licensed under the Elastic License 2.0. */
         :min-date="minDate"
         :max-date="maxDate"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         :class="{
           'calendar-warning': getErrorOrWarning(
             'warning',
@@ -422,27 +422,28 @@ Licensed under the Elastic License 2.0. */
       <div class="col-span-7 col-start-2 grid grid-cols-2">
         <div class="flex flex-row items-center justify-start">
           {{ $t('scheduler.labels.event.oneDayObservation') }}:
-          <CustomCheckbox
+          <Checkbox
             v-model="singleDayEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="onChangeSingleDayEventCheckbox()"
+            @update:model-value="onChangeSingleDayEventCheckbox()"
           />
         </div>
         <div class="flex flex-row items-center justify-start">
           <span>{{ $t('scheduler.labels.event.allDay') }}</span>
-          <CustomCheckbox
+          <Checkbox
             v-model="entireDayCheckbox"
             class="ml-2"
             :binary="true"
-            @change="onChangeEntireDayCheckbox()"
+            @update:model-value="onChangeEntireDayCheckbox()"
           />
         </div>
         <div class="flex flex-row items-center justify-start">
           <span>{{ $t('scheduler.randomization.label') }}:</span>
-          <CustomCheckbox
+          <Checkbox
             :model-value="!!returnSchedule.random?.state"
             class="ml-2"
+            :binary="true"
             @update:model-value="onRandomStateChange"
           />
         </div>
@@ -474,7 +475,7 @@ Licensed under the Elastic License 2.0. */
         class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
-          class="btn-gray !mr-3"
+          class="btn-gray mr-3"
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
@@ -484,34 +485,34 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  :deep(.highlight input) {
-    background-color: var(--red-200) !important;
+<style scoped>
+:deep(.highlight input) {
+  background-color: var(--red-200);
+}
+
+.scheduler {
+  min-height: 37.5rem;
+
+  input::placeholder {
+    color: var(--bluegray-300);
   }
 
-  .scheduler {
-    min-height: 37.5rem;
-
-    input::placeholder {
-      color: var(--bluegray-300);
-    }
-
-    h6 {
-      color: var(--primary-color);
-    }
+  h6 {
+    color: var(--primary-color);
   }
+}
 
-  :deep(.input-error input) {
-    background: var(--red-200);
-  }
+:deep(.input-error input) {
+  background: var(--red-200);
+}
 
-  .examples {
-    border: 1px solid var(--surface-50);
-    border-radius: 6px;
-    background-color: var(--surface-50);
-  }
+.examples {
+  border: 1px solid var(--surface-50);
+  border-radius: 6px;
+  background-color: var(--surface-50);
+}
 
-  :deep(.calendar-warning) {
-    border: var(--border-weight) var(--border-style) var(--yellow-600);
-  }
+:deep(.calendar-warning) {
+  border: var(--border-weight) var(--border-style) var(--yellow-600);
+}
 </style>
