@@ -5,7 +5,8 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import { Duration, UnitEnum, RelativeEvent } from '@gs';
+  import { RelativeEvent } from '@gs';
+  import { Duration, UnitEnum } from '@gs/models/duration';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '../../models/Scheduler';
   import { DateTime } from 'luxon';

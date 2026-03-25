@@ -26,6 +26,7 @@ import { Router } from './router';
 import AuthService from './service/AuthService';
 import axios, { AxiosError } from 'axios';
 import { createPinia } from 'pinia';
+import { VueQueryPlugin } from '@tanstack/vue-query';
 import i18n from './i18n/i18n';
 import { useErrorHandling } from './composable/useErrorHandling';
 import useLoader from './composable/useLoader';
@@ -127,5 +128,6 @@ app.use(ConfirmationService);
 app.use(DialogService);
 app.use(ToastService);
 app.use(pinia);
+app.use(VueQueryPlugin);
 
 app.mount('#app');

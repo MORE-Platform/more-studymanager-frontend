@@ -5,3 +5,4 @@ export const TOAST_ERROR_DURATION = 5_000;
 export const ACTION_ID_DELETE = 'delete';
 export const ACTION_ID_QR_CODE = 'qr-code';
 export const ACTION_ID_DATA_HEALTH = 'data-health';
+export const ACTION_ID_INFO = 'info';

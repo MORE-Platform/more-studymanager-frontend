@@ -13,7 +13,8 @@ Licensed under the Elastic License 2.0. */
     MoreTableFieldType,
     MoreTableRowActionResult,
   } from '../models/MoreTableModel';
-  import { UnitEnum, StudyGroup, StudyRole, StudyStatus } from '@gs';
+  import { StudyGroup, StudyRole, StudyStatus } from '@gs';
+  import { UnitEnum } from '@gs/models/duration';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import { useStudyGroupStore } from '../stores/studyGroupStore';

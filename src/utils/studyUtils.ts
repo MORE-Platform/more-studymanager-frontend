@@ -1,4 +1,5 @@
-import { Duration, UnitEnum, Study } from '@gs';
+import { Study } from '@gs';
+import { Duration, UnitEnum } from '@gs/models/duration';
 import { createLuxonDateTime } from './dateUtils';
 import { roundAndCeil } from './dataUtils';
 import { DateTime } from 'luxon';

@@ -10,7 +10,8 @@ Licensed under the Elastic License 2.0. */
   import Textarea from 'primevue/textarea';
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
-  import { Contact, Duration, UnitEnum, Study } from '@gs';
+  import { Contact, Study } from '@gs';
+  import { Duration, UnitEnum } from '@gs/models/duration';
   import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
   import { useI18n } from 'vue-i18n';
   import { useGlobalStore } from '../../stores/globalStore';

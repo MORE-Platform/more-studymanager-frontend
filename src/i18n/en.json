@@ -562,7 +562,48 @@
     "singular": "Observation"
   },
   "participants": {
+    "applicationAccess": {
+      "title": "Application access",
+      "add": "Add application",
+      "btn": {
+        "generate": "Generate access",
+        "copyAll": "Copy all access data",
+        "emailAll": "Email all access data"
+      },
+      "allAccessData": {
+        "header": "Application access data for participant {alias}",
+        "subject": "Access data for {alias}"
+      },
+      "label": {
+        "selectApp": "Select application",
+        "url": "URL",
+        "accessCode": "Access code"
+      },
+      "placeholder": {
+        "selectApp": "Select an application"
+      },
+      "dialog": {
+        "header": {
+          "delete": "Delete application access"
+        },
+        "msg": {
+          "deleteIntro": "You are about to delete the following application access:",
+          "deleteWarning": "Deleting the access will revoke the participant's access to this application. New access data will have to be created if needed.",
+          "deleteConfirm": "Are you sure you want to delete this access?"
+        }
+      },
+      "error": {
+        "fetchFailed": "Failed to fetch access data.",
+        "createFailed": "Failed to create access data.",
+        "deleteFailed": "Failed to delete access data.",
+        "alreadyExists": "Access data already exists for this application. Loading current data."
+      },
+      "noAccess": "No application access granted yet.",
+      "addTooltip": "No more applications available for this study. Grant access to applications via the study tab."
+    },
     "dialog": {
+      "updated": "Participant saved successfully",
+      "updateFailed": "Failed to update participant data!",
       "btn": {
         "copyLink": "Copy link",
         "distributeBtn": "Distribute",
@@ -576,7 +617,8 @@
         "warning": "A deleted participant can't be restored. You have the option to delete a participant including all the collected data or the participant alone."
       },
       "error": {
-        "qrcode": "Error in QR code creation"
+        "qrcode": "Error in QR code creation",
+        "aliasRequired": "The participant alias is required."
       },
       "header": {
         "create": "Create participant",
@@ -624,8 +666,10 @@
     "plural": "Participants",
     "props": {
       "alias": "Alias",
+      "participantAlias": "Participant alias",
       "individualStart": "Started on",
       "participantId": "Participant ID",
+      "notStartedYet": "not started yet",
       "registrationToken": "Registration token",
       "token": "Token"
     },
@@ -893,6 +937,13 @@
     }
   },
   "study": {
+    "applications": {
+      "title": "Study Applications",
+      "placeholder": "Select applications for this study",
+      "label": {
+        "PARTICIPANT_PORTAL": "Participant Portal"
+      }
+    },
     "dialog": {
       "deleteMsg": {
         "confirm": "Are you sure you want to delete your study?",
@@ -1244,6 +1295,7 @@
       "saveChanges": "Save changes",
       "showQrCode": "Show QR code",
       "showStudy": "Click on row to show study details page.",
+      "showParticipantInfo": "Show participant details",
       "openParticipantDetails": "Show details on data."
     },
     "timeline": {
@@ -1257,7 +1309,11 @@
     "droppedOut": "dropped out",
     "inactive": "inactive",
     "invited": "invited",
-    "kickedOut": "kicked out"
+    "kickedOut": "kicked out",
+    "new": "new",
+    "abandoned": "abandoned",
+    "kicked_out": "kicked out",
+    "locked": "locked"
   },
   "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
   "welcomeToMore": "Welcome to More"
