@@ -5,23 +5,24 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import { Duration, UnitEnum, RelativeEvent } from '@gs';
+  import { DurationUnitEnum, RelativeEvent, StudyDurationUnitEnum } from '@gs';
+  import { Duration } from '@gs/models/duration';
   import { useI18n } from 'vue-i18n';
-  import { ScheduleType } from '../../models/Scheduler';
+  import { ScheduleType } from '@/models/Scheduler';
   import { DateTime } from 'luxon';
-  import { createLuxonDateTime, timeFromString } from '../../utils/dateUtils';
-  import { useStudyStore } from '../../stores/studyStore';
+  import { createLuxonDateTime, timeFromString } from '@/utils/dateUtils';
+  import { useStudyStore } from '@/stores/studyStore';
   import { storeToRefs } from 'pinia';
   import {
     correctEvent,
     correctEventRepetition,
-  } from '../../utils/relativeScheduleUtils';
-  import { calcStudyDurationFromStudy } from '../../utils/studyUtils';
+  } from '@/utils/relativeScheduleUtils';
+  import { calcStudyDurationFromStudy } from '@/utils/studyUtils';
   import ErrorLabel from '../forms/ErrorLabel.vue';
-  import { useErrorQueue } from '../../composable/useErrorHandling';
-  import { valueToMinutes } from '../../utils/durationUtils';
-  import { scrollToFirstError } from '../../utils/componentUtils';
-  import { ONE_DAY_IN_MINUTES } from '../../constants';
+  import { useErrorQueue } from '@/composable/useErrorHandling';
+  import { valueToMinutes } from '@/utils/durationUtils';
+  import { scrollToFirstError } from '@/utils/componentUtils';
+  import { ONE_DAY_IN_MINUTES } from '@/constants';
   import RandomizationView from '../subComponents/RandomizationView.vue';
   import { useToast } from 'primevue/usetoast';
 
@@ -39,7 +40,7 @@
 
   const startOffset = ref<Duration>({
     value: schedule.dtstart?.offset?.value ?? 1,
-    unit: UnitEnum.Day,
+    unit: DurationUnitEnum.Day,
   });
   const startTime = ref<DateTime>(
     DateTime.now().set({ hour: 10, minute: 30, second: 0 }),
@@ -47,7 +48,7 @@
 
   const endOffset = ref<Duration>({
     value: schedule.dtend?.offset?.value ?? 1,
-    unit: UnitEnum.Day,
+    unit: DurationUnitEnum.Day,
   });
   const endTime = ref<DateTime>(
     DateTime.now().set({ hour: 18, minute: 30, second: 0 }),
@@ -98,13 +99,13 @@
   });
 
   const frequency = ref<number>(schedule.rrrule?.frequency?.value || 1);
-  const frequencyUnit = ref<UnitEnum>(
-    schedule.rrrule?.frequency?.unit ?? UnitEnum.Day,
+  const frequencyUnit = ref<DurationUnitEnum>(
+    schedule.rrrule?.frequency?.unit ?? DurationUnitEnum.Day,
   );
 
   const endRep = ref<number>(schedule.rrrule?.endAfter?.value || 4);
-  const endRepUnit = ref<UnitEnum>(
-    schedule.rrrule?.endAfter?.unit ?? UnitEnum.Day,
+  const endRepUnit = ref<DurationUnitEnum>(
+    schedule.rrrule?.endAfter?.unit ?? DurationUnitEnum.Day,
   );
 
   const repeatChecked: Ref<boolean> = ref(!!schedule.rrrule?.frequency);
@@ -116,19 +117,19 @@
   const repetitionUnit = [
     {
       label: t('scheduler.frequency.minute'),
-      value: UnitEnum.Minute,
-      unit: UnitEnum.Minute,
+      value: DurationUnitEnum.Minute,
+      unit: DurationUnitEnum.Minute,
     },
     {
       label: t('scheduler.frequency.hour'),
-      value: UnitEnum.Hour,
-      unit: UnitEnum.Hour,
+      value: DurationUnitEnum.Hour,
+      unit: DurationUnitEnum.Hour,
     },
     {
       label: t('scheduler.frequency.day'),
-      value: UnitEnum.Day,
+      value: DurationUnitEnum.Day,
       active: true,
-      unit: UnitEnum.Day,
+      unit: DurationUnitEnum.Day,
     },
   ];
 
@@ -230,11 +231,11 @@
   const offsetToMinutes = (offset: Duration): number => {
     const v = Number(offset.value ?? 0);
     switch (offset.unit) {
-      case UnitEnum.Minute:
+      case StudyDurationUnitEnum.Minute:
         return v;
-      case UnitEnum.Hour:
+      case StudyDurationUnitEnum.Hour:
         return v * 60;
-      case UnitEnum.Day:
+      case StudyDurationUnitEnum.Day:
         return v * 24 * 60;
       default:
         return v * 24 * 60;
@@ -438,7 +439,11 @@
             :min="1"
             @update:model-value="
               (val) => {
-                clearError(['dtstart', 'scheduleTooLong', 'startTimeBeforeEnd']);
+                clearError([
+                  'dtstart',
+                  'scheduleTooLong',
+                  'startTimeBeforeEnd',
+                ]);
                 startOffset.value = (val || 1) as number;
               }
             "
@@ -601,7 +606,9 @@
             option-label="label"
             option-value="value"
             class="z-10 col-span-3 ml-4"
-            @update:model-value="clearError(['rrruleEndAfter', 'frequencyEndError'])"
+            @update:model-value="
+              clearError(['rrruleEndAfter', 'frequencyEndError'])
+            "
           />
         </div>
         <ErrorLabel
@@ -635,7 +642,7 @@
 
     <div class="grid w-full grid-cols-6">
       <div
-        class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
+        class="col-span-6 col-start-0 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
           class="btn-gray mr-3"
@@ -653,23 +660,23 @@
 </template>
 
 <style scoped>
-:deep(.highlight input) {
-  background-color: var(--red-200);
-}
-
-.scheduler {
-  min-height: 37.5rem;
-
-  input::placeholder {
-    color: var(--bluegray-300);
+  :deep(.highlight input) {
+    background-color: var(--red-200);
   }
 
-  h6 {
-    color: var(--primary-color);
-  }
-}
+  .scheduler {
+    min-height: 37.5rem;
 
-:deep(.input-error input) {
-  background: var(--red-200);
-}
+    input::placeholder {
+      color: var(--bluegray-300);
+    }
+
+    h6 {
+      color: var(--primary-color);
+    }
+  }
+
+  :deep(.input-error input) {
+    background: var(--red-200);
+  }
 </style>

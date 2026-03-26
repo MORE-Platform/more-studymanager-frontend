@@ -28,6 +28,8 @@
     "@primeuix/themes": "2.0.3",
     "@primevue/themes": "4.5.4",
     "@tailwindcss/vite": "4.2.1",
+    "@tanstack/vue-query": "^5.95.2",
+    "@tanstack/vue-query-devtools": "^6.1.10",
     "axios": "1.8.4",
     "chart.js": "4.4.8",
     "cron-validate": "1.5.2",

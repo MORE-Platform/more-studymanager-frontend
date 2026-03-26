@@ -584,6 +584,26 @@ paths:
         '500':
           description: Error while deleting the observation group
 
+  /studies/{studyId}/application:
+    get:
+      tags:
+        - applications
+      description: get available applications for a study
+      operationId: getStudyApplications
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: successfully retrieved all available study application names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: not found
+
   /studies/{studyId}/participants:
     post:
       tags:
@@ -722,6 +742,88 @@ paths:
           description: participant deleted
         '500':
           description: Error
+  /studies/{studyId}/participants/{participantId}/application:
+    get:
+      tags:
+        - participants
+      description: get all participant access data for all applications
+      operationId: getParticipantApplications
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+      responses:
+        '200':
+          description: successfully retrieved participant applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '404':
+          description: not found
+
+
+  /studies/{studyId}/participants/{participantId}/application/{application}:
+    get:
+      tags:
+        - participants
+      description: get participant login data for an application
+      operationId: getParticipantAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+      responses:
+        '200':
+          description: successfully retrieved participant application access data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '404':
+          description: not found
+    put:
+      tags:
+        - participants
+      description: generate participant login data for an application, if none exist
+      operationId: createParticipantAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+      responses:
+        '201':
+          description: successfully created participant application access data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '403':
+          description: forbidden
+        '404':
+          description: not found
+        '409':
+          description: participant application access data already exists or study is closed
+    delete:
+      tags:
+        - participants
+      description: Delete participant application access data
+      operationId: deleteParticipantApplicationAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+        - name: includeData
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '204':
+          description: participant access data deleted
+        '409':
+          description: study already closed
 
   /studies/{studyId}/occurredObservations:
     get:
@@ -1706,6 +1808,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        applicationAccess:
+          type: array
+          description: Application types which the user have access to
+          items:
+            type: string
         userRoles:
           type: array
           description: the roles the _current user_ has within _this_ study.
@@ -1807,14 +1914,12 @@ components:
         value:
           type: integer
         unit:
-          $ref: '#/components/schemas/DurationUnit'
-    DurationUnit:
-      type: string
-      description: unit of time
-      enum:
-        - MINUTE
-        - HOUR
-        - DAY
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
     Participant:
       type: object
       properties:
@@ -1864,11 +1969,29 @@ components:
       type: string
       enum:
         - new
+        - invited
         - active
         - abandoned
         - kicked_out
         - locked
       default: new
+
+    ParticipantApplicationAccess:
+      type: object
+      properties:
+        accessCode:
+          type: string
+          description: Access code for participant application
+        applicationType:
+          type: string
+          description: Type of participant application
+        applicationUrl:
+          type: string
+          description: URL for application
+      required:
+        - accessCode
+        - applicationType
+        - applicationUrl
 
     Observation:
       type: object
@@ -2623,6 +2746,12 @@ components:
       schema:
         type: integer
         format: int32
+      required: true
+    ApplicationName:
+      name: application
+      in: path
+      schema:
+        type: string
       required: true
     ObservationId:
       name: observationId

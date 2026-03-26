@@ -17,6 +17,7 @@ Licensed under the Elastic License 2.0. */
   import { StudyStatus } from '@gs';
   import { useObservationGroupStore } from '../stores/observationGroupStore';
   import ObservationGroupList from '../components/ObservationGroupList.vue';
+  import StudyApplicationManager from '../components/StudyApplicationManager.vue';
 
   const { handleToastErrors } = useToastService();
   const route = useRoute();
@@ -67,6 +68,8 @@ Licensed under the Elastic License 2.0. */
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
       />
+
+      <StudyApplicationManager />
 
       <StudyCollaboratorList
         :study-id="studyId"

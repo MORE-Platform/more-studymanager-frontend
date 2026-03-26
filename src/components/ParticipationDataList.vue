@@ -6,8 +6,8 @@ Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
-  import Dropdown from 'primevue/select';
   import type { SelectChangeEvent as DropdownChangeEvent } from 'primevue/select';
+  import Dropdown from 'primevue/select';
   import Accordion from 'primevue/accordion';
   import AccordionTab from 'primevue/accordiontab';
   import Chart from 'primevue/chart';
@@ -19,33 +19,33 @@ Licensed under the Elastic License 2.0. */
     useComponentsApi,
     useDataApi,
     useParticipantsApi,
-  } from '../composable/useApi';
+  } from '@/composable/useApi';
   import { useI18n } from 'vue-i18n';
-  import { useErrorHandling } from '../composable/useErrorHandling';
+  import { useErrorHandling } from '@/composable/useErrorHandling';
   import { computed, ComputedRef, ref, Ref, watch } from 'vue';
   import {
     ChartProperties,
-    ObservationDataViewInfo,
+    ObservationDataViewData,
     ObservationDataViewDataDTO,
     ObservationDataViewDataRow,
     ObservationDataViewFilter,
+    ObservationDataViewInfo,
+    ObservationsViewData,
     ParticipationDataGrouping,
     ParticipationDataMapping,
-    ObservationsViewData,
-    ObservationDataViewData,
-  } from '../models/ParticipationData';
+  } from '@/models/ParticipationData';
   import { AxiosError, AxiosResponse } from 'axios';
   import {
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableSortOptions,
-  } from '../models/MoreTableModel';
+  } from '@/models/MoreTableModel';
   import MoreTable from '../components/shared/MoreTable.vue';
   import { onBeforeRouteLeave } from 'vue-router';
-  import { useStudyStore } from '../stores/studyStore';
-  import { useGlobalStore } from '../stores/globalStore';
-  import { DropdownOption } from '../models/Common';
-  import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useStudyStore } from '@/stores/studyStore';
+  import { useGlobalStore } from '@/stores/globalStore';
+  import { DropdownOption } from '@/models/Common';
+  import { useStudyGroupStore } from '@/stores/studyGroupStore';
   import useLoader from '../composable/useLoader';
   import { ComponentFactory, Participant } from '@gs/models';
 
@@ -66,8 +66,8 @@ Licensed under the Elastic License 2.0. */
     },
     pauseDataRefresh: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -621,13 +621,12 @@ Licensed under the Elastic License 2.0. */
     () => props.pauseDataRefresh,
     (newVal) => {
       if (newVal) {
-        clearInterval(timer)
+        clearInterval(timer);
       } else {
-        loadData()
+        loadData();
       }
-    }
-  )
-
+    },
+  );
 
   function loadData(): void {
     timer ??= setInterval(function () {
@@ -741,7 +740,10 @@ Licensed under the Elastic License 2.0. */
             class="pt-8"
             @update:active-index="onTabChange(observationId, $event)"
           >
-            <TabPanel value="latestDataPoints" :header="$t('monitoring.labels.latestDataPoints')">
+            <TabPanel
+              value="latestDataPoints"
+              :header="$t('monitoring.labels.latestDataPoints')"
+            >
               <MoreTable
                 v-if="observationData.length"
                 row-id="observationId"
@@ -799,34 +801,34 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped>
-:deep(.more-table) {
-  .flex {
-    margin: 0;
-  }
-}
-
-:deep(.p-accordion-header) {
-  a {
-    padding: 0.5rem 0 1rem 0;
-    font-size: 1.1rem;
-    font-weight: normal;
-    color: var(--primary-color);
-    border: transparent;
-    border-bottom: 1px solid var(--surface-c);
-    background: transparent;
-
-    &:focus,
-    &:active {
-      border: transparent;
+  :deep(.more-table) {
+    .flex {
+      margin: 0;
     }
   }
-  .p-accordion-toggle-icon {
-    position: absolute;
-    right: 0;
+
+  :deep(.p-accordion-header) {
+    a {
+      padding: 0.5rem 0 1rem 0;
+      font-size: 1.1rem;
+      font-weight: normal;
+      color: var(--primary-color);
+      border: transparent;
+      border-bottom: 1px solid var(--surface-c);
+      background: transparent;
+
+      &:focus,
+      &:active {
+        border: transparent;
+      }
+    }
+    .p-accordion-toggle-icon {
+      position: absolute;
+      right: 0;
+    }
   }
-}
-:deep(.p-accordion-content) {
-  border: transparent;
-  padding: 0;
-}
+  :deep(.p-accordion-content) {
+    border: transparent;
+    padding: 0;
+  }
 </style>

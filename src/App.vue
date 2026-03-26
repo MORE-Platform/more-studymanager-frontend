@@ -8,6 +8,7 @@ Licensed under the Elastic License 2.0. */
   import Footer from './components/shared/Footer.vue';
   import Header from './components/shared/Header.vue';
   import { useRouter } from 'vue-router';
+  import { VueQueryDevtools } from '@tanstack/vue-query-devtools';
 
   const router = useRouter();
 
@@ -23,6 +24,7 @@ Licensed under the Elastic License 2.0. */
     <Toast />
   </main>
   <Footer />
+  <VueQueryDevtools />
 </template>
 
 <style scoped>

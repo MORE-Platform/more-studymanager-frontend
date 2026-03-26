@@ -124,6 +124,7 @@
       "scheduleType": "Zeitplan-Typ",
       "setPause": "Pausieren",
       "start": "Start",
+      "success": "Erfolgreich",
       "time": "Zeit",
       "to": "zu",
       "leavePage": "Möchten Sie die Seite wirklich verlassen?",
@@ -562,7 +563,49 @@
     "singular": "Aufzeichnung"
   },
   "participants": {
+    "applicationAccess": {
+      "title": "Anwendungszugriff",
+      "add": "Anwendung hinzufügen",
+      "btn": {
+        "generate": "Zugangsdaten erstellen",
+        "copyAll": "Alle Zugangsdaten kopieren",
+        "emailAll": "Alle Zugangsdaten per E-Mail senden"
+      },
+      "allAccessData": {
+        "header": "Anwendungszugangsdaten für Teilnehmer:in {alias}",
+        "subject": "Zugangsdaten für {alias}"
+      },
+      "label": {
+        "selectApp": "Anwendung auswählen",
+        "url": "URL",
+        "accessCode": "Login-Code"
+      },
+      "placeholder": {
+        "selectApp": "Wählen Sie eine Anwendung aus"
+      },
+      "dialog": {
+        "header": {
+          "delete": "Anwendungszugriff löschen"
+        },
+        "msg": {
+          "deleteIntro": "Sie sind dabei, den folgenden Anwendungszugriff zu löschen:",
+          "deleteWarning": "Das Löschen des Zugriffs entzieht der/dem Teilnehmer:in den Zugriff auf diese Anwendung. Bei Bedarf müssen neue Zugangsdaten erstellt werden.",
+          "deleteConfirm": "Sind Sie sicher, dass Sie diesen Zugriff löschen möchten?"
+        }
+      },
+      "error": {
+        "fetchFailed": "Zugangsdaten konnten nicht geladen werden.",
+        "createFailed": "Zugangsdaten konnten nicht erstellt werden.",
+        "deleteFailed": "Zugangsdaten konnten nicht gelöscht werden.",
+        "alreadyExists": "Zugangsdaten für diese Anwendung existieren bereits. Aktuelle Daten werden geladen."
+      },
+      "noAccess": "Bisher wurde kein Anwendungszugriff gewährt.",
+      "addTooltip": "Keine weiteren Anwendungen für diese Studie verfügbar. Gewähren Sie Zugriff auf Anwendungen über den Reiter 'Studie'."
+    },
+    "loadingData": "Teilnehmer:innendaten laden...",
     "dialog": {
+      "updated": "Teilnehmer:in erfolgreich gespeichert",
+      "updateFailed": "Fehler beim Speichern der Teilnehmer:in!",
       "btn": {
         "copyLink": "Link kopieren",
         "distributeBtn": "Zuweisen",
@@ -576,7 +619,8 @@
         "warning": "Eine gelöschte Teilnehmer:in können nicht wiederhergestellt werden. Sie haben die Option eine Teilnehmer:in mit oder ohne aufgezeichnete Daten zu löschen."
       },
       "error": {
-        "qrcode": "Fehler bei der QR Codeerstellung"
+        "qrcode": "Fehler bei der QR Codeerstellung",
+        "aliasRequired": "Der Teilnehmer Alias ist erforderlich."
       },
       "header": {
         "create": "Teilnehmer:in hinzufügen",
@@ -624,8 +668,10 @@
     "plural": "Teilnehmer",
     "props": {
       "alias": "Alias",
+      "participantAlias": "Teilnehmer Alias",
       "individualStart": "Gestartet am",
       "participantId": "Teilnehmer ID",
+      "notStartedYet": "noch nicht gestartet",
       "registrationToken": "Registrierungstoken",
       "token": "Token"
     },
@@ -893,6 +939,13 @@
     }
   },
   "study": {
+    "applications": {
+      "title": "Studienanwendungen",
+      "placeholder": "Wähle Anwendungen für diese Studie",
+      "label": {
+        "PARTICIPANT_PORTAL": "Teilnehmerportal"
+      }
+    },
     "dialog": {
       "deleteMsg": {
         "confirm": "Möchten Sie die Studie wirklich löschen?",
@@ -1245,6 +1298,7 @@
       "saveChanges": "Änderungen speichern",
       "showQrCode": "QR Code anzeigen",
       "showStudy": "Klicken Sie auf die Zeile, um auf die Studiendetails zu kommen.",
+      "showParticipantInfo": "Teilnehmer-Details anzeigen",
       "openParticipantDetails": "Details zu Daten anzeigen."
     },
     "timeline": {
@@ -1258,7 +1312,11 @@
     "droppedOut": "abgebrochen",
     "inactive": "inaktiv",
     "invited": "eingeladen",
-    "kickedOut": "rausgeschmissen"
+    "kickedOut": "rausgeschmissen",
+    "new": "neu",
+    "abandoned": "abgebrochen",
+    "kicked_out": "entfernt",
+    "locked": "gesperrt"
   },
   "welcomeMessage": "Lieber {userName} ({userInstitution}). Wir begrüßen Sie auf dem More-Dashboard. Starten Sie, indem sie eine neue Studie erstellen oder Studien managen, die Ihnen zugeteilt wurden.",
   "welcomeToMore": "Willkommen bei More"
