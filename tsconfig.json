@@ -17,11 +17,11 @@
     "types": ["vite/client", "node"],
     "typeRoots": ["src/types", "node_modules/@types"],
     "paths": {
-      "@/": ["./src/*"],
+      "@/*": ["./src/*"],
       "@gs": ["./src/generated-sources"],
       "@gs/*": ["./src/generated-sources/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/generated-sources"]
 }

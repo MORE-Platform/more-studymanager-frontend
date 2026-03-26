@@ -124,6 +124,7 @@
       "scheduleType": "Schedule Type",
       "setPause": "Pause",
       "start": "Start",
+      "success": "Success",
       "time": "Time",
       "to": "to",
       "leavePage": "Do you really want to leave the page?",
@@ -601,6 +602,7 @@
       "noAccess": "No application access granted yet.",
       "addTooltip": "No more applications available for this study. Grant access to applications via the study tab."
     },
+    "loadingData": "Loading participant data...",
     "dialog": {
       "updated": "Participant saved successfully",
       "updateFailed": "Failed to update participant data!",

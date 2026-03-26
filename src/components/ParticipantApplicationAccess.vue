@@ -7,7 +7,6 @@ Licensed under the Elastic License 2.0. */
   import { computed, ref, watch } from 'vue';
   import { useI18n } from 'vue-i18n';
   import Button from 'primevue/button';
-  import Select from 'primevue/select';
   import QrcodeVue from 'qrcode.vue';
   import { useToast } from 'primevue/usetoast';
   import { useDialog } from 'primevue/usedialog';
@@ -15,40 +14,34 @@ Licensed under the Elastic License 2.0. */
     useCreateParticipantAccessData,
     useDeleteParticipantApplicationAccessData,
     useParticipantAccessData,
-  } from '../api/participantApplicationAccessQueries';
+  } from '@/api/participantApplicationAccessQueries';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import type { ParticipantApplicationAccess } from '@gs';
 
   const props = defineProps<{
     studyId: number;
     participantId: number;
-    applicationName?: string;
-    availableApplications: string[];
+    applicationName: string;
     initialAccessData?: ParticipantApplicationAccess;
   }>();
 
-  const emit = defineEmits(['created', 'deleted', 'update:applicationName']);
+  const emit = defineEmits(['created', 'deleted']);
 
   const { t } = useI18n();
   const toast = useToast();
   const dialog = useDialog();
 
-  const internalSelectedApp = ref<string | undefined>(
-    props.initialAccessData?.applicationType
-      ? props.applicationName
-      : undefined,
-  );
-  const isInitiallyExisting = !!props.applicationName;
   const forceFetch = ref(false);
 
-  const { data: fetchedAccessData, isError } = useParticipantAccessData(
+  const {
+    data: fetchedAccessData,
+    isLoading: loadingAccessData,
+    isError,
+  } = useParticipantAccessData(
     props.studyId,
     props.participantId,
-    computed(() => internalSelectedApp.value || ''),
-    computed(
-      () =>
-        (isInitiallyExisting || forceFetch.value) && !props.initialAccessData,
-    ),
+    computed(() => props.applicationName),
+    computed(() => forceFetch.value && !props.initialAccessData),
   );
 
   const accessData = computed(
@@ -60,23 +53,16 @@ Licensed under the Elastic License 2.0. */
 
   const isGenerating = ref(false);
 
-  const applicationOptions = computed(() =>
-    props.availableApplications.map((app) => ({
-      label: t(`study.applications.label.${app}`),
-      value: app,
-    })),
-  );
-
   async function generateAccess(): Promise<void> {
-    if (!internalSelectedApp.value) return;
+    if (!props.applicationName) return;
     isGenerating.value = true;
     try {
       await createMutation.mutateAsync({
         studyId: props.studyId,
         participantId: props.participantId,
-        application: internalSelectedApp.value,
+        application: props.applicationName,
       });
-      emit('created', internalSelectedApp.value);
+      emit('created', props.applicationName);
     } catch (error: any) {
       if (error.response?.status === 409 || error.response?.status === 403) {
         toast.add({
@@ -86,7 +72,7 @@ Licensed under the Elastic License 2.0. */
           life: 5000,
         });
         forceFetch.value = true;
-        emit('created', internalSelectedApp.value);
+        emit('created', props.applicationName);
       } else {
         toast.add({
           severity: 'error',
@@ -110,8 +96,8 @@ Licensed under the Elastic License 2.0. */
         confirmMsg: t(
           'participants.applicationAccess.dialog.msg.deleteConfirm',
         ),
-        elTitle: t(`study.applications.label.${internalSelectedApp.value}`),
-        row: internalSelectedApp.value,
+        elTitle: t(`study.applications.label.${props.applicationName}`),
+        row: props.applicationName,
       },
       props: {
         header: t('participants.applicationAccess.dialog.header.delete'),
@@ -129,15 +115,15 @@ Licensed under the Elastic License 2.0. */
   }
 
   async function deleteAccess(): Promise<void> {
-    if (!internalSelectedApp.value) return;
+    if (!props.applicationName) return;
     try {
       await deleteMutation.mutateAsync({
         studyId: props.studyId,
         participantId: props.participantId,
-        application: internalSelectedApp.value,
+        application: props.applicationName,
         includeData: true,
       });
-      emit('deleted', internalSelectedApp.value);
+      emit('deleted', props.applicationName);
     } catch {
       toast.add({
         severity: 'error',
@@ -160,7 +146,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   watch(isError, (newVal) => {
-    if (newVal && internalSelectedApp.value) {
+    if (newVal) {
       toast.add({
         severity: 'error',
         summary: t('global.error.type.error'),
@@ -169,13 +155,6 @@ Licensed under the Elastic License 2.0. */
       });
     }
   });
-
-  watch(
-    () => internalSelectedApp.value,
-    (newVal) => {
-      emit('update:applicationName', newVal);
-    },
-  );
 </script>
 
 <template>
@@ -184,32 +163,20 @@ Licensed under the Elastic License 2.0. */
   >
     <div v-if="!accessData" class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold text-gray-400 uppercase">
-          {{ $t('participants.applicationAccess.label.selectApp') }}
-        </label>
-        <Select
-          v-model="internalSelectedApp"
-          :options="applicationOptions"
-          option-label="label"
-          option-value="value"
-          :placeholder="
-            $t('participants.applicationAccess.placeholder.selectApp')
-          "
-          class="w-full"
-          :disabled="isInitiallyExisting || isGenerating"
-        />
+        <h3 class="m-0 min-w-0 flex-1 truncate text-lg font-semibold">
+          {{ $t(`study.applications.label.${applicationName}`) }}
+        </h3>
       </div>
       <Button
         :label="$t('participants.applicationAccess.btn.generate')"
         icon="pi pi-cog"
         class="w-full"
-        :loading="isGenerating"
-        :disabled="!internalSelectedApp"
+        :loading="isGenerating || loadingAccessData"
         @click="generateAccess"
       />
     </div>
-    <div v-else class="flex flex-row items-start gap-4">
-      <div class="shrink-0">
+    <div v-else class="flex w-full min-w-0 flex-row items-start gap-4">
+      <div class="max-w-fit! shrink-0">
         <QrcodeVue
           :value="accessData.applicationUrl"
           :size="80"
@@ -218,14 +185,14 @@ Licensed under the Elastic License 2.0. */
           class="rounded border border-gray-100 bg-white p-1"
         />
       </div>
-      <div class="flex grow flex-col gap-4">
-        <div class="flex items-center justify-between">
-          <h3 class="m-0 text-lg font-semibold">
+      <div class="flex min-w-0 flex-1 flex-col gap-4">
+        <div class="flex min-w-0 items-center justify-between gap-2">
+          <h3 class="m-0 min-w-0 flex-1 truncate text-lg font-semibold">
             {{ $t(`study.applications.label.${accessData.applicationType}`) }}
           </h3>
           <Button
             icon="pi pi-trash"
-            class="p-button-danger p-button-text p-button-sm"
+            class="p-button-danger p-button-sm mx-2"
             @click="confirmDelete"
           />
         </div>
@@ -234,13 +201,15 @@ Licensed under the Elastic License 2.0. */
             <label class="text-xs font-bold text-gray-400 uppercase">
               {{ $t('participants.applicationAccess.label.url') }}
             </label>
-            <div class="flex items-center gap-2 rounded bg-gray-50 p-2">
-              <span class="flex-1 truncate text-sm text-gray-700">
+            <div
+              class="flex w-full min-w-0 items-center gap-2 rounded bg-gray-50 p-2"
+            >
+              <span class="min-w-0 flex-1 truncate text-sm text-gray-700">
                 {{ accessData.applicationUrl }}
               </span>
               <Button
                 icon="pi pi-copy"
-                class="p-button-rounded p-button-sm p-button-text shrink-0"
+                class="p-button-sm p-button shrink-0"
                 @click="copyToClipboard(accessData.applicationUrl)"
               />
             </div>
@@ -249,15 +218,17 @@ Licensed under the Elastic License 2.0. */
             <label class="text-xs font-bold text-gray-400 uppercase">
               {{ $t('participants.applicationAccess.label.accessCode') }}
             </label>
-            <div class="flex items-center gap-2 rounded bg-gray-50 p-2">
+            <div
+              class="flex w-full min-w-0 items-center gap-2 rounded bg-gray-50 p-2"
+            >
               <span
-                class="flex-1 font-mono text-sm font-semibold text-gray-800"
+                class="min-w-0 flex-1 truncate font-mono text-sm font-semibold text-gray-800"
               >
                 {{ accessData.accessCode }}
               </span>
               <Button
                 icon="pi pi-copy"
-                class="p-button-rounded p-button-sm p-button-text shrink-0"
+                class="p-button-sm p-button shrink-0"
                 @click="copyToClipboard(accessData.accessCode)"
               />
             </div>

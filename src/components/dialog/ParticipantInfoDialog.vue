@@ -1,8 +1,9 @@
 <script setup lang="ts">
-  import { computed, inject, ref } from 'vue';
+  import { computed, inject, ref, watch } from 'vue';
   import {
+    Participant,
     ParticipantApplicationAccess as ParticipantApplicationAccessModel,
-    ParticipantStatus,
+    ParticipantStatus
   } from '@gs';
   import { useI18n } from 'vue-i18n';
   import Button from 'primevue/button';
@@ -10,94 +11,79 @@
   import InputText from 'primevue/inputtext';
   import MultiSelect from 'primevue/multiselect';
   import Select from 'primevue/select';
-  import { useParticipantsApi } from '@/composable/useApi';
+  import ProgressSpinner from 'primevue/progressspinner';
   import { useToast } from 'primevue/usetoast';
-  import { MoreTableChoice } from '@/models/MoreTableModel';
+  import { useParticipant, useUpdateParticipant } from '@/api/participantQueries';
   import { useParticipantApplications } from '@/api/participantApplicationAccessQueries';
-  import { useStudyStore } from '@/stores/studyStore';
   import ParticipantApplicationAccess from '../ParticipantApplicationAccess.vue';
+  import { useStudyStore } from '@/stores/studyStore';
+  import { useStudyGroupStore } from '@/stores/studyGroupStore';
+  import { useObservationGroupStore } from '@/stores/observationGroupStore';
 
   const { t, d } = useI18n();
+  const studyStore = useStudyStore();
+  const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
   const toast = useToast();
   const dialogRef: any = inject('dialogRef');
-  const { participantsApi } = useParticipantsApi();
 
-  const participant = ref<any>({
-    ...dialogRef.value.data?.participant,
-    studyGroupId: dialogRef.value.data?.participant.studyGroupId?.toString(),
-    observationGroupIds:
-      dialogRef.value.data?.participant.observationGroupIds?.map((id: any) =>
-        id.toString(),
-      ) || [],
-  });
+  const {
+    data: fetchedParticipant,
+    isLoading: loadingParticipantData,
+    refetch: refetchParticipant,
+  } = useParticipant(
+    studyStore.studyId,
+    dialogRef.value.data?.participant?.participantId,
+  );
 
-  const studyGroups: MoreTableChoice[] =
-    dialogRef.value.data?.studyGroups || [];
-  const observationGroups: MoreTableChoice[] =
-    dialogRef.value.data?.observationGroups || [];
-  const isEditable: boolean = dialogRef.value.data?.isEditable || false;
-  const studyId: number = dialogRef.value.data?.studyId;
+  const participant = ref<Participant | undefined>();
 
-  const studyStore = useStudyStore();
-  const participantId = participant.value.participantId!;
+  watch(
+    fetchedParticipant,
+    (newData) => {
+      participant.value = newData
+        ? {
+            ...newData,
+            observationGroupIds: [...(newData.observationGroupIds || [])],
+          }
+        : undefined;
+    },
+    { immediate: true },
+  );
+
+  const { mutate: updateParticipantMutation } = useUpdateParticipant();
 
   const { data: participantApps, refetch: refetchApps } =
-    useParticipantApplications(studyId, participantId);
-
-  const pendingApps = ref<{ id: number; value: string }[]>([]);
-  let nextPendingId = 0;
-
-  const availableStudyApps = computed(() => {
-    const studyApps = studyStore.study.applicationAccess || [];
-    const existingApps =
-      (participantApps.value as ParticipantApplicationAccessModel[]) || [];
-    const selectedPendingApps = pendingApps.value
-      .map((p) => p.value)
-      .filter((v) => v !== '');
-    return studyApps.filter(
-      (app: string) =>
-        !existingApps.some((ea) => ea.applicationType === app) &&
-        !selectedPendingApps.includes(app),
+    useParticipantApplications(
+      studyStore.studyId,
+      dialogRef.value.data?.participant?.participantId,
     );
-  });
 
-  const allParticipantAppsCount = computed(() => {
-    return (participantApps.value?.length || 0) + pendingApps.value.length;
-  });
-
-  const addApplication = (): void => {
-    pendingApps.value.push({ id: nextPendingId++, value: '' });
-  };
-
-  const handleCreated = (pendingId: number): void => {
-    const index = pendingApps.value.findIndex((app) => app.id === pendingId);
-    if (index > -1) {
-      pendingApps.value.splice(index, 1);
-    }
+  const handleDeletedApps = (): void => {
     refetchApps();
+    refetchParticipant();
   };
 
-  const handleDeleted = (): void => {
-    refetchApps();
+  const handleCreatedApps = (): void => {
+    refetchParticipant();
   };
 
-  const removePending = (pendingId: number): void => {
-    const index = pendingApps.value.findIndex((app) => app.id === pendingId);
-    if (index > -1) {
-      pendingApps.value.splice(index, 1);
-    }
-  };
-
-  const userState = computed(() => participant.value.status || 'new');
+  const userState = computed(() => participant?.value?.status || 'new');
 
   const close = (): void => {
     dialogRef.value.close();
   };
 
   const updateParticipant = (): void => {
-    if (!isEditable) return;
+    const participantData = participant?.value;
+    if (
+      !participantData ||
+      !participantData.participantId ||
+      !studyStore.studyIsEditable
+    )
+      return;
 
-    if (!participant.value.alias || participant.value.alias.trim() === '') {
+    if (!participantData.alias || participantData.alias.trim() === '') {
       toast.add({
         severity: 'error',
         summary: t('global.error.type.error'),
@@ -107,31 +93,36 @@
       return;
     }
 
-    const updateData = { ...participant.value };
-    delete updateData.observationGroupValues;
+    const updateData = { ...participantData };
+    delete updateData.observationGroupIds;
 
-    participantsApi
-      .updateParticipant(studyId, participant.value.participantId!, {
-        ...updateData,
-        studyGroupId:
-          participant.value.studyGroupId &&
-          participant.value.studyGroupId !== 'null'
-            ? Number(participant.value.studyGroupId)
+    updateParticipantMutation(
+      {
+        studyId: studyStore.studyId,
+        participantId: participantData.participantId,
+        participant: {
+          ...updateData,
+          studyGroupId: participantData.studyGroupId
+            ? Number(participantData.studyGroupId)
             : undefined,
-        observationGroupIds:
-          participant.value.observationGroupIds?.map((id: any) => Number(id)) ||
-          [],
-      })
-      .then(() => {
-        toast.add({
-          summary: t('participants.dialog.updated'),
-          severity: 'success',
-          life: 2000,
-        });
-      })
-      .catch((): void => {
-        toast.add({ summary: t('participants.dialog.updateFailed') });
-      });
+          observationGroupIds:
+            participantData.observationGroupIds?.map((id: any) => Number(id)) ||
+            [],
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.add({
+            summary: t('participants.dialog.updated'),
+            severity: 'success',
+            life: 2000,
+          });
+        },
+        onError: () => {
+          toast.add({ summary: t('participants.dialog.updateFailed') });
+        },
+      },
+    );
   };
 
   const getStatusSeverity = (status?: string): string => {
@@ -151,16 +142,20 @@
     }
   };
 
-  const getStudyGroupLabel = (id?: string): string => {
+  const getStudyGroupLabel = (id?: number): string => {
     return (
-      studyGroups.find((g) => g.value === id)?.label ||
+      studyGroupStore.studyGroups.find((g) => g.studyGroupId === id)?.title ||
       t('global.placeholder.noGroup')
     );
   };
 
-  const getObservationGroupLabel = (id: string): string => {
+  const getObservationGroupLabel = (id?: number): string => {
     return (
-      observationGroups.find((g) => g.value === id)?.label || id.toString()
+      observationGroupStore.observationGroups.find(
+        (g) => g.observationGroupId === id,
+      )?.title ||
+      id?.toString() ||
+      t('global.placeholder.noGroup')
     );
   };
 
@@ -169,7 +164,7 @@
 
     let text =
       t('participants.applicationAccess.allAccessData.header', {
-        alias: participant.value.alias,
+        alias: fetchedParticipant?.value?.alias,
       }) + '\n\n';
 
     (participantApps.value as ParticipantApplicationAccessModel[]).forEach(
@@ -204,7 +199,7 @@
     const text = formatAllAccessData();
     const subject = encodeURIComponent(
       t('participants.applicationAccess.allAccessData.subject', {
-        alias: participant.value.alias,
+        alias: fetchedParticipant?.value?.alias,
       }),
     );
     const body = encodeURIComponent(text);
@@ -213,30 +208,32 @@
 </script>
 
 <template>
-  <div class="min-w-100">
+  <div v-if="participant">
     <div class="no-print mb-6 flex items-start justify-between">
       <div class="flex w-full flex-col gap-1">
-        <div class="flex w-full flex-col items-start gap-3">
-          <h5 class="font-semibold">
-            {{ $t('participants.props.participantAlias') }}:
-          </h5>
-          <InputText
-            v-if="isEditable"
-            v-model="participant.alias"
-            class="w-full bg-transparent text-lg font-semibold"
-          />
-          <h2 v-else class="text-lg font-semibold">
-            {{ participant.alias }}
-          </h2>
+        <div class="flex w-full items-center justify-between">
+          <div class="text-sm font-medium text-gray-500">
+            {{ $t('participants.props.participantId') }}:
+            {{ participant.participantId }}
+          </div>
           <Tag
             :value="$t('userstatus.' + userState)"
             :severity="getStatusSeverity(userState)"
             class="shrink-0 text-xs uppercase"
           />
         </div>
-        <div class="text-sm font-medium text-gray-500">
-          {{ $t('participants.props.participantId') }}:
-          {{ participant.participantId }}
+        <div class="flex w-full flex-col items-start gap-3">
+          <h5 class="font-semibold">
+            {{ $t('participants.props.participantAlias') }}:
+          </h5>
+          <InputText
+            v-if="studyStore.studyIsEditable"
+            v-model="participant.alias"
+            class="w-full bg-transparent text-lg font-semibold"
+          />
+          <h2 v-else class="text-lg font-semibold">
+            {{ participant.alias }}
+          </h2>
         </div>
         <div class="text-sm font-medium text-gray-500">
           {{ $t('participants.props.individualStart') }}:
@@ -249,63 +246,64 @@
       </div>
     </div>
 
-    <div class="no-print mb-6 grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-1">
+    <div class="no-print mb-6 flex w-full! flex-row items-end gap-4">
+      <div class="flex min-w-0 flex-1 flex-col gap-1">
         <label class="text-xs font-bold text-gray-400 uppercase">{{
           $t('study.props.studyGroup')
         }}</label>
         <Select
-          v-if="isEditable"
+          v-if="studyStore.studyIsEditable"
           v-model="participant.studyGroupId"
-          :options="studyGroups"
-          option-label="label"
-          option-value="value"
-          class="w-full"
+          :options="studyGroupStore.studyGroups"
+          option-label="title"
+          option-value="studyGroupId"
+          class="participant-row-select w-full min-w-0"
+          show-clear
         />
-        <div v-else class="text-sm font-medium">
+        <div v-else class="truncate text-sm font-medium">
           {{ getStudyGroupLabel(participant.studyGroupId) }}
         </div>
       </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-xs font-bold text-gray-400 uppercase">{{
-          $t('observationGroup.plural')
-        }}</label>
-        <MultiSelect
-          v-if="isEditable"
-          v-model="participant.observationGroupIds"
-          :options="observationGroups"
-          option-label="label"
-          option-value="value"
-          class="w-full"
-          :show-toggle-all="false"
-        />
-        <div v-else class="flex flex-wrap gap-1">
-          <Tag
-            v-for="obsGroupId in participant.observationGroupIds"
-            :key="obsGroupId"
-            :value="getObservationGroupLabel(obsGroupId)"
-            severity="secondary"
-            class="text-[10px]"
+      <div class="flex min-w-0 flex-1 items-center justify-between">
+        <div class="flex w-full min-w-0 flex-col gap-1">
+          <label class="text-xs font-bold text-gray-400 uppercase">{{
+            $t('observationGroup.plural')
+          }}</label>
+          <MultiSelect
+            v-if="studyStore.studyIsEditable"
+            v-model="participant.observationGroupIds"
+            :options="observationGroupStore.observationGroups"
+            option-label="title"
+            option-value="observationGroupId"
+            class="participant-row-multiselect w-full min-w-0"
+            :show-toggle-all="false"
           />
-          <span
-            v-if="!participant.observationGroupIds?.length"
-            class="text-sm font-medium"
-            >-</span
-          >
+          <div v-else class="flex flex-wrap gap-1">
+            <Tag
+              v-for="obsGroupId in participant.observationGroupIds"
+              :key="obsGroupId"
+              :value="getObservationGroupLabel(obsGroupId)"
+              severity="secondary"
+              class="text-[10px]"
+            />
+            <span
+              v-if="!participant.observationGroupIds?.length"
+              class="text-sm font-medium"
+              >-</span
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="no-print mt-8 flex justify-end gap-3">
       <Button
-        v-if="isEditable"
+        v-if="studyStore.studyIsEditable"
         :label="$t('global.labels.save')"
-        class="btn-primary"
+        class="btn-primary shrink-0"
         @click="updateParticipant"
       />
     </div>
 
     <div class="no-print mt-8 mb-8 border-t pt-8">
-      <div class="mb-4 flex items-center justify-between">
+      <div class="mx-2 mb-4 flex items-center justify-between">
         <h3 class="m-0 text-lg font-bold">
           {{ $t('participants.applicationAccess.title') }}
         </h3>
@@ -324,50 +322,28 @@
             :disabled="!participantApps?.length"
             @click="emailAllAccessData"
           />
-          <span
-            v-tooltip.top="
-              availableStudyApps.length === 0
-                ? $t('participants.applicationAccess.addTooltip')
-                : undefined
-            "
-            class="ml-4"
-          >
-            <Button
-              :label="$t('participants.applicationAccess.add')"
-              icon="pi pi-plus"
-              class="p-button-sm"
-              :disabled="availableStudyApps.length === 0"
-              @click="addApplication"
-            />
-          </span>
         </div>
       </div>
 
-      <div v-if="allParticipantAppsCount > 0">
+      <div
+        v-if="
+          participant.participantId &&
+          (studyStore.study.applicationAccess?.length ?? 0) > 0
+        "
+      >
         <template
-          v-for="app in participantApps as ParticipantApplicationAccessModel[]"
-          :key="`existing-${app.applicationType}`"
+          v-for="app in studyStore.study.applicationAccess"
+          :key="`study-${app}`"
         >
           <ParticipantApplicationAccess
-            :study-id="studyId"
-            :participant-id="participantId"
-            :application-name="app.applicationType"
-            :initial-access-data="app"
-            :available-applications="studyStore.study.applicationAccess || []"
-            @deleted="handleDeleted"
-          />
-        </template>
-        <template v-for="app in pendingApps" :key="`pending-${app.id}`">
-          <ParticipantApplicationAccess
-            v-model:application-name="app.value"
-            :study-id="studyId"
-            :participant-id="participantId"
-            :available-applications="[
-              ...availableStudyApps,
-              ...(app.value ? [app.value] : []),
-            ]"
-            @created="() => handleCreated(app.id)"
-            @deleted="() => removePending(app.id)"
+            :study-id="studyStore.studyId"
+            :participant-id="participant.participantId"
+            :application-name="app"
+            :initial-access-data="
+              participantApps?.find((pApp) => pApp.applicationType === app)
+            "
+            @created="handleCreatedApps"
+            @deleted="handleDeletedApps"
           />
         </template>
       </div>
@@ -387,4 +363,29 @@
       />
     </div>
   </div>
+  <div v-else-if="loadingParticipantData" class="flex flex-col items-center">
+    <ProgressSpinner />
+    <label>{{ $t('participants.loadingData') }}</label>
+  </div>
 </template>
+
+<style scoped>
+  .participant-row-select,
+  .participant-row-multiselect {
+    min-width: 0;
+  }
+
+  :deep(.participant-row-select .p-select),
+  :deep(.participant-row-multiselect .p-multiselect) {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  :deep(.participant-row-select .p-select-label),
+  :deep(.participant-row-multiselect .p-multiselect-label) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>

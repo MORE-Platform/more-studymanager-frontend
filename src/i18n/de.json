@@ -124,6 +124,7 @@
       "scheduleType": "Zeitplan-Typ",
       "setPause": "Pausieren",
       "start": "Start",
+      "success": "Erfolgreich",
       "time": "Zeit",
       "to": "zu",
       "leavePage": "Möchten Sie die Seite wirklich verlassen?",
@@ -601,6 +602,7 @@
       "noAccess": "Bisher wurde kein Anwendungszugriff gewährt.",
       "addTooltip": "Keine weiteren Anwendungen für diese Studie verfügbar. Gewähren Sie Zugriff auf Anwendungen über den Reiter 'Studie'."
     },
+    "loadingData": "Teilnehmer:innendaten laden...",
     "dialog": {
       "updated": "Teilnehmer:in erfolgreich gespeichert",
       "updateFailed": "Fehler beim Speichern der Teilnehmer:in!",

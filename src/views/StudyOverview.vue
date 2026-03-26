@@ -69,11 +69,7 @@ Licensed under the Elastic License 2.0. */
         :study-status="studyStore.studyStatus"
       />
 
-      <StudyApplicationManager
-        :study="studyStore.study"
-        :user-roles="studyStore.studyUserRoles"
-        @on-update-study="studyStore.updateStudy($event)"
-      />
+      <StudyApplicationManager />
 
       <StudyCollaboratorList
         :study-id="studyId"
