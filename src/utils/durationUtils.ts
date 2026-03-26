@@ -1,14 +1,14 @@
-import { Duration, UnitEnum } from '@gs/models/duration';
-import { ONE_DAY_IN_MINUTES, ONE_HOUR_IN_MINUTES } from '../constants';
+import { Duration, DurationUnitEnum } from '@gs/models/duration';
+import { ONE_DAY_IN_MINUTES, ONE_HOUR_IN_MINUTES } from '@/constants';
 
 export function valueToMinutes(duration: Duration): number {
   const value = duration.value || 0;
   switch (duration.unit) {
-    case UnitEnum.Day:
+    case DurationUnitEnum.Day:
       return value * ONE_DAY_IN_MINUTES;
-    case UnitEnum.Hour:
+    case DurationUnitEnum.Hour:
       return value * ONE_HOUR_IN_MINUTES;
-    case UnitEnum.Minute:
+    case DurationUnitEnum.Minute:
       return value;
     default:
       return 0;
@@ -17,28 +17,28 @@ export function valueToMinutes(duration: Duration): number {
 
 export function minutesToDuration(
   minutes: number,
-  originalUnit?: UnitEnum,
+  originalUnit?: DurationUnitEnum,
 ): Duration {
   let value = 0;
   let unit = originalUnit;
 
   switch (unit) {
-    case UnitEnum.Day:
+    case DurationUnitEnum.Day:
       value = minutes / ONE_DAY_IN_MINUTES;
       if (value >= 1) {
         break;
       }
-      unit = UnitEnum.Hour;
+      unit = DurationUnitEnum.Hour;
     // eslint-disable-next-line no-fallthrough
-    case UnitEnum.Hour:
+    case DurationUnitEnum.Hour:
       value = minutes / ONE_HOUR_IN_MINUTES;
       if (value >= 1) {
         break;
       }
-      unit = UnitEnum.Minute;
+      unit = DurationUnitEnum.Minute;
     // eslint-disable-next-line no-fallthrough
     default:
-      unit = UnitEnum.Minute;
+      unit = DurationUnitEnum.Minute;
       value = minutes;
       break;
   }

@@ -1,5 +1,5 @@
-import { Study } from '@gs';
-import { Duration, UnitEnum } from '@gs/models/duration';
+import { Study, StudyDurationUnitEnum } from '@gs';
+import { Duration } from '@gs/models/duration';
 import { createLuxonDateTime } from './dateUtils';
 import { roundAndCeil } from './dataUtils';
 import { DateTime } from 'luxon';
@@ -23,7 +23,7 @@ export const calcStudyDuration = (
   if (start?.isValid && end?.isValid) {
     return {
       value: roundAndCeil(end.diff(start, 'day').days),
-      unit: UnitEnum.Day,
+      unit: StudyDurationUnitEnum.Day,
     };
   }
 };

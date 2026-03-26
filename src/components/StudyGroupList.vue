@@ -8,16 +8,16 @@ Licensed under the Elastic License 2.0. */
   import {
     MoreStudyGroupTableMap,
     MoreTableAction,
-    MoreTableColumn,
     MoreTableChoice,
+    MoreTableColumn,
     MoreTableFieldType,
-    MoreTableRowActionResult,
-  } from '../models/MoreTableModel';
+    MoreTableRowActionResult
+  } from '@/models/MoreTableModel';
   import { StudyGroup, StudyRole, StudyStatus } from '@gs';
-  import { UnitEnum } from '@gs/models/duration';
+  import { DurationUnitEnum } from '@gs/models/duration';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
-  import { useStudyGroupStore } from '../stores/studyGroupStore';
+  import { useStudyGroupStore } from '@/stores/studyGroupStore';
   import { useI18n } from 'vue-i18n';
   import { useDialog } from 'primevue/usedialog';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
@@ -49,15 +49,15 @@ Licensed under the Elastic License 2.0. */
     },
     {
       label: t('scheduler.preview.unit.MINUTE'),
-      value: UnitEnum.Minute,
+      value: DurationUnitEnum.Minute,
     },
     {
       label: t('scheduler.preview.unit.HOUR'),
-      value: UnitEnum.Hour,
+      value: DurationUnitEnum.Hour,
     },
     {
       label: t('scheduler.preview.unit.DAY'),
-      value: UnitEnum.Day,
+      value: DurationUnitEnum.Day,
     },
   ];
 

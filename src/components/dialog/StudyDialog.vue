@@ -10,20 +10,17 @@ Licensed under the Elastic License 2.0. */
   import Textarea from 'primevue/textarea';
   import InputNumber from 'primevue/inputnumber';
   import Button from 'primevue/button';
-  import { Contact, Study } from '@gs';
-  import { Duration, UnitEnum } from '@gs/models/duration';
-  import { createLuxonDateTime, dateToDateString } from '../../utils/dateUtils';
+  import { Contact, Study, StudyDurationUnitEnum } from '@gs';
+  import { Duration } from '@gs/models/duration';
+  import { createLuxonDateTime, dateToDateString } from '@/utils/dateUtils';
   import { useI18n } from 'vue-i18n';
-  import { useGlobalStore } from '../../stores/globalStore';
+  import { useGlobalStore } from '@/stores/globalStore';
   import ErrorLabel from '../forms/ErrorLabel.vue';
-  import { useErrorQueue } from '../../composable/useErrorHandling';
-  import { calcStudyDuration } from '../../utils/studyUtils';
-  import { scrollToFirstError } from '../../utils/componentUtils';
+  import { useErrorQueue } from '@/composable/useErrorHandling';
+  import { calcStudyDuration } from '@/utils/studyUtils';
+  import { scrollToFirstError } from '@/utils/componentUtils';
   import ContactInformation from './shared/ContactInformation.vue';
-  import {
-    validateEmail,
-    validateTelephoneNumber,
-  } from '../../utils/stringUtils';
+  import { validateEmail, validateTelephoneNumber } from '@/utils/stringUtils';
 
   const dateFormat = useGlobalStore().getDateFormat;
   const dialogRef: any = inject('dialogRef');
@@ -55,7 +52,7 @@ Licensed under the Elastic License 2.0. */
 
   const studyDuration: Duration = reactive({
     value: study.duration?.value,
-    unit: study.duration?.unit ?? UnitEnum.Day,
+    unit: study.duration?.unit ?? StudyDurationUnitEnum.Day,
   });
   const start = ref(
     study?.plannedStart ? new Date(study.plannedStart) : new Date(),
@@ -170,7 +167,7 @@ Licensed under the Elastic License 2.0. */
       class="grid grid-cols-6 items-center gap-4"
       @submit.prevent="save"
     >
-      <div class="col-start-0 col-span-6">
+      <div class="col-span-6 col-start-0">
         <h5 class="text-lg font-bold" :class="{ 'mb-2': !getError('title') }">
           {{ $t('study.dialog.label.studyTitle') }}*
         </h5>
@@ -187,7 +184,7 @@ Licensed under the Elastic License 2.0. */
         <ErrorLabel :error="getError('title')" class="col-span-8" />
       </div>
       <div class="col-span-5 col-start-2"></div>
-      <div class="col-start-0 col-span-3">
+      <div class="col-span-3 col-start-0">
         <h5 class="mb-2 text-lg font-bold">
           {{ $t('study.dialog.label.studyStart') }}*
         </h5>
@@ -209,7 +206,7 @@ Licensed under the Elastic License 2.0. */
           }"
         />
       </div>
-      <div class="col-start-0 col-span-3">
+      <div class="col-span-3 col-start-0">
         <h5 class="mb-2 text-lg font-bold">
           {{ $t('study.dialog.label.studyEnd') }}*
         </h5>
@@ -264,7 +261,7 @@ Licensed under the Elastic License 2.0. */
         </div>
         <ErrorLabel :error="getError('duration')" class="col-span-8" />
       </div>
-      <div class="col-start-0 col-span-6">
+      <div class="col-span-6 col-start-0">
         <h5 class="mb-2 text-lg font-bold">
           {{ $t('study.props.purpose') }}
         </h5>
@@ -277,7 +274,7 @@ Licensed under the Elastic License 2.0. */
           :auto-resize="true"
         />
       </div>
-      <div class="col-start-0 col-span-6">
+      <div class="col-span-6 col-start-0">
         <h5
           class="text-lg font-bold"
           :class="{ 'mb-2': !getError('participantInfo') }"
@@ -299,7 +296,7 @@ Licensed under the Elastic License 2.0. */
         />
         <ErrorLabel :error="getError('participantInfo')" class="col-span-8" />
       </div>
-      <div class="col-start-0 col-span-6">
+      <div class="col-span-6 col-start-0">
         <h5
           class="text-lg font-bold"
           :class="{ 'mb-2': !getError('consentInfo') }"
@@ -321,7 +318,7 @@ Licensed under the Elastic License 2.0. */
         />
         <ErrorLabel :error="getError('consentInfo')" class="col-span-8" />
       </div>
-      <div class="col-start-0 col-span-6">
+      <div class="col-span-6 col-start-0">
         <h5 class="mb-2 text-lg font-bold">
           {{ $t('study.props.finishText') }}
         </h5>
@@ -336,7 +333,7 @@ Licensed under the Elastic License 2.0. */
       </div>
       <ContactInformation v-model="contact" />
       <div
-        class="buttons col-start-0 col-span-6 mt-1 flex flex-row items-center justify-end text-right"
+        class="buttons col-span-6 col-start-0 mt-1 flex flex-row items-center justify-end text-right"
       >
         <Button
           class="btn-gray"
