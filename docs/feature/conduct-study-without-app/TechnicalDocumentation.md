@@ -21,7 +21,7 @@ Survey availability depends on observation schedule activation.
 
 ### <span style="color: #6E8FAC">Study Manager Architecture and Extension</span>
 
-#### <span style="color: #6E8FAC">Study Configuration Extension (StudyManager)</span>
+#### <span style="color: #6E8FAC">Activate Participant Portal (StudyManager)</span>
 
 Participant Portal access is enabled via an extension of the study configuration schema.
 
@@ -46,7 +46,7 @@ After activating the Participant Portal functionality, access credentials are ge
 
 The backend generates:
 ##### 1. Participant Portal URL
-The backend generates a portal URL containing a study reference and a participant-specific identifier. A UUID-based mapping table links the external portal identifier to internal entities such as:
+The backend generates a portal URL containing the study ID and a participant reference, such as:
 - `participantId`
 - `observationId`
 - `scheduleId`
@@ -54,7 +54,7 @@ The backend generates a portal URL containing a study reference and a participan
 This prevents exposure of internal identifiers.
 
 ##### 2. Participant Portal Login Code:
-A reusable login code is generated together with the URL (similar to the mobile app login token) and validated by the Gateway during authentication on the Participant Portal.
+The login code acts as the password for the Participant to authenticate with the Participant Portal. It is similar to the login token of the mobile app, but the Participant will need to provide it every time he accesses the Participant Portal.
 
 ##### 3. Access Roles
 Credential generation is available to users with the roles:

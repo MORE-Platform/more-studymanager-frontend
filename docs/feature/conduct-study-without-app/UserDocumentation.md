@@ -30,6 +30,8 @@ The following workflow describes how to prepare and provide Participant Portal a
 
 Each questionnaire link becomes available only when the corresponding LimeSurvey observation schedule is active. Selecting a questionnaire automatically redirects the participant to the corresponding LimeSurvey interface for completion.
 
+Repository: https://github.com/MORE-Platform/more-participant-portal
+
 ## <span style="color: #6E8FAC">Step-by-Step Guide</span>
 
 ### Activate Participant Portal usage for the Study (StudyManager Frontend)
