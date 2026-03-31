@@ -8,9 +8,9 @@ For this reason, MORE provides a mode that allows researchers to provide partici
 ---
 
 ## <span style="color: #6E8FAC">Workflow Overview</span>
-For LimeSurvey-based studies, participants use the Participant Portal (a lightweight web application) instead of the MORE mobile app. The Participant Portal provides a simple login process including consent handling and access to assigned LimeSurvey questionnaires.
+For such studies, participants use the Participant Portal (a lightweight web application) instead of the MORE mobile app. The Participant Portal provides a simple login process including consent handling and access to assigned LimeSurvey questionnaires.
 
-The following workflow describes how to prepare and provide Participant Portal access for participants in LimeSurvey-based studies.
+The following workflow describes how to prepare and provide Participant Portal access for participants in such studies.
 
 ### StudyManager Frontend – Study Administrator / Operator
 1. **Activate Participant Portal usage** for a specific study.
@@ -63,7 +63,7 @@ Repository: https://github.com/MORE-Platform/more-participant-portal
 4. Click "Generate access" to get Login URL and Code for the participant
 ![generate-participant-portal-access.jpg](images/study-manager/generate-participant-portal-access.jpg)
 ![generated-participant-portal-access.jpg](images/study-manager/generated-participant-portal-access.jpg)
-5. Provide the participant with their access credentials.
+5. Provide the participant with their access credentials (providing the participant with their access credentials isn't part of the More workflow and needs to be done by the study contributer).
 
 ## <span style="color: #6E8FAC">Using the Participant Portal</span>
 
