@@ -37,7 +37,7 @@ Repository: https://github.com/MORE-Platform/more-participant-portal
 ### Activate Participant Portal usage for the Study (StudyManager Frontend)
 1. Open your study inside the StudyManager Frontend.
 2. On the Study Details page enable the participant portal option.
-![enable-participant-prtal.jpg](images/study-manager/enable-participant-prtal.jpg)
+![enable-participant-prtal.jpg](images/study-manager/enable-participant-portal.jpg)
 
 ### Configure Limesurvey Questionnaires
 1. Go to the [More Limesurvey Survey](https://lime.platform-test.more.redlink.io/admin/)
