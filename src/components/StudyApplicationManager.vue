@@ -44,7 +44,6 @@ Licensed under the Elastic License 2.0. */
             isLoading ||
             studyStore.studyIsUpdating
           "
-          ,
           @change="studyStore.updateStudy(studyStore.study)"
         />
         <label :for="application.value" class="cursor-pointer">{{
