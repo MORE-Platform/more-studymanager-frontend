@@ -25,12 +25,14 @@ This manual end-to-end test verifies the complete feature flow for conducting a 
 
 ## <span style="color: #6E8FAC">Preconditions</span>
 
-| ✅❌ Local Setup                                                                                                                             | ✅❌ Test instance setup                                                                                  |
-|--------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| ✅❌ MORE StudyManager Backend and MORE Gateway are running in the docker (with correct env variables)                                       | ✅❌ The MORE StudyManager Frontend/Backend and Participant Portal are deployed and reachable (latest version) |
-| ✅❌ MORE StudyManager Frontend and the Participant Portal are started via dev:local and reachable under localhost:3000 & localhost:3001     | ✅❌ The MORE Gateway is reachable                                                                        |
-| ✅❌ Lime Survey Server is running and reachable under localhost:8085                                                                        | ✅❌ The tester can log in and create a new Study                                                          |
-| ✅❌ The tester can log in and create a new Study                                                                                             |                                                                                                                               |
+<span style="color: #6E8FAC">Choose one of the two setups to test the feature. Enter ✅ to mark the chosen path.</span>
+
+| Local Setup                                                                                                                            | est instance setup                                                                                  |
+|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| MORE StudyManager Backend and MORE Gateway are running in the docker (with correct env variables)                                      | The MORE StudyManager Frontend/Backend and Participant Portal are deployed and reachable (latest version) |
+| MORE StudyManager Frontend and the Participant Portal are started via dev:local and reachable under localhost:3000 & localhost:3001    | The MORE Gateway is reachable                                                                        |
+| Lime Survey Server is running and reachable under localhost:8085                                                                       | The tester can log in and create a new Study                                                          |
+| The tester can log in and create a new Study                                                                                           |                                                                                                                               |
 ---
 
 ## <span style="color: #6E8FAC">Test Metadata</span>
@@ -73,20 +75,20 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 ### Expected result
 - Study is saved successfully and visible on top of the Study List.
 - The tester as the creator has all 3 roles: Study Administrator, Study Viewer, Study Operator.
-- Clicking on the row with the study opens the study details page with all entered study information.
+- Clicking on the row with the study opens the Study Details Page with all entered study information.
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
 ## <span style="color: #6E8FAC">2. Enable Participant Portal Usage</span>
 
 ### Action
-1. Scroll down on the study details and check the **Participant Portal** checkbox. It should save automatically.
+1. Scroll down on the Study Details Page and check the **Participant Portal** checkbox. It should save automatically.
 
 <img src="../images/study-manager/enable-participant-portal.jpg" width="1200" />
 
@@ -95,9 +97,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -111,14 +113,16 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 4. Create the following 3 Surveys:
 
-| Data               | Lime Survey #1                                                                                   | Lime Survey #2                                                                                  | Lime Survey #3                                                                                                                                       |
-|--------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Title**          | Test Survey: Absolute Observation                                                                | Test Survey: Relative Observation                                                               | Test Survey: Relative Observation (Repeat)                                                                                                           |
-| **Question group** | Multiple choice: Symptoms                                                                        | Single choice: General well-being question                                                      | Single choice: Activity                                                                                                                              |
-| **Question type**  | Multiple Choice                                                                                  | Single Choice                                                                                   | Single Choice                                                                                                                                        |
-| **Question**       | Are you currently experiencing any of the following symptoms?                                    | How would you rate your overall health today?                                                   | How physically active were you today?                                                                                                                |
-| **Description**    | This is a test question for testing Participant Portal Studies, which uses an absolute schedule. | This is a test question for testing Participant Portal Studies, which uses a relative schedule. | This is a test question for testing Participant Portal Studies, which uses a relative schedule with repetition.                                      |
-| **Answers**        | ☐ Fever ☐ Cough ☐ Headache ☐ Fatigue ☐ Shortness of breath ☐ None of the above                   | ☐ Very good ☐ Good ☐ Fair ☐ Poor ☐ Very poor                                                    | ☐ Not active ☐ Light activity (e.g., short walks) ☐ Moderate activity (e.g., cycling, longer walks) ☐ Intense activity (e.g., sports, workouts) 🚶‍♀️ |
+| Data                  | Lime Survey #1                                                                                   | Lime Survey #2                                                                                  | Lime Survey #3                                                                                                                                        |
+|-----------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Title**             | Test Survey: Absolute Observation                                                                | Test Survey: Relative Observation                                                               | Test Survey: Relative Observation (Repeat)                                                                                                            |
+| **Question group**    | Multiple choice: Symptoms                                                                        | Single choice: General well-being question                                                      | Single choice: Activity                                                                                                                               |
+| **Group Description** | This is a test question for testing Participant Portal Studies, which uses an absolute schedule. | This is a test question for testing Participant Portal Studies, which uses a relative schedule. | This is a test question for testing Participant Portal Studies, which uses a relative schedule with repetition.                                       |
+| **Question type**     | Multiple choice question -> Multiple choice                                                      | Single choice question -> List (radio)                                                          | Single choice question -> List (radio)                                                                                                                |
+| **Question**          | Are you currently experiencing any of the following symptoms?                                    | How would you rate your overall health today?                                                   | How physically active were you today?                                                                                                                 |
+| **Answers**           | ☐ Fever ☐ Cough ☐ Headache ☐ Fatigue ☐ Shortness of breath ☐ None of the above                   | ☐ Very good ☐ Good ☐ Fair ☐ Poor ☐ Very poor                                                    | ☐ Not active ☐ Light activity (e.g., short walks) ☐ Moderate activity (e.g., cycling, longer walks) ☐ Intense activity (e.g., sports, workouts) 🚶‍♀️ |
+
+Note: if you copy the Answers and add it to quick add (one answer per line), it will automatically create your answers.
 
 ### Expected Result
 - All 3 Surveys are created and saved in the Lime Survey Server.
@@ -127,24 +131,24 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
 ## <span style="color: #6E8FAC">4. Create 3 Lime Survey Observations that Link to your Surveys</span>
 
 ### Action
-1. On the MORE StudyManager go to the Observation Page of your study.
-2. Create three Lime Survey Observations and configure their details as follows:
+1. On the MORE StudyManager go to the Observations Tab of your study.
+2. Click on **Add observation** to create three Lime Survey Observations and configure their details as follows:
 
-| Field                     | Observation #1                                                                                                                                                        | Observation #2                                                                                    | Observation #3                                                                                                   |
-|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
-| **Title**                 | Test Survey: Absolute Observation                                                                                                                                     | Test Survey: Relative Observation                                                                 | Test Survey: Relative Observation (Repeat)                                                                       |
-| **Schedule**              | Absolute Schedule: Start: <span style="color: IndianRed">_Current Day_ 10:00</span> End: <span style="color: IndianRed">_Current Day + 1 Day_ 18:00</span>, No Repeat | Relative Schedule: Start: Day 2 10:00, End: Day 2 16:00, No Repeat                                | Relative Schedule: Start: Day 1 10:30, End: Day 1 18:30; Repeat: every 1 day, end after 4 repetitions                            |
-| **Purpose / Description** | This is a test question for testing Participant Portal Studies, which uses an absolute schedule.                                                                      | This is a test question for testing Participant Portal Studies, which uses a relative schedule.   | This is a test question for testing Participant Portal Studies, which uses a relative schedule with repetition. |
-| **SurveyID**              | Enter Survey ID of **Test Survey: Absolute Observation**                                                                                                              | Enter Survey ID of **Test Survey: Relative Observation**                                          | Enter Survey ID of **Test Survey: Relative Observation (Repeat)**                                                |
+| Field                                 | Observation #1                                                                                                                                              | Observation #2                                                                                    | Observation #3                                                                                                   |
+|---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| **Title**                             | Test Survey: Absolute Observation                                                                                                                           | Test Survey: Relative Observation                                                                 | Test Survey: Relative Observation (Repeat)                                                                       |
+| **Schedule**                          | Absolute Schedule: Start: <span style="color: IndianRed">_Current Day_ 10:00</span> End: <span style="color: IndianRed">_Current Day + 1 Day_ 18:00</span>  | Relative Schedule: Start: Day 2 10:00, End: Day 2 16:00, No Repeat                                | Relative Schedule: Start: Day 1 10:30, End: Day 1 18:30; Repeat: every 1 day, end after 4 repetitions                            |
+| **Purpose / Participant Information** | This is a test question for testing Participant Portal Studies, which uses an absolute schedule.                                                            | This is a test question for testing Participant Portal Studies, which uses a relative schedule.   | This is a test question for testing Participant Portal Studies, which uses a relative schedule with repetition. |
+| **SurveyID**                          | Enter Survey ID of **Test Survey: Absolute Observation**                                                                                                    | Enter Survey ID of **Test Survey: Relative Observation**                                          | Enter Survey ID of **Test Survey: Relative Observation (Repeat)**                                                |
 
 ### Expected Result
 - All three observations are saved and shown in the observation list.
@@ -153,16 +157,16 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
 ## <span style="color: #6E8FAC">5. Create Participant and generate Participant Portal credentials</span>
 
 ### Action
-1. Go to your Study Participant Page
+1. Go to your Study Participants Page
 2. Create a new Participant
 3. Open the Participant Dialog and click "Generate access" to get Login URL and Code for the participant
 
@@ -174,16 +178,16 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
 ## <span style="color: #6E8FAC">6. Start the Study</span>
 
 ### Action
-1. Go to Study Overview Page
+1. Go to the Study Details Page
 2. Change the Status to **Active** (Start Study)
 
 ### Expected Result
@@ -191,9 +195,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -213,9 +217,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -230,22 +234,22 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 ### Expected Result
 - After login the participant is redirected to the consent form.
 - When declining the consent form the participant is redirected back to the login page.
-- When accepting the consent form the participant is redirected to the study overview page.
+- When accepting the consent form the participant is redirected to the Participant Study Page.
 
 <img src="../images/end-to-end-test/participant-consent.png" width="800" />
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
 ## <span style="color: #6E8FAC">9. Verify study information and observation visibility</span>
 
 ### Action
-1. The study overview page should now show the study information on top.
+1. The Participant Study Page should now show the study information on top.
 2. Below there is a list of all active and upcoming Lime surveys.
 3. Only Lime Survey Questionnaires with an active schedule timeframe have an enabled start button. The rest should be disabled.
 
@@ -259,9 +263,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -277,9 +281,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -287,7 +291,7 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Action
 1. Open the Study Manager and navigate to the specific study the participant is in.
-2. Then go to the Monitoring & Data page to check if the Lime Survey data was saved correctly.
+2. Then go to the Monitoring & Data Page to check if the Lime Survey data was saved correctly.
 
 Note: The data can take a little bit to be saved into our system (max. 5 minutes)
 
@@ -298,9 +302,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -314,9 +318,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -332,9 +336,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -343,12 +347,12 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 ## <span style="color: #6E8FAC">14. Clone your study and set it to Preview</span>
 
 ### Action
-1. Go back to your study list in the MORE StudyManager
+1. Go back to your study list in the MORE StudyManager Dashboard
 2. Click on the **Export Study Configuration** action button in the row of your study
 3. Import the study configuration as a new study and update the Study ID in the Title of the study
 4. Enter the study and go to Observations
 5. Relink the Lime Survey Observations to the previously configured Lime Survey IDs (IDs are not preserved during export/import)
-6. Go to the Study Overview Page and click **Start Preview**
+6. Go to the Study Details Page and click **Start Preview**
 
 ### Expected Result
 - The same study is imported correctly as a new study.
@@ -359,9 +363,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -382,9 +386,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -401,9 +405,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -421,9 +425,9 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -443,9 +447,9 @@ Note: If the Lime Surveys have schedules with **Lime Survey Start is Study Start
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
 
@@ -455,7 +459,7 @@ Note: If the Lime Surveys have schedules with **Lime Survey Start is Study Start
 1. Click on **Start** for one active Lime Survey
 2. Answer all questions for this specific Lime Survey in the new tab.
 3. Go back to your study inside the MORE StudyManager.
-4. Open the Monitoring & Data Tab and verify that the answer of your Lime Survey is shown there correctly.
+4. Open the Monitoring & Data Page and verify that the answer of your Lime Survey is shown there correctly.
 
 ### Expected Result
 - The Lime Survey can be answered in the browser successfully.
@@ -463,8 +467,8 @@ Note: If the Lime Surveys have schedules with **Lime Survey Start is Study Start
 
 ### Status
 
-| Pass | Fail | Notes  |
-|----|------|--------|
-| ✅❌ | ✅❌   |        |
+| Completed | Notes   |
+|----------|--------|
+| ✅❌       |          |
 
 ---
