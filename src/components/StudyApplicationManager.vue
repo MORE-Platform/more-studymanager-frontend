@@ -42,8 +42,7 @@ Licensed under the Elastic License 2.0. */
           :disabled="
             !studyStore.studyIsEditable ||
             isLoading ||
-            studyStore.studyIsUpdating
-          "
+            studyStore.studyIsUpdating"
           @change="studyStore.updateStudy(studyStore.study)"
         />
         <label :for="application.value" class="cursor-pointer">{{
