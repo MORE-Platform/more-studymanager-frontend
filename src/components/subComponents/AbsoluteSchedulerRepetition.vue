@@ -234,7 +234,7 @@
 <template>
   <div class="absolute-scheduler-rrule">
     <div class="col-span-6 col-start-1 grid grid-cols-6 gap-4">
-      <hr class="col-span-6 col-start-0 my-4" />
+      <hr class="col-span-6 col-start-0 my-4 text-gray-300" />
       <h6 class="col-span-6">{{ $t('scheduler.labels.event.repeat') }}</h6>
       <div class="col-span-6 mb-2">
         {{ $t('scheduler.labels.event.repeatDesc') }}
@@ -296,7 +296,7 @@
           v-if="rruleEventCheckbox && returnRrule.freq"
           class="col-span-6 grid grid-cols-6 gap-4"
         >
-          <hr class="col-span-6 col-start-0 my-4" />
+          <hr class="col-span-6 col-start-0 my-4 text-gray-300" />
           <div class="col-span-1 self-center font-medium">
             {{ $t('scheduler.labels.repetitionEnd') }}
           </div>

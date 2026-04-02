@@ -335,7 +335,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <hr class="col-span-6" />
+      <hr class="col-span-6 text-gray-300" />
 
       <h6 class="col-span-6 font-medium">
         {{ $t('scheduler.preview.title.individualEvent') }}
@@ -470,9 +470,9 @@ Licensed under the Elastic License 2.0. */
     </div>
 
     <div class="h-24"></div>
-    <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
+    <div class="absolute right-5 bottom-5 grid w-full grid-cols-6">
       <div
-        class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
+        class="col-span-6 col-start-0 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
           class="btn-gray mr-3"
@@ -486,33 +486,33 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped>
-:deep(.highlight input) {
-  background-color: var(--red-200);
-}
-
-.scheduler {
-  min-height: 37.5rem;
-
-  input::placeholder {
-    color: var(--bluegray-300);
+  :deep(.highlight input) {
+    background-color: var(--red-200);
   }
 
-  h6 {
-    color: var(--primary-color);
+  .scheduler {
+    min-height: 37.5rem;
+
+    input::placeholder {
+      color: var(--bluegray-300);
+    }
+
+    h6 {
+      color: var(--primary-color);
+    }
   }
-}
 
-:deep(.input-error input) {
-  background: var(--red-200);
-}
+  :deep(.input-error input) {
+    background: var(--red-200);
+  }
 
-.examples {
-  border: 1px solid var(--surface-50);
-  border-radius: 6px;
-  background-color: var(--surface-50);
-}
+  .examples {
+    border: 1px solid var(--surface-50);
+    border-radius: 6px;
+    background-color: var(--surface-50);
+  }
 
-:deep(.calendar-warning) {
-  border: var(--border-weight) var(--border-style) var(--yellow-600);
-}
+  :deep(.calendar-warning) {
+    border: var(--border-weight) var(--border-style) var(--yellow-600);
+  }
 </style>

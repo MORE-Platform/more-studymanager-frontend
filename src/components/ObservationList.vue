@@ -38,11 +38,9 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import { ScheduleType } from '../models/Scheduler';
-  import Button from 'primevue/button';
   import { timeToHourMinuteString } from '../utils/dateUtils';
-  import OverlayPanel from 'primevue/overlaypanel';
-  import InputText from 'primevue/inputtext';
   import { extractCurrentLimeDomain } from '../utils/limeSurveyUtils';
+  import DropdownPanelWithSearch from '@/components/shared/DropdownPanelWithSearch.vue';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -511,10 +509,6 @@ Licensed under the Elastic License 2.0. */
 
   listObservations();
 
-  const observationTypeOverlayPanel = ref<InstanceType<
-    typeof OverlayPanel
-  > | null>(null);
-
   const observationTypeQuery = ref('');
 
   const filteredObservationTypes = computed(() => {
@@ -523,12 +517,8 @@ Licensed under the Elastic License 2.0. */
     return observationTypes.filter((i) => i.label.toLowerCase().includes(q));
   });
 
-  function openObservatinTypeOverlay(event: MouseEvent): void {
-    observationTypeOverlayPanel.value?.toggle(event);
-  }
   function selectObservationType(item: any): any {
     item.command();
-    observationTypeOverlayPanel.value?.hide();
   }
 </script>
 
@@ -556,47 +546,14 @@ Licensed under the Elastic License 2.0. */
     >
       <template #tableActions="{ isInEditMode }">
         <div>
-          <Button
-            type="button"
-            :disabled="isInEditMode ? true : !actionsVisible"
-            @click="openObservatinTypeOverlay($event)"
-            >{{ t('observation.observationList.action.add') }}
-            <span class="pi pi-angle-down ml-3"></span
-          ></Button>
-
-          <OverlayPanel
-            ref="observationTypeOverlayPanel"
-            style="width: 40vw; min-width: 32rem"
-          >
-            <InputText
-              v-model="observationTypeQuery"
-              placeholder="Search…"
-              class="mb-3 w-full"
-            />
-
-            <div class="scrollbar-stable max-h-[38vh] overflow-y-auto">
-              <button
-                v-for="observationType in filteredObservationTypes"
-                :key="observationType.label"
-                type="button"
-                class="w-full px-3 py-2 text-left hover:bg-gray-50"
-                @click="selectObservationType(observationType)"
-              >
-                <div class="font-medium">{{ observationType.label }}</div>
-                <div class="text-sm opacity-70">
-                  <!-- eslint-disable vue/no-v-html -->
-                  <span v-html="observationType.description" />
-                </div>
-              </button>
-
-              <div
-                v-if="filteredObservationTypes.length === 0"
-                class="px-3 py-2 text-sm opacity-70"
-              >
-                {{ $t('studyCollaborator.placeholder.noResultsFound') }}
-              </div>
-            </div>
-          </OverlayPanel>
+          <dropdown-panel-with-search
+            :dropdown-list="filteredObservationTypes"
+            :button-label="t('observation.observationList.action.add')"
+            :is-button-disabled="isInEditMode ? true : !actionsVisible"
+            :button-icon="'pi pi-plus'"
+            @on-query-change="observationTypeQuery = $event"
+            @on-select-option="selectObservationType($event)"
+          />
         </div>
       </template>
     </MoreTable>

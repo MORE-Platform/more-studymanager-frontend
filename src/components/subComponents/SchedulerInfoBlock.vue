@@ -181,10 +181,10 @@ Licensed under the Elastic License 2.0. */
 
 <template>
   <div
-    class="col-start-0 col-span-8 grid grid-cols-8"
+    class="col-span-8 col-start-0 grid grid-cols-8"
     :class="{ 'scheduler-not-editable pb-4': !editable }"
   >
-    <h5 class="col-start-0 col-span-8">{{ $t('scheduler.singular') }}*</h5>
+    <h5 class="col-span-8 col-start-0">{{ $t('scheduler.singular') }}*</h5>
     <div class="col-span-8 mb-3">{{ getSchedulerDescription() }}</div>
     <div
       v-if="isObjectEmpty(scheduler)"
@@ -220,12 +220,12 @@ Licensed under the Elastic License 2.0. */
         class="text-bold col-span-2 grid items-start"
         :class="
           scheduler.dtstart && getRepetitionValue('every') === ''
-            ? 'col-span-2 grid-cols-2 border-r-2'
-            : 'gird-cols-2 col-span-2 border-r-2'
+            ? 'col-span-2 grid-cols-2 border-r-2 border-gray-300'
+            : 'gird-cols-2 col-span-2 border-r-2 border-gray-300'
         "
       >
         <div
-          class="color-primary col-span-2 items-center border-b-2 py-3 pr-3 font-bold"
+          class="color-primary col-span-2 items-center border-b-2 border-gray-300 py-3 pr-3 font-bold"
         >
           {{ $t('scheduler.preview.title.individualEvent') }}
         </div>
@@ -271,7 +271,9 @@ Licensed under the Elastic License 2.0. */
         v-if="getRepetitionValue('every') !== ''"
         class="text-bold col-span-2 grid h-fit"
       >
-        <div class="color-primary col-span-2 border-b-2 py-3 pl-3 font-bold">
+        <div
+          class="color-primary col-span-2 border-b-2 border-gray-300 py-3 pl-3 font-bold"
+        >
           {{ $t('scheduler.preview.title.repeatEvent') }}
         </div>
         <div class="col-span-1 py-2 pl-3 font-medium">

@@ -128,7 +128,8 @@
       "time": "Zeit",
       "to": "zu",
       "leavePage": "Möchten Sie die Seite wirklich verlassen?",
-      "dataHealth": "Datenqualität"
+      "dataHealth": "Datenqualität",
+      "searchPlaceholder": "Suchen..."
     },
     "placeholder": {
       "all": "Alle",

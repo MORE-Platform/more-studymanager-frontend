@@ -94,7 +94,7 @@ export interface MoreTableCollaboratorItem {
 export interface MoreTableCollaboratorItemOption {
   label: string; // name
   value: string; // uid
-  institution: string;
+  description: string;
 }
 
 export interface MoreIntegrationTableMap {

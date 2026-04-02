@@ -128,7 +128,8 @@
       "time": "Time",
       "to": "to",
       "leavePage": "Do you really want to leave the page?",
-      "dataHealth": "Data health"
+      "dataHealth": "Data health",
+      "searchPlaceholder": "Search..."
     },
     "placeholder": {
       "all": "All",
