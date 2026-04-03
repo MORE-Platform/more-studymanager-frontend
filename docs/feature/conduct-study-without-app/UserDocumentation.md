@@ -32,50 +32,67 @@ Each questionnaire link becomes available only when the corresponding LimeSurvey
 
 Repository: https://github.com/MORE-Platform/more-participant-portal
 
-## <span style="color: #6E8FAC">Step-by-Step Guide</span>
+## Step-by-Step Guide
 
 ### Activate Participant Portal usage for the Study (StudyManager Frontend)
 1. Open your study inside the StudyManager Frontend.
 2. On the Study Details page enable the participant portal option.
-![enable-participant-prtal.jpg](images/study-manager/enable-participant-portal.jpg)
+> ![enable-participant-prtal.jpg](images/study-manager/enable-participant-portal.jpg)
 
 ### Configure Limesurvey Questionnaires
 1. Go to the [More Limesurvey Survey](https://lime.platform-test.more.redlink.io/admin/)
 2. Login to the Limesurvey Survey
-3. Follow the instructions on the [More Limesurvey Documentation](https://github.com/MORE-Platform/more-limesurvey) (more-limesurvey repository).
+
+#### 3. Adapt Limesurvey-Specific Settings (Depending on Your Use Case)
+By default, LimeSurvey inherits the global settings configured in the MORE LimeSurvey environment.
+
+In the **Survey Settings**, under **Participant settings**, you will find the option
+**“Allow multiple responses or update responses with one access code.”**
+> ![lime-survey-settings.jpg](images/lime-survey/lime-survey-settings.jpg)
+
+
+##### Keep this option ON/INHERIT ✅ (default) if:
+- the questionnaire is intended to be completed multiple times by the same participant (e.g., daily at noon),
+- the questionnaire is linked to multiple MORE observations (see below)
+
+##### WSet this option to OFF 🚫 if:
+- you want to allow only one response per participant, and
+- you do not plan to link multiple MORE observations to the same LimeSurvey questionnaire.
+
+In this case, participants will receive a LimeSurvey-specific error message if they try to open the survey link again after already completing the questionnaire.
 
 ### Create and link Observation(s) to LimeSurvey Questionnaire(s)
 1. Open the Observation Page on the StudyManager Frontend
 2. Click "Add Observation" and choose "Lime Survey" from the List
-![select-lime-survey-observation.jpg](images/study-manager/select-lime-survey-observation.jpg)
+> ![select-lime-survey-observation.jpg](images/study-manager/select-lime-survey-observation.jpg)
 3. Enter the observation details and configure the schedule.
 4. For the Survey ID copy the ID from the Limesurvey Survey and enter it in the dialog to link them together.
-![lime-survey-id.jpg](images/study-manager/lime-survey-id.jpg)
-![enter-lime-survey-id.jpg](images/study-manager/enter-lime-survey-id.jpg)
+> ![lime-survey-id.jpg](images/study-manager/lime-survey-id.jpg)
+> ![enter-lime-survey-id.jpg](images/study-manager/enter-lime-survey-id.jpg)
 5. Save the observation.
 
 ### Create participant(s) and generate Participant Portal Access Credentials
 1. Go to the Participant Page on the StudyManager Frontend
 2. Click "Add Participant" and choose the number of participants you want to create.
-![add-participants.jpg](images/study-manager/add-participants.jpg)
+> ![add-participants.jpg](images/study-manager/add-participants.jpg)
 3. Open the Participant Dialog.
-![open-participant-dialg.jpg](images/study-manager/open-participant-dialg.jpg)
+> ![open-participant-dialg.jpg](images/study-manager/open-participant-dialg.jpg)
 4. Click "Generate access" to get Login URL and Code for the participant
-![generate-participant-portal-access.jpg](images/study-manager/generate-participant-portal-access.jpg)
-![generated-participant-portal-access.jpg](images/study-manager/generated-participant-portal-access.jpg)
+> ![generate-participant-portal-access.jpg](images/study-manager/generate-participant-portal-access.jpg)
+> ![generated-participant-portal-access.jpg](images/study-manager/generated-participant-portal-access.jpg)
 5. Provide the participant with their access credentials (providing the participant with their access credentials isn't part of the More workflow and needs to be done by the study contributer).
 
 ## <span style="color: #6E8FAC">Using the Participant Portal</span>
 
 ### Access the Participant Portal
 1. Open the participant portal link in the browser and enter the login code.
-![participant-portal-login.png](images/participant-portal/participant-portal-login.png)
+> ![participant-portal-login.png](images/participant-portal/participant-portal-login.png)
 2. Accept the consent form (first login only).
-![participant-portal-consent.png](images/participant-portal/participant-portal-consent.png)
+> ![participant-portal-consent.png](images/participant-portal/participant-portal-consent.png)
 
 ### View Study Information and Access the Lime Survey Questionnaire(s)
 1. Once logged in, participants can access study information and view a list of current and upcoming questionnaires.
-![participant-portal-study.png](images/participant-portal/participant-portal-study.png)
+> ![participant-portal-study.png](images/participant-portal/participant-portal-study.png)
 2. An active questionnaire can be accessed via the action button inside the table.
 
 Note: Questionnaires are only available while their corresponding observation schedule is active.
