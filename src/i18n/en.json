@@ -945,6 +945,13 @@
       "placeholder": "Select applications for this study",
       "label": {
         "PARTICIPANT_PORTAL": "Participant Portal"
+      },
+      "description": "Applications are optional features that you can activate when needed. This enables additional functions such as the participant portal.",
+      "message": {
+        "activated": "You can now generate access credentials per participant in the participant list.",
+        "deactivated": "Participants can no longer log in to the participant portal.",
+        "deactivatedTitle": "Participant portal access deactivated",
+        "activatedTitle": "Participant portal access activated"
       }
     },
     "dialog": {

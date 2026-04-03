@@ -945,6 +945,13 @@
       "placeholder": "Wähle Anwendungen für diese Studie",
       "label": {
         "PARTICIPANT_PORTAL": "Teilnehmerportal"
+      },
+      "description": "Applications sind zusätzliche Optionen, die Sie bei Bedarf aktivieren können. Dadurch werden bestimmte Funktionen wie das Teilnehmerportal freigeschaltet.",
+      "message": {
+        "activated": "Du kannst bei der Teilnehmerliste nun die Zugangsdaten pro Teilnehmer generieren.",
+        "deactivated": "Teilnehmer können sich ab jetzt nicht mehr im Teilnehmerportal anmelden.",
+        "deactivatedTitle": "Teilnehmerportal Zugang deaktiviert",
+        "activatedTitle": "Teilnehmerportal Zugang aktiviert"
       }
     },
     "dialog": {
