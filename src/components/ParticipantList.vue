@@ -551,7 +551,7 @@ Licensed under the Elastic License 2.0. */
       :rows="participantsList"
       :row-actions="rowActions"
       :end-row-actions="endRowActions"
-      :row-edit-btn="studyStore.studyIsEditable"
+      :row-edit-btn="studyStore.hasCriticalRoles"
       :loading="loader.isLoading.value"
       :editable-access="studyStore.studyStatus !== StudyStatus.Closed"
       :editable="() => studyStore.studyIsEditable"

@@ -415,8 +415,10 @@
         {{ $t('scheduler.dialog.singleEventTitle') }}
       </h6>
 
-      <div class="col-span-6 grid grid-cols-6 items-center border-b-2">
-        <div class="col-span-2 col-start-2 border-l-2 pl-3">
+      <div
+        class="col-span-6 grid grid-cols-6 items-center border-b-2 border-gray-300"
+      >
+        <div class="col-span-2 col-start-2 border-l-2 border-gray-300 pl-3">
           {{ $t('scheduler.preview.unit.date') }}&nbsp;({{
             $t('scheduler.frequency.day')
           }})
@@ -430,7 +432,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
         </div>
-        <div class="col-span-2 border-l-2 py-3 pl-3">
+        <div class="col-span-2 border-l-2 border-gray-300 py-3 pl-3">
           <InputNumber
             v-model="startOffset.value"
             :placeholder="
@@ -469,14 +471,14 @@
       </div>
       <ErrorLabel
         :error="getError('dtstart')"
-        class="col-span-5 col-start-2 border-l-2 pl-3"
+        class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
       />
 
       <div class="col-span-6 grid grid-cols-6 items-center">
         <div class="col-span-1">
           {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
         </div>
-        <div class="col-span-2 border-l-2 py-3 pl-3">
+        <div class="border-gray-300 col-span-2 border-l-2 py-3 pl-3">
           <InputNumber
             v-model="endOffset.value"
             :placeholder="
@@ -511,7 +513,7 @@
       </div>
       <ErrorLabel
         :error="getError(['dtend', 'offsetCorrection'])"
-        class="col-span-5 col-start-2 border-l-2 pl-3"
+        class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
       />
     </div>
 
@@ -554,7 +556,7 @@
         <div class="col-span-1">
           {{ $t('scheduler.dialog.repeatEvery') }}
         </div>
-        <div class="col-span-5 flex border-l-2 py-3 pl-3">
+        <div class="col-span-5 flex border-l-2 border-gray-300 py-3 pl-3">
           <InputNumber
             v-model="frequency"
             :placeholder="
@@ -579,13 +581,13 @@
         </div>
         <ErrorLabel
           :error="getError(['rrruleFreq', 'frequencyError'])"
-          class="col-span-5 col-start-2 border-l-2 pl-3"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
         />
 
         <div class="col-span-1">
           {{ $t('scheduler.dialog.endAfter') }}
         </div>
-        <div class="col-span-5 flex border-l-2 py-3 pl-3">
+        <div class="col-span-5 flex border-l-2 border-gray-300 py-3 pl-3">
           <InputNumber
             v-model="endRep"
             :placeholder="
@@ -613,7 +615,7 @@
         </div>
         <ErrorLabel
           :error="getError(['rrruleEndAfter', 'frequencyEndError'])"
-          class="col-span-5 col-start-2 border-l-2 pl-3"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
         />
       </div>
       <div class="col-span-6 pt-6">

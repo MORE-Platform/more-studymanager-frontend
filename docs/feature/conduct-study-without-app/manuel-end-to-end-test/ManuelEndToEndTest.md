@@ -1,8 +1,7 @@
 # <span style="color: #6E8FAC">Manual End-to-End Test: Conduct a MORE Study without using the MORE App</span>
 
-<span style="color: red">This is the blueprint for the manual end-to-end test for "Conduct a MORE Study without the App". Before conducting the test copy this file and rename it to YYYY-MM-DD_Test_conduct-more-study-without-app.</span>
-
-<span style="color: red">During the test you will fill out your copied version of this blueprint and enter the test metadata.</span>
+> ⚠️ <span style="color: red">This is the blueprint for the manual end-to-end test for "Conduct a MORE Study without the App". Before conducting the test copy this file and rename it to YYYY-MM-DD_Test_conduct-more-study-without-app.</span>
+> <span style="color: red">During the test you will fill out your copied version of this blueprint and enter the test metadata.</span>
 
 
 ## <span style="color: #6E8FAC">Purpose</span>
@@ -27,12 +26,12 @@ This manual end-to-end test verifies the complete feature flow for conducting a 
 
 <span style="color: #6E8FAC">Choose one of the two setups to test the feature. Enter ✅ to mark the chosen path.</span>
 
-| Local Setup                                                                                                                            | est instance setup                                                                                  |
-|----------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| Local Setup                                                                                                                            | Test instance setup                                                                                       |
+|----------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------|
 | MORE StudyManager Backend and MORE Gateway are running in the docker (with correct env variables)                                      | The MORE StudyManager Frontend/Backend and Participant Portal are deployed and reachable (latest version) |
-| MORE StudyManager Frontend and the Participant Portal are started via dev:local and reachable under localhost:3000 & localhost:3001    | The MORE Gateway is reachable                                                                        |
-| Lime Survey Server is running and reachable under localhost:8085                                                                       | The tester can log in and create a new Study                                                          |
-| The tester can log in and create a new Study                                                                                           |                                                                                                                               |
+| MORE StudyManager Frontend and the Participant Portal are started via dev:local and reachable under localhost:3000 & localhost:3001    | The MORE Gateway is reachable                                                                             |
+| Lime Survey Server is running and reachable under localhost:8085                                                                       | The tester can log in and create a new Study                                                              |
+| The tester can log in and create a new Study                                                                                           |                                                                                                           |
 ---
 
 ## <span style="color: #6E8FAC">Test Metadata</span>
@@ -59,18 +58,18 @@ Fill in the following metadata with the values for your test during Phase 1.
 ## <span style="color: #6E8FAC">1. Create a new study</span>
 
 ### Action
-Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.redlink.io/) and create a new study with the following information (updated values marked with <span style="color: IndianRed">_red_</span>):
+Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.redlink.io/) and create a new study with the following information (updated values marked like `this`):
 
-| Field                     | Value                                                                                                                                                                                                                                                                                                                                                                  |
-|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Study title               | [<span style="color: IndianRed">_studyId_</span>] <span style="color: IndianRed">DD.MM.YYYY</span>: Manual Feature Test: Conduct Study Without App                                                                                                                                                                                                                     |
-| Study Start               | <span style="color: IndianRed">_Current Day_</span>                                                                                                                                                                                                                                                                                                                    |
-| Study End                 | <span style="color: IndianRed">_Current Day + 7 Days_</span>                                                                                                                                                                                                                                                                                                           |
-| Purpose                   | Feature-Test study for **"Conduct a MORE Study without using the MORE App"**, DD.MM.YYYY                                                                                                                                                                                                                                                                               |
+| Field                     | Value                                                                                                                                                                                                                                                                                                                                                                        |
+|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Study title               | [`studyId`] `DD.MM.YYYY`: Manual Feature Test: Conduct Study Without App                                                                                                                                                                                                                                                                                                     |
+| Study Start               | `Current Day`                                                                                                                                                                                                                                                                                                                                                                |
+| Study End                 | `Current Day + 7 Days`                                                                                                                                                                                                                                                                                                                                                       |
+| Purpose                   | Feature-Test study for **"Conduct a MORE Study without using the MORE App"**, `DD.MM.YYYY`                                                                                                                                                                                                                                                                                   |
 | Participant information   | Welcome to your Lime Survey study. Using your Participant Portal URL and login code, you can access the current and upcoming Lime Survey questionnaires of your study at any time. The Lime Surveys will be accessible during their schedules for answering. This is a test study to test the conduction of a study together with the Participant Portal (without MORE App). |
-| Consent configuration     | You agree to all terms and services needed to conduct this test study for the feature: **Conduct a MORE Study without using the MORE App.**                                                                                                                                                                                                                            |
-| Contact Information Name  | <span style="color: IndianRed">_Name of the Tester_</span>                                                                                                                                                                                                                                                                                                             |
-| Contact Information Email | <span style="color: IndianRed">_Email of the Tester_</span>                                                                                                                                                                                                                                                                                                            |
+| Consent configuration     | You agree to all terms and services needed to conduct this test study for the feature: **Conduct a MORE Study without using the MORE App.**                                                                                                                                                                                                                                  |
+| Contact Information Name  | `Name of the Tester`                                                                                                                                                                                                                                                                                                                                                         |
+| Contact Information Email | `Email of the Tester`                                                                                                                                                                                                                                                                                                                                                        |
 
 ### Expected result
 - Study is saved successfully and visible on top of the Study List.
@@ -89,8 +88,7 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 
 ### Action
 1. Scroll down on the Study Details Page and check the **Participant Portal** checkbox. It should save automatically.
-
-<img src="../images/study-manager/enable-participant-portal.jpg" width="1200" />
+> ![enable-participant-portal.jpg](../images/study-manager/enable-participant-portal.jpg)
 
 ### Expected Result
 - After checking the Participant Portal checkbox, it will stay checked even if you reload the page.
@@ -106,10 +104,9 @@ Open the [MORE StudyManager Frontend](https://studymanager.platform-test.more.re
 ## <span style="color: #6E8FAC">3. Configure Lime Surveys</span>
 
 1. Go to the [MORE Lime Survey Server](https://lime.platform-test.more.redlink.io/admin/) and log in to your account (log in credentials to local setup: admin / admin).
-2. Configure the Setup based on the [Lime Survey Documentation](https://github.com/MORE-Platform/more-limesurvey):
+2. Configure the Setup based on the [Lime Survey Documentation](https://github.com/MORE-Platform/more-limesurvey)
 3. Go to **Surveys** and click **+ Create Survey**
-
-<img src="../images/end-to-end-test/lime-survey.jpg" width="1200" />
+> ![lime-survey.jpg](../images/end-to-end-test/lime-survey.jpg)
 
 4. Create the following 3 Surveys:
 
@@ -126,8 +123,7 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 
 ### Expected Result
 - All 3 Surveys are created and saved in the Lime Survey Server.
-
-<img src="../images/end-to-end-test/created-lime-survey.png" width="1500" />
+> ![created-lime-survey.png](../images/end-to-end-test/created-lime-survey.png)
 
 ### Status
 
@@ -146,14 +142,13 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 | Field                                 | Observation #1                                                                                                                                              | Observation #2                                                                                    | Observation #3                                                                                                   |
 |---------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
 | **Title**                             | Test Survey: Absolute Observation                                                                                                                           | Test Survey: Relative Observation                                                                 | Test Survey: Relative Observation (Repeat)                                                                       |
-| **Schedule**                          | Absolute Schedule: Start: <span style="color: IndianRed">_Current Day_ 10:00</span> End: <span style="color: IndianRed">_Current Day + 1 Day_ 18:00</span>  | Relative Schedule: Start: Day 2 10:00, End: Day 2 16:00, No Repeat                                | Relative Schedule: Start: Day 1 10:30, End: Day 1 18:30; Repeat: every 1 day, end after 4 repetitions                            |
+| **Schedule**                          | Absolute Schedule: Start: `Current Day` 10:00 End: `Current Day + 1 Day` 18:00  | Relative Schedule: Start: Day 2 10:00, End: Day 2 16:00, No Repeat                                | Relative Schedule: Start: Day 1 10:30, End: Day 1 18:30; Repeat: every 1 day, end after 4 repetitions                            |
 | **Purpose / Participant Information** | This is a test question for testing Participant Portal Studies, which uses an absolute schedule.                                                            | This is a test question for testing Participant Portal Studies, which uses a relative schedule.   | This is a test question for testing Participant Portal Studies, which uses a relative schedule with repetition. |
 | **SurveyID**                          | Enter Survey ID of **Test Survey: Absolute Observation**                                                                                                    | Enter Survey ID of **Test Survey: Relative Observation**                                          | Enter Survey ID of **Test Survey: Relative Observation (Repeat)**                                                |
 
 ### Expected Result
 - All three observations are saved and shown in the observation list.
-
-<img src="../images/end-to-end-test/configured-observations.png" width="1500" />
+> ![configured-observations.png](../images/end-to-end-test/configured-observations.png)
 
 ### Status
 
@@ -169,8 +164,8 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 1. Go to your Study Participants Page
 2. Create a new Participant
 3. Open the Participant Dialog and click "Generate access" to get Login URL and Code for the participant
-
-<img src="../images/study-manager/generate-participant-portal-access.jpg" width="800"/> <img src="../images/study-manager/generated-participant-portal-access.jpg" width="800" />
+> ![generate-participant-portal-access.jpg](../images/study-manager/generate-participant-portal-access.jpg)
+> ![generated-participant-portal-access.jpg](../images/study-manager/generated-participant-portal-access.jpg)
 
 ### Expected Result
 - Participant is created and saved.
@@ -212,8 +207,7 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 
 ### Expected Result
 - Result page loads correctly
-
-<img src="../images/participant-portal/participant-portal-login.png" width="800" />
+> ![participant-portal-login.png](../images/participant-portal/participant-portal-login.png)
 
 ### Status
 
@@ -235,8 +229,7 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 - After login the participant is redirected to the consent form.
 - When declining the consent form the participant is redirected back to the login page.
 - When accepting the consent form the participant is redirected to the Participant Study Page.
-
-<img src="../images/end-to-end-test/participant-consent.png" width="800" />
+> ![participant-consent.png](../images/end-to-end-test/participant-consent.png)
 
 ### Status
 
@@ -258,8 +251,7 @@ Note: if you copy the Answers and add it to quick add (one answer per line), it 
 - The absolute observation (Lime Survey #1) is visible.
 - The relative observation (Lime Survey #2) is visible.
 - The relative observation with repetition (Lime Survey #3) is visible multiple times.
-
-<img src="../images/end-to-end-test/participant-study.png" width="1200" />
+> ![participant-study.png](../images/end-to-end-test/participant-study.png)
 
 ### Status
 
@@ -297,8 +289,7 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Expected Result
 - The Lime Survey data was saved correctly and is shown on the Monitoring & Data Page.
-
-<img src="../images/end-to-end-test/monitoring-data.png" width="1200" />
+> ![monitoring-data.png](../images/end-to-end-test/monitoring-data.png)
 
 ### Status
 
@@ -331,8 +322,7 @@ Note: The data can take a little bit to be saved into our system (max. 5 minutes
 
 ### Expected Result
 - An error page is shown.
-
-<img src="../images/end-to-end-test/participant-portal-error.png" width="800" />
+> ![participant-portal-error.png](../images/end-to-end-test/participant-portal-error.png)
 
 ### Status
 

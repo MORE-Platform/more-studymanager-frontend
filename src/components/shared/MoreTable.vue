@@ -328,7 +328,7 @@ Licensed under the Elastic License 2.0. */
     <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
         <h3 v-if="title" class="font-bold">{{ title }}</h3>
-        <h4 v-if="subtitle" class="!text-lg">
+        <h4 v-if="subtitle" class="text-lg">
           <!-- eslint-disable vue/no-v-html -->
           <span v-html="subtitle" />
         </h4>

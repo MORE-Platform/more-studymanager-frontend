@@ -1,6 +1,6 @@
 <template>
   <div class="flex !w-full flex-col gap-2">
-    <hr class="" />
+    <hr class="text-gray-300" />
     <h6>{{ $t('scheduler.randomization.title') }}</h6>
     <p>{{ $t('scheduler.randomization.description') }}</p>
     <p>
