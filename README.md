@@ -1,20 +1,27 @@
 # MORE / Front-End
+
 The Management & Monitoring Backend (MMB) is the front-end to manage and monitor the back-end.
 The [frontend`s architecture](docs/adr) is based upon an Architectural Decision Records (ADR).
 Mainly, Vue 3, vite, TS, tailwindCSS and PrimeVue are used.
 To have a consistent code style and quality, we use Eslint in combination with prettier.
 
 # Setup
+
 ```
 nvm use                   # Optional, let nvm use the needed version
 npm i                     # install all dependencies
 npm run generate:api      # generate needed sourced from BE, for generation as in the pipeline, java 17 must be set in your path
 npm run dev               # start local development server
 ```
-See [nvm](https://github.com/nvm-sh/nvm) for more. The local front-end can be visited on http://localhost:3000, the [gateway](https://github.com/MORE-Platform/more-data-gateway), [back-end](https://github.com/MORE-Platform/more-studymanager-backend) with their dependencies must also run locally. See `vite.config.ts` for the required port for localhost.
+
+See [nvm](https://github.com/nvm-sh/nvm) for more. The local front-end can be visited on http://localhost:3000,
+the [gateway](https://github.com/MORE-Platform/more-data-gateway), [back-end](https://github.com/MORE-Platform/more-studymanager-backend)
+with their dependencies must also run locally. See `vite.config.ts` for the required port for localhost.
 
 ## Intellij, Webstorm ESLint configuration
-Set the EsLint settings for Webstorm in Preferences --> Languages & Frameworks --> Javascript --> Code Quality Tools --> ESLint
+
+Set the EsLint settings for Webstorm in Preferences --> Languages & Frameworks --> Javascript --> Code Quality Tools -->
+ESLint
 
 - Automatic ESLint config check
 - File extensions to check: `{**/*,*}.{js,ts,html,vue,json}`
@@ -23,6 +30,7 @@ Set the EsLint settings for Webstorm in Preferences --> Languages & Frameworks -
 **Currently not working because of Intellij IDEs..., use `npm run lint:fix` for now**
 
 # Scripts
+
 - `npm i`: install dependencies / node modules
 - `npm run`: shows all possible `npm` run commands including generation, development, linting, testing, and building
 
@@ -53,11 +61,11 @@ First-party plugins needed for Tailwind UI:
 - [tailwindcss/typography](https://tailwindcss.com/docs/typography-plugin)
 - [tailwindcss/aspect-ratio](https://github.com/tailwindlabs/tailwindcss-aspect-ratio)
 
-
-The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
+The template uses Vue 3 `<script setup>` SFCs, check out
+the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
 
 ## Generation
+
 Make sure that the enum structure within `openapi/StudyManagerApi.yml` is
 
 ```
@@ -77,11 +85,13 @@ Make sure that the enum structure within `openapi/StudyManagerApi.yml` is
               - DAY
 
 ```
+
 Otherwise, the generated enums will be duplicated, leading to errors.
 
 ## Testing Environment with Vitest
 
-To test the frontend with a deployed backend server, you have to set environment variable `VITE_MORE_BACKEND_URL` to the desired backend.
+To test the frontend with a deployed backend server, you have to set environment variable `VITE_MORE_BACKEND_URL` to the
+desired backend.
 For testing with a local backend use `npm run dev:local`
 
 Run
@@ -93,3 +103,28 @@ npm run test:unit
 - [Vitest Documentation](https://vitest.dev/api/)
 - [Vitest quick explanation](https://www.youtube.com/watch?v=snCLQmINqCU&ab_channel=LearnVue)
 - [Vite introduction with Vue](https://www.youtube.com/watch?v=FJRuG85tXV0&ab_channel=ProgramWithErik)
+
+# Tagging and Deployment Strategy
+
+To ensure safe and traceable deployments, we use a Git tagging strategy.
+
+## Tag Format
+
+The standard tag format is `v<Major>.<Minor>.<Patch>`, for example: `v1.0.1`.
+
+## CI/CD Workflow
+
+The GitHub Action pipeline is configured to:
+
+- **Build and Test** on any pull request and on pushes to `main`, `develop`, `redlink`, and `staging`.
+- **Build and Publish Docker Image** when:
+  - A push occurs on `main`, `develop`, `redlink`, or `staging`.
+  - A tag matching `v*.*.*` is pushed.
+  - Manually triggered via `workflow_dispatch` with a custom tag.
+
+Docker images are automatically tagged with:
+
+- The full Git tag (if triggered by a tag).
+- The branch name (if triggered by a branch push).
+- `latest` (if on the default branch).
+- A unique identifier including the run number and SHA.
