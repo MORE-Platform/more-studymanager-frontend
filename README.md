@@ -116,9 +116,9 @@ The standard tag format is `v<Major>.<Minor>.<Patch>`, for example: `v1.0.1`.
 
 The GitHub Action pipeline is configured to:
 
-- **Build and Test** on any pull request and on pushes to `main`, `develop`, `redlink`, and `staging`.
+- **Build and Test** on any pull request and on pushes to `main` and `develop`.
 - **Build and Publish Docker Image** when:
-  - A push occurs on `main`, `develop`, `redlink`, or `staging`.
+  - A push occurs on `main` or `develop`.
   - A tag matching `v*.*.*` is pushed.
   - Manually triggered via `workflow_dispatch` with a custom tag.
 
