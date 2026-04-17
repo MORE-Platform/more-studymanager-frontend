@@ -90,8 +90,12 @@ Otherwise, the generated enums will be duplicated, leading to errors.
 
 ## Testing Environment with Vitest
 
-To test the frontend with a deployed backend server, you have to set environment variable `VITE_MORE_BACKEND_URL` to the
+To test the frontend with a deployed backend server, you have to set environment variable `BACKEND_URL` to the
 desired backend.
+
+For the Keycloak configuration, the environment variables `KEYCLOAK_URL`, `KEYCLOAK_REALM`, and `KEYCLOAK_CLIENTID`
+can be used to override the default fallback values.
+
 For testing with a local backend use `npm run dev:local`
 
 Run

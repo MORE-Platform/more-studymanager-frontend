@@ -12,6 +12,9 @@ declare const __APP_VERSION__: string;
 declare const __BUILD_DATE__: string;
 declare const __BUILD_BRANCH__: string;
 declare const __BUILD_REVISION__: string;
+declare const __KEYCLOAK_URL__: string;
+declare const __KEYCLOAK_REALM__: string;
+declare const __KEYCLOAK_CLIENTID__: string;
 declare module '*.vue' {
   import { DefineComponent } from 'vue';
   const component: DefineComponent<
