@@ -70,9 +70,9 @@ const uiConfig = await uiConfigApi
     return {
       title: 'Unknown Legacy Backend',
       auth: {
-        server: 'https://auth.more.redlink.io',
-        realm: 'Auth-Client-Test',
-        clientId: 'oauth2-pkce-client',
+        server: __KEYCLOAK_URL__,
+        realm: __KEYCLOAK_REALM__,
+        clientId: __KEYCLOAK_CLIENTID__,
       },
     } as FrontendConfiguration;
   });
@@ -121,7 +121,7 @@ app.use(PrimeVue, {
         name: 'primevue',
         order: 'theme, primevue, tailwind, more-styles, app-styles',
       },
-    }
+    },
   },
 });
 app.use(ConfirmationService);
