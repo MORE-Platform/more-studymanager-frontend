@@ -111,8 +111,10 @@ jobs:
             type=raw,value=1.0.${{ github.run_number }}.{{sha}}
             # tag with branch-name
             type=ref,event=branch,enable=${{ github.event.inputs.dockerTag == '' }}
-            # tag with git tag (e.g. v1.0.1)
-            type=ref,event=tag
+            # tags from git tag (e.g. v1.0.0 -> 1.0.0, 1.0, 1)
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             # latest-tag on the default-branch (main)
             type=raw,value=latest,enable={{is_default_branch}}
             # a manually provided tag
