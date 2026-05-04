@@ -14,7 +14,7 @@
     "coverage": "vitest --environment jsdom --coverage",
     "test:unit": "vitest --environment jsdom",
     "test:unit:once": "vitest --environment jsdom run --outputFile.junit=target/testResults.xml --reporter=junit --reporter=default",
-    "generate:api": "rm -r -f src/generated-sources && openapi-generator-cli generate",
+    "generate:api": "rm -r -f src/generated-sources && openapi-generator-cli generate && sed -i '' \"s/export \\* from '.\\/study-duration';/export type { StudyDuration } from '.\\/study-duration';/\" src/generated-sources/models/index.ts",
     "license:check": "licensee --production --errors-only",
     "license:list": "licensee --production || true",
     "lint:test:package": "npm run lint && npm run test:unit:once && npm run package",
