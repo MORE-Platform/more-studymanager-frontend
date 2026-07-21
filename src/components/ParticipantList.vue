@@ -4,71 +4,79 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { PropType, ref, Ref } from 'vue';
-  import { useImportExportApi, useParticipantsApi } from '../composable/useApi';
+  import { computed, ref, watch } from 'vue';
+  import { useImportExportApi } from '@/composable/useApi';
 
   import {
+    MoreParticipantListTableRow,
     MoreTableAction,
     MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
     MoreTableSortOptions,
-  } from '../models/MoreTableModel';
-  import { Participant, StudyGroup, StudyRole, StudyStatus } from '@gs';
+  } from '@/models/MoreTableModel';
+  import {
+    ObservationGroup,
+    Participant,
+    StudyGroup,
+    StudyRole,
+    StudyStatus,
+  } from '@gs';
   import MoreTable from './shared/MoreTable.vue';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
   import useLoader from '../composable/useLoader';
   import { AxiosError, AxiosResponse } from 'axios';
   import { useI18n } from 'vue-i18n';
-  import { useErrorHandling } from '../composable/useErrorHandling';
+  import { useErrorHandling } from '@/composable/useErrorHandling';
   import { useDialog } from 'primevue/usedialog';
   import DistributeParticipantsDialog from './dialog/DistributeParticipantsDialog.vue';
   import DeleteParticipantDialog from './dialog/DeleteParticipantDialog.vue';
   import Menu from 'primevue/menu';
   import Button from 'primevue/button';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
-  import { MenuOptions } from '../models/ComponentModels';
+  import { MenuOptions } from '@/models/ComponentModels';
   import {
+    ACTION_ID_DATA_HEALTH,
     ACTION_ID_DELETE,
+    ACTION_ID_INFO,
     ACTION_ID_QR_CODE,
     PARTICIPANT_COUNTS,
-  } from '../constants';
+  } from '@/constants';
   import QrCodeDialog from './dialog/QrCodeDialog.vue';
+  import ParticipantDetailsDialog from './dialog/ParticipantDetailsDialog.vue';
+  import ParticipantInfoDialog from './dialog/ParticipantInfoDialog.vue';
+  import {
+    useCreateParticipants,
+    useDeleteParticipant as useDeleteParticipantMutation,
+    useParticipants,
+    useUpdateParticipant,
+    useUpdateParticipantList,
+  } from '../api/participantQueries';
+  import { useStudyStore } from '@/stores/studyStore';
+  import { useStudyGroupStore } from '@/stores/studyGroupStore';
+  import { useObservationGroupStore } from '@/stores/observationGroupStore';
 
-  const { participantsApi } = useParticipantsApi();
   const { importExportApi } = useImportExportApi();
-  const participantsList: Ref<Participant[]> = ref([]);
+
   const loader = useLoader();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
   const dialog = useDialog();
+  const moreTableRef = ref();
 
-  const props = defineProps({
-    studyId: {
-      type: Number,
-      required: true,
-    },
-    studyStatus: {
-      type: String as PropType<StudyStatus>,
-      required: true,
-    },
-    studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
-  });
+  const studyStore = useStudyStore();
+  const studyGroupsStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const sortOptions: MoreTableSortOptions = {
     sortField: 'alias',
     sortOrder: 1,
   };
 
-  const actionsVisible =
-    props.studyStatus === StudyStatus.Draft ||
-    props.studyStatus === StudyStatus.Paused ||
-    props.studyStatus === StudyStatus.PausedPreview;
-
-  const groupStatuses: MoreTableChoice[] = props.studyGroups.map(
-    (studyGroup) =>
+  const groupStatuses: MoreTableChoice[] = studyGroupsStore.studyGroups.map(
+    (studyGroup: StudyGroup) =>
       ({
         label: studyGroup.title,
         value: studyGroup.studyGroupId?.toString(),
@@ -78,6 +86,15 @@ Licensed under the Elastic License 2.0. */
     label: t('global.placeholder.noGroup'),
     value: null,
   } as MoreTableChoice);
+
+  const observationGroupStatuses: MoreTableChoice[] =
+    observationGroupStore.observationGroups.map(
+      (observationGroup: ObservationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as MoreTableChoice,
+    );
 
   const participantsColumns: MoreTableColumn[] = [
     { field: 'participantId', header: t('global.labels.id'), sortable: true },
@@ -99,11 +116,24 @@ Licensed under the Elastic License 2.0. */
       field: 'studyGroupId',
       header: t('study.props.studyGroup'),
       type: MoreTableFieldType.choice,
-      editable: { enabled: actionsVisible, values: groupStatuses },
+      editable: { enabled: studyStore.studyIsEditable, values: groupStatuses },
       sortable: true,
       filterable: true,
       placeholder: t('global.placeholder.noGroup'),
       columnWidth: '15vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: studyStore.studyIsEditable,
+        values: observationGroupStatuses,
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw',
     },
     {
       field: 'start',
@@ -117,11 +147,18 @@ Licensed under the Elastic License 2.0. */
 
   const rowActions: MoreTableAction[] = [
     {
+      id: ACTION_ID_DATA_HEALTH,
+      label: t('global.labels.dataHealth'),
+      icon: 'pi pi-id-card',
+      tooltip: t('tooltips.moreTable.openParticipantDetails'),
+      visible: () => true,
+    },
+    {
       id: ACTION_ID_DELETE,
       label: t('global.labels.delete'),
       icon: 'pi pi-trash',
       tooltip: t('tooltips.moreTable.deleteParticipantBtn'),
-      visible: () => actionsVisible,
+      visible: () => studyStore.studyIsEditable,
       confirmDeleteDialog: {
         header: t('participants.dialog.header.delete'),
         message: t('participants.dialog.msg.delete'),
@@ -164,7 +201,17 @@ Licensed under the Elastic License 2.0. */
       label: t('global.labels.qr'),
       icon: 'pi pi-qrcode',
       tooltip: t('tooltips.moreTable.showQrCode'),
-      visible: () => props.studyStatus !== StudyStatus.Closed,
+      visible: () => studyStore.studyStatus !== StudyStatus.Closed,
+    },
+  ];
+
+  const endRowActions: MoreTableAction[] = [
+    {
+      id: ACTION_ID_INFO,
+      label: t('global.labels.info'),
+      icon: 'pi pi-chevron-right',
+      tooltip: t('tooltips.moreTable.showParticipantInfo'),
+      visible: () => true,
     },
   ];
 
@@ -175,20 +222,53 @@ Licensed under the Elastic License 2.0. */
       command: (): void => createParticipant(count),
     }),
   );
-  async function listParticipant(): Promise<void> {
-    participantsList.value = await participantsApi
-      .listParticipants(props.studyId)
-      .then((response) => response.data)
-      .catch((e: AxiosError) => {
-        handleIndividualError(e, 'cannot list participants');
-        return participantsList.value;
+
+  const {
+    data: participantsData,
+    error: participantsError,
+    refetch: refetchParticipants,
+  } = useParticipants(() => studyStore.studyId);
+
+  const { mutate: createParticipantsMutation } = useCreateParticipants();
+  const { mutate: updateParticipantMutation } = useUpdateParticipant();
+  const { mutate: deleteParticipantMutation } = useDeleteParticipantMutation();
+  const { mutate: updateParticipantListMutation } = useUpdateParticipantList();
+
+  const participantsList = computed((): MoreParticipantListTableRow[] => {
+    const newData = participantsData.value;
+    if (newData) {
+      return newData.map((participant) => {
+        return {
+          ...participant,
+          observationGroupValues: participant?.observationGroupIds?.map(
+            (id: number) => getObservationGroupItem(id),
+          ),
+        } as MoreParticipantListTableRow;
       });
+    } else {
+      return [];
+    }
+  });
+
+  watch(
+    () => participantsError.value,
+    (error) => {
+      if (error) {
+        handleIndividualError(error as AxiosError, 'cannot list participants');
+      }
+    },
+  );
+
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find(
+      (groupStatus) => groupStatus.value === id.toString(),
+    );
   }
 
   function openDistributeDialog(): void {
     dialog.open(DistributeParticipantsDialog, {
       data: {
-        studyGroups: props.studyGroups,
+        studyGroups: studyGroupsStore.studyGroups,
         totalParticipants: participantsList.value.length,
       },
       props: {
@@ -218,17 +298,18 @@ Licensed under the Elastic License 2.0. */
     );
     // set group
     for (let i = 0; i < participantCopy.length; i++) {
-      for (let j = 0; j < props.studyGroups.length; j++) {
+      for (let j = 0; j < studyGroupsStore.studyGroups.length; j++) {
         if (i < participantCopy.length) {
-          participantCopy[i].studyGroupId = props.studyGroups[j].studyGroupId;
-          if (j < props.studyGroups.length - 1) i++;
+          participantCopy[i].studyGroupId =
+            studyGroupsStore.studyGroups[j].studyGroupId;
+          if (j < studyGroupsStore.studyGroups.length - 1) i++;
         } else break;
       }
     }
-    participantsApi
-      .updateParticipantList(props.studyId, participantCopy)
-      .then((response) => response.data)
-      .then((ps) => (participantsList.value = ps));
+    updateParticipantListMutation({
+      studyId: studyStore.studyId,
+      participants: participantCopy,
+    });
   }
 
   // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
@@ -243,6 +324,54 @@ Licensed under the Elastic License 2.0. */
     return a;
   }
 
+  function resolveParticipantSelection(
+    selection: Participant | MoreParticipantListTableRow | number | string,
+  ): Participant | MoreParticipantListTableRow | undefined {
+    if (typeof selection === 'object' && selection !== null) {
+      return selection as Participant | MoreParticipantListTableRow;
+    }
+
+    const participantId =
+      typeof selection === 'string' ? parseInt(selection, 10) : selection;
+
+    return participantsList.value.find(
+      (participant) => participant.participantId === participantId,
+    );
+  }
+
+  function openParticipantInfoDialog(
+    selection: Participant | MoreParticipantListTableRow | number | string,
+  ): void {
+    const participant = resolveParticipantSelection(selection);
+
+    if (!participant) {
+      console.error('Could not resolve participant for dialog', selection);
+      return;
+    }
+
+    dialog.open(ParticipantInfoDialog, {
+      data: {
+        participant,
+      },
+      props: {
+        header: t('participants.dialog.header.details'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '80vw',
+          '640px': '120vw',
+        },
+        modal: true,
+        draggable: false,
+        dismissableMask: true,
+      },
+      onClose: () => {
+        refetchParticipants();
+      },
+    });
+  }
+
   const onAction = (
     action: MoreTableRowActionResult,
     withData?: boolean,
@@ -253,6 +382,12 @@ Licensed under the Elastic License 2.0. */
         break;
       case ACTION_ID_QR_CODE:
         openQrCodeDialog(action.row as Participant);
+        break;
+      case ACTION_ID_DATA_HEALTH:
+        openParticipantHealthDialog(action.row as Participant);
+        break;
+      case ACTION_ID_INFO:
+        openParticipantInfoDialog(action.row as Participant);
         break;
       default:
         console.error('no handler for action', action);
@@ -275,6 +410,29 @@ Licensed under the Elastic License 2.0. */
     });
   };
 
+  const openParticipantHealthDialog = (participant: Participant): void => {
+    dialog.open(ParticipantDetailsDialog, {
+      data: {
+        participant,
+        studyId: studyStore.studyId,
+      },
+      props: {
+        header: `${t('participants.dialog.header.details')}: ${participant.alias}`,
+        style: {
+          width: '50vw',
+          maxHeight: '92vh',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+        draggable: false,
+        closeOnEscape: false,
+      },
+    });
+  };
+
   const createParticipant = (amount: number): void => {
     const newParticipants: Participant[] = [];
     const maxId = Math.max(
@@ -285,26 +443,35 @@ Licensed under the Elastic License 2.0. */
     for (let i = 1; i <= amount; i++) {
       newParticipants.push({
         alias: `P ${maxId + i}`,
-        studyId: props.studyId,
+        studyId: studyStore.studyId,
       });
     }
 
-    participantsApi
-      .createParticipants(props.studyId, newParticipants)
-      .then(listParticipant);
+    createParticipantsMutation({
+      studyId: studyStore.studyId,
+      participants: newParticipants,
+    });
   };
 
-  function changeValue(participant: Participant): void {
+  function changeValue(participant: MoreParticipantListTableRow): void {
     const i = participantsList.value.findIndex(
       (v) => v.participantId === participant.participantId,
     );
     if (i > -1) {
       participantsList.value[i] = participant;
-      participantsApi.updateParticipant(
-        participant.studyId as number,
-        participant.participantId as number,
-        participant,
-      );
+      const { observationGroupValues, ...newParticipant } = participant;
+
+      updateParticipantMutation({
+        studyId: participant.studyId as number,
+        participantId: participant.participantId as number,
+        participant: {
+          ...newParticipant,
+          observationGroupIds:
+            observationGroupValues?.map((choice: MoreTableChoice) =>
+              parseInt(choice.value as string),
+            ) ?? [],
+        },
+      });
     }
   }
 
@@ -312,13 +479,11 @@ Licensed under the Elastic License 2.0. */
     participant: Participant,
     withData: boolean,
   ): Promise<void> {
-    participantsApi
-      .deleteParticipant(
-        participant.studyId as number,
-        participant.participantId as number,
-        withData,
-      )
-      .then(listParticipant);
+    deleteParticipantMutation({
+      studyId: participant.studyId as number,
+      participantId: participant.participantId as number,
+      includeData: withData,
+    });
   }
 
   async function importParticipants(
@@ -329,14 +494,14 @@ Licensed under the Elastic License 2.0. */
       : event.files;
 
     await importExportApi
-      .importParticipants(props.studyId, file, {
+      .importParticipants(studyStore.studyId, file, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
       .then(() => {
         setTimeout(function () {
-          listParticipant();
+          refetchParticipants();
         }, 100);
       })
       .catch((e: AxiosError) =>
@@ -346,9 +511,9 @@ Licensed under the Elastic License 2.0. */
 
   async function exportParticipants(): Promise<void> {
     await importExportApi
-      .exportParticipants(props.studyId)
+      .exportParticipants(studyStore.studyId)
       .then((response: AxiosResponse) => {
-        const filename: string = props.studyId + '_participants';
+        const filename: string = studyStore.studyId + '_participants';
         downloadCSV(filename, response.data);
       });
   }
@@ -366,29 +531,18 @@ Licensed under the Elastic License 2.0. */
       document.body.removeChild(link);
     }
   }
-
-  function checkEditablePermissions(row: any): boolean {
-    if (
-      props.studyStatus === StudyStatus.Active ||
-      props.studyStatus === StudyStatus.Preview
-    ) {
-      return row.status === 'new';
-    }
-    return props.studyStatus !== StudyStatus.Closed;
-  }
-
   const menu = ref();
 
   function toggleButtonMenu(event: MouseEvent): void {
     menu.value.toggle(event);
   }
-
-  listParticipant();
 </script>
 
 <template>
   <div class="participant-list">
     <MoreTable
+      v-if="!!observationGroupStatuses"
+      ref="moreTableRef"
       row-id="participantId"
       :sort-options="sortOptions"
       :title="$t('participants.participantsList.title')"
@@ -396,20 +550,23 @@ Licensed under the Elastic License 2.0. */
       :columns="participantsColumns"
       :rows="participantsList"
       :row-actions="rowActions"
+      :end-row-actions="endRowActions"
+      :row-edit-btn="studyStore.hasCriticalRoles"
       :loading="loader.isLoading.value"
-      :editable-access="props.studyStatus !== StudyStatus.Closed"
-      :editable="checkEditablePermissions"
+      :editable-access="studyStore.studyStatus !== StudyStatus.Closed"
+      :editable="() => studyStore.studyIsEditable"
       :editable-user-roles="[StudyRole.StudyAdmin, StudyRole.StudyOperator]"
       :empty-message="$t('participants.participantsList.emptyListMsg')"
       class="width-50"
       @on-action="onAction($event)"
       @on-change="changeValue($event)"
+      @on-select="openParticipantInfoDialog($event as Participant)"
     >
       <template #tableActions="{ isInEditMode }">
         <div>
           <Button
             type="button"
-            :disabled="isInEditMode ? true : !actionsVisible"
+            :disabled="!!isInEditMode || !studyStore.studyIsEditable"
             @click="toggleButtonMenu($event)"
             >{{ t('participants.participantsList.action.add') }}
             <span class="pi pi-angle-down ml-3"></span
@@ -421,9 +578,9 @@ Licensed under the Elastic License 2.0. */
             type="button"
             :label="t('participants.participantsList.action.distribute')"
             :disabled="
-              isInEditMode
-                ? true
-                : !actionsVisible || participantsList.length === 0
+              !!isInEditMode ||
+              !studyStore.studyIsEditable ||
+              participantsList.length === 0
             "
             @click="openDistributeDialog()"
           />
@@ -437,7 +594,7 @@ Licensed under the Elastic License 2.0. */
             :custom-upload="true"
             :auto="true"
             accept=".csv"
-            :disabled="isInEditMode ? true : !actionsVisible"
+            :disabled="!!isInEditMode || !studyStore.studyIsEditable"
             @uploader="importParticipants($event)"
           ></FileUpload>
         </div>
@@ -446,7 +603,7 @@ Licensed under the Elastic License 2.0. */
             type="button"
             icon="pi pi-download"
             :label="t('participants.participantsList.action.export')"
-            :disabled="isInEditMode ? true : participantsList.length === 0"
+            :disabled="!!isInEditMode || participantsList.length === 0"
             @click="exportParticipants()"
           />
         </div>
@@ -457,7 +614,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.width-50 .title) {
     width: 50%;
   }

@@ -118,31 +118,31 @@
   const rruleWeekdayOptions = [
     {
       label: t('scheduler.weekday.short.monday'),
-      value: t('scheduler.weekday.short.monday'),
+      value: 'MO',
     },
     {
       label: t('scheduler.weekday.short.tuesday'),
-      value: t('scheduler.weekday.short.tuesday'),
+      value: 'TU',
     },
     {
       label: t('scheduler.weekday.short.wednesday'),
-      value: t('scheduler.weekday.short.wednesday'),
+      value: 'WE',
     },
     {
       label: t('scheduler.weekday.short.thursday'),
-      value: t('scheduler.weekday.short.thursday'),
+      value: 'TH',
     },
     {
       label: t('scheduler.weekday.short.friday'),
-      value: t('scheduler.weekday.short.friday'),
+      value: 'FR',
     },
     {
       label: t('scheduler.weekday.short.saturday'),
-      value: t('scheduler.weekday.short.saturday'),
+      value: 'SA',
     },
     {
       label: t('scheduler.weekday.short.sunday'),
-      value: t('scheduler.weekday.short.sunday'),
+      value: 'SO',
     },
   ];
 
@@ -234,26 +234,23 @@
 <template>
   <div class="absolute-scheduler-rrule">
     <div class="col-span-6 col-start-1 grid grid-cols-6 gap-4">
-      <hr class="col-start-0 col-span-6 my-4" />
+      <hr class="col-span-6 col-start-0 my-4 text-gray-300" />
       <h6 class="col-span-6">{{ $t('scheduler.labels.event.repeat') }}</h6>
       <div class="col-span-6 mb-2">
         {{ $t('scheduler.labels.event.repeatDesc') }}
       </div>
       <div class="col-span-6 mt-4 grid grid-cols-6 items-center gap-4">
-        <div class="flex flex-row items-center justify-start col-span-1">
+        <div class="col-span-1 flex flex-row items-center justify-start">
           {{ $t('scheduler.labels.repeat') }}:
           <Checkbox
             v-model="rruleEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="toggleRruleCheckbox()"
+            @update:model-value="toggleRruleCheckbox()"
           />
         </div>
 
-        <div
-          v-if="rruleEventCheckbox"
-          class="col-span-5 col-start-2"
-        >
+        <div v-if="rruleEventCheckbox" class="col-span-5 col-start-2">
           <!-- choose daily or weekly repeat option -->
           <SelectButton
             v-model="returnRrule.freq"
@@ -299,7 +296,7 @@
           v-if="rruleEventCheckbox && returnRrule.freq"
           class="col-span-6 grid grid-cols-6 gap-4"
         >
-          <hr class="col-start-0 col-span-6 my-4" />
+          <hr class="col-span-6 col-start-0 my-4 text-gray-300" />
           <div class="col-span-1 self-center font-medium">
             {{ $t('scheduler.labels.repetitionEnd') }}
           </div>
@@ -320,7 +317,7 @@
               <InputNumber
                 v-model="previewCount"
                 :placeholder="$t('scheduler.placeholder.enterRepeatCount')"
-                @input="onChangeRrule('count', $event.value)"
+                @update:model-value="onChangeRrule('count', $event)"
               />
               <span class="ml-2">{{ rruleCountLabel }}</span>
             </div>

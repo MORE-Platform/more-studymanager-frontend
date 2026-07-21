@@ -4,10 +4,10 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { inject } from 'vue';
   import Button from 'primevue/button';
-  import AlertMsg from '../shared/AlertMsg.vue';
   import { useI18n } from 'vue-i18n';
+  import { useToast } from 'primevue/usetoast';
   import IntegrationExample from '../subComponents/IntegrationExample.vue';
 
   const infoDialogRef: any = inject('dialogRef');
@@ -16,11 +16,17 @@ Licensed under the Elastic License 2.0. */
   const token: string = infoDialogRef.value.data.highlightMsg;
 
   const { t } = useI18n();
-  const showMessage: Ref<boolean> = ref(false);
+  const toast = useToast();
 
   function copyToken(): void {
-    navigator.clipboard.writeText(token);
-    showMessage.value = true;
+    navigator.clipboard.writeText(token).then(() => {
+      toast.add({
+        severity: 'success',
+        summary: t('global.labels.success'),
+        detail: t('integration.dialog.label.copySuccess'),
+        life: 2000,
+      });
+    });
   }
 
   function closeDialog(): void {
@@ -52,18 +58,9 @@ Licensed under the Elastic License 2.0. */
       />
     </div>
   </div>
-
-  <AlertMsg
-    :show-msg="showMessage"
-    :message="t('integration.dialog.label.copySuccess')"
-    type="msg"
-    severity-type="success"
-    style-modifier="msg-position"
-    @on-msg-change="showMessage = false"
-  />
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .msg-position {
     height: fit-content;
   }

@@ -15,6 +15,7 @@ export interface DownloadDataFilter {
   studyGroupId?: number[];
   participantId?: number[];
   observationId?: number[];
+  observationGroupId?: number[];
   from?: string;
   to?: string;
 }

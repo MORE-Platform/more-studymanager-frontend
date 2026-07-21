@@ -1,4 +1,4 @@
-openapi: 3.0.2
+openapi: 3.0.3
 info:
   version: 1.0.0
   title: StudyManager API
@@ -315,6 +315,7 @@ paths:
           description: Cleared
         '409':
           description: removal failed
+
   /studies/{studyId}/calendar.ics:
     get:
       tags:
@@ -349,6 +350,10 @@ paths:
           in: query
           schema:
             $ref: '#/components/schemas/Id'
+        - name: observationGroup
+          in: query
+          schema:
+            $ref: '#/components/schemas/Id'
         - name: referenceDate
           in: query
           description: reference date used to calculate relative schedules
@@ -374,7 +379,6 @@ paths:
                 $ref: '#/components/schemas/StudyTimeline'
         '404':
           description: Not found
-
 
   /studies/{studyId}/studyGroups:
     post:
@@ -475,6 +479,130 @@ paths:
           description: Study group deleted
         '404':
           description: Not found
+
+  /studies/{studyId}/observationGroups:
+    post:
+      tags:
+        - observationGroups
+      operationId: createObservationGroup
+      description: Create a new observation group for a study
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationGroup'
+      responses:
+        '201':
+          description: Observation group successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '400':
+          description: Observation group creation failed because of a bad request
+        '500':
+          description: Error while creating the observation group
+    get:
+      tags:
+        - observationGroups
+      description: List all observation groups for a study
+      operationId: listObservationGroups
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: Successfully listed all observation groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObservationGroup'
+        '404':
+          description: No study for the parsed studyId found
+
+  /studies/{studyId}/observationGroups/{observationGroupId}:
+    get:
+      tags:
+        - observationGroups
+      description: Get observation group information
+      operationId: getObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      responses:
+        '200':
+          description: Successfully returned observation group information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '404':
+          description: Not found
+    put:
+      tags:
+        - observationGroups
+      description: Update a observation group
+      operationId: updateObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObservationGroup'
+      responses:
+        '200':
+          description: Successfully updated observation group
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationGroup'
+        '400':
+          description: Could not update study group because of a bad request
+        '404':
+          description: Not found
+        '500':
+          description: Error while updating the observation group
+    delete:
+      tags:
+        - observationGroups
+      description: Delete a observation group
+      operationId: deleteObservationGroup
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ObservationGroupId'
+      responses:
+        '200':
+          description: Observation group deleted
+        '404':
+          description: Not found
+        '500':
+          description: Error while deleting the observation group
+
+  /studies/{studyId}/application:
+    get:
+      tags:
+        - applications
+      description: get available applications for a study
+      operationId: getStudyApplications
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+      responses:
+        '200':
+          description: successfully retrieved all available study application names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        '404':
+          description: not found
 
   /studies/{studyId}/participants:
     post:
@@ -614,6 +742,130 @@ paths:
           description: participant deleted
         '500':
           description: Error
+  /studies/{studyId}/participants/{participantId}/application:
+    get:
+      tags:
+        - participants
+      description: get all participant access data for all applications
+      operationId: getParticipantApplications
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+      responses:
+        '200':
+          description: successfully retrieved participant applications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '404':
+          description: not found
+
+
+  /studies/{studyId}/participants/{participantId}/application/{application}:
+    get:
+      tags:
+        - participants
+      description: get participant login data for an application
+      operationId: getParticipantAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+      responses:
+        '200':
+          description: successfully retrieved participant application access data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '404':
+          description: not found
+    put:
+      tags:
+        - participants
+      description: generate participant login data for an application, if none exist
+      operationId: createParticipantAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+      responses:
+        '201':
+          description: successfully created participant application access data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParticipantApplicationAccess'
+        '403':
+          description: forbidden
+        '404':
+          description: not found
+        '409':
+          description: participant application access data already exists or study is closed
+    delete:
+      tags:
+        - participants
+      description: Delete participant application access data
+      operationId: deleteParticipantApplicationAccessData
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - $ref: '#/components/parameters/ParticipantId'
+        - $ref: '#/components/parameters/ApplicationName'
+        - name: includeData
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '204':
+          description: participant access data deleted
+        '409':
+          description: study already closed
+
+  /studies/{studyId}/occurredObservations:
+    get:
+      tags:
+        - occurredObservations
+      description: List of occurred observations of one specific participant
+      operationId: listOccurredObservations
+      parameters:
+        - $ref: '#/components/parameters/StudyId'
+        - name: participant
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: observation
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: from
+          in: query
+          description: default is entire time
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: default is now
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OccurredObservation'
+        '404':
+          description: Not found
 
   /studies/{studyId}/observations:
     post:
@@ -658,6 +910,7 @@ paths:
                   $ref: '#/components/schemas/Observation'
         '404':
           description: not found
+
   /studies/{studyId}/observations/{observationId}:
     put:
       tags:
@@ -805,7 +1058,6 @@ paths:
           description: Token successfully deleted
         '404':
           description: not found
-
 
   /studies/{studyId}/interventions:
     post:
@@ -986,6 +1238,7 @@ paths:
                 $ref: '#/components/schemas/Action'
         '400':
           description: bad request
+
   /studies/{studyId}/interventions/{interventionId}/actions/{actionId}:
     parameters:
       - $ref: '#/components/parameters/StudyId'
@@ -1035,7 +1288,6 @@ paths:
           description: action deleted successfully
         '400':
           description: bad request
-
 
   /studies/import/study:
     post:
@@ -1138,6 +1390,12 @@ paths:
       operationId: exportStudyData
       parameters:
         - name: studyGroupId
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: observationGroupId
           in: query
           schema:
             type: array
@@ -1327,6 +1585,49 @@ paths:
         '404':
           description: not found
 
+  /auditlog/study/{studyId}/export:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditLog
+      description: Export the complete audit log to a json file
+      operationId: exportAuditLog
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLog'
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: attachment; filename="auditlogs_123.json"
+        '400':
+          description: bad request
+        '404':
+          description: not found
+
+  /auditlog/study/{studyId}:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+    get:
+      tags:
+        - auditLog
+      description: Provides metadata of the audit logs for the requested study
+      operationId: getAuditLogMetadata
+      responses:
+        '200':
+          description: Operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditLogMetadata'
+        '404':
+          description: not found
+
   /users/me:
     get:
       tags:
@@ -1340,6 +1641,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CurrentUser'
+
   /users/search:
     get:
       tags:
@@ -1506,6 +1808,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        applicationAccess:
+          type: array
+          description: Application types which the user have access to
+          items:
+            type: string
         userRoles:
           type: array
           description: the roles the _current user_ has within _this_ study.
@@ -1571,20 +1878,48 @@ components:
           type: string
           format: date-time
           readOnly: true
+    ObservationGroup:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        observationGroupId:
+          $ref: '#/components/schemas/Id'
+        title:
+          type: string
+        purpose:
+          type: string
+        numberOfParticipants:
+          type: integer
+          readOnly: true
+        numberOfObservations:
+          type: integer
+          readOnly: true
+        numberOfInterventions:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        modified:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
     StudyDuration:
       type: object
       properties:
         value:
           type: integer
         unit:
-          $ref: '#/components/schemas/DurationUnit'
-    DurationUnit:
-      type: string
-      description: unit of time
-      enum:
-        - MINUTE
-        - HOUR
-        - DAY
+          type: string
+          description: unit of time
+          enum:
+            - MINUTE
+            - HOUR
+            - DAY
     Participant:
       type: object
       properties:
@@ -1605,10 +1940,22 @@ components:
           readOnly: true
         status:
           $ref: '#/components/schemas/ParticipantStatus'
+        dataHealthIndicator:
+          type: string
+          enum:
+            - 'green'
+            - 'orange'
+            - 'red'
         start:
           type: string
           format: date-time
           readOnly: true
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the participant is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
         created:
           type: string
           format: date-time
@@ -1622,11 +1969,29 @@ components:
       type: string
       enum:
         - new
+        - invited
         - active
         - abandoned
         - kicked_out
         - locked
       default: new
+
+    ParticipantApplicationAccess:
+      type: object
+      properties:
+        accessCode:
+          type: string
+          description: Access code for participant application
+        applicationType:
+          type: string
+          description: Type of participant application
+        applicationUrl:
+          type: string
+          description: URL for application
+      required:
+        - accessCode
+        - applicationType
+        - applicationUrl
 
     Observation:
       type: object
@@ -1654,11 +2019,6 @@ components:
             - $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
           discriminator:
             propertyName: type
-            # mapping:
-            #   event:
-            #     $ref: './Event.yaml/#/components/schemas/Event'
-            #   relativeEvent:
-            #     $ref: './RelativeEvent.yaml/#/components/schemas/RelativeEvent'
         created:
           type: string
           format: date-time
@@ -1672,7 +2032,43 @@ components:
         noSchedule:
           type: boolean
           default: false
+        reminder:
+          type: boolean
+          default: false
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the observation is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
 
+    OccurredObservation:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        participant:
+          $ref: '#/components/schemas/Participant'
+        observation:
+          $ref: '#/components/schemas/Observation'
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        state:
+          type: string
+          enum:
+            - missing
+            - completed
+            - incomplete
+            - ongoing
+      required:
+        - studyId
+        - start
+        - end
+        - state
 
     StudyTimeline:
       type: object
@@ -1871,6 +2267,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Action'
+        observationGroupIds:
+          type: array
+          description: The set of observation group Ids the intervention is part of
+          items:
+            $ref: '#/components/schemas/IdReference'
+          uniqueItems: true
         created:
           type: string
           format: date-time
@@ -1940,6 +2342,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StudyGroup'
+        observationGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ObservationGroup'
         observations:
           type: array
           items:
@@ -1962,6 +2368,11 @@ components:
       properties:
         studyGroup:
           type: integer
+        observationGroups:
+          type: array
+          items:
+            type: integer
+          uniqueItems: true
 
     IntegrationInfo:
       type: object
@@ -2126,7 +2537,7 @@ components:
         We differentiate between the following roles within a study:
         * `STUDY_ADMIN` (_Study Administrator_): **All** rights to create and manage studies, configure components and assign participants, invite and manage operators and viewers and see study data.
         * `STUDY_OPERATOR` (_Study Operator_): Rights to manage studies, configure components and assign participants, **no rights to see data**.
-        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study data only.
+        * `STUDY_VIEWER` (_Study Viewer_): Rights to see study daƒta only.
       type: string
       enum:
         - STUDY_ADMIN
@@ -2134,6 +2545,94 @@ components:
         - STUDY_VIEWER
       externalDocs:
         url: https://more-platform.atlassian.net/browse/MORE-213
+
+    AuditLog:
+      description: |
+        The audit log object of one study that includes all audit log entries of said study.
+      type: array
+      items:
+        $ref: '#/components/schemas/AuditLogEntry'
+
+    AuditLogEntry:
+      description: |
+        An audit log entry saves Metadata to a specific recorded activity made by a user. The audit log is only accessible to Study Administrators.
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          readOnly: true
+          description: Unique identifier of the audit log data entry
+        created:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        userId:
+          description: |
+            The userId of the person to the specific recoreded activity.
+          type: string
+          readOnly: true
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        action:
+          description: |
+            The performed action. The full Method signature.
+          type: string
+        actionState:
+          description: |
+            The state of the specific action taken (e.g. successful, redirect, error)
+          type: string
+          enum:
+            - success
+            - redirect
+            - error
+            - unknown
+          default: unknown
+        timestamp:
+          description: |
+            Timestamp of when the entry was stored in the database (not the created value of the data).
+          type: string
+          format: date-time
+        userName:
+          description: |
+            The user's name. It is optional, if database can't provide the name.
+          type: string
+          readOnly: true
+        userRoles:
+          description: |
+            An array of the user's roles on the MORE server at the moment of the recorded activity.
+          type: array
+          items:
+            type: string
+        studyRoles:
+          description: |
+            An array of the user's study roles at the moment of the recorded activity.
+          type: array
+          items:
+            type: string
+        resource:
+          description: |
+            The ressource accessed by the user
+          type: string
+      additionalProperties: true
+      required:
+        - uuid
+        - userId
+        - state
+        - action
+        - timestamp
+
+    AuditLogMetadata:
+      description: |
+        Gives back current length of audit log entries with an integer and export format
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        length:
+          type: integer
+          format: int64
 
     FrontendConfiguration:
       description: |
@@ -2234,12 +2733,25 @@ components:
         type: integer
         format: int32
       required: true
+    ObservationGroupId:
+      name: observationGroupId
+      in: path
+      schema:
+        type: integer
+        format: int32
+      required: true
     ParticipantId:
       name: participantId
       in: path
       schema:
         type: integer
         format: int32
+      required: true
+    ApplicationName:
+      name: application
+      in: path
+      schema:
+        type: string
       required: true
     ObservationId:
       name: observationId

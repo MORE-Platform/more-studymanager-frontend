@@ -4,12 +4,13 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { PropType, Ref, ref } from 'vue';
+  import { computed, PropType, Ref, ref } from 'vue';
   import { useComponentsApi, useObservationsApi } from '../composable/useApi';
   import {
     ComponentFactory,
     Event,
     Observation,
+    ObservationGroup,
     ObservationSchedule,
     RelativeEvent,
     StudyGroup,
@@ -17,6 +18,7 @@ Licensed under the Elastic License 2.0. */
     StudyStatus,
   } from '@gs';
   import {
+    MoreObservationListTableRow,
     MoreTableAction,
     MoreTableChoice,
     MoreTableColumn,
@@ -36,9 +38,9 @@ Licensed under the Elastic License 2.0. */
   import { useErrorHandling } from '../composable/useErrorHandling';
   import DeleteMoreTableRowDialog from './dialog/DeleteMoreTableRowDialog.vue';
   import { ScheduleType } from '../models/Scheduler';
-  import Button from 'primevue/button';
-  import Menu from 'primevue/menu';
   import { timeToHourMinuteString } from '../utils/dateUtils';
+  import { extractCurrentLimeDomain } from '../utils/limeSurveyUtils';
+  import DropdownPanelWithSearch from '@/components/shared/DropdownPanelWithSearch.vue';
 
   const loader = useLoader();
   const { observationsApi } = useObservationsApi();
@@ -46,13 +48,17 @@ Licensed under the Elastic License 2.0. */
   const { t, d } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const observationList: Ref<Observation[]> = ref([]);
+  const observationList: Ref<MoreObservationListTableRow[]> = ref([]);
   const dialog = useDialog();
 
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
+    observationGroups: {
+      type: Array as PropType<Array<ObservationGroup>>,
+      required: true,
+    },
   });
 
   const sortOptions: MoreTableSortOptions = {
@@ -77,6 +83,15 @@ Licensed under the Elastic License 2.0. */
     value: null,
   } as MoreTableChoice);
 
+  const observationGroupStatuses: MoreTableChoice[] =
+    props.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as MoreTableChoice,
+    );
+
   async function getFactories(): Promise<ComponentFactory[]> {
     return componentsApi
       .listComponents('observation')
@@ -84,15 +99,20 @@ Licensed under the Elastic License 2.0. */
   }
 
   const factories: ComponentFactory[] = await getFactories();
-  const observationTypes: any[] = factories.map((cf: ComponentFactory) => ({
-    label: cf.title ? t(cf.title) : '',
-    value: cf.componentId,
-    command: (): void => {
-      openObservationDialog(t('observation.dialog.header.create'), {
-        type: cf.componentId,
-      });
-    },
-  }));
+  const observationTypes: any[] = factories
+    .map((cf: ComponentFactory) => ({
+      label: cf.title ? t(cf.title) : '',
+      value: cf.componentId,
+      description: cf.description
+        ? t(cf.description, { link: extractCurrentLimeDomain() })
+        : '',
+      command: (): void => {
+        openObservationDialog(t('observation.dialog.header.create'), {
+          type: cf.componentId,
+        });
+      },
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 
   const observationColumns: MoreTableColumn[] = [
     {
@@ -126,6 +146,19 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '5vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: actionsVisible,
+        values: observationGroupStatuses,
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw',
     },
     {
       field: 'hidden',
@@ -231,6 +264,12 @@ Licensed under the Elastic License 2.0. */
     );
   }
 
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find(
+      (groupStatus) => groupStatus.value === id.toString(),
+    );
+  }
+
   async function listObservations(): Promise<void> {
     observationList.value = await observationsApi
       .listObservations(props.studyId)
@@ -240,6 +279,12 @@ Licensed under the Elastic License 2.0. */
             studyId: observation.studyId,
             observationId: observation.observationId,
             studyGroupId: observation.studyGroupId,
+            observationGroupIds: observation.observationGroupIds,
+            observationGroupValues: observation.observationGroupIds?.length
+              ? observation.observationGroupIds.map((id: number) =>
+                  getObservationGroupItem(id),
+                )
+              : [],
             title: observation.title,
             purpose: observation.purpose,
             participantInfo: observation.participantInfo,
@@ -257,6 +302,7 @@ Licensed under the Elastic License 2.0. */
             hidden: observation.hidden,
             noSchedule: observation.noSchedule,
             hasRepetition: getScheduleHasRepetition(observation.schedule),
+            reminder: observation.reminder,
           };
         });
       })
@@ -345,12 +391,24 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function updateObservation(observation: Observation): Promise<void> {
+  async function updateObservation(
+    observation: MoreObservationListTableRow,
+    fromDialog: boolean = false,
+  ): Promise<void> {
+    const { observationGroupValues, ...newObservation } = observation;
+
     await observationsApi
       .updateObservation(
         props.studyId,
-        observation.observationId as number,
-        observation,
+        newObservation.observationId as number,
+        {
+          ...newObservation,
+          observationGroupIds: fromDialog
+            ? newObservation.observationGroupIds
+            : observationGroupValues?.map((choice: MoreTableChoice) =>
+                parseInt(choice.value as string),
+              ),
+        },
       )
       .then(listObservations)
       .catch((e: AxiosError) =>
@@ -414,7 +472,7 @@ Licensed under the Elastic License 2.0. */
             if (clone) {
               createObservation(options.data as Observation);
             } else {
-              updateObservation(options.data as Observation);
+              updateObservation(options.data as Observation, true);
             }
           } else {
             createObservation(options.data as Observation);
@@ -451,9 +509,16 @@ Licensed under the Elastic License 2.0. */
 
   listObservations();
 
-  const menu = ref();
-  function toggleButtonMenu(event: MouseEvent): void {
-    menu.value.toggle(event);
+  const observationTypeQuery = ref('');
+
+  const filteredObservationTypes = computed(() => {
+    const q = observationTypeQuery.value.trim().toLowerCase();
+    if (!q) return observationTypes;
+    return observationTypes.filter((i) => i.label.toLowerCase().includes(q));
+  });
+
+  function selectObservationType(item: any): any {
+    item.command();
   }
 </script>
 
@@ -481,14 +546,14 @@ Licensed under the Elastic License 2.0. */
     >
       <template #tableActions="{ isInEditMode }">
         <div>
-          <Button
-            type="button"
-            :disabled="isInEditMode ? true : !actionsVisible"
-            @click="toggleButtonMenu($event)"
-            >{{ t('observation.observationList.action.add') }}
-            <span class="pi pi-angle-down ml-3"></span
-          ></Button>
-          <Menu ref="menu" :model="observationTypes" :popup="true" />
+          <dropdown-panel-with-search
+            :dropdown-list="filteredObservationTypes"
+            :button-label="t('observation.observationList.action.add')"
+            :is-button-disabled="isInEditMode ? true : !actionsVisible"
+            :button-icon="'pi pi-plus'"
+            @on-query-change="observationTypeQuery = $event"
+            @on-select-option="selectObservationType($event)"
+          />
         </div>
       </template>
     </MoreTable>
@@ -497,7 +562,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.table-title-width) {
     .title {
       max-width: 80%;

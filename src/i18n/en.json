@@ -61,6 +61,13 @@
     "dataDownload": {
       "description": "Here you can download the study data based on various filters.",
       "title": "Download study data"
+    },
+    "auditLogDownload": {
+      "title": "Download Audit log",
+      "description": "The number of the current audit log entries is: {length}.",
+      "btnLabel": "Download current audit log",
+      "notStartedInfo": "Audit log data is only recorded when a study is active.",
+      "noDataInfo": "The study has not recorded any audit log data yet."
     }
   },
   "global": {
@@ -117,8 +124,12 @@
       "scheduleType": "Schedule Type",
       "setPause": "Pause",
       "start": "Start",
+      "success": "Success",
       "time": "Time",
-      "to": "to"
+      "to": "to",
+      "leavePage": "Do you really want to leave the page?",
+      "dataHealth": "Data health",
+      "searchPlaceholder": "Search..."
     },
     "placeholder": {
       "all": "All",
@@ -128,7 +139,8 @@
       "entireStudy": "Entire study",
       "noGroup": "No group",
       "nothingSelected": "Nothing selected",
-      "optionsSelected": "options selected"
+      "optionsSelected": "options selected",
+      "selected": "selected"
     }
   },
   "inputModel": {
@@ -246,7 +258,8 @@
       "addTriggerTypeConfig": "The trigger is required. Please add a trigger and its config.",
       "emptyTriggerConditions": "Please save at least one trigger condition to your trigger.",
       "interventionRowIsOpen": "Please save all trigger conditions before saving the intervention.",
-      "triggerProp": "A Trigger property has an error."
+      "triggerProp": "A Trigger property has an error.",
+      "observationDeleted": "The linked observation (ID: {observationId}, Type: {observationType}) has been deleted and cannot be referenced. Please link a different data collection, remove this action or delete the intervention completely. Keep in mind that an intervention always requires at least one action."
     },
     "factory": {
       "actions": {
@@ -383,7 +396,18 @@
     "tabs": {
       "dataDownload": "Export study data",
       "lastDataPoints": "Latest Data Points",
-      "recordedObservation": "Recorded Observations"
+      "recordedObservation": "Recorded Observations",
+      "auditLog": "Download AuditLog"
+    },
+    "dialog": {
+      "navigatePage": "Leave page",
+      "waitForDownload": "Wait for download",
+      "msg": {
+        "downloadStudyData": "The data download is still in progress. You may leave the page – the process will be buffered in the background and the download will automatically open in a new tab once it is ready. Any changes you make from now on will not be included in this download."
+      },
+      "header": {
+        "downloadStudyData": "Navigate page"
+      }
     }
   },
   "moreTable": {
@@ -410,7 +434,8 @@
       },
       "msg": {
         "delete": "Deletion of an observation can’t be revoked! Are you sure you want to delete following observation:",
-        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app."
+        "hiddenInfo": "If an observation is hidden, it will start in the background as long as the participant is logged in. An automatic started observation isn't shown on the normal schedule view in the app.",
+        "reminderInfo": "If an observation has a reminder, a notification will be sent when the observation starts."
       }
     },
     "error": {
@@ -442,7 +467,7 @@
           "idDesc": "The id of the survey",
           "idName": "Survey"
         },
-        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"https://lime.platform-test.more.redlink.io/admin/\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
+        "description": "This observation enables you to link a Lime Survey questionnaire created on the More Platform with its ID. Use the <a href=\"{link}\" target=\"_blank\">Lime Survey</a>. Remember to check within Lime Survey that your survey allows for <b>\"multiple responses or update responses with one access code\"</b>, and that your survey is active.",
         "title": "Lime Survey"
       },
       "polarVerity": {
@@ -451,13 +476,58 @@
       },
       "simpleQuestion": {
         "configProps": {
-          "answerDesc": "Possible answers (min. 2, max.5)",
+          "answerDesc": "Possible answers (min. 2, max. 10)",
           "answerName": "Answers",
           "questionDesc": "The question you want to ask.",
           "questionName": "Question"
         },
-        "description": "This observation enables you to create a simple multiple choice question.",
+        "description": "This observation enables you to create a simple single choice question.",
         "title": "Simple Question"
+      },
+      "multipleChoiceQuestion": {
+        "configProps": {
+          "answerDesc": "Possible answers (min. 2, max. 10)",
+          "answerName": "Answers",
+          "questionDesc": "The question you want to ask..",
+          "questionName": "Multiple Choice Question"
+        },
+        "description": "This observation enables you to create a multiple choice question (user can choose multiple answers).",
+        "title": "Multiple Choice Question"
+      },
+      "garmin": {
+        "configProps": {},
+        "description": "This observation enables you to collect health data via the Garmin Connect.",
+        "title": "Garmin (Deprecated)",
+        "heart-rate": {
+          "title": "Garmin Heart Rate",
+          "description": "This observation enables you to collect heart rate data from Garmin Connect."
+        },
+        "activity": {
+          "title": "Garmin Activity",
+          "description": "This observation enables you to collect activity data from Garmin Connect."
+        },
+        "blood-pressure": {
+          "title": "Garmin Blood Pressure",
+          "description": "This observation enables you to collect blood pressure data from Garmin Connect."
+        },
+        "sleep": {
+          "title": "Garmin Sleep",
+          "description": "This observation enables you to collect sleep data from Garmin Connect."
+        },
+        "steps": {
+          "daily": {
+            "title": "Garmin Daily Steps",
+            "description": "Daily step count data from Garmin Connect."
+          },
+          "epoch": {
+            "title": "Garmin Epoch Steps",
+            "description": "Epoch step count data from Garmin Connect."
+          }
+        }
+      },
+      "appUsage": {
+        "title": "App usage",
+        "description": "Track app usage in More participant app."
       }
     },
     "observationList": {
@@ -479,17 +549,64 @@
         "false": "Not hidden",
         "true": "Hidden"
       },
+      "reminder": {
+        "false": "No reminder",
+        "true": "Reminder"
+      },
       "noSchedule": "No Schedule",
       "observationType": {
         "heartRateMeter": "Heart Rate Meter",
         "smartphoneAccelerometer": "Smartphone Accelerometer"
       },
-      "type": "Type"
+      "type": "Type",
+      "dataHealth": "State"
     },
     "singular": "Observation"
   },
   "participants": {
+    "applicationAccess": {
+      "title": "Application access",
+      "add": "Add application",
+      "btn": {
+        "generate": "Generate access",
+        "copyAll": "Copy all access data",
+        "emailAll": "Email all access data"
+      },
+      "allAccessData": {
+        "header": "Application access data for participant {alias}",
+        "subject": "Access data for {alias}"
+      },
+      "label": {
+        "selectApp": "Select application",
+        "url": "URL",
+        "accessCode": "Access code"
+      },
+      "placeholder": {
+        "selectApp": "Select an application"
+      },
+      "dialog": {
+        "header": {
+          "delete": "Delete application access"
+        },
+        "msg": {
+          "deleteIntro": "You are about to delete the following application access:",
+          "deleteWarning": "Deleting the access will revoke the participant's access to this application. New access data will have to be created if needed.",
+          "deleteConfirm": "Are you sure you want to delete this access?"
+        }
+      },
+      "error": {
+        "fetchFailed": "Failed to fetch access data.",
+        "createFailed": "Failed to create access data.",
+        "deleteFailed": "Failed to delete access data.",
+        "alreadyExists": "Access data already exists for this application. Loading current data."
+      },
+      "noAccess": "No application access granted yet.",
+      "addTooltip": "No more applications available for this study. Grant access to applications via the study tab."
+    },
+    "loadingData": "Loading participant data...",
     "dialog": {
+      "updated": "Participant saved successfully",
+      "updateFailed": "Failed to update participant data!",
       "btn": {
         "copyLink": "Copy link",
         "distributeBtn": "Distribute",
@@ -503,7 +620,8 @@
         "warning": "A deleted participant can't be restored. You have the option to delete a participant including all the collected data or the participant alone."
       },
       "error": {
-        "qrcode": "Error in QR code creation"
+        "qrcode": "Error in QR code creation",
+        "aliasRequired": "The participant alias is required."
       },
       "header": {
         "create": "Create participant",
@@ -512,7 +630,8 @@
         "distribute": "Distribute participants randomly to study groups",
         "edit": "Edit participant",
         "qrCode": "QR Code for",
-        "alert": "QR Code Link was copied successfully."
+        "alert": "QR Code Link was copied successfully.",
+        "details": "Participant-Details"
       },
       "msg": {
         "delete": "Do you really want to delete this participant?",
@@ -550,8 +669,10 @@
     "plural": "Participants",
     "props": {
       "alias": "Alias",
+      "participantAlias": "Participant alias",
       "individualStart": "Started on",
       "participantId": "Participant ID",
+      "notStartedYet": "not started yet",
       "registrationToken": "Registration token",
       "token": "Token"
     },
@@ -802,9 +923,37 @@
       "thursday": "Thursday",
       "tuesday": "Tuesday",
       "wednesday": "Wednesday"
+    },
+    "randomization": {
+      "label": "Random Events",
+      "title": "Event randomization",
+      "description": "This event will be randomly scheduled within the specified timeframe. The event duration is determined by the specified duration in minutes. The duration cannot be longer than the specified timeframe.",
+      "duration": "Duration (in minutes)",
+      "warning": "The specified duration cannot be longer than the specified timeframe.",
+      "maxDuration": "Max duration (in minutes): {maxDuration}",
+      "on": "On",
+      "off": "Off",
+      "toast": {
+        "title": "Schedule Error",
+        "message": "The specified duration has to be bigger than 0 and cannot be longer than the specified timeframe."
+      }
     }
   },
   "study": {
+    "applications": {
+      "title": "Study Applications",
+      "placeholder": "Select applications for this study",
+      "label": {
+        "PARTICIPANT_PORTAL": "Participant Portal"
+      },
+      "description": "Applications are optional features that you can activate when needed. This enables additional functions such as the participant portal.",
+      "message": {
+        "activated": "You can now generate access credentials per participant in the participant list.",
+        "deactivated": "Participants can no longer log in to the participant portal.",
+        "deactivatedTitle": "Participant portal access deactivated",
+        "activatedTitle": "Participant portal access activated"
+      }
+    },
     "dialog": {
       "deleteMsg": {
         "confirm": "Are you sure you want to delete your study?",
@@ -818,7 +967,8 @@
         "durationExample": "Study Start; {egStartDate} - Study End: {egEndDate} (5 months) - Study Duration: 4 weeks. The participant's active participation time for the study is limited to 4 weeks, determined by their login date.",
         "participantInfo": "The participant information will be displayed on the app as the studies description. It should give a short information about the study and its purpose. It also includes the Terms of Service and Privacy Policy of the organization conducting the study.",
         "purpose": "The purpose property describes the general purpose of the study. This information will only be shown to study collaborators on the study configurator.",
-        "study": "Enter the base information of your study to provide basic information for collaborators and participants."
+        "study": "Enter the base information of your study to provide basic information for collaborators and participants.",
+        "howToCreateGroups": "Study and observation groups can be created on the study tab and assigned here for {for}."
       },
       "error": {
         "missedFieldsMsg": "Please fill out the following information fields: "
@@ -838,7 +988,8 @@
         "institute": "Institute",
         "studyEnd": "Study end",
         "studyStart": "Study start",
-        "studyTitle": "Study title"
+        "studyTitle": "Study title",
+        "chooseGroups": "Assign groups"
       },
       "msg": {
         "delete": "A deleted study can't be restored. Are you sure you want to delete your study?",
@@ -895,6 +1046,7 @@
       "roles": "Role(s)",
       "status": "Status",
       "studyGroup": "Study group {size}",
+      "observationGroup": "Observation group {size}",
       "studyId": "Study ID",
       "title": "Title"
     },
@@ -904,6 +1056,15 @@
       "viewer": "Study Viewer"
     },
     "singular": "Study",
+    "dataHealth": {
+      "noDataInfo": "Es sind noch keine Informatione zum Thema Data-Health zu diesem Teilnehmer verfügbar.",
+      "labels": {
+        "completed": "Completed",
+        "missing": "Missing",
+        "incomplete": "Incomplete",
+        "ongoing": "Ongoing"
+      }
+    },
     "statusChange": {
       "complete": "Close",
       "complete-preview": "Complete Preview",
@@ -1026,6 +1187,33 @@
       "searchCollaborators": "Type to search collaborators"
     }
   },
+  "observationGroup": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this observation group?",
+        "intro": "You are about to delete the following observation group:",
+        "warning": "A deleted observation group can't be restored. All information and settings of the observation group will be lost. The linked participants, interventions and observations will loose their group link and then apply to the entire study."
+      },
+      "header": {
+        "create": "Add observation group",
+        "delete": "Delete observation group"
+      },
+      "msg": {
+        "delete": "Do you really want to delete this observation group?"
+      }
+    },
+    "placeholder": {
+      "chooseGroup": "Choose a group"
+    },
+    "plural": "Observation groups",
+    "singular": "Observation group",
+    "groupList": {
+      "description": "Observation groups are used to group participants, observations, and/or interventions. Unlike study groups, they can be assigned to multiple elements. <b>A participant, an observation, and an intervention can each be assigned to multiple observation groups.</b> (Example: smokers, type 2 diabetes).",
+      "placeholder": {
+        "emptyGroupList": "Add observatoin groups to your study to use multi-group functionalities"
+      }
+    }
+  },
   "studyGroup": {
     "dialog": {
       "deleteMsg": {
@@ -1035,7 +1223,7 @@
       },
       "header": {
         "create": "Add study group",
-        "delete": "Delete group"
+        "delete": "Delete study group"
       },
       "msg": {
         "delete": "Do you really want to delete this study group?"
@@ -1088,7 +1276,9 @@
       "studyEnd": "Study end",
       "studyStart": "Study start",
       "today": "Today",
-      "type": "Type"
+      "type": "Type",
+      "showFullTimeline": "24 hours",
+      "collapseTimeline": "8 to 7"
     }
   },
   "title": "Title",
@@ -1109,11 +1299,14 @@
       "deleteParticipantBtn": "Delete participant",
       "deleteStudyBtn": "Delete study",
       "deleteStudyGroupBtn": "Delete study group",
+      "deleteObservationGroupBtn": "Delete observation group",
       "editBtn": "Edit shown properties.",
       "goToStudy": "Go to study",
       "saveChanges": "Save changes",
       "showQrCode": "Show QR code",
-      "showStudy": "Click on row to show study details page."
+      "showStudy": "Click on row to show study details page.",
+      "showParticipantInfo": "Show participant details",
+      "openParticipantDetails": "Show details on data."
     },
     "timeline": {
       "relativeDateInfo": "This simulates the point in time when a participant enters the study."
@@ -1126,7 +1319,11 @@
     "droppedOut": "dropped out",
     "inactive": "inactive",
     "invited": "invited",
-    "kickedOut": "kicked out"
+    "kickedOut": "kicked out",
+    "new": "new",
+    "abandoned": "abandoned",
+    "kicked_out": "kicked out",
+    "locked": "locked"
   },
   "welcomeMessage": "Dear {userName} ({userInstitution}), welcome to your Dashboard of the MORE project. Start by creating a new study or managing existing studies you have been assigned to collaborate on.",
   "welcomeToMore": "Welcome to More"

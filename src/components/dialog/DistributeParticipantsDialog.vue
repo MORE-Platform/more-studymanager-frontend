@@ -26,29 +26,25 @@ Licensed under the Elastic License 2.0. */
   }
 
   const studyGroupColumns: MoreTableColumn[] = [
-    { field: 'title', header: t('studyGroup.groupList.placeholder.title') },
+    { field: 'title', header: t('study.props.title') },
     { field: 'purpose', header: t('study.props.purpose') },
   ];
 </script>
 
 <template>
   <div class="dialog">
-    <div class="mb-6">
+    <div>
       {{ $t('participants.participantsList.distributeMsg.intro') }}
     </div>
-    <h3 v-if="studyGroups.length" class="font-medium">
-      <span class="text-color">
-        {{ $t('studyGroup.plural') }} ({{ studyGroups.length }})</span
-      >
-    </h3>
 
     <div v-if="studyGroups.length" class="mb-10">
       <MoreTable
         :rows="studyGroups"
         :columns="studyGroupColumns"
+        :row-edit-btn="false"
         row-id="title"
         :editable-access="false"
-        :class="'table-data-preview'"
+        :class="'table-data-preview !mt-0'"
         :paginator-rows="5"
       />
     </div>
@@ -74,7 +70,7 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .table-data-preview {
     :deep(.p-datatable) {
       .row-actions {

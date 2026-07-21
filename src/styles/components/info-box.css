@@ -1,0 +1,13 @@
+.info-box {
+  &:hover {
+    .info-box-hidden {
+      opacity: 1;
+    }
+  }
+}
+.info-box-hidden {
+  width: 20vw;
+  border: 1px solid var(--bluegray-200);
+  transition: ease-in-out opacity 0.25s;
+  box-shadow: 1px 1px 5px var(--bluegray-200);
+}

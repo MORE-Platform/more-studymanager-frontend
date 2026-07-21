@@ -28,15 +28,28 @@ Licensed under the Elastic License 2.0. */
   import Dropdown from 'primevue/dropdown';
   import MultiSelect from 'primevue/multiselect';
   import Checkbox from 'primevue/checkbox';
-  import { FilterMatchMode } from 'primevue/api';
+  import { FilterMatchMode } from '@primevue/core/api';
   import { dateToDateString } from '../../utils/dateUtils';
-  import { ComponentFactory, StudyRole, StudyStatus, Visibility } from '@gs';
+  import {
+    ComponentFactory,
+    ParticipantStatus,
+    StudyRole,
+    StudyStatus,
+    Visibility,
+  } from '@gs';
   import { shortenText } from '../../utils/commonUtils';
   import { useGlobalStore } from '../../stores/globalStore';
+  import ExclamationIcon from './ExclamationIcon.vue';
 
-  import { ACTION_ID_QR_CODE } from '../../constants';
+  import {
+    ACTION_ID_DATA_HEALTH,
+    ACTION_ID_DELETE,
+    ACTION_ID_QR_CODE,
+  } from '../../constants';
+  import { useI18n } from 'vue-i18n';
 
   const dateFormat = useGlobalStore().getDateFormat;
+  const { t } = useI18n();
 
   interface MoreTableProps {
     title?: string;
@@ -230,8 +243,12 @@ Licensed under the Elastic License 2.0. */
   function getLabelForMultiSelectValue(
     setValues: any,
     valueChoices?: MoreTableChoice[],
+    placeholder?: string
   ): string[] {
-    if (valueChoices) {
+    if (setValues?.length === 0) {
+      return placeholder ? [placeholder] : [t('global.placeholder.chooseDropdownOptionDefault')]
+    }
+    else if (valueChoices) {
       const labels: string[] = [];
       setValues.forEach((v: StudyRole) => {
         const valueLabel = valueChoices.find((vc) => vc.value === v);
@@ -265,20 +282,59 @@ Licensed under the Elastic License 2.0. */
     return props.componentFactory?.find((cf) => cf.componentId === type)
       ?.visibility;
   }
+
+  function getActionBtnBgColor(actionId: string, data: any): string {
+    if (actionId === ACTION_ID_DELETE) return 'btn-important';
+    else if (
+      actionId === ACTION_ID_DATA_HEALTH &&
+      data &&
+      data.dataHealthIndicator
+    ) {
+      switch (data.dataHealthIndicator) {
+        case 'green':
+          return 'btn-accepted';
+        case 'orange':
+          return 'btn-warn';
+        case 'red':
+          return 'btn-important';
+        default:
+          return 'btn-warn';
+      }
+    }
+    return '';
+  }
+
+  function getDataHealthIcon(data: any): string | undefined {
+    if (data.dataHealthIndicator) {
+      switch (data.dataHealthIndicator) {
+        case 'green':
+          return 'pi pi-check';
+        case 'orange':
+          return 'pi pi-exclamation-triangle';
+        case 'red':
+          return 'pi pi-times';
+        default:
+          return 'pi pi-exclamation-triangle';
+      }
+    }
+  }
+  defineExpose({
+    setRowToEditMode,
+  });
 </script>
 
 <template>
   <div class="more-table">
     <div class="mb-8 flex flex-row items-center justify-between">
       <div class="title w-full">
-        <h3 v-if="title" class="font-semibold">{{ title }}</h3>
-        <h4 v-if="subtitle" class="text-base">
+        <h3 v-if="title" class="font-bold">{{ title }}</h3>
+        <h4 v-if="subtitle" class="text-lg">
           <!-- eslint-disable vue/no-v-html -->
           <span v-html="subtitle" />
         </h4>
       </div>
       <div
-        class="actions table-actions ml-2.5 flex flex-row items-center justify-end"
+        class="actions table-actions ml-2.5 flex flex-row items-center justify-end gap-2"
       >
         <slot
           name="tableActions"
@@ -310,14 +366,16 @@ Licensed under the Elastic License 2.0. */
         :frozen="true"
       >
         <template #body="slotProps">
-          <div v-for="action in frontRowActions" :key="action.id">
-            <Button
-              v-if="isVisible(action, slotProps.data)"
-              v-tooltip.bottom="action.tooltip ?? undefined"
-              type="button"
-              :icon="action.icon"
-              @click="rowActionHandler(action, slotProps.data)"
-            />
+          <div class="flex flex-row gap-0.5">
+            <div v-for="action in frontRowActions" :key="action.id">
+              <Button
+                v-if="isVisible(action, slotProps.data)"
+                v-tooltip.bottom="action.tooltip ?? undefined"
+                type="button"
+                :icon="action.icon"
+                @click="rowActionHandler(action, slotProps.data)"
+              />
+            </div>
           </div>
         </template>
       </Column>
@@ -431,13 +489,7 @@ Licensed under the Elastic License 2.0. */
               v-model="data[field]"
               :binary="true"
               class="icon-checkbox show-icon"
-            >
-              <template #icon>
-                <div class="p-checkbox-box">
-                  <span class="p-checkbox-icon pi pi-check"></span>
-                </div>
-              </template>
-            </Checkbox>
+            />
             <div v-else class="icon-box eye">
               <span
                 v-if="data[field]"
@@ -454,18 +506,27 @@ Licensed under the Elastic License 2.0. */
           <InputText
             v-model="filterModel.value"
             type="text"
-            class="p-column-filter"
+            class="p-datatable-column-filter"
             :placeholder="`${$t('moreTable.filterBy')} ${column.header.toLowerCase()}`"
             @keydown.enter="filterCallback()"
           />
         </template>
-        <template #body="{ data, field }">
-          <div v-if="data[field] === null" class="placeholder">
+        <template #body="{ data, field }: { data: any, field: any }">
+          <div v-if="(data as any)[field] === null" class="placeholder">
             {{ column.placeholder ?? $t('global.labels.noValue') }}
           </div>
           <div v-else>
             <span
-              v-if="
+              v-if="field === 'title'"
+              class="align-center flex flex-row gap-1.5"
+            >
+              <span v-if="(data as any)['hasError']" class="title-has-warning mr-0.2">
+                <ExclamationIcon id="exclamationIcon" />
+              </span>
+              {{ (data as any)[field] }}
+            </span>
+            <span
+              v-else-if="
                 column.type === MoreTableFieldType.string ||
                 column.type === MoreTableFieldType.number ||
                 !column.type
@@ -475,7 +536,7 @@ Licensed under the Elastic License 2.0. */
               <span v-if="column.arrayLabels">
                 <span
                   v-for="(value, index) in getLabelForMultiSelectValue(
-                    data[field],
+                    (data as any)[field],
                     column.arrayLabels,
                   )"
                   :key="index"
@@ -483,32 +544,33 @@ Licensed under the Elastic License 2.0. */
                   >{{ value }}</span
                 >
               </span>
-              <span v-else>{{ data[field] }}</span>
+              <span v-else>{{ (data as any)[field] }}</span>
             </span>
             <span v-if="column.type === MoreTableFieldType.statusString">
-              {{ $t(`study.statusStrings.${data[field]}`) }}
+              {{ $t(`study.statusStrings.${(data as any)[field]}`) }}
             </span>
             <span v-if="column.type === MoreTableFieldType.choice">{{
               getLabelForChoiceValue(
-                data[field],
+                (data as any)[field],
                 getColumnEditableValues(column.editable),
               )
             }}</span>
             <span v-if="column.type === MoreTableFieldType.calendar">
-              {{ $d(new Date(data[`__internalValue_${field}`]), 'short') }}
+              {{ $d(new Date((data as any)[`__internalValue_${field}`]), 'short') }}
             </span>
             <span v-if="column.type === MoreTableFieldType.datetime">
-              <span v-if="!data[field]"> - </span>
-              <span v-else-if="data[field] && data[field] !== '-'">
-                {{ $d(new Date(data[field]), 'long') }}
+              <span v-if="!(data as any)[field]"> - </span>
+              <span v-else-if="(data as any)[field] && (data as any)[field] !== '-'">
+                {{ $d(new Date((data as any)[field]), 'long') }}
               </span>
               <span v-else>
-                {{ data[field] }}
+                {{ (data as any)[field] }}
               </span>
             </span>
             <span v-if="column.type === MoreTableFieldType.longtext"
-              >{{ shortenText(data[field]) }}
+              >{{ shortenText((data as any)[field]) }}
             </span>
+
             <span
               v-if="
                 column.type === MoreTableFieldType.multiselect ||
@@ -517,11 +579,12 @@ Licensed under the Elastic License 2.0. */
             >
               <span
                 v-for="(value, index) in getLabelForMultiSelectValue(
-                  data[field],
+                  (data as any)[field]
                 )"
                 :key="index"
                 class="multiselect-item"
-                >{{ value }}</span
+                :class="{'text-gray-300': MoreTableFieldType.multiselect && (data as any)[field]?.length === 0}"
+              >{{ value }}</span
               >
             </span>
             <span
@@ -529,7 +592,7 @@ Licensed under the Elastic License 2.0. */
               class="icon-box eye"
             >
               <span
-                v-if="data[field]"
+                v-if="(data as any)[field]"
                 class="pi pi-eye-slash color-important"
               />
               <span v-else class="pi pi-eye color-approved" />
@@ -538,7 +601,7 @@ Licensed under the Elastic License 2.0. */
               v-if="column.type === MoreTableFieldType.binaryIcon"
               class="icon-box eye"
             >
-              <span v-if="data[field]" class="pi pi-check color-approved" />
+              <span v-if="(data as any)[field]" class="pi pi-check color-approved" />
               <span v-else class="pi pi-times color-important" />
             </span>
           </div>
@@ -547,21 +610,31 @@ Licensed under the Elastic License 2.0. */
 
       <Column key="actions" class="row-actions" :frozen="true">
         <template #body="slotProps">
-          <div v-if="!isRowInEditMode(slotProps.data)">
+          <div v-if="!isRowInEditMode(slotProps.data)" class="flex flex-row gap-0.5">
             <div v-for="action in rowActions" :key="action.id">
               <Button
                 v-tooltip.bottom="action.tooltip ?? undefined"
                 type="button"
-                :icon="action.icon"
+                :icon="
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? (getDataHealthIcon(slotProps) ?? action.icon)
+                    : action.icon
+                "
                 :disabled="
-                  rowIDsInEditMode.length
+                  action.id === ACTION_ID_DATA_HEALTH
+                    ? !slotProps.data?.dataHealthIndicator ||
+                      (slotProps.data?.dataHealthIndicator &&
+                        slotProps.data.status === ParticipantStatus.New)
+                    : rowIDsInEditMode.length
                       ? true
-                      : action.id === ACTION_ID_QR_CODE ?
-                        !(isVisible(action, slotProps.data) &&
-                        !!slotProps.data.registrationToken)
+                      : action.id === ACTION_ID_QR_CODE
+                        ? !(
+                            isVisible(action, slotProps.data) &&
+                            !!slotProps.data.registrationToken
+                          )
                         : !isVisible(action, slotProps.data)
                 "
-                :class="{ 'btn-important': action.id === 'delete' }"
+                :class="getActionBtnBgColor(action.id, slotProps.data)"
                 @click="rowActionHandler(action, slotProps.data)"
               >
                 <span v-if="!action.icon">{{ action.label }}</span>
@@ -594,9 +667,9 @@ Licensed under the Elastic License 2.0. */
               </Button>
             </div>
           </div>
-          <div v-else-if="isRowInEditMode(slotProps.data)" class="items-center">
+          <div v-else-if="isRowInEditMode(slotProps.data)" class="flex flex-row items-center gap-2">
             <div class="error pi pi-exclamation-circle big" />
-            <div class="error mx-2">{{ $t('moreTable.saveLine') }}</div>
+            <div class="error">{{ $t('moreTable.saveLine') }}</div>
             <Button
               v-tooltip.bottom="$t('tooltips.moreTable.saveChanges')"
               type="button"
@@ -621,93 +694,99 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  @import '../../styles/components/eye-checkbox.pcss';
+<style scoped>
+@import '../../styles/components/eye-checkbox.css';
 
-  .pi.big {
-    font-size: 1.2rem;
+.pi.big {
+  font-size: 1.2rem;
+}
+
+:deep(.dropdown-has-value .p-select-label) {
+  color: var(--text-color);
+}
+
+.more-table {
+  :deep(.p-datatable-loading-overlay) {
+    filter: blur(5px);
+    background-color: #ffffff99;
   }
 
-  :deep(.dropdown-has-value .p-dropdown-label) {
-    color: var(--text-color) !important;
+  :deep(.p-datatable .p-datatable-tbody > tr:focus) {
+    outline: none;
   }
 
-  .more-table {
-    :deep(.p-datatable-loading-overlay) {
-      filter: blur(5px);
-      background-color: #ffffff99;
+  :deep(.pi-exclamation-circle.big:before) {
+    font-size: 30px;
+  }
+
+  table tbody tr {
+    font-size: 0.906rem;
+    @apply cursor-pointer;
+
+    td:last-child {
+      width: 1%;
+      white-space: nowrap;
+    }
+  }
+
+  :deep(td.row-actions) {
+    pointer-events: none;
+
+    div {
+      display: flex;
+      justify-content: flex-end;
     }
 
-    :deep(.p-datatable .p-datatable-tbody > tr:focus) {
-      outline: none;
+    button {
+      margin: 0 0.188rem;
     }
 
-    :deep(.pi-exclamation-circle.big:before) {
-      font-size: 30px;
-    }
+    .p-button {
+      pointer-events: all;
 
-    table tbody tr {
-      font-size: 0.906rem !important;
-      @apply cursor-pointer;
-
-      td:last-child {
-        width: 1%;
-        white-space: nowrap;
-      }
-    }
-
-    :deep(td.row-actions) {
-      pointer-events: none;
-
-      div {
-        display: flex;
-        justify-content: flex-end;
-      }
-
-      button {
-        margin: 0 0.188rem;
-      }
-
-      .p-button {
-        pointer-events: all;
-
-        &.p-disabled {
-          pointer-events: none;
-        }
-      }
-    }
-
-    .placeholder {
-      font-style: italic;
-      color: #ccc;
-    }
-
-    .p-multiselect {
-      width: 100%;
-      z-index: 1000;
-    }
-
-    .p-checkbox .p-checkbox-box {
-      border-radius: 50%;
-    }
-
-    .multiselect-item {
-      &:after {
-        content: ', ';
-      }
-
-      &:last-of-type:after {
-        content: '';
+      &.p-disabled {
+        pointer-events: none;
       }
     }
   }
 
-  .table-title-width .title {
-    max-width: 80%;
+  .placeholder {
+    font-style: italic;
+    color: #ccc;
   }
 
-  :deep(.icon-checkbox.p-checkbox.show-icon) {
-    height: 100%;
-    padding: 5px;
+  .p-multiselect {
+    width: 100%;
+    z-index: 1000;
   }
+
+  .p-checkbox .p-checkbox-box {
+    border-radius: 50%;
+  }
+
+  .multiselect-item {
+    &:after {
+      content: ', ';
+    }
+
+    &:last-of-type:after {
+      content: '';
+    }
+  }
+}
+
+.table-title-width .title {
+  max-width: 80%;
+}
+
+:deep(.icon-checkbox.p-checkbox.show-icon) {
+  height: 100%;
+  padding: 5px;
+}
+
+.title-has-warning,
+.title-has-warning #exclamationIcon {
+  height: 18px;
+  width: auto;
+}
 </style>

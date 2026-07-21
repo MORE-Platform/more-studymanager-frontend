@@ -52,7 +52,7 @@ Licensed under the Elastic License 2.0. */
   </footer>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   .footer {
     z-index: 1000;
     position: fixed;

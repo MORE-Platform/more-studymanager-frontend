@@ -13,12 +13,19 @@ Licensed under the Elastic License 2.0. */
   import TabPanel from 'primevue/tabpanel';
   import DatapointList from '../components/subComponents/DatapointList.vue';
   import ParticipationDataList from '../components/ParticipationDataList.vue';
+  import AuditLogDownload from '../components/subComponents/AuditLogDownload.vue';
+  import { ref } from 'vue';
 
   const studyStore = useStudyStore();
   const accessRoles: StudyRole[] = [
     StudyRole.StudyAdmin,
     StudyRole.StudyViewer,
   ];
+  const auditLogAccessRoles: StudyRole[] = [
+    StudyRole.StudyAdmin,
+  ];
+
+  const activeIndex = ref(0)
 </script>
 
 <template>
@@ -36,17 +43,26 @@ Licensed under the Elastic License 2.0. */
       "
       class="container rounded-lg bg-white p-10"
     >
-      <TabView>
-        <TabPanel :header="$t('monitoringData.tabs.lastDataPoints')">
+      <TabView v-model:active-index="activeIndex">
+        <TabPanel value="0" :header="$t('monitoringData.tabs.lastDataPoints')">
           <DatapointList :study-id="studyStore.studyId" class="mb-14" />
         </TabPanel>
-        <TabPanel :header="$t('monitoringData.tabs.recordedObservation')">
-          <ParticipationDataList :study-id="studyStore.studyId" />
+        <TabPanel value="1" :header="$t('monitoringData.tabs.recordedObservation')">
+          <ParticipationDataList :study-id="studyStore.studyId" :pause-data-refresh="activeIndex !== 1"/>
         </TabPanel>
-        <TabPanel :header="$t('monitoringData.tabs.dataDownload')">
+        <TabPanel value="2" :header="$t('monitoringData.tabs.dataDownload')">
           <Suspense>
             <DataDownload />
           </Suspense>
+        </TabPanel>
+        <TabPanel
+          v-if="
+            studyStore.studyUserRoles.some((r: StudyRole) =>
+            auditLogAccessRoles.includes(r),
+            )"
+          value="3"
+          :header="$t('monitoringData.tabs.auditLog')">
+          <AuditLogDownload :study-id="studyStore.studyId" :is-active="activeIndex === 3"/>
         </TabPanel>
       </TabView>
     </div>

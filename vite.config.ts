@@ -1,49 +1,79 @@
 /// <reference types="vitest" />
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 import vue from '@vitejs/plugin-vue';
-import { resolve } from 'path';
+import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [vue()],
-  build: {
-    //TODO maybe remove on cleanup session
-    target: 'esnext',
-  },
-  define: {
-    __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
-    __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
-    __BUILD_BRANCH__: JSON.stringify(process.env.VITE_GIT_BRANCH),
-    __BUILD_REVISION__: JSON.stringify(process.env.VITE_GIT_REVISION),
-  },
-  resolve: {
-    alias: {
-      '@gs': resolve(__dirname, './src/generated-sources'),
-    }
-  },
-  server: {
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: process.env.VITE_LOCAL_BACKEND
-          ? 'http://localhost:8080/api'
-          : 'https://studymanager.platform-test.more.redlink.io/api',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => {
-          return path.replace(/^\/api/, '');
-        },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  return {
+    plugins: [
+      vue(),
+      tailwindcss(),
+      VueI18nPlugin({
+        include: resolve(__dirname, './src/i18n/*.json'),
+        fullInstall: false,
+        compositionOnly: true,
+        strictMessage: false,
+      }),
+    ],
+    build: {
+      //TODO maybe remove on cleanup session
+      target: 'esnext',
+    },
+    define: {
+      __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
+      __BUILD_DATE__: JSON.stringify(new Date().toISOString()),
+      __BUILD_BRANCH__: JSON.stringify(process.env.VITE_GIT_BRANCH),
+      __BUILD_REVISION__: JSON.stringify(process.env.VITE_GIT_REVISION),
+      __KEYCLOAK_URL__: JSON.stringify(
+        env.KEYCLOAK_URL ||
+          env.VITE_KEYCLOAK_URL ||
+          'https://auth.more.redlink.io',
+      ),
+      __KEYCLOAK_REALM__: JSON.stringify(
+        env.KEYCLOAK_REALM || env.VITE_KEYCLOAK_REALM || 'Auth-Client-Test',
+      ),
+      __KEYCLOAK_CLIENTID__: JSON.stringify(
+        env.KEYCLOAK_CLIENTID ||
+          env.VITE_KEYCLOAK_CLIENTID ||
+          'oauth2-pkce-client',
+      ),
+    },
+    resolve: {
+      alias: {
+        '@gs': resolve(__dirname, './src/generated-sources'),
+        '@': resolve(__dirname, './src'),
+        'vue-i18n': 'vue-i18n/dist/vue-i18n.runtime.esm-browser.js',
       },
     },
-  },
-  test: {
-    include: ['tests/**/*.spec.ts'],
-    environment: 'jsdom',
-    coverage: {
-      provider: 'v8',
-      reportsDirectory: 'tests/coverage',
-      exclude: ['src/generated-sources/**'],
+    server: {
+      port: 3000,
+      proxy: {
+        '/api': {
+          target: process.env.VITE_LOCAL_BACKEND
+            ? 'http://localhost:8080/api'
+            : env.BACKEND_URL || env.VITE_MORE_BACKEND_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+      watch: {
+        ignored: [
+          '**/tests/coverage/**',
+          '**/node_modules/**',
+          '**/dist/**',
+          '**/src/generated/**',
+          '**/src/generated-sources/**',
+          '**/openapi/**',
+        ],
+      },
     },
-  },
+  };
 });

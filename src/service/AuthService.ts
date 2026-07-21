@@ -25,7 +25,7 @@ export default class AuthService {
           .updateToken(70)
           .then((refreshed) => {
             if (refreshed) {
-              console.log(`Token refreshed: ${refreshed}, ${new Date()}`);
+              console.info(`Token refreshed: ${refreshed}, ${new Date()}`);
             }
           })
           .catch((e) => {

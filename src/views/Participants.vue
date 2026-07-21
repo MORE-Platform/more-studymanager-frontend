@@ -7,16 +7,18 @@ Licensed under the Elastic License 2.0. */
   import MoreTabNav from '../components/shared/MoreTabNav.vue';
   import ParticipantList from '../components/ParticipantList.vue';
   import StudyHeader from '../components/shared/StudyHeader.vue';
-  import { StudyRole } from '@gs';
   import { useStudyStore } from '../stores/studyStore';
-  import { useStudyGroupStore } from '../stores/studyGroupStore';
-  const studyStore = useStudyStore();
-  const studyGroupStore = useStudyGroupStore();
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
+  import { onMounted } from 'vue';
 
-  const accessRoles: StudyRole[] = [
-    StudyRole.StudyAdmin,
-    StudyRole.StudyOperator,
-  ];
+  const studyStore = useStudyStore();
+  const observationGroupStore = useObservationGroupStore();
+
+  onMounted(() => {
+    if (observationGroupStore.observationGroups.length === 0) {
+      observationGroupStore.getObservationGroups(studyStore.studyId);
+    }
+  });
 </script>
 
 <template>
@@ -27,14 +29,10 @@ Licensed under the Elastic License 2.0. */
       :study-roles="studyStore.studyUserRoles"
     />
     <div
-      v-if="studyStore.studyUserRoles.some((r) => accessRoles.includes(r))"
+      v-if="studyStore.hasCriticalRoles"
       class="container rounded-lg bg-white p-10"
     >
-      <ParticipantList
-        :study-groups="studyGroupStore.studyGroups"
-        :study-status="studyStore.studyStatus"
-        :study-id="studyStore.studyId"
-      ></ParticipantList>
+      <ParticipantList />
     </div>
   </div>
 </template>

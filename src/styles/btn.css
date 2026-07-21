@@ -1,11 +1,15 @@
+.btn-gray, .btn-important, .btn-accepted, .btn-warn {
+  border-radius: var(--border-radius);
+}
+
 .btn-gray {
   border-color: var(--gray-600);
   background-color: var(--gray-600);
   color: var(--gray-50);
 
   &:hover, &:active, &:focus {
-    border-color: var(--gray-700)!important;
-    background-color: var(--gray-700)!important;
+    border-color: var(--gray-700);
+    background-color: var(--gray-700);
   }
 }
 
@@ -15,8 +19,8 @@
   color: var(--red-50);
 
   &:hover, &:active, &:focus {
-    border-color: var(--red-700)!important;
-    background-color: var(--red-700)!important;
+    border-color: var(--red-700);
+    background-color: var(--red-700);
   }
 }
 
@@ -28,5 +32,16 @@
   &:hover, &:active, &:focus {
     border-color: var(--green-700);
     background-color: var(--green-700);
+  }
+}
+
+.btn-warn {
+  border-color: var(--orange-500);
+  background-color: var(--orange-500);
+  color: var(--orange-50);
+
+  &:hover, &:active, &:focus {
+    border-color: var(--orange-700);
+    background-color: var(--orange-700);
   }
 }

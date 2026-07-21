@@ -15,10 +15,13 @@ Licensed under the Elastic License 2.0. */
   import AbsoluteSchedulerRepetition from '../subComponents/AbsoluteSchedulerRepetition.vue';
   import { ScheduleType } from '../../models/Scheduler';
   import { useGlobalStore } from '../../stores/globalStore';
+  import RandomizationView from '../subComponents/RandomizationView.vue';
+  import { useToast } from 'primevue/usetoast';
 
   const dateFormat = useGlobalStore().getDateFormat;
   const { t } = useI18n();
   const dialogRef: any = inject('dialogRef');
+  const toast = useToast();
 
   const studyStore = useStudyStore();
 
@@ -40,6 +43,7 @@ Licensed under the Elastic License 2.0. */
     dtstart: scheduler.dtstart ?? studyStore.study.plannedStart,
     dtend: scheduler.dtend ?? studyStore.study.plannedEnd,
     rrule: scheduler.rrule,
+    random: scheduler.random ?? { state: false, duration: 0 },
   });
 
   const calendarStart: Ref<Date> = ref(
@@ -203,7 +207,49 @@ Licensed under the Elastic License 2.0. */
     rruleErrors = updatedRruleErrors;
   }
 
+  const maxDurationInMinutes = computed(() =>
+    Math.floor(
+      (calendarEnd.value.getTime() - calendarStart.value.getTime()) / 1000 / 60,
+    ),
+  );
+
+  function onRandomStateChange(newState: boolean): void {
+    if (!returnSchedule.value.random) {
+      returnSchedule.value.random = { state: false, duration: 0 };
+    }
+    returnSchedule.value.random.state = newState;
+  }
+
+  function onRandomDurationChange(newDuration: number | undefined): void {
+    if (!newDuration) {
+      return;
+    }
+    if (!returnSchedule.value.random) {
+      returnSchedule.value.random = { state: false, duration: 0 };
+    }
+    returnSchedule.value.random.state = true;
+    if (maxDurationInMinutes.value < newDuration) {
+      returnSchedule.value.random.duration = maxDurationInMinutes.value;
+    } else {
+      returnSchedule.value.random.duration = newDuration;
+    }
+  }
+
   function save(): void {
+    if (
+      returnSchedule.value.random &&
+      returnSchedule.value.random.state &&
+      typeof returnSchedule.value.random.duration === 'number' &&
+      (returnSchedule.value.random.duration <= 0 ||
+        returnSchedule.value.random.duration > maxDurationInMinutes.value)
+    ) {
+      toast.add({
+        summary: t('scheduler.randomization.toast.title'),
+        detail: t('scheduler.randomization.toast.message'),
+        severity: 'error',
+      });
+      return;
+    }
     // setCalendarStart and calendarEnd into returnSchedule object
     returnSchedule.value.dtstart = calendarStart.value.toISOString();
     returnSchedule.value.dtend = calendarEnd.value.toISOString();
@@ -289,7 +335,7 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <hr class="col-span-6" />
+      <hr class="col-span-6 text-gray-300" />
 
       <h6 class="col-span-6 font-medium">
         {{ $t('scheduler.preview.title.individualEvent') }}
@@ -321,7 +367,7 @@ Licensed under the Elastic License 2.0. */
         :max-date="maxDate"
         :manual-input="false"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         time-only
       />
 
@@ -357,7 +403,7 @@ Licensed under the Elastic License 2.0. */
         :min-date="minDate"
         :max-date="maxDate"
         placeholder="hh:mm"
-        class="p-calendar-timeonly start-date start-time col-span-1"
+        class="p-datepicker-timeonly start-date start-time col-span-1"
         :class="{
           'calendar-warning': getErrorOrWarning(
             'warning',
@@ -380,7 +426,7 @@ Licensed under the Elastic License 2.0. */
             v-model="singleDayEventCheckbox"
             class="ml-2"
             :binary="true"
-            @change="onChangeSingleDayEventCheckbox()"
+            @update:model-value="onChangeSingleDayEventCheckbox()"
           />
         </div>
         <div class="flex flex-row items-center justify-start">
@@ -389,7 +435,16 @@ Licensed under the Elastic License 2.0. */
             v-model="entireDayCheckbox"
             class="ml-2"
             :binary="true"
-            @change="onChangeEntireDayCheckbox()"
+            @update:model-value="onChangeEntireDayCheckbox()"
+          />
+        </div>
+        <div class="flex flex-row items-center justify-start">
+          <span>{{ $t('scheduler.randomization.label') }}:</span>
+          <Checkbox
+            :model-value="!!returnSchedule.random?.state"
+            class="ml-2"
+            :binary="true"
+            @update:model-value="onRandomStateChange"
           />
         </div>
       </div>
@@ -404,15 +459,23 @@ Licensed under the Elastic License 2.0. */
         @on-rrule-change="onRruleUpdate($event)"
         @on-rrule-error="onRruleErrorUpdate($event)"
       />
+
+      <RandomizationView
+        v-if="!!returnSchedule.random?.state"
+        class="col-span-8"
+        :duration="returnSchedule.random?.duration ?? 0"
+        :max-duration-in-minutes="maxDurationInMinutes"
+        @update:duration="onRandomDurationChange"
+      />
     </div>
 
     <div class="h-24"></div>
-    <div class="absolute bottom-5 right-5 grid w-full grid-cols-6">
+    <div class="absolute right-5 bottom-5 grid w-full grid-cols-6">
       <div
-        class="col-start-0 col-span-6 mt-8 flex flex-row items-center justify-end text-right"
+        class="col-span-6 col-start-0 mt-8 flex flex-row items-center justify-end text-right"
       >
         <Button
-          class="btn-gray !mr-3"
+          class="btn-gray mr-3"
           :label="$t('global.labels.cancel')"
           @click="cancel()"
         />
@@ -422,9 +485,9 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
+<style scoped>
   :deep(.highlight input) {
-    background-color: var(--red-200) !important;
+    background-color: var(--red-200);
   }
 
   .scheduler {

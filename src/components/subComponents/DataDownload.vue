@@ -1,7 +1,14 @@
 <script setup lang="ts">
   import Calendar from 'primevue/calendar';
   import Button from 'primevue/button';
-  import { computed, ComputedRef, Ref, ref } from 'vue';
+  import {
+    computed,
+    ComputedRef,
+    onBeforeMount,
+    onBeforeUnmount,
+    Ref,
+    ref,
+  } from 'vue';
   import { DropdownOption } from '../../models/Common';
   import { ComponentFactory, Observation, Participant } from '@gs';
   import { AxiosError, AxiosResponse } from 'axios';
@@ -17,6 +24,15 @@
   import { useGlobalStore } from '../../stores/globalStore';
   import MultiSelect from 'primevue/multiselect';
   import { DownloadDataFilter } from '../../models/DataDownloadModel';
+  import ProgressSpinner from 'primevue/progressspinner';
+  import { useDialog } from 'primevue/usedialog';
+  import ConfirmationDialog from '../dialog/ConfirmationDialog.vue';
+  import { onBeforeRouteLeave, useRouter } from 'vue-router';
+  import { useObservationGroupStore } from '../../stores/observationGroupStore';
+
+  const dialog = useDialog();
+  const router = useRouter();
+  const pendingRoute = ref<any>(null);
 
   const { t } = useI18n();
   const { componentsApi } = useComponentsApi();
@@ -26,12 +42,14 @@
   const { participantsApi } = useParticipantsApi();
   const studyGroupStore = useStudyGroupStore();
   const studyStore = useStudyStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const observationList: Ref<Observation[]> = ref([]);
   let factories: ComponentFactory[] = await getFactories();
   const filterDateRange = ref();
 
   const filterStudyGroup = ref([]);
+  const filterObservationGroup = ref([]);
   const filterParticipant = ref([]);
   const filterObservation = ref([]);
   const observationOptions: ComputedRef<DropdownOption[]> = computed(() => {
@@ -59,6 +77,18 @@
     ),
   );
 
+  const observationGroupOptions: Ref<DropdownOption[]> = ref([]);
+
+  observationGroupOptions.value.push(
+    ...observationGroupStore.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as DropdownOption,
+    ),
+  );
+
   let participantsList: Participant[] = [];
   const participantOptions: Ref<DropdownOption[]> = ref([]);
 
@@ -66,6 +96,7 @@
     filterParticipant.value = [];
     filterObservation.value = [];
     filterStudyGroup.value = [];
+    filterObservationGroup.value = [];
     filterDateRange.value = undefined;
   }
 
@@ -74,6 +105,7 @@
       filterParticipant.value.length > 0 ||
       filterObservation.value.length > 0 ||
       filterStudyGroup.value.length > 0 ||
+      filterObservationGroup.value.length > 0 ||
       filterDateRange.value !== undefined
     );
   });
@@ -116,11 +148,17 @@
     getObservationList();
   }
 
+  const isDownloadDataLoading = ref<boolean>(false);
   function downloadStudyData(): void {
-    studyStore.exportStudyData({
-      studyId: studyStore.studyId,
-      ...getDownloadFilters(),
-    });
+    isDownloadDataLoading.value = true;
+    studyStore
+      .exportStudyData({
+        studyId: studyStore.studyId,
+        ...getDownloadFilters(),
+      })
+      .then(() => {
+        isDownloadDataLoading.value = false;
+      });
   }
 
   function getDownloadFilters(): DownloadDataFilter {
@@ -128,13 +166,14 @@
       studyGroupId: filterStudyGroup.value ?? undefined,
       participantId: filterParticipant.value ?? undefined,
       observationId: filterObservation.value ?? undefined,
+      observationGroupId: filterObservationGroup.value ?? undefined,
       from: undefined,
       to: undefined,
     };
 
     if (filterDateRange.value && filterDateRange.value.length > 1) {
       filterValues.from = filterDateRange.value[0];
-      const toDate = filterDateRange.value[1];
+      const toDate = filterDateRange.value[1] ?? filterDateRange.value[0];
       toDate.setHours(23, 59, 59);
       filterValues.to = toDate;
     }
@@ -161,6 +200,60 @@
     .then((response: any) => response.data)
     .then((rs) => (factories = rs))
     .then(loadData);
+
+  function interceptPageNavigation(): void {
+    dialog.open(ConfirmationDialog, {
+      data: {
+        message: t('monitoringData.dialog.msg.downloadStudyData'),
+        cancelBtn: t('monitoringData.dialog.waitForDownload'),
+        approveBtn: t('monitoringData.dialog.navigatePage'),
+      },
+      props: {
+        header: t('monitoringData.dialog.header.downloadStudyData'),
+        style: {
+          width: '50vw',
+        },
+        breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw',
+        },
+        modal: true,
+        draggable: false,
+      },
+      onClose: (options) => {
+        if (options?.data) {
+          if (pendingRoute.value) {
+            isDownloadDataLoading.value = false;
+            router.push(pendingRoute.value);
+          }
+        }
+        pendingRoute.value = null;
+      },
+    });
+  }
+
+  onBeforeRouteLeave((to, from, next) => {
+    if (isDownloadDataLoading.value) {
+      pendingRoute.value = to;
+      interceptPageNavigation();
+      // preventNavigation
+      next(false);
+    } else {
+      // navigate
+      next();
+    }
+  });
+
+  onBeforeMount(() => {
+    window.addEventListener('beforeunload', (e) => {
+      if (isDownloadDataLoading.value) e.preventDefault();
+    });
+  });
+  onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', (e) => {
+      if (isDownloadDataLoading.value) e.preventDefault();
+    });
+  });
 </script>
 
 <template>
@@ -181,70 +274,102 @@
         @click="clearAllFilters"
       />
     </div>
-    <div class="mb-3 flex flex-row items-center justify-between gap-5">
-      <div class="flex gap-5">
-        <div class="flex flex-row items-center">
-          {{ $t('monitoring.labels.dateRange') }}:
-          <Calendar
-            v-model="filterDateRange"
-            :min-date="new Date(studyStore.study.plannedStart as string)"
-            autocomplete="off"
-            selection-mode="range"
-            :manual-input="false"
-            :date-format="dateFormat"
-            :placeholder="`${dateFormat} - ${dateFormat}`"
-          />
+    <div class="mt-2 mb-3 flex flex-row items-center justify-between gap-5">
+      <div class="flex flex-col gap-3">
+        <div
+          class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+        >
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
+            {{ $t('monitoring.labels.dateRange') }}:
+            <Calendar
+              v-model="filterDateRange"
+              :min-date="new Date(studyStore.study.plannedStart as string)"
+              autocomplete="off"
+              selection-mode="range"
+              :manual-input="false"
+              :date-format="dateFormat"
+              :placeholder="`${dateFormat} - ${dateFormat}`"
+              class="w-full"
+            />
+          </div>
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
+            {{ $t('participants.plural') }}:
+            <MultiSelect
+              v-model="filterParticipant"
+              :options="participantOptions"
+              option-label="label"
+              option-value="value"
+              :placeholder="$t('participants.placeholder.chooseParticipant')"
+              class="w-full"
+              :show-toggle-all="false"
+              filter
+              :disabled="disableParticipantFilter"
+              :empty-message="$t('global.labels.noRecords')"
+              :max-selected-labels="1"
+              :selected-items-label="`{0} ${$t(
+                'global.placeholder.optionsSelected',
+              )}`"
+            />
+          </div>
+          <div class="flex flex-row items-center gap-2 lg:col-span-2">
+            {{ $t('observation.plural') }}:
+            <MultiSelect
+              v-model="filterObservation"
+              :options="observationOptions"
+              option-label="label"
+              option-value="value"
+              :show-toggle-all="false"
+              :placeholder="$t('timeline.labels.chooseType')"
+              class="w-full"
+              :empty-message="$t('global.labels.noRecords')"
+              :max-selected-labels="0"
+              :selected-items-label="`{0} ${$t(
+                'global.placeholder.optionsSelected',
+              )}`"
+            />
+          </div>
         </div>
-        <div class="flex flex-row items-center">
-          {{ $t('studyGroup.plural') }}:
-          <MultiSelect
-            v-model="filterStudyGroup"
-            :options="studyGroupOptions"
-            option-label="label"
-            option-value="value"
-            :placeholder="$t('studyGroup.placeholder.chooseGroup')"
-            class="ml-1"
-            :disabled="disableStudyGroupFilter"
-            :empty-message="$t('global.labels.noRecords')"
-            :max-selected-labels="1"
-            :selected-items-label="`{0} ${$t(
-              'global.placeholder.optionsSelected',
-            )}`"
-          />
-        </div>
-        <div class="flex flex-row items-center">
-          {{ $t('participants.plural') }}:
-          <MultiSelect
-            v-model="filterParticipant"
-            :options="participantOptions"
-            option-label="label"
-            option-value="value"
-            :placeholder="$t('participants.placeholder.chooseParticipant')"
-            class="ml-1"
-            filter
-            :disabled="disableParticipantFilter"
-            :empty-message="$t('global.labels.noRecords')"
-            :max-selected-labels="1"
-            :selected-items-label="`{0} ${$t(
-              'global.placeholder.optionsSelected',
-            )}`"
-          />
-        </div>
-        <div class="flex flex-row items-center">
-          {{ $t('observation.plural') }}:
-          <MultiSelect
-            v-model="filterObservation"
-            :options="observationOptions"
-            option-label="label"
-            option-value="value"
-            :placeholder="$t('timeline.labels.chooseType')"
-            class="ml-1"
-            :empty-message="$t('global.labels.noRecords')"
-            :max-selected-labels="0"
-            :selected-items-label="`{0} ${$t(
-              'global.placeholder.optionsSelected',
-            )}`"
-          ></MultiSelect>
+        <div class="flex flex-col gap-3 lg:flex-row">
+          <div
+            class="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-6 lg:gap-5"
+          >
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('studyGroup.plural') }}:
+              <MultiSelect
+                v-model="filterStudyGroup"
+                :options="studyGroupOptions"
+                option-label="label"
+                option-value="value"
+                :placeholder="$t('studyGroup.placeholder.chooseGroup')"
+                class="w-full"
+                :disabled="disableStudyGroupFilter"
+                :show-toggle-all="false"
+                :empty-message="$t('global.labels.noRecords')"
+                :max-selected-labels="1"
+                :selected-items-label="`{0} ${$t(
+                  'global.placeholder.optionsSelected',
+                )}`"
+              />
+            </div>
+            <div class="flex flex-row items-center gap-2 lg:col-span-2">
+              {{ $t('observationGroup.plural') }}:
+              <MultiSelect
+                v-model="filterObservationGroup"
+                :options="observationGroupOptions"
+                option-label="label"
+                option-value="value"
+                :placeholder="$t('observationGroup.placeholder.chooseGroup')"
+                class="w-full"
+                :empty-message="$t('global.labels.noRecords')"
+                :max-selected-labels="1"
+                :show-toggle-all="false"
+                :disabled="disableStudyGroupFilter"
+                :selected-items-label="`{0} ${$t(
+                  'global.placeholder.optionsSelected',
+                )}`"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -253,10 +378,26 @@
         icon="pi pi-download"
         class="mt-8"
         :label="$t('study.studyList.labels.exportStudyData')"
+        :disabled="isDownloadDataLoading"
         @click="downloadStudyData()"
-      />
+      >
+        <span class="p-button-icon p-button-icon-left pi pi-download"></span>
+        <span>{{ t('study.studyList.labels.exportStudyData') }}</span>
+        <ProgressSpinner
+          v-if="isDownloadDataLoading"
+          class="ml-2 !text-white"
+          style="width: 25px; height: 25px"
+          stroke-width="6"
+          fill="transparent"
+          animation-duration=".5s"
+        />
+      </Button>
     </div>
   </div>
 </template>
 
-<style scoped lang="postcss"></style>
+<style scoped>
+  :deep(.p-progress-spinner-circle) {
+    stroke: currentColor;
+  }
+</style>

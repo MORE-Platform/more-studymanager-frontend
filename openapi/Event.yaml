@@ -20,6 +20,21 @@ components:
           format: date-time
         rrule:
           $ref: '#/components/schemas/RecurrenceRule'
+        random:
+          $ref: '#/components/schemas/Randomization'
+          description: If the event is pseudo random
+
+    Randomization:
+      type: object
+      description: Model to state if an event is pseudo random
+      properties:
+        state:
+          type: boolean
+        duration:
+          type: integer
+          description: Duration of the event in minutes
+      required:
+        - state
 
     RecurrenceRule:
       type: object

@@ -23,12 +23,11 @@ Licensed under the Elastic License 2.0. */
   import { useStudyStore } from '../stores/studyStore';
   import { useI18n } from 'vue-i18n';
   import DeleteStudyDialog from './dialog/DeleteStudyDialog.vue';
-  import { reactive } from 'vue';
-  import AlertMsg from './shared/AlertMsg.vue';
   import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload';
   import Button from 'primevue/button';
   import { DownloadData } from '../models/DataDownloadModel';
   import { useToastService } from '../composable/toastService';
+  import { useToast } from 'primevue/usetoast';
 
   const studyStore = useStudyStore();
   const router = useRouter();
@@ -36,26 +35,12 @@ Licensed under the Elastic License 2.0. */
   const loader = useLoader();
   const { t } = useI18n();
   const { showErrorToast } = useToastService();
+  const toast = useToast();
 
   const sortOptions: MoreTableSortOptions = {
     sortField: 'studyId',
     sortOrder: -1,
   };
-
-  const alert = reactive({
-    message: '',
-    showMessage: false,
-  });
-
-  function setAlertMessage(message: string): void {
-    alert.message = message;
-    alert.showMessage = true;
-  }
-
-  function clearAlertMessage(): void {
-    alert.message = '';
-    alert.showMessage = false;
-  }
 
   const studyColumns: MoreTableColumn[] = [
     { field: 'studyId', header: t('study.props.studyId'), sortable: true },
@@ -256,8 +241,14 @@ Licensed under the Elastic License 2.0. */
   ): void {
     if (studyId) {
       const studyUrl = `${location.host}/studies/${studyId}`;
-      navigator.clipboard.writeText(studyUrl);
-      setAlertMessage(t('study.dialog.msg.urlCopied', { studyId, title }));
+      navigator.clipboard.writeText(studyUrl).then(() => {
+        toast.add({
+          severity: 'success',
+          summary: t('global.labels.success'),
+          detail: t('study.dialog.msg.urlCopied', { studyId, title }),
+          life: 2000,
+        });
+      });
     }
   }
 
@@ -339,13 +330,5 @@ Licensed under the Elastic License 2.0. */
     </MoreTable>
     <ConfirmDialog />
     <DynamicDialog />
-    <AlertMsg
-      :show-msg="alert.showMessage"
-      :message="alert.message"
-      type="msg"
-      severity-type="success"
-      style-modifier="msgPosition"
-      @on-msg-change="clearAlertMessage"
-    />
   </div>
 </template>

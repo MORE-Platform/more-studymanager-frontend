@@ -28,9 +28,12 @@ Licensed under the Elastic License 2.0. */
   import { CronProperty, Property } from '../../models/InputModels';
   import ActionProperty from './shared/ActionProperty.vue';
   import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
+  import MultiSelect from 'primevue/multiselect';
+  import { useObservationGroupStore } from '../../stores/observationGroupStore';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
+  const observationGroupStore = useObservationGroupStore();
   const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
@@ -39,11 +42,21 @@ Licensed under the Elastic License 2.0. */
   const triggerData: Trigger = dialogRef.value.data?.triggerData;
   const groupStates: MoreTableChoice[] =
     dialogRef.value.data?.groupStates || [];
+  const observationGroupStates: MoreTableChoice[] = observationGroupStore.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
   const groupPlaceholder =
     dialogRef.value.data?.groupPlaceholder ||
     t('global.placeholder.entireStudy');
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
+  const selectedObservationGroups = ref(
+    intervention.observationGroupIds?.map((id: number) => id.toString()) ?? []
+  )
 
   let propInputError: string = '';
 
@@ -225,6 +238,7 @@ Licensed under the Elastic License 2.0. */
             trigger: {},
             actions: [],
             studyGroupId: studyGroupId.value,
+            observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((id: string) => parseInt(id)) : [],
             schedule: intervention.schedule,
           } as Intervention;
 
@@ -551,31 +565,63 @@ Licensed under the Elastic License 2.0. */
       </div>
 
       <div class="col-start-0 col-span-8">
-        <h5 v-if="!editable" class="pb-2 font-bold">
-          {{ $t('study.props.studyGroup') }}
+        <h5 v-if="editable" class="pb-2 font-bold">
+          {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
         </h5>
-        <Dropdown
-          v-model="studyGroupId"
-          :options="groupStates"
-          option-label="label"
-          option-value="value"
-          :disabled="!editable"
-          class="w-fit"
-          :class="{ 'dropdown-has-value': studyGroupId }"
-          :placeholder="
-            studyGroupId
-              ? getLabelForChoiceValue(studyGroupId as number, groupStates)
-              : groupPlaceholder
-                ? (groupPlaceholder as string)
-                : $t('global.placeholder.entireStudy')
-          "
-        >
-          <template #option="optionProps">
-            <div class="p-dropdown-car-option">
-              <span>{{ optionProps.option.label }}</span>
-            </div>
-          </template>
-        </Dropdown>
+        <div v-if="editable" class="mb-2">
+          {{ $t('study.dialog.description.howToCreateGroups', {for: $t('intervention.plural')}) }}
+        </div>
+        <div class="flex gap-5">
+        <div>
+          <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
+            <Dropdown
+            v-model="studyGroupId"
+            :options="groupStates"
+            option-label="label"
+            option-value="value"
+            :disabled="!editable"
+            class="w-fit"
+            :class="{ 'dropdown-has-value': studyGroupId }"
+            :placeholder="
+              studyGroupId
+                ? getLabelForChoiceValue(studyGroupId as number, groupStates)
+                : groupPlaceholder
+                  ? (groupPlaceholder as string)
+                  : $t('global.placeholder.entireStudy')
+            "
+          >
+            <template #option="optionProps">
+              <div class="p-select-car-option">
+                <span>{{ optionProps.option.label }}</span>
+              </div>
+            </template>
+          </Dropdown>
+          </div>
+          <div>
+            <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
+            <MultiSelect
+              v-model="selectedObservationGroups"
+              :options="observationGroupStates"
+              :disabled="!editable"
+              option-label="label"
+              option-value="value"
+              :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
+              :show-toggle-all="false"
+              class="z-top custom-multiselect-root"
+              :panel-class="'custom-multiselect-panel'"
+            >
+              <template #value="{ value }">
+                      <span v-if="value?.length > 0">{{ value.map((item: string) => observationGroupStates.find(
+                        (group: MoreTableChoice) => group.value === item
+                      )?.label).join(', ')  }}</span>
+                <span v-else class="text-gray-400">
+                        {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
+                      </span>
+              </template>
+
+            </MultiSelect>
+          </div>
+        </div>
       </div>
 
       <div
@@ -597,23 +643,23 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  @import '../../styles/components/moreTable-dialogs.pcss';
+<style scoped>
+@import '../../styles/components/moreTable-dialogs.css';
 
-  :deep(.dropdown-has-value .p-dropdown-label) {
-    color: var(--text-color);
-  }
+:deep(.dropdown-btn .p-select-label) {
+  color: white!important;
+}
 
-  .dropdown-btn {
-    background-color: var(--primary-color);
+.dropdown-btn {
+  background-color: var(--primary-color);
+  color: white;
+  :deep(.p-select-label),
+  :deep(.p-select-trigger-icon) {
     color: white;
-    :deep(.p-dropdown-label),
-    :deep(.p-dropdown-trigger-icon) {
-      color: white;
-    }
   }
+}
 
-  .dialog #interventionDialogForm .section-group .section-content {
-    border: 1px solid var(--bluegray-50);
-  }
+.dialog #interventionDialogForm .section-group .section-content {
+  border: 1px solid var(--bluegray-50);
+}
 </style>

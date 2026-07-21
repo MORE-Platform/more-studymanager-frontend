@@ -180,14 +180,14 @@ Licensed under the Elastic License 2.0. */
   </div>
 </template>
 
-<style scoped lang="postcss">
-  .error {
-    color: #d57575;
-  }
+<style scoped>
+.error {
+  color: #d57575;
+}
 
-  .cron-schedule-config.schedule-disabled {
-    form {
-      border: 1px solid var(--gray-200);
-    }
+.cron-schedule-config.schedule-disabled {
+  form {
+    border: 1px solid var(--gray-200);
   }
+}
 </style>

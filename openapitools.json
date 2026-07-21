@@ -12,7 +12,7 @@
           "supportsES6": true,
           "withSeparateModelsAndApi": true,
           "withInterfaces": true,
-          "withoutPrefixEnums": true,
+          "withoutPrefixEnums": false,
           "apiPackage": "api",
           "modelPackage": "models",
           "enumPropertyNaming": "PascalCase"

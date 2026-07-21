@@ -320,23 +320,23 @@ Licensed under the Elastic License 2.0. */
         :field="column.field"
         :header="column.header"
       >
-        <template #body="{ data, field }">
+        <template #body="{ data, field }: { data: any, field: any }">
           <span v-if="field === 'observationId'">
-            <span v-if="data[field] === undefined">{{
+            <span v-if="(data as any)[field] === undefined">{{
               $t('intervention.dialog.label.chooseObservation')
             }}</span>
             <span v-else>
-              {{ getObservationTitle(data[field]) }}
+              {{ getObservationTitle((data as any)[field]) }}
             </span>
           </span>
           <span v-else>
-            {{ data[field] }}
+            {{ (data as any)[field] }}
           </span>
         </template>
-        <template #editor="{ data, field }">
+        <template #editor="{ data, field }: { data: any, field: any }">
           <Dropdown
             v-if="field === 'observationId'"
-            v-model="data[field]"
+            v-model="(data as any)[field]"
             :options="observationValues"
             option-label="label"
             option-value="value"
@@ -345,23 +345,23 @@ Licensed under the Elastic License 2.0. */
             @change="changeObservationType(data)"
           />
 
-          <div v-else-if="data['observationId'] === undefined">-</div>
+          <div v-else-if="(data as any)['observationId'] === undefined">-</div>
 
           <Dropdown
             v-else-if="
               column.field === 'observationProperty' &&
-              data['observationType'] !== 'external-observation' &&
-              data['observationType'] !== 'lime-survey-observation'
+              (data as any)['observationType'] !== 'external-observation' &&
+              (data as any)['observationType'] !== 'lime-survey-observation'
             "
-            v-model="data[field]"
+            v-model="(data as any)[field]"
             :options="getPropertyOptions(data)"
             option-label="id"
             option-value="id"
           />
 
           <Dropdown
-            v-else-if="column.field === 'operator' && data['observationType']"
-            v-model="data[field]"
+            v-else-if="column.field === 'operator' && (data as any)['observationType']"
+            v-model="(data as any)[field]"
             :options="getOperatorOptions(data)"
             option-label="label"
             option-value="value"
@@ -371,14 +371,14 @@ Licensed under the Elastic License 2.0. */
             v-else-if="
               getOperator(data) &&
               getOperator(data).type === 'DOUBLE' &&
-              data['observationType'] !== 'gps-mobile-observation'
+              (data as any)['observationType'] !== 'gps-mobile-observation'
             "
-            v-model="data[field]"
+            v-model="(data as any)[field]"
             :placeholder="$t('intervention.dialog.placeholder.enterNumber')"
           />
           <InputText
             v-else
-            v-model="data[field]"
+            v-model="(data as any)[field]"
             :placeholder="$t('intervention.dialog.placeholder.enterValue')"
           />
         </template>

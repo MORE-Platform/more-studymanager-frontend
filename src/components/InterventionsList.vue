@@ -5,7 +5,7 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
   import { ref, Ref, PropType } from 'vue';
-  import { useInterventionsApi } from '../composable/useApi';
+  import { useInterventionsApi, useObservationsApi } from '../composable/useApi';
   import { useComponentsApi } from '../composable/useApi';
   import {
     Intervention,
@@ -15,7 +15,7 @@ Licensed under the Elastic License 2.0. */
     ComponentFactory,
     StudyRole,
     StudyStatus,
-    ListComponentsComponentTypeEnum,
+    ListComponentsComponentTypeEnum, Observation, ObservationGroup
   } from '@gs';
   import {
     MoreTableAction,
@@ -24,7 +24,7 @@ Licensed under the Elastic License 2.0. */
     MoreTableRowActionResult,
     MoreTableChoice,
     MoreTableSortOptions,
-    RowSelectionMode,
+    RowSelectionMode, MoreInterventionListTableRow
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -40,16 +40,18 @@ Licensed under the Elastic License 2.0. */
 
   const loader = useLoader();
   const { interventionsApi } = useInterventionsApi();
+  const { observationsApi } = useObservationsApi();
   const { componentsApi } = useComponentsApi();
   const { t } = useI18n();
   const { handleIndividualError } = useErrorHandling();
 
-  const interventionList: Ref<Intervention[]> = ref([]);
+  const interventionList: Ref<MoreInterventionListTableRow[]> = ref([]);
   const dialog = useDialog();
 
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
+    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true},
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
@@ -74,6 +76,18 @@ Licensed under the Elastic License 2.0. */
     label: t('global.placeholder.entireStudy'),
     value: null,
   } as MoreTableChoice);
+
+  const observationGroupStatuses: MoreTableChoice[] = props.observationGroups.map(
+    (observationGroup) =>
+      ({
+        label: observationGroup.title,
+        value: observationGroup.observationGroupId?.toString(),
+      }) as MoreTableChoice,
+  );
+
+  function getObservationGroupItem(id: number): MoreTableChoice | undefined {
+    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+  }
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
     return componentsApi
@@ -112,6 +126,19 @@ Licensed under the Elastic License 2.0. */
       filterable: true,
       placeholder: t('global.placeholder.entireStudy'),
       columnWidth: '10vw',
+    },
+    {
+      field: 'observationGroupValues',
+      header: t('observationGroup.plural'),
+      type: MoreTableFieldType.multiselect,
+      arrayLabels: observationGroupStatuses,
+      editable: {
+        enabled: actionsVisible,
+        values: observationGroupStatuses
+      },
+      sortable: true,
+      placeholder: t('global.placeholder.noGroup'),
+      columnWidth: '10vw'
     },
   ];
 
@@ -180,7 +207,54 @@ Licensed under the Elastic License 2.0. */
     interventionsApi
       .listInterventions(props.studyId)
       .then((response: AxiosResponse) => {
-        interventionList.value = response.data;
+        const interventions = response.data;
+
+        return Promise.all(
+          interventions.map((intervention: Intervention) =>
+            listActions(intervention.interventionId).then((actions: Action[] | undefined) => {
+
+              let observationIds: Array<number> = [];
+
+              if (actions) {
+                observationIds = [...actions
+                  .map(a => a.properties?.observation?.id)
+                  .filter((id): id is number => typeof id === 'number')];
+              }
+
+              const uniqueObservationIds = [...new Set(observationIds)];
+
+              return Promise.all(uniqueObservationIds.map(id =>
+                checkIfObservationDeleted(id)
+              )).then(deletionChecks => {
+                const hasDeletedObservations = deletionChecks.includes(true);
+
+                return {
+                  studyId: intervention.studyId,
+                  interventionId: intervention.interventionId,
+                  studyGroupId: intervention.studyGroupId,
+                  observationGroupIds: intervention.observationGroupIds,
+                  observationGroupValues: intervention.observationGroupIds?.length
+                    ? intervention.observationGroupIds?.map((id) => getObservationGroupItem(id))
+                    : [],
+                  title: intervention.title,
+                  purpose: intervention.purpose,
+                  schedule: intervention.schedule,
+                  trigger: intervention.trigger,
+                  actions,
+                  created: intervention.created,
+                  modified: intervention.modified,
+                  hasError: hasDeletedObservations
+                };
+              });
+            })
+          )
+        );
+      })
+      .then((resolvedList) => {
+        interventionList.value = resolvedList;
+      })
+      .catch((error) => {
+        console.error('Fehler beim Laden der Interventionen:', error);
       });
   }
 
@@ -190,10 +264,22 @@ Licensed under the Elastic License 2.0. */
     if (interventionId) {
       return interventionsApi
         .listActions(props.studyId, interventionId)
-        .then((response: any) => response.data);
+        .then((response: any) => {
+          return response.data
+        });
     } else {
       return undefined;
     }
+  }
+
+  async function checkIfObservationDeleted(observationId: number): Promise<boolean> {
+    const response = await observationsApi.listObservations(props.studyId);
+    const observationList = response.data;
+
+    const observation = observationList.find(
+      (o: Observation) => observationId === o.observationId
+    );
+    return !observation;
   }
 
   async function getTrigger(
@@ -229,12 +315,16 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function changeValue(intervention: Intervention): Promise<void> {
+  async function changeValue(intervention: MoreInterventionListTableRow): Promise<void> {
+    const {observationGroupValues, ...newIntervention} = intervention
     await interventionsApi
       .updateIntervention(
         props.studyId,
-        intervention.interventionId as number,
-        intervention,
+        newIntervention.interventionId as number,
+        {
+          ...newIntervention,
+          observationGroupIds: observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string)) ?? []
+        },
       )
       .then(listInterventions)
       .catch((e: AxiosError) =>

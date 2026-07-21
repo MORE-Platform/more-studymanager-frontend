@@ -10,9 +10,11 @@ Licensed under the Elastic License 2.0. */
   import { useStudyGroupStore } from '../stores/studyGroupStore';
   import { StudyRole } from '@gs';
   import TimelineList from '../components/TimelineList.vue';
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
 
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
 
   const accessRoles: StudyRole[] = [
     StudyRole.StudyAdmin,
@@ -35,6 +37,7 @@ Licensed under the Elastic License 2.0. */
         <TimelineList
           :study-id="studyStore.studyId"
           :study-groups="studyGroupStore.studyGroups"
+          :observation-groups="observationGroupStore.observationGroups"
         ></TimelineList>
       </Suspense>
     </div>

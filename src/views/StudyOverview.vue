@@ -15,11 +15,15 @@ Licensed under the Elastic License 2.0. */
   import { AxiosError } from 'axios';
   import { useToastService } from '../composable/toastService';
   import { StudyStatus } from '@gs';
+  import { useObservationGroupStore } from '../stores/observationGroupStore';
+  import ObservationGroupList from '../components/ObservationGroupList.vue';
+  import StudyApplicationManager from '../components/StudyApplicationManager.vue';
 
   const { handleToastErrors } = useToastService();
   const route = useRoute();
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
+  const observationGroupStore = useObservationGroupStore();
   const studyId = parseInt(route.params.studyId as string);
 
   async function processUpdatedStudyStatus(status: StudyStatus): Promise<void> {
@@ -36,6 +40,7 @@ Licensed under the Elastic License 2.0. */
 
   studyStore.getStudy(studyId);
   studyGroupStore.getStudyGroups(studyId);
+  observationGroupStore.getObservationGroups(studyId);
 </script>
 
 <template>
@@ -56,6 +61,15 @@ Licensed under the Elastic License 2.0. */
         :user-roles="studyStore.studyUserRoles"
         :study-status="studyStore.studyStatus"
       />
+
+      <ObservationGroupList
+        class="mt-10"
+        :study-id="studyId"
+        :user-roles="studyStore.studyUserRoles"
+        :study-status="studyStore.studyStatus"
+      />
+
+      <StudyApplicationManager />
 
       <StudyCollaboratorList
         :study-id="studyId"

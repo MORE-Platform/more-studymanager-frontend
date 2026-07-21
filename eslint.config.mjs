@@ -23,6 +23,7 @@ export default tseslint.config(
       'docs',
       'src/generated-sources',
       '**/*.gitignore',
+      'vite.config.ts',
     ],
   },
   {
@@ -62,6 +63,7 @@ export default tseslint.config(
           ignore: ['headerClass'], // primevue AccordionTab does not fully support kebap-case props (#1263)
         },
       ],
+      "no-console": ["error", { "allow": ["warn", "error", "info"] }]
     },
   },
 );
