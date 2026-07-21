@@ -4,12 +4,21 @@ updates:
   # Enable updates for github-actions
   - package-ecosystem: github-actions
     directory: /
+    target-branch: 'develop'
     schedule:
       interval: weekly
+    groups:
+      github-action:
+        patterns:
+          - "actions/*"
+      docker:
+        patterns:
+          - "docker/*"
 
   # Enable version updates for npm
   - package-ecosystem: npm
     directory: /
+    target-branch: 'develop'
     schedule:
       interval: daily
     open-pull-requests-limit: 5
@@ -17,5 +26,6 @@ updates:
   # Enable version updates for Docker
   - package-ecosystem: docker
     directory: /
+    target-branch: 'develop'
     schedule:
       interval: weekly

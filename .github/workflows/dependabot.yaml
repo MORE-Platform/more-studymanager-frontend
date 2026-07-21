@@ -1,0 +1,35 @@
+name: Dependabot Automation
+on: pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  repository-projects: write
+
+jobs:
+  dependabot:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot Metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v2
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Label Major Updates
+        if: ${{steps.metadata.outputs.update-type == 'version-update:semver-major'}}
+        run: |
+          gh label create "major-update" --color "B60205" --description "Major Dependency Update" --repo "$REPO" || true
+          gh pr edit "$PR_URL" --add-label "major-update"
+        env:
+          REPO: ${{github.repository}}
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      - name: Enable Auto-Merge for Patch Updates
+        if: ${{ false }} #Disabled for now
+        #if: ${{steps.metadata.outputs.update-type == 'version-update:semver-patch'}}
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{github.event.pull_request.html_url}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

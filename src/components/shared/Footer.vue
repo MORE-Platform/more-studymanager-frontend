@@ -7,15 +7,13 @@ Licensed under the Elastic License 2.0. */
   import { inject, ref } from 'vue';
   import { BuildInfo, FrontendConfiguration } from '@gs';
   import OverlayPanel from 'primevue/overlaypanel';
-  import { useI18n } from 'vue-i18n';
-
   const uiConfig = inject('uiConfig') as FrontendConfiguration;
   const buildInfo = inject('buildInfo') as {
     frontend: BuildInfo;
     backend: BuildInfo;
   };
   const buildInfoPanel = ref();
-  const { locale } = useI18n();
+  
 </script>
 
 <template>
@@ -45,7 +43,7 @@ Licensed under the Elastic License 2.0. */
         {{ uiConfig.title }}
       </div>
       <a
-        :href="`https://more-platform.at/${locale === 'en' ? '?lang=en' : ''}`"
+        href="https://more-platform.at/"
         target="_blank"
         class="link text-base uppercase"
         >{{ $t('global.footer.aboutMore') }}</a
