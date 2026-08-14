@@ -78,8 +78,7 @@
     const participantData = participant?.value;
     if (
       !participantData ||
-      !participantData.participantId ||
-      !studyStore.studyIsEditable
+      !participantData.participantId
     )
       return;
 
@@ -95,7 +94,6 @@
 
     const updateData = { ...participantData };
     delete updateData.observationGroupIds;
-
     updateParticipantMutation(
       {
         studyId: studyStore.studyId,
@@ -140,23 +138,6 @@
       default:
         return 'secondary';
     }
-  };
-
-  const getStudyGroupLabel = (id?: number): string => {
-    return (
-      studyGroupStore.studyGroups.find((g) => g.studyGroupId === id)?.title ||
-      t('global.placeholder.noGroup')
-    );
-  };
-
-  const getObservationGroupLabel = (id?: number): string => {
-    return (
-      observationGroupStore.observationGroups.find(
-        (g) => g.observationGroupId === id,
-      )?.title ||
-      id?.toString() ||
-      t('global.placeholder.noGroup')
-    );
   };
 
   const formatAllAccessData = (): string => {
@@ -252,7 +233,6 @@
           $t('study.props.studyGroup')
         }}</label>
         <Select
-          v-if="studyStore.studyIsEditable"
           v-model="participant.studyGroupId"
           :options="studyGroupStore.studyGroups"
           option-label="title"
@@ -260,9 +240,6 @@
           class="participant-row-select w-full min-w-0"
           show-clear
         />
-        <div v-else class="truncate text-sm font-medium">
-          {{ getStudyGroupLabel(participant.studyGroupId) }}
-        </div>
       </div>
       <div class="flex min-w-0 flex-1 items-center justify-between">
         <div class="flex w-full min-w-0 flex-col gap-1">
@@ -270,7 +247,6 @@
             $t('observationGroup.plural')
           }}</label>
           <MultiSelect
-            v-if="studyStore.studyIsEditable"
             v-model="participant.observationGroupIds"
             :options="observationGroupStore.observationGroups"
             option-label="title"
@@ -278,24 +254,9 @@
             class="participant-row-multiselect w-full min-w-0"
             :show-toggle-all="false"
           />
-          <div v-else class="flex flex-wrap gap-1">
-            <Tag
-              v-for="obsGroupId in participant.observationGroupIds"
-              :key="obsGroupId"
-              :value="getObservationGroupLabel(obsGroupId)"
-              severity="secondary"
-              class="text-[10px]"
-            />
-            <span
-              v-if="!participant.observationGroupIds?.length"
-              class="text-sm font-medium"
-              >-</span
-            >
-          </div>
         </div>
       </div>
       <Button
-        v-if="studyStore.studyIsEditable"
         :label="$t('global.labels.save')"
         class="btn-primary shrink-0"
         @click="updateParticipant"

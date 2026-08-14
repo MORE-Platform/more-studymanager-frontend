@@ -526,8 +526,18 @@
         }
       },
       "appUsage": {
-        "title": "App usage",
-        "description": "Track app usage in More participant app."
+        "title": "App Usage Tracking",
+        "description": "This observation enables you to track the participants app usage. The user has to consent this, else it will not be collected."
+      },
+      "health-connect": {
+        "heart-rate": {
+          "title": "Heart Rate (Apple Health / Health Connect)",
+          "description": "This observation enables you to collect participants' heart rate data from Apple Health on iOS or Health Connect on Android."
+        },
+        "steps": {
+          "title": "Steps (Apple Health / Health Connect)",
+          "description": "This observation enables you to collect participants' step count data from Apple Health on iOS or Health Connect on Android."
+        }
       }
     },
     "observationList": {

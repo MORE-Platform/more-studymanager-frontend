@@ -526,8 +526,18 @@
         }
       },
       "appUsage": {
-        "title": "App-Nutzung",
-        "description": "Track die App-Nutzung in der More-Teilnehmer App."
+        "title": "App-Nutzungstracking",
+        "description": "Diese Datenerhebung ermöglicht es, die App-Nutzung der Teilnehmer:innen zu erfassen. Die Nutzer:innen müssen dem zustimmen, andernfalls werden diese Daten nicht erfasst."
+      },
+      "health-connect": {
+        "heart-rate": {
+          "title": "Herzfrequenz (Apple Health / Health Connect)",
+          "description": "Diese Observation ermöglicht es, Herzfrequenzdaten der Teilnehmenden über Apple Health unter iOS oder Health Connect unter Android zu erfassen."
+        },
+        "steps": {
+          "title": "Schritte (Apple Health / Health Connect)",
+          "description": "Diese Observation ermöglicht es, die Schrittanzahl der Teilnehmenden über Apple Health unter iOS oder Health Connect unter Android zu erfassen."
+        }
       }
     },
     "observationList": {
