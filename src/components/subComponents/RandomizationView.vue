@@ -1,3 +1,11 @@
+/*
+ Copyright LBI-DHP and/or licensed to LBI-DHP under one or more
+ contributor license agreements (LBI-DHP: Ludwig Boltzmann Institute
+ for Digital Health and Prevention -- A research institute of the
+ Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
+ Foerderung der wissenschaftlichen Forschung).
+ Licensed under the Apache 2.0 license (see https://www.apache.org/licenses/LICENSE-2.0).
+ */
 <template>
   <div class="flex !w-full flex-col gap-2">
     <hr class="text-gray-300" />
