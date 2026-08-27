@@ -1,3 +1,11 @@
+/*
+ Copyright LBI-DHP and/or licensed to LBI-DHP under one or more
+ contributor license agreements (LBI-DHP: Ludwig Boltzmann Institute
+ for Digital Health and Prevention -- A research institute of the
+ Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
+ Foerderung der wissenschaftlichen Forschung).
+ Licensed under the Apache 2.0 license (see https://www.apache.org/licenses/LICENSE-2.0).
+ */
 import { Duration, DurationUnitEnum } from '@gs/models/duration';
 import { ONE_DAY_IN_MINUTES, ONE_HOUR_IN_MINUTES } from '@/constants';
 
