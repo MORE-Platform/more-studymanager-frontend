@@ -62,6 +62,12 @@ Licensed under the Elastic License 2.0. */
       access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
     },
     {
+      title: t('studyNavigation.tabs.milestones'),
+      name: 'Milestones',
+      params: { studyId: props.studyId },
+      access: [StudyRole.StudyAdmin, StudyRole.StudyOperator],
+    },
+    {
       title: t('studyNavigation.tabs.integration'),
       name: 'Integrations',
       params: { studyId: props.studyId },
@@ -173,7 +179,7 @@ Licensed under the Elastic License 2.0. */
 <template>
   <div class="more-tab-nav mb-10">
     <div
-      class="tab-parent flex flex-wrap justify-end text-center text-lg font-medium leading-5 text-gray-500 dark:text-gray-400"
+      class="tab-parent flex flex-wrap justify-end text-center text-lg leading-5 font-medium text-gray-500 dark:text-gray-400"
     >
       <div v-for="tab in tabs" :key="tab.name">
         <div

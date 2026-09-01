@@ -5,6 +5,9 @@ possible. Use all necessary tools for the best result. Test your code thoroughly
 functions that do not exist. Always test with the local server by using npm run dev:local. Never use npm run dev alone
 as it connects to the production server.
 
+When testing with playwright, if you come to the keycloak login page, stop and notify the user to login. To test new
+features, create your own study, or if you already have your own study, use that.
+
 ## Project
 
 Vue 3 + TypeScript frontend for the MORE Study Manager (MMB — Management & Monitoring Backend), used by researchers to

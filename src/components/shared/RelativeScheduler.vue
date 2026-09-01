@@ -1,3 +1,9 @@
+/* Copyright LBI-DHP and/or licensed to LBI-DHP under one or more contributor
+license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
+Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
+Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
+Licensed under the Apache 2.0 license (see
+https://www.apache.org/licenses/LICENSE-2.0). */
 <script setup lang="ts">
   import { computed, inject, ref, Ref, watch } from 'vue';
   import Calendar from 'primevue/calendar';
@@ -5,7 +11,12 @@
   import InputNumber from 'primevue/inputnumber';
   import Dropdown from 'primevue/dropdown';
   import Checkbox from 'primevue/checkbox';
-  import { DurationUnitEnum, RelativeEvent, StudyDurationUnitEnum } from '@gs';
+  import {
+    DurationUnitEnum,
+    Milestone,
+    RelativeEvent,
+    StudyDurationUnitEnum,
+  } from '@gs';
   import { Duration } from '@gs/models/duration';
   import { useI18n } from 'vue-i18n';
   import { ScheduleType } from '@/models/Scheduler';
@@ -37,10 +48,11 @@
   );
 
   const schedule: RelativeEvent = dialogRef.value.data.scheduler;
+  const milestone: Milestone | undefined = dialogRef.value.data.milestone;
 
   const startOffset = ref<Duration>({
     value: schedule.dtstart?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: schedule.dtstart?.offset?.unit ?? DurationUnitEnum.Day,
   });
   const startTime = ref<DateTime>(
     DateTime.now().set({ hour: 10, minute: 30, second: 0 }),
@@ -48,11 +60,60 @@
 
   const endOffset = ref<Duration>({
     value: schedule.dtend?.offset?.value ?? 1,
-    unit: DurationUnitEnum.Day,
+    unit: schedule.dtend?.offset?.unit ?? DurationUnitEnum.Day,
   });
   const endTime = ref<DateTime>(
     DateTime.now().set({ hour: 18, minute: 30, second: 0 }),
   );
+
+  function directionFromValue(value?: number): 'before' | 'at' | 'after' {
+    if (value === undefined || value === null) return 'after';
+    if (value < 0) return 'before';
+    if (value === 0) return 'at';
+    return 'after';
+  }
+
+  const startDirection = ref<'before' | 'at' | 'after'>(
+    directionFromValue(startOffset.value.value),
+  );
+  const startMagnitude = ref<number>(Math.abs(startOffset.value.value ?? 1));
+  const startUnit = ref<DurationUnitEnum>(
+    startOffset.value.unit ?? DurationUnitEnum.Day,
+  );
+
+  const endDirection = ref<'before' | 'at' | 'after'>(
+    directionFromValue(endOffset.value.value),
+  );
+  const endMagnitude = ref<number>(Math.abs(endOffset.value.value ?? 1));
+  const endUnit = ref<DurationUnitEnum>(
+    endOffset.value.unit ?? DurationUnitEnum.Day,
+  );
+
+  function updateStartOffset(): void {
+    const magnitude = startMagnitude.value ?? 0;
+    startOffset.value = {
+      value:
+        startDirection.value === 'before'
+          ? -magnitude
+          : startDirection.value === 'at'
+            ? 0
+            : magnitude,
+      unit: startUnit.value,
+    };
+  }
+
+  function updateEndOffset(): void {
+    const magnitude = endMagnitude.value ?? 0;
+    endOffset.value = {
+      value:
+        endDirection.value === 'before'
+          ? -magnitude
+          : endDirection.value === 'at'
+            ? 0
+            : magnitude,
+      unit: endUnit.value,
+    };
+  }
 
   if (schedule.dtstart?.time) {
     const time = timeFromString(schedule.dtstart.time);
@@ -133,13 +194,28 @@
     },
   ];
 
+  const milestoneDirectionOptions = [
+    {
+      label: t('scheduler.dialog.relativeSchedule.milestone.direction.before'),
+      value: 'before',
+    },
+    {
+      label: t('scheduler.dialog.relativeSchedule.milestone.direction.at'),
+      value: 'at',
+    },
+    {
+      label: t('scheduler.dialog.relativeSchedule.milestone.direction.after'),
+      value: 'after',
+    },
+  ];
+
   const { errors, addError, clearAllErrors, clearError, getError } =
     useErrorQueue();
 
   function checkErrors(): void {
     clearAllErrors();
     if (
-      !returnSchedule.value.dtstart.offset?.value ||
+      returnSchedule.value.dtstart.offset?.value === undefined ||
       !returnSchedule.value.dtstart.offset?.unit
     ) {
       addError({
@@ -148,7 +224,7 @@
       });
     }
     if (
-      !returnSchedule.value.dtend.offset?.value ||
+      returnSchedule.value.dtend.offset?.value === undefined ||
       !returnSchedule.value.dtend.offset?.unit
     ) {
       addError({
@@ -157,8 +233,8 @@
       });
     }
     if (
-      returnSchedule.value.dtend.offset?.value &&
-      returnSchedule.value.dtstart.offset?.value &&
+      returnSchedule.value.dtend.offset?.value !== undefined &&
+      returnSchedule.value.dtstart.offset?.value !== undefined &&
       returnSchedule.value.dtstart.offset?.value >
         returnSchedule.value.dtend.offset?.value
     ) {
@@ -321,7 +397,19 @@
   }
 
   const onChange = (): void => {
-    if (maxDuration.value) {
+    if (milestone) {
+      repetitionEnabled.value = true;
+      const frequencyMin = valueToMinutes({
+        value: frequency.value,
+        unit: frequencyUnit.value,
+      });
+      const endAfterMin = valueToMinutes({
+        value: endRep.value,
+        unit: endRepUnit.value,
+      });
+      frequencyXTimes.value =
+        frequencyMin > 0 ? Math.ceil(endAfterMin / frequencyMin) : undefined;
+    } else if (maxDuration.value) {
       const errorInEvent = correctEvent(
         startOffset.value,
         endOffset.value,
@@ -411,110 +499,265 @@
         {{ $t('scheduler.dialog.relativeSchedule.description') }}
       </div>
 
-      <h6 class="col-span-6 my-4 font-medium">
-        {{ $t('scheduler.dialog.singleEventTitle') }}
-      </h6>
+      <template v-if="milestone">
+        <h6 class="col-span-6 my-4 font-medium">
+          {{
+            $t('scheduler.dialog.relativeSchedule.milestone.anchoredTitle', {
+              name: milestone.name,
+            })
+          }}
+        </h6>
 
-      <div
-        class="col-span-6 grid grid-cols-6 items-center border-b-2 border-gray-300"
-      >
-        <div class="col-span-2 col-start-2 border-l-2 border-gray-300 pl-3">
-          {{ $t('scheduler.preview.unit.date') }}&nbsp;({{
-            $t('scheduler.frequency.day')
-          }})
+        <div class="col-span-6 grid grid-cols-6 items-center">
+          <div class="col-span-1">
+            {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
+          </div>
+          <div
+            class="col-span-5 flex flex-wrap items-center gap-2 border-l-2 border-gray-300 py-3 pl-3"
+          >
+            <Dropdown
+              v-model="startDirection"
+              :options="milestoneDirectionOptions"
+              option-label="label"
+              option-value="value"
+              @update:model-value="
+                () => {
+                  clearError(['dtstart', 'startTimeBeforeEnd']);
+                  updateStartOffset();
+                }
+              "
+            />
+            <InputNumber
+              v-if="startDirection !== 'at'"
+              v-model="startMagnitude"
+              :min="0"
+              :placeholder="
+                $t(
+                  'scheduler.dialog.relativeSchedule.placeholder.dtstartOffset',
+                )
+              "
+              @update:model-value="
+                (val) => {
+                  clearError(['dtstart', 'startTimeBeforeEnd']);
+                  startMagnitude = (val || 0) as number;
+                  updateStartOffset();
+                }
+              "
+            />
+            <Dropdown
+              v-if="startDirection !== 'at'"
+              v-model="startUnit"
+              :options="repetitionUnit"
+              option-label="label"
+              option-value="value"
+              @update:model-value="updateStartOffset"
+            />
+            <Calendar
+              :model-value="startTime.toJSDate()"
+              time-only
+              hour-format="24"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtstartTime')
+              "
+              @update:model-value="
+                (newVal) => {
+                  const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                  startTime = createLuxonDateTime(dateVal || '') || startTime;
+                  clearError(['offsetCorrection']);
+                }
+              "
+            />
+          </div>
         </div>
-        <div class="col-span-3">
-          {{ $t('scheduler.preview.unit.time') }}
-        </div>
-      </div>
+        <ErrorLabel
+          :error="getError('dtstart')"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
+        />
 
-      <div class="col-span-6 grid grid-cols-6 items-center">
-        <div class="col-span-1">
-          {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
+        <div class="col-span-6 grid grid-cols-6 items-center">
+          <div class="col-span-1">
+            {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
+          </div>
+          <div
+            class="col-span-5 flex flex-wrap items-center gap-2 border-l-2 border-gray-300 py-3 pl-3"
+          >
+            <Dropdown
+              v-model="endDirection"
+              :options="milestoneDirectionOptions"
+              option-label="label"
+              option-value="value"
+              @update:model-value="
+                () => {
+                  clearError([
+                    'dtend',
+                    'startTimeBeforeEnd',
+                    'offsetCorrection',
+                  ]);
+                  updateEndOffset();
+                }
+              "
+            />
+            <InputNumber
+              v-if="endDirection !== 'at'"
+              v-model="endMagnitude"
+              :min="0"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
+              "
+              @update:model-value="
+                (val) => {
+                  clearError([
+                    'dtend',
+                    'startTimeBeforeEnd',
+                    'offsetCorrection',
+                  ]);
+                  endMagnitude = (val || 0) as number;
+                  updateEndOffset();
+                }
+              "
+            />
+            <Dropdown
+              v-if="endDirection !== 'at'"
+              v-model="endUnit"
+              :options="repetitionUnit"
+              option-label="label"
+              option-value="value"
+              @update:model-value="updateEndOffset"
+            />
+            <Calendar
+              :model-value="endTime.toJSDate()"
+              time-only
+              hour-format="24"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtendTime')
+              "
+              @update:model-value="
+                (newVal) => {
+                  const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                  endTime = createLuxonDateTime(dateVal || '') || endTime;
+                  clearError(['startTimeBeforeEnd', 'offsetCorrection']);
+                }
+              "
+            />
+          </div>
         </div>
-        <div class="col-span-2 border-l-2 border-gray-300 py-3 pl-3">
-          <InputNumber
-            v-model="startOffset.value"
-            :placeholder="
-              $t('scheduler.dialog.relativeSchedule.placeholder.dtstartOffset')
-            "
-            :min="1"
-            @update:model-value="
-              (val) => {
-                clearError([
-                  'dtstart',
-                  'scheduleTooLong',
-                  'startTimeBeforeEnd',
-                ]);
-                startOffset.value = (val || 1) as number;
-              }
-            "
-          />
-        </div>
-        <div class="col-span-3">
-          <Calendar
-            :model-value="startTime.toJSDate()"
-            time-only
-            hour-format="24"
-            :placeholder="
-              $t('scheduler.dialog.relativeSchedule.placeholder.dtstartTime')
-            "
-            @update:model-value="
-              (newVal) => {
-                const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                startTime = createLuxonDateTime(dateVal || '') || startTime;
-                clearError(['offsetCorrection']);
-              }
-            "
-          />
-        </div>
-      </div>
-      <ErrorLabel
-        :error="getError('dtstart')"
-        class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
-      />
+        <ErrorLabel
+          :error="getError(['dtend', 'offsetCorrection'])"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
+        />
+      </template>
+      <template v-else>
+        <h6 class="col-span-6 my-4 font-medium">
+          {{ $t('scheduler.dialog.singleEventTitle') }}
+        </h6>
 
-      <div class="col-span-6 grid grid-cols-6 items-center">
-        <div class="col-span-1">
-          {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
+        <div
+          class="col-span-6 grid grid-cols-6 items-center border-b-2 border-gray-300"
+        >
+          <div class="col-span-2 col-start-2 border-l-2 border-gray-300 pl-3">
+            {{ $t('scheduler.preview.unit.date') }}&nbsp;({{
+              $t('scheduler.frequency.day')
+            }})
+          </div>
+          <div class="col-span-3">
+            {{ $t('scheduler.preview.unit.time') }}
+          </div>
         </div>
-        <div class="border-gray-300 col-span-2 border-l-2 py-3 pl-3">
-          <InputNumber
-            v-model="endOffset.value"
-            :placeholder="
-              $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
-            "
-            :min="1"
-            @update:model-value="
-              (val) => {
-                clearError(['dtend', 'startTimeBeforeEnd', 'offsetCorrection']);
-                endOffset.value = (val || 1) as number;
-              }
-            "
-          />
+
+        <div class="col-span-6 grid grid-cols-6 items-center">
+          <div class="col-span-1">
+            {{ $t('scheduler.dialog.relativeSchedule.startValue') }}
+          </div>
+          <div class="col-span-2 border-l-2 border-gray-300 py-3 pl-3">
+            <InputNumber
+              v-model="startOffset.value"
+              :placeholder="
+                $t(
+                  'scheduler.dialog.relativeSchedule.placeholder.dtstartOffset',
+                )
+              "
+              :min="1"
+              @update:model-value="
+                (val) => {
+                  clearError([
+                    'dtstart',
+                    'scheduleTooLong',
+                    'startTimeBeforeEnd',
+                  ]);
+                  startOffset.value = (val || 1) as number;
+                }
+              "
+            />
+          </div>
+          <div class="col-span-3">
+            <Calendar
+              :model-value="startTime.toJSDate()"
+              time-only
+              hour-format="24"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtstartTime')
+              "
+              @update:model-value="
+                (newVal) => {
+                  const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                  startTime = createLuxonDateTime(dateVal || '') || startTime;
+                  clearError(['offsetCorrection']);
+                }
+              "
+            />
+          </div>
         </div>
-        <div class="col-span-3">
-          <Calendar
-            :model-value="endTime.toJSDate()"
-            time-only
-            hour-format="24"
-            :placeholder="
-              $t('scheduler.dialog.relativeSchedule.placeholder.dtendTime')
-            "
-            @update:model-value="
-              (newVal) => {
-                const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
-                endTime = createLuxonDateTime(dateVal || '') || endTime;
-                clearError(['startTimeBeforeEnd', 'offsetCorrection']);
-              }
-            "
-          />
+        <ErrorLabel
+          :error="getError('dtstart')"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
+        />
+
+        <div class="col-span-6 grid grid-cols-6 items-center">
+          <div class="col-span-1">
+            {{ $t('scheduler.dialog.relativeSchedule.endValue') }}
+          </div>
+          <div class="col-span-2 border-l-2 border-gray-300 py-3 pl-3">
+            <InputNumber
+              v-model="endOffset.value"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtendOffset')
+              "
+              :min="1"
+              @update:model-value="
+                (val) => {
+                  clearError([
+                    'dtend',
+                    'startTimeBeforeEnd',
+                    'offsetCorrection',
+                  ]);
+                  endOffset.value = (val || 1) as number;
+                }
+              "
+            />
+          </div>
+          <div class="col-span-3">
+            <Calendar
+              :model-value="endTime.toJSDate()"
+              time-only
+              hour-format="24"
+              :placeholder="
+                $t('scheduler.dialog.relativeSchedule.placeholder.dtendTime')
+              "
+              @update:model-value="
+                (newVal) => {
+                  const dateVal = Array.isArray(newVal) ? newVal[0] : newVal;
+                  endTime = createLuxonDateTime(dateVal || '') || endTime;
+                  clearError(['startTimeBeforeEnd', 'offsetCorrection']);
+                }
+              "
+            />
+          </div>
         </div>
-      </div>
-      <ErrorLabel
-        :error="getError(['dtend', 'offsetCorrection'])"
-        class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
-      />
+        <ErrorLabel
+          :error="getError(['dtend', 'offsetCorrection'])"
+          class="col-span-5 col-start-2 border-l-2 border-gray-300 pl-3"
+        />
+      </template>
     </div>
 
     <h6 class="col-span-6 my-4 font-medium">

@@ -303,6 +303,7 @@ Licensed under the Elastic License 2.0. */
             noSchedule: observation.noSchedule,
             hasRepetition: getScheduleHasRepetition(observation.schedule),
             reminder: observation.reminder,
+            milestoneId: observation.milestoneId,
           };
         });
       })
@@ -353,14 +354,15 @@ Licensed under the Elastic License 2.0. */
         const schedule = scheduler as RelativeEvent;
         switch (prop) {
           case 'dtstart':
-            return schedule.dtstart.offset?.value &&
+            return schedule.dtstart.offset?.value !== undefined &&
               schedule.dtstart.offset?.unit
               ? `${t(
                   `scheduler.preview.unit.${schedule.dtstart.offset.unit}`,
                 )} ${schedule.dtstart.offset.value}, ${timeToHourMinuteString(schedule.dtstart.time)}`
               : undefined;
           case 'dtend':
-            return schedule.dtend.offset?.value && schedule.dtend.offset?.unit
+            return schedule.dtend.offset?.value !== undefined &&
+              schedule.dtend.offset?.unit
               ? `${t(`scheduler.preview.unit.${schedule.dtend.offset.unit}`)} ${
                   schedule.dtend.offset.value
                 }, ${timeToHourMinuteString(schedule.dtend.time)} `

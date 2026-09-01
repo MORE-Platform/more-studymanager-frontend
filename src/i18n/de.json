@@ -343,6 +343,31 @@
     "singular": "Intervention"
   },
   "message": "Nachricht",
+  "milestone": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Möchten Sie diesen Meilenstein wirklich löschen?",
+        "intro": "Sie sind dabei, den folgenden Meilenstein zu löschen:",
+        "warning": "Ein gelöschter Meilenstein kann nicht wiederhergestellt werden. Für diesen Meilenstein gesetzte Teilnehmer:innen-Termine gehen verloren."
+      },
+      "error": {
+        "conflictUsed": "Dieser Meilenstein kann nicht gelöscht werden, da er noch von einer Teilnehmer:in oder einer Beobachtung verwendet wird."
+      },
+      "header": {
+        "create": "Meilenstein hinzufügen",
+        "delete": "Meilenstein löschen"
+      }
+    },
+    "list": {
+      "description": "Meilensteine markieren wichtige Zeitpunkte in einer Studie, an denen Datenerhebungen und Teilnehmer:innen-Termine verankert werden können.",
+      "empty": "Noch keine Meilensteine definiert."
+    },
+    "placeholder": {
+      "name": "Namen des Meilensteins eingeben"
+    },
+    "plural": "Meilensteine",
+    "singular": "Meilenstein"
+  },
   "monitoring": {
     "charts": {
       "polarVerity": {
@@ -613,6 +638,17 @@
       "noAccess": "Bisher wurde kein Anwendungszugriff gewährt.",
       "addTooltip": "Keine weiteren Anwendungen für diese Studie verfügbar. Gewähren Sie Zugriff auf Anwendungen über den Reiter 'Studie'."
     },
+    "milestones": {
+      "title": "Meilensteine",
+      "saved": "Meilenstein-Datum erfolgreich gespeichert",
+      "saveFailed": "Speichern des Meilenstein-Datums fehlgeschlagen.",
+      "deleted": "Meilenstein-Datum erfolgreich entfernt",
+      "deleteFailed": "Entfernen des Meilenstein-Datums fehlgeschlagen.",
+      "placeholder": {
+        "dateTime": "Datum wählen",
+        "time": "Uhrzeit (optional)"
+      }
+    },
     "loadingData": "Teilnehmer:innendaten laden...",
     "dialog": {
       "updated": "Teilnehmer:in erfolgreich gespeichert",
@@ -734,6 +770,18 @@
           "startTimeBeforeEnd": "Startzeit muss vor der Endzeit liegen."
         },
         "interventionWarning": "Beachten Sie, dass das Festlegen eines absoluten Datums (Einstellen von Tag oder Monat) über den Cron-Zeitplan möglicherweise nicht besonders effektiv ist, wenn Sie mit relativen Beobachtungsplänen arbeiten. Relative Beobachtungspläne werden auf Grundlage des individuellen Studienbeginns der Teilnehmer:in (Anmeldung) berechnet.",
+        "milestone": {
+          "anchoredTitle": "Verankert an Meilenstein: {name}",
+          "after": "{value} {unit} nach dem Meilenstein",
+          "at": "genau zum Meilenstein",
+          "before": "{value} {unit} vor dem Meilenstein",
+          "direction": {
+            "after": "Nach",
+            "at": "Genau zu",
+            "before": "Vor"
+          },
+          "placeholder": "Meilenstein wählen"
+        },
         "placeholder": {
           "dtendOffset": "Offset in Tage(n)",
           "dtendTime": "End Zeit",
@@ -1269,6 +1317,7 @@
     "tabs": {
       "integration": "Integrationen",
       "interventions": "Interventionen",
+      "milestones": "Meilensteine",
       "monitoringAndData": "Monitoring & Data",
       "observations": "Datenerhebungen",
       "overview": "Studie",
