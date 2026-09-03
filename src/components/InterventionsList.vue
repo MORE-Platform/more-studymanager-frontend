@@ -2,29 +2,36 @@
 license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
 Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
-Licensed under the Elastic License 2.0. */
+Licensed under the Apache 2.0 license (see
+https://www.apache.org/licenses/LICENSE-2.0). */
 <script setup lang="ts">
-  import { ref, Ref, PropType } from 'vue';
-  import { useInterventionsApi, useObservationsApi } from '../composable/useApi';
-  import { useComponentsApi } from '../composable/useApi';
+  import { PropType, Ref, ref } from 'vue';
   import {
-    Intervention,
-    StudyGroup,
+    useComponentsApi,
+    useInterventionsApi,
+    useObservationsApi,
+  } from '../composable/useApi';
+  import {
     Action,
-    Trigger,
     ComponentFactory,
+    Intervention,
+    ListComponentsComponentTypeEnum,
+    Observation,
+    ObservationGroup,
+    StudyGroup,
     StudyRole,
     StudyStatus,
-    ListComponentsComponentTypeEnum, Observation, ObservationGroup
+    Trigger,
   } from '@gs';
   import {
+    MoreInterventionListTableRow,
     MoreTableAction,
+    MoreTableChoice,
     MoreTableColumn,
     MoreTableFieldType,
     MoreTableRowActionResult,
-    MoreTableChoice,
     MoreTableSortOptions,
-    RowSelectionMode, MoreInterventionListTableRow
+    RowSelectionMode,
   } from '../models/MoreTableModel';
   import ConfirmDialog from 'primevue/confirmdialog';
   import DynamicDialog from 'primevue/dynamicdialog';
@@ -51,7 +58,10 @@ Licensed under the Elastic License 2.0. */
   const props = defineProps({
     studyId: { type: Number, required: true },
     studyGroups: { type: Array as PropType<Array<StudyGroup>>, required: true },
-    observationGroups: { type: Array as PropType<Array<ObservationGroup>>, required: true},
+    observationGroups: {
+      type: Array as PropType<Array<ObservationGroup>>,
+      required: true,
+    },
     studyStatus: { type: String as PropType<StudyStatus>, required: true },
   });
 
@@ -77,16 +87,19 @@ Licensed under the Elastic License 2.0. */
     value: null,
   } as MoreTableChoice);
 
-  const observationGroupStatuses: MoreTableChoice[] = props.observationGroups.map(
-    (observationGroup) =>
-      ({
-        label: observationGroup.title,
-        value: observationGroup.observationGroupId?.toString(),
-      }) as MoreTableChoice,
-  );
+  const observationGroupStatuses: MoreTableChoice[] =
+    props.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as MoreTableChoice,
+    );
 
   function getObservationGroupItem(id: number): MoreTableChoice | undefined {
-    return observationGroupStatuses?.find((groupStatus) => groupStatus.value === id.toString())
+    return observationGroupStatuses?.find(
+      (groupStatus) => groupStatus.value === id.toString(),
+    );
   }
 
   async function getActionFactories(): Promise<ComponentFactory[]> {
@@ -134,11 +147,11 @@ Licensed under the Elastic License 2.0. */
       arrayLabels: observationGroupStatuses,
       editable: {
         enabled: actionsVisible,
-        values: observationGroupStatuses
+        values: observationGroupStatuses,
       },
       sortable: true,
       placeholder: t('global.placeholder.noGroup'),
-      columnWidth: '10vw'
+      columnWidth: '10vw',
     },
   ];
 
@@ -211,43 +224,52 @@ Licensed under the Elastic License 2.0. */
 
         return Promise.all(
           interventions.map((intervention: Intervention) =>
-            listActions(intervention.interventionId).then((actions: Action[] | undefined) => {
+            listActions(intervention.interventionId).then(
+              (actions: Action[] | undefined) => {
+                let observationIds: Array<number> = [];
 
-              let observationIds: Array<number> = [];
+                if (actions) {
+                  observationIds = [
+                    ...actions
+                      .map((a) => a.properties?.observation?.id)
+                      .filter((id): id is number => typeof id === 'number'),
+                  ];
+                }
 
-              if (actions) {
-                observationIds = [...actions
-                  .map(a => a.properties?.observation?.id)
-                  .filter((id): id is number => typeof id === 'number')];
-              }
+                const uniqueObservationIds = [...new Set(observationIds)];
 
-              const uniqueObservationIds = [...new Set(observationIds)];
+                return Promise.all(
+                  uniqueObservationIds.map((id) =>
+                    checkIfObservationDeleted(id),
+                  ),
+                ).then((deletionChecks) => {
+                  const hasDeletedObservations = deletionChecks.includes(true);
 
-              return Promise.all(uniqueObservationIds.map(id =>
-                checkIfObservationDeleted(id)
-              )).then(deletionChecks => {
-                const hasDeletedObservations = deletionChecks.includes(true);
-
-                return {
-                  studyId: intervention.studyId,
-                  interventionId: intervention.interventionId,
-                  studyGroupId: intervention.studyGroupId,
-                  observationGroupIds: intervention.observationGroupIds,
-                  observationGroupValues: intervention.observationGroupIds?.length
-                    ? intervention.observationGroupIds?.map((id) => getObservationGroupItem(id))
-                    : [],
-                  title: intervention.title,
-                  purpose: intervention.purpose,
-                  schedule: intervention.schedule,
-                  trigger: intervention.trigger,
-                  actions,
-                  created: intervention.created,
-                  modified: intervention.modified,
-                  hasError: hasDeletedObservations
-                };
-              });
-            })
-          )
+                  return {
+                    studyId: intervention.studyId,
+                    interventionId: intervention.interventionId,
+                    studyGroupId: intervention.studyGroupId,
+                    observationGroupIds: intervention.observationGroupIds,
+                    observationGroupValues: intervention.observationGroupIds
+                      ?.length
+                      ? intervention.observationGroupIds?.map((id) =>
+                          getObservationGroupItem(id),
+                        )
+                      : [],
+                    title: intervention.title,
+                    purpose: intervention.purpose,
+                    schedule: intervention.schedule,
+                    trigger: intervention.trigger,
+                    actions,
+                    created: intervention.created,
+                    modified: intervention.modified,
+                    hasError: hasDeletedObservations,
+                    milestoneId: intervention.milestoneId,
+                  };
+                });
+              },
+            ),
+          ),
         );
       })
       .then((resolvedList) => {
@@ -265,19 +287,21 @@ Licensed under the Elastic License 2.0. */
       return interventionsApi
         .listActions(props.studyId, interventionId)
         .then((response: any) => {
-          return response.data
+          return response.data;
         });
     } else {
       return undefined;
     }
   }
 
-  async function checkIfObservationDeleted(observationId: number): Promise<boolean> {
+  async function checkIfObservationDeleted(
+    observationId: number,
+  ): Promise<boolean> {
     const response = await observationsApi.listObservations(props.studyId);
     const observationList = response.data;
 
     const observation = observationList.find(
-      (o: Observation) => observationId === o.observationId
+      (o: Observation) => observationId === o.observationId,
     );
     return !observation;
   }
@@ -315,15 +339,20 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  async function changeValue(intervention: MoreInterventionListTableRow): Promise<void> {
-    const {observationGroupValues, ...newIntervention} = intervention
+  async function changeValue(
+    intervention: MoreInterventionListTableRow,
+  ): Promise<void> {
+    const { observationGroupValues, ...newIntervention } = intervention;
     await interventionsApi
       .updateIntervention(
         props.studyId,
         newIntervention.interventionId as number,
         {
           ...newIntervention,
-          observationGroupIds: observationGroupValues?.map((choice: MoreTableChoice) => parseInt(choice.value as string)) ?? []
+          observationGroupIds:
+            observationGroupValues?.map((choice: MoreTableChoice) =>
+              parseInt(choice.value as string),
+            ) ?? [],
         },
       )
       .then(listInterventions)

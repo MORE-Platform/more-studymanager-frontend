@@ -5,7 +5,6 @@ Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Apache 2.0 license (see
 https://www.apache.org/licenses/LICENSE-2.0). */
 <script setup lang="ts">
-  import { PropType } from 'vue';
   import {
     Duration,
     Event,
@@ -22,24 +21,17 @@ https://www.apache.org/licenses/LICENSE-2.0). */
 
   const { t, d } = useI18n();
 
-  const props = defineProps({
-    scheduler: {
-      type: Object as PropType<ObservationSchedule>,
-      required: true,
-    },
-    error: {
-      type: String,
-      default: '',
-    },
-    editable: {
-      type: Boolean,
-      default: true,
-    },
-    milestone: {
-      type: Object as PropType<Milestone | undefined>,
-      default: undefined,
-    },
-  });
+  const {
+    scheduler,
+    error = undefined,
+    editable = true,
+    milestone = undefined,
+  } = defineProps<{
+    scheduler: ObservationSchedule;
+    error?: string | undefined;
+    editable?: boolean;
+    milestone?: Milestone | undefined;
+  }>();
 
   const emit = defineEmits<{
     (e: 'openDialog', schedulerType: string): void;
@@ -47,7 +39,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
   }>();
 
   function getSchedulerDescription(): string {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event:
         return t('scheduler.dialog.absoluteSchedule.description');
       case ScheduleType.RelativeEvent:
@@ -77,9 +69,9 @@ https://www.apache.org/licenses/LICENSE-2.0). */
   }
 
   function getDateValues(prop: string): string | undefined {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event: {
-        const schedule = props.scheduler as Event;
+        const schedule = scheduler as Event;
         switch (prop) {
           case 'dtstart': {
             return schedule.dtstart
@@ -95,15 +87,15 @@ https://www.apache.org/licenses/LICENSE-2.0). */
         }
       }
       case ScheduleType.RelativeEvent: {
-        const schedule = props.scheduler as RelativeEvent;
-        if (props.milestone) {
+        const schedule = scheduler as RelativeEvent;
+        if (milestone) {
           switch (prop) {
             case 'dtstart': {
               const offsetLabel = getMilestoneOffsetLabel(
                 schedule.dtstart.offset,
               );
               return offsetLabel
-                ? `${props.milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtstart.time)}`
+                ? `${milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtstart.time)}`
                 : undefined;
             }
             case 'dtend': {
@@ -111,7 +103,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
                 schedule.dtend.offset,
               );
               return offsetLabel
-                ? `${props.milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtend.time)}`
+                ? `${milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtend.time)}`
                 : undefined;
             }
             default:
@@ -143,10 +135,10 @@ https://www.apache.org/licenses/LICENSE-2.0). */
   }
 
   function getRepetitionValue(prop: string): string | undefined {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event:
         {
-          const schedule = props.scheduler as Event;
+          const schedule = scheduler as Event;
           switch (prop) {
             case 'every': {
               switch (schedule.rrule?.freq) {
@@ -167,7 +159,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
 
               if (schedule.rrule?.byday) {
                 schedule.rrule.byday.forEach((item, index) => {
-                  string += t(`scheduler.weekday.props.${item}`);
+                  string += t(`scheduler.weekday.${item}`);
 
                   if (
                     schedule.rrule?.byday &&
@@ -203,7 +195,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
         }
         break;
       case ScheduleType.RelativeEvent: {
-        const schedule = props.scheduler as RelativeEvent;
+        const schedule = scheduler as RelativeEvent;
         switch (prop) {
           case 'every':
             return schedule.rrrule?.frequency

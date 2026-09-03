@@ -780,6 +780,7 @@
             "at": "Genau zu",
             "before": "Vor"
           },
+          "noEffectOnTrigger": "Ein Meilenstein ist ausgewählt, wirkt sich aber nur auf den Trigger „{triggerName}“ aus. Er wird für diesen Trigger-Typ ignoriert.",
           "placeholder": "Meilenstein wählen"
         },
         "placeholder": {

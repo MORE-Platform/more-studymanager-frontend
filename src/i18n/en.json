@@ -780,6 +780,7 @@
             "at": "Exactly at",
             "before": "Before"
           },
+          "noEffectOnTrigger": "A milestone is selected, but it only has an effect on the {triggerName} trigger. It will be ignored for this trigger type.",
           "placeholder": "Choose a milestone"
         },
         "placeholder": {
