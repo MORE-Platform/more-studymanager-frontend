@@ -21,11 +21,14 @@ import { useStudyGroupStore } from '../stores/studyGroupStore';
 import Integrations from '../views/Integrations.vue';
 import Timeline from '../views/Timeline.vue';
 import { useObservationGroupStore } from '../stores/observationGroupStore';
+import Milestones from '../views/Milestones.vue';
+import { useMilestoneStore } from '../stores/milestoneStore';
 
 const studyResolver = async (to: any, from: any, next: any): Promise<void> => {
   const studyStore = useStudyStore();
   const studyGroupStore = useStudyGroupStore();
   const observationGroupStore = useObservationGroupStore();
+  const milestoneStore = useMilestoneStore();
   if (
     !studyStore.study.studyId ||
     studyStore.study.studyId !== to.params.studyId
@@ -33,6 +36,7 @@ const studyResolver = async (to: any, from: any, next: any): Promise<void> => {
     await studyStore.getStudy(to.params.studyId);
     await studyGroupStore.getStudyGroups(to.params.studyId);
     await observationGroupStore.getObservationGroups(to.params.studyId);
+    await milestoneStore.getMilestones(to.params.studyId);
   }
   next();
 };
@@ -87,6 +91,12 @@ const routes = [
         meta: { title: 'Monitoring & Data' },
         name: 'Monitoring & Data',
         component: MonitoringData,
+      },
+      {
+        path: 'milestones',
+        meta: { title: 'Milestones' },
+        name: 'Milestones',
+        component: Milestones,
       },
     ],
   },

@@ -343,6 +343,31 @@
     "singular": "Intervention"
   },
   "message": "Message",
+  "milestone": {
+    "dialog": {
+      "deleteMsg": {
+        "confirm": "Are you sure you want to delete this milestone?",
+        "intro": "You are about to delete the following milestone:",
+        "warning": "A deleted milestone can't be restored. Participant dates set for this milestone will be lost."
+      },
+      "error": {
+        "conflictUsed": "This milestone can't be deleted because it is still used by a participant or an observation."
+      },
+      "header": {
+        "create": "Add milestone",
+        "delete": "Delete milestone"
+      }
+    },
+    "list": {
+      "description": "Milestones mark key points in a study that observations and participant schedules can be anchored to.",
+      "empty": "No milestones defined yet."
+    },
+    "placeholder": {
+      "name": "Enter a milestone name"
+    },
+    "plural": "Milestones",
+    "singular": "Milestone"
+  },
   "monitoring": {
     "charts": {
       "polarVerity": {
@@ -613,6 +638,17 @@
       "noAccess": "No application access granted yet.",
       "addTooltip": "No more applications available for this study. Grant access to applications via the study tab."
     },
+    "milestones": {
+      "title": "Milestones",
+      "saved": "Milestone date saved successfully",
+      "saveFailed": "Failed to save milestone date.",
+      "deleted": "Milestone date removed successfully",
+      "deleteFailed": "Failed to remove milestone date.",
+      "placeholder": {
+        "dateTime": "Choose date",
+        "time": "Time (optional)"
+      }
+    },
     "loadingData": "Loading participant data...",
     "dialog": {
       "updated": "Participant saved successfully",
@@ -734,6 +770,19 @@
           "startTimeBeforeEnd": "Start time must be before the end time."
         },
         "interventionWarning": "Note that setting an absolute date (setting day or month) via cron scheduler might not be that effective when working with relative observation schedules. Relative observation schedules will be calculated based on the individual study start of participants (log in).",
+        "milestone": {
+          "anchoredTitle": "Anchored to milestone: {name}",
+          "after": "{value} {unit} after the milestone",
+          "at": "exactly at the milestone",
+          "before": "{value} {unit} before the milestone",
+          "direction": {
+            "after": "After",
+            "at": "Exactly at",
+            "before": "Before"
+          },
+          "noEffectOnTrigger": "A milestone is selected, but it only has an effect on the {triggerName} trigger. It will be ignored for this trigger type.",
+          "placeholder": "Choose a milestone"
+        },
         "placeholder": {
           "dtendOffset": "Enter offset in day(s)",
           "dtendTime": "Enter end time",
@@ -1268,6 +1317,7 @@
     "tabs": {
       "integration": "Integrations",
       "interventions": "Interventions",
+      "milestones": "Milestones",
       "monitoringAndData": "Monitoring & Data",
       "observations": "Observations",
       "overview": "Study",

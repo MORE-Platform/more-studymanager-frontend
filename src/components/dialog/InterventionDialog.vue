@@ -2,9 +2,10 @@
 license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
 Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
-Licensed under the Elastic License 2.0. */
+Licensed under the Apache 2.0 license (see
+https://www.apache.org/licenses/LICENSE-2.0). */
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { computed, inject, ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
@@ -13,12 +14,13 @@ Licensed under the Elastic License 2.0. */
   import { useComponentsApi } from '../../composable/useApi';
   import {
     Action,
-    Trigger,
-    Intervention,
     ComponentFactory,
-    ValidationReport,
-    StudyStatus,
+    Intervention,
     ListComponentsComponentTypeEnum,
+    ObservationSchedule,
+    StudyStatus,
+    Trigger,
+    ValidationReport,
   } from '@gs';
   import { useStudyStore } from '../../stores/studyStore';
   import { useI18n } from 'vue-i18n';
@@ -30,10 +32,20 @@ Licensed under the Elastic License 2.0. */
   import { PropertyEmit, StringEmit } from '../../models/PropertyInputModels';
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
+  import { useMilestoneStore } from '../../stores/milestoneStore';
+  import { scrollToFirstError } from '../../utils/componentUtils';
+  import { isObjectEmpty } from '../../utils/commonUtils';
+  import { ScheduleType } from '../../models/Scheduler';
+  import { useDialog } from 'primevue/usedialog';
+  import RelativeScheduler from '../shared/RelativeScheduler.vue';
+  import AbsoluteScheduler from '../shared/Scheduler.vue';
+  import SchedulerInfoBlock from '../subComponents/SchedulerInfoBlock.vue';
 
   const { componentsApi } = useComponentsApi();
   const studyStore = useStudyStore();
   const observationGroupStore = useObservationGroupStore();
+  const milestoneStore = useMilestoneStore();
+  const dialog = useDialog();
   const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
@@ -42,21 +54,22 @@ Licensed under the Elastic License 2.0. */
   const triggerData: Trigger = dialogRef.value.data?.triggerData;
   const groupStates: MoreTableChoice[] =
     dialogRef.value.data?.groupStates || [];
-  const observationGroupStates: MoreTableChoice[] = observationGroupStore.observationGroups.map(
-    (observationGroup) =>
-      ({
-        label: observationGroup.title,
-        value: observationGroup.observationGroupId?.toString(),
-      }) as MoreTableChoice,
-  );
+  const observationGroupStates: MoreTableChoice[] =
+    observationGroupStore.observationGroups.map(
+      (observationGroup) =>
+        ({
+          label: observationGroup.title,
+          value: observationGroup.observationGroupId?.toString(),
+        }) as MoreTableChoice,
+    );
   const groupPlaceholder =
     dialogRef.value.data?.groupPlaceholder ||
     t('global.placeholder.entireStudy');
   const actionFactories = dialogRef.value.data?.actionFactories;
   const triggerFactories = dialogRef.value.data?.triggerFactories;
   const selectedObservationGroups = ref(
-    intervention.observationGroupIds?.map((id: number) => id.toString()) ?? []
-  )
+    intervention.observationGroupIds?.map((id: number) => id.toString()) ?? [],
+  );
 
   let propInputError: string = '';
 
@@ -87,6 +100,11 @@ Licensed under the Elastic License 2.0. */
 
     return properties;
   }
+
+  // the backend's dedicated relative-time trigger (day/hour-of-day, relative to the
+  // participant's individual study start); its day/hour fields are replaced below by
+  // the milestone + relative/absolute scheduler UI also used for Observations
+  const RELATIVE_TIME_TRIGGER_ID = 'relative-time-trigger';
 
   /*trigger type options are used for the trigger type dropdown to switch between and provide a specific description*/
   const triggerTypesOptions = triggerFactories.map((tf: any) => ({
@@ -122,6 +140,62 @@ Licensed under the Elastic License 2.0. */
   const triggerProperties: Ref<Property<any>[] | undefined> = ref(
     triggerType.value ? getTriggerProperties(triggerType.value) : undefined,
   );
+
+  const isScheduleTrigger = computed(
+    () => triggerType.value === RELATIVE_TIME_TRIGGER_ID,
+  );
+  const filteredTriggerProperties = computed(() =>
+    isScheduleTrigger.value
+      ? (triggerProperties.value?.filter(
+          (p) => p.id !== 'day' && p.id !== 'hour',
+        ) ?? [])
+      : (triggerProperties.value ?? []),
+  );
+
+  const milestoneId: Ref<number | undefined> = ref(intervention.milestoneId);
+  const selectedMilestone = computed(() =>
+    milestoneStore.milestones.find((m) => m.milestoneId === milestoneId.value),
+  );
+  const scheduler: Ref<ObservationSchedule> = ref(intervention.schedule ?? {});
+
+  function openScheduler(schedulerType: string): void {
+    dialog.open(
+      schedulerType === 'relative' ? RelativeScheduler : AbsoluteScheduler,
+      {
+        data: {
+          scheduler: scheduler.value,
+          schedulerType: scheduler.value.type,
+          milestone: selectedMilestone.value,
+        },
+        props: {
+          header:
+            schedulerType === 'relative'
+              ? t('scheduler.relativeDialogTitle')
+              : t('scheduler.dialogTitle'),
+          style: {
+            width: '50vw',
+          },
+          breakpoints: {
+            '960px': '75vw',
+            '640px': '90vw',
+          },
+          modal: true,
+          draggable: false,
+        },
+        onClose: (options) => {
+          if (options?.data) {
+            scheduler.value = options.data;
+          }
+        },
+      },
+    );
+  }
+
+  function removeScheduler(): void {
+    if (scheduler.value) {
+      scheduler.value = {};
+    }
+  }
 
   const removeActions: number[] = [];
 
@@ -189,8 +263,41 @@ Licensed under the Elastic License 2.0. */
     });
   }
 
+  const minDate = (date: Date): Date => {
+    date.setHours(0, 0, 0);
+    return date;
+  };
+
+  const maxDate = (date: Date): Date => {
+    date.setHours(23, 59, 59);
+    return date;
+  };
+
   function save(): void {
-    if (errors.length === 0) {
+    if (isScheduleTrigger.value && isObjectEmpty(scheduler.value)) {
+      if (studyStore.study.plannedStart && studyStore.study.plannedEnd) {
+        scheduler.value = {
+          type: ScheduleType.Event,
+          dtstart: minDate(
+            new Date(studyStore.study.plannedStart),
+          ).toISOString(),
+          dtend: maxDate(new Date(studyStore.study.plannedEnd)).toISOString(),
+        };
+      } else {
+        const date = new Date();
+        scheduler.value = {
+          dtstart: minDate(date).toISOString(),
+          dtend: maxDate(date).toISOString(),
+        };
+      }
+    }
+
+    checkErrors();
+    if (errors.value.length > 0) {
+      scrollToFirstError();
+      return;
+    }
+    if (errors.value.length === 0) {
       Promise.all(
         [
           ...actionsArray.value.map((action: Action, id) => ({
@@ -238,8 +345,13 @@ Licensed under the Elastic License 2.0. */
             trigger: {},
             actions: [],
             studyGroupId: studyGroupId.value,
-            observationGroupIds: selectedObservationGroups.value?.length ? selectedObservationGroups.value.map((id: string) => parseInt(id)) : [],
-            schedule: intervention.schedule,
+            observationGroupIds: selectedObservationGroups.value?.length
+              ? selectedObservationGroups.value.map((id: string) =>
+                  parseInt(id),
+                )
+              : [],
+            schedule: scheduler.value,
+            milestoneId: milestoneId.value,
           } as Intervention;
 
           if (triggerProperties.value) {
@@ -274,30 +386,30 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
-  let errors: MoreTableChoice[] = [];
+  const errors: Ref<MoreTableChoice[]> = ref([]);
 
   function checkErrors(): void {
-    errors = [];
+    errors.value = [];
     if (!title.value) {
-      errors.push({
+      errors.value.push({
         label: 'title',
         value: t('intervention.error.addTitle'),
       } as MoreTableChoice);
     }
     if (typeof triggerProperties.value === 'undefined') {
-      errors.push({
+      errors.value.push({
         label: ListComponentsComponentTypeEnum.Trigger,
         value: t('intervention.error.addTriggerTypeConfig'),
       } as MoreTableChoice);
     }
     if (!actionsArray.value.length) {
-      errors.push({
+      errors.value.push({
         label: ListComponentsComponentTypeEnum.Action,
         value: t('intervention.error.addAction'),
       } as MoreTableChoice);
     }
     if (propInputError) {
-      errors.push({
+      errors.value.push({
         label: 'propInputError',
         value: t('intervention.error.triggerProp'),
       } as MoreTableChoice);
@@ -305,7 +417,7 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getError(label: string): string | null | undefined {
-    return errors.find((el) => el.label === label)?.value;
+    return errors.value.find((el) => el.label === label)?.value;
   }
 
   function cancel(): void {
@@ -388,9 +500,9 @@ Licensed under the Elastic License 2.0. */
       :class="{ 'gap-y-2': !editable }"
       @submit.prevent="save()"
     >
-      <div class="col-start-0 col-span-8 mt-2" :class="{ 'pb-4': !editable }">
+      <div class="col-span-8 col-start-0 mt-2" :class="{ 'pb-4': !editable }">
         <h5>{{ $t('intervention.dialog.label.interventionTitle') }}*</h5>
-        <div v-if="getError('title')" class="error col-span-8 mb-2">
+        <div v-if="getError('title')" class="error error-label col-span-8 mb-2">
           {{ getError('title') }}
         </div>
         <InputText
@@ -403,7 +515,7 @@ Licensed under the Elastic License 2.0. */
         ></InputText>
       </div>
 
-      <div class="col-start-0 col-span-8">
+      <div class="col-span-8 col-start-0">
         <h5 class="mb-2">{{ $t('study.props.purpose') }}</h5>
         <Textarea
           v-model="purpose"
@@ -414,38 +526,58 @@ Licensed under the Elastic License 2.0. */
         ></Textarea>
       </div>
       <div
-        class="section-group col-start-0 col-span-8 mt-4 grid grid-cols-2 items-end lg:grid-cols-3"
+        class="section-group col-span-8 col-start-0 mt-4 grid grid-cols-2 items-end lg:grid-cols-3"
       >
-        <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
-        <div class="col-span-3 col-start-3" :class="{ 'text-end': !editable }">
-          <div class="col-span-3">
-            <div v-if="!editable" class="inline font-bold">
-              {{ $t('intervention.dialog.label.triggerType') }}
-            </div>
-            <Dropdown
-              v-model="triggerType"
-              :options="triggerTypesOptions"
-              class="dropdown-btn col-span-1 w-full"
-              option-label="label"
-              option-value="value"
-              required
-              :disabled="!editable"
-              :placeholder="$t('intervention.placeholder.trigger')"
-              @change="setTriggerConfig(triggerType)"
-            />
-          </div>
-        </div>
-        <div class="col-span-6">
+        <div
+          v-if="milestoneStore.milestones.length > 0"
+          class="col-span-2 col-start-1 mb-4 lg:col-span-3 lg:col-start-1"
+        >
+          <h5 class="mb-1">{{ $t('milestone.singular') }}</h5>
+          <Dropdown
+            v-model="milestoneId"
+            :options="milestoneStore.milestones"
+            option-label="name"
+            option-value="milestoneId"
+            show-clear
+            :disabled="!editable"
+            :placeholder="
+              $t('scheduler.dialog.relativeSchedule.milestone.placeholder')
+            "
+          />
+          <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
           <div
-            v-if="getError(ListComponentsComponentTypeEnum.Trigger)"
-            class="error col-span-8 mb-4"
+            class="col-span-3 col-start-3"
+            :class="{ 'text-end': !editable }"
           >
-            {{ getError(ListComponentsComponentTypeEnum.Trigger) }}
+            <div class="col-span-3">
+              <div v-if="!editable" class="inline font-bold">
+                {{ $t('intervention.dialog.label.triggerType') }}
+              </div>
+              <Dropdown
+                v-model="triggerType"
+                :options="triggerTypesOptions"
+                class="dropdown-btn col-span-1 w-full"
+                option-label="label"
+                option-value="value"
+                required
+                :disabled="!editable"
+                :placeholder="$t('intervention.placeholder.trigger')"
+                @change="setTriggerConfig(triggerType)"
+              />
+            </div>
+          </div>
+          <div class="col-span-6">
+            <div
+              v-if="getError(ListComponentsComponentTypeEnum.Trigger)"
+              class="error error-label col-span-8 mb-4"
+            >
+              {{ getError(ListComponentsComponentTypeEnum.Trigger) }}
+            </div>
           </div>
         </div>
         <div
           v-if="triggerType"
-          class="section-content col-span-2 mt-2.5 grid grid-cols-2 rounded p-5 lg:col-span-3 lg:grid-cols-3"
+          class="section-content col-span-2 col-start-1 mt-2.5 grid grid-cols-2 rounded p-5 lg:col-span-3 lg:grid-cols-3"
         >
           <div
             v-if="triggerType"
@@ -461,15 +593,15 @@ Licensed under the Elastic License 2.0. */
           >
             {{ getTriggerTypeDescription(triggerType) }}
           </div>
-          <div class="col-start-0 col-span-3">
+          <div class="col-span-3 col-start-0">
             <div v-if="triggerJsonError && editable" class="error mb-4">
               {{ triggerJsonError }}
             </div>
 
-            <div v-if="triggerProperties">
+            <div v-if="filteredTriggerProperties.length">
               <PropertyInputs
                 :editable="editable"
-                :property-list="triggerProperties"
+                :property-list="filteredTriggerProperties"
                 :context="{
                   studyId: studyStore.studyId,
                   groupId: studyGroupId,
@@ -478,11 +610,37 @@ Licensed under the Elastic License 2.0. */
                 @on-error="propertyError($event)"
               />
             </div>
+
+            <SchedulerInfoBlock
+              v-if="isScheduleTrigger"
+              :scheduler="scheduler"
+              :editable="editable"
+              :milestone="selectedMilestone"
+              class="mb-2"
+              @open-dialog="openScheduler($event)"
+              @remove-scheduler="removeScheduler"
+            />
+            <info-warning-error-section
+              v-else-if="milestoneId"
+              :is-warning="true"
+              :error-message="
+                $t(
+                  'scheduler.dialog.relativeSchedule.milestone.noEffectOnTrigger',
+                  {
+                    triggerName: $t(
+                      'intervention.factory.trigger.relativeTime.title',
+                    ),
+                  },
+                )
+              "
+              :error-label="$t('global.labels.warning')"
+              class="col-span-8 mb-2"
+            />
           </div>
         </div>
       </div>
 
-      <div class="section-group col-start-0 col-span-8 mt-8 grid grid-cols-9">
+      <div class="section-group col-span-8 col-start-0 mt-8 grid grid-cols-9">
         <div class="col-span-9 grid grid-cols-2 items-end lg:grid-cols-3">
           <h5 class="lg:col-span-2">{{ $t('intervention.props.action') }}*</h5>
           <Button
@@ -505,13 +663,13 @@ Licensed under the Elastic License 2.0. */
           </Button>
           <div
             v-if="getError(ListComponentsComponentTypeEnum.Action)"
-            class="error col-span-8 mb-4"
+            class="error error-label col-span-8 mb-4"
           >
             {{ getError(ListComponentsComponentTypeEnum.Action) }}
           </div>
           <Menu ref="actionMenu" :model="actionTypesOptions" :popup="true" />
         </div>
-        <div v-if="actionsEmptyError" class="error col-span-8">
+        <div v-if="actionsEmptyError" class="error error-label col-span-8">
           {{ actionsEmptyError }}
         </div>
         <div
@@ -522,7 +680,7 @@ Licensed under the Elastic License 2.0. */
             <div
               v-for="(action, index) in actionsArray"
               :key="index"
-              class="col-start-0 js-action col-span-9"
+              class="js-action col-span-9 col-start-0"
               :class="{ 'mb-4': index < actionsArray.length - 1 }"
             >
               <hr v-if="index !== 0" class="my-4" />
@@ -564,38 +722,46 @@ Licensed under the Elastic License 2.0. */
         </div>
       </div>
 
-      <div class="col-start-0 col-span-8">
+      <div class="col-span-8 col-start-0">
         <h5 v-if="editable" class="pb-2 font-bold">
-          {{ editable ? $t('study.dialog.label.chooseGroups') : $t('study.props.groups') }}
+          {{
+            editable
+              ? $t('study.dialog.label.chooseGroups')
+              : $t('study.props.groups')
+          }}
         </h5>
         <div v-if="editable" class="mb-2">
-          {{ $t('study.dialog.description.howToCreateGroups', {for: $t('intervention.plural')}) }}
+          {{
+            $t('study.dialog.description.howToCreateGroups', {
+              for: $t('intervention.plural'),
+            })
+          }}
         </div>
         <div class="flex gap-5">
-        <div>
-          <div class="mb-1">{{ $t('studyGroup.plural')}}</div>
+          <div>
+            <div class="mb-1">{{ $t('studyGroup.plural') }}</div>
             <Dropdown
-            v-model="studyGroupId"
-            :options="groupStates"
-            option-label="label"
-            option-value="value"
-            :disabled="!editable"
-            class="w-fit"
-            :class="{ 'dropdown-has-value': studyGroupId }"
-            :placeholder="
-              studyGroupId
-                ? getLabelForChoiceValue(studyGroupId as number, groupStates)
-                : groupPlaceholder
-                  ? (groupPlaceholder as string)
-                  : $t('global.placeholder.entireStudy')
-            "
-          >
-            <template #option="optionProps">
-              <div class="p-select-car-option">
-                <span>{{ optionProps.option.label }}</span>
-              </div>
-            </template>
-          </Dropdown>
+              v-model="studyGroupId"
+              :options="groupStates"
+              option-label="label"
+              option-value="value"
+              :disabled="!editable"
+              class="w-fit"
+              :class="{ 'dropdown-has-value': studyGroupId }"
+              :placeholder="
+                studyGroupId
+                  ? getLabelForChoiceValue(studyGroupId as number, groupStates)
+                  : groupPlaceholder
+                    ? (groupPlaceholder as string)
+                    : $t('global.placeholder.entireStudy')
+              "
+            >
+              <template #option="optionProps">
+                <div class="p-select-car-option">
+                  <span>{{ optionProps.option.label }}</span>
+                </div>
+              </template>
+            </Dropdown>
           </div>
           <div>
             <div class="mb-1">{{ $t('observationGroup.plural') }}</div>
@@ -605,27 +771,35 @@ Licensed under the Elastic License 2.0. */
               :disabled="!editable"
               option-label="label"
               option-value="value"
-              :placeholder="$t('global.placeholder.chooseDropdownOptionDefault')"
+              :placeholder="
+                $t('global.placeholder.chooseDropdownOptionDefault')
+              "
               :show-toggle-all="false"
               class="z-top custom-multiselect-root"
               :panel-class="'custom-multiselect-panel'"
             >
               <template #value="{ value }">
-                      <span v-if="value?.length > 0">{{ value.map((item: string) => observationGroupStates.find(
-                        (group: MoreTableChoice) => group.value === item
-                      )?.label).join(', ')  }}</span>
+                <span v-if="value?.length > 0">{{
+                  value
+                    .map(
+                      (item: string) =>
+                        observationGroupStates.find(
+                          (group: MoreTableChoice) => group.value === item,
+                        )?.label,
+                    )
+                    .join(', ')
+                }}</span>
                 <span v-else class="text-gray-400">
-                        {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
-                      </span>
+                  {{ $t('global.placeholder.chooseDropdownOptionDefault') }}
+                </span>
               </template>
-
             </MultiSelect>
           </div>
         </div>
       </div>
 
       <div
-        class="col-start-0 buttons col-span-8 mt-1 flex flex-row items-center justify-end text-right"
+        class="buttons col-span-8 col-start-0 mt-1 flex flex-row items-center justify-end text-right"
       >
         <Button class="btn-gray" @click="cancel()">
           <span v-if="editable">{{ $t('global.labels.cancel') }}</span>
@@ -644,22 +818,22 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped>
-@import '../../styles/components/moreTable-dialogs.css';
+  @import '../../styles/components/moreTable-dialogs.css';
 
-:deep(.dropdown-btn .p-select-label) {
-  color: white!important;
-}
-
-.dropdown-btn {
-  background-color: var(--primary-color);
-  color: white;
-  :deep(.p-select-label),
-  :deep(.p-select-trigger-icon) {
-    color: white;
+  :deep(.dropdown-btn .p-select-label) {
+    color: white !important;
   }
-}
 
-.dialog #interventionDialogForm .section-group .section-content {
-  border: 1px solid var(--bluegray-50);
-}
+  .dropdown-btn {
+    background-color: var(--primary-color);
+    color: white;
+    :deep(.p-select-label),
+    :deep(.p-select-trigger-icon) {
+      color: white;
+    }
+  }
+
+  .dialog #interventionDialogForm .section-group .section-content {
+    border: 1px solid var(--bluegray-50);
+  }
 </style>
