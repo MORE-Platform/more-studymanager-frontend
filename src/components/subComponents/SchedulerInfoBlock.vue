@@ -2,14 +2,16 @@
 license agreements (LBI-DHP: Ludwig Boltzmann Institute for Digital Health and
 Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
-Licensed under the Elastic License 2.0. */
+Licensed under the Apache 2.0 license (see
+https://www.apache.org/licenses/LICENSE-2.0). */
 <script setup lang="ts">
-  import { PropType } from 'vue';
   import {
-    ObservationSchedule,
-    RelativeEvent,
+    Duration,
     Event,
     Frequency,
+    Milestone,
+    ObservationSchedule,
+    RelativeEvent,
   } from '@gs/models';
   import Button from 'primevue/button';
   import { useI18n } from 'vue-i18n';
@@ -19,20 +21,17 @@ Licensed under the Elastic License 2.0. */
 
   const { t, d } = useI18n();
 
-  const props = defineProps({
-    scheduler: {
-      type: Object as PropType<ObservationSchedule>,
-      required: true,
-    },
-    error: {
-      type: String,
-      default: '',
-    },
-    editable: {
-      type: Boolean,
-      default: true,
-    },
-  });
+  const {
+    scheduler,
+    error = undefined,
+    editable = true,
+    milestone = undefined,
+  } = defineProps<{
+    scheduler: ObservationSchedule;
+    error?: string | undefined;
+    editable?: boolean;
+    milestone?: Milestone | undefined;
+  }>();
 
   const emit = defineEmits<{
     (e: 'openDialog', schedulerType: string): void;
@@ -40,7 +39,7 @@ Licensed under the Elastic License 2.0. */
   }>();
 
   function getSchedulerDescription(): string {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event:
         return t('scheduler.dialog.absoluteSchedule.description');
       case ScheduleType.RelativeEvent:
@@ -50,10 +49,29 @@ Licensed under the Elastic License 2.0. */
     }
   }
 
+  function getMilestoneOffsetLabel(offset?: Duration): string | undefined {
+    if (!offset || offset.value === undefined || !offset.unit) {
+      return undefined;
+    }
+    const unit = t(`scheduler.preview.unit.${offset.unit}`);
+    if (offset.value === 0) {
+      return t('scheduler.dialog.relativeSchedule.milestone.at');
+    }
+    return offset.value < 0
+      ? t('scheduler.dialog.relativeSchedule.milestone.before', {
+          value: Math.abs(offset.value),
+          unit,
+        })
+      : t('scheduler.dialog.relativeSchedule.milestone.after', {
+          value: offset.value,
+          unit,
+        });
+  }
+
   function getDateValues(prop: string): string | undefined {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event: {
-        const schedule = props.scheduler as Event;
+        const schedule = scheduler as Event;
         switch (prop) {
           case 'dtstart': {
             return schedule.dtstart
@@ -69,7 +87,29 @@ Licensed under the Elastic License 2.0. */
         }
       }
       case ScheduleType.RelativeEvent: {
-        const schedule = props.scheduler as RelativeEvent;
+        const schedule = scheduler as RelativeEvent;
+        if (milestone) {
+          switch (prop) {
+            case 'dtstart': {
+              const offsetLabel = getMilestoneOffsetLabel(
+                schedule.dtstart.offset,
+              );
+              return offsetLabel
+                ? `${milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtstart.time)}`
+                : undefined;
+            }
+            case 'dtend': {
+              const offsetLabel = getMilestoneOffsetLabel(
+                schedule.dtend.offset,
+              );
+              return offsetLabel
+                ? `${milestone.name} (${offsetLabel}), ${timeToHourMinuteString(schedule.dtend.time)}`
+                : undefined;
+            }
+            default:
+              return undefined;
+          }
+        }
         switch (prop) {
           case 'dtstart': {
             return schedule.dtstart.offset?.value &&
@@ -95,10 +135,10 @@ Licensed under the Elastic License 2.0. */
   }
 
   function getRepetitionValue(prop: string): string | undefined {
-    switch (props.scheduler.type) {
+    switch (scheduler.type) {
       case ScheduleType.Event:
         {
-          const schedule = props.scheduler as Event;
+          const schedule = scheduler as Event;
           switch (prop) {
             case 'every': {
               switch (schedule.rrule?.freq) {
@@ -119,7 +159,7 @@ Licensed under the Elastic License 2.0. */
 
               if (schedule.rrule?.byday) {
                 schedule.rrule.byday.forEach((item, index) => {
-                  string += t(`scheduler.weekday.props.${item}`);
+                  string += t(`scheduler.weekday.${item}`);
 
                   if (
                     schedule.rrule?.byday &&
@@ -155,7 +195,7 @@ Licensed under the Elastic License 2.0. */
         }
         break;
       case ScheduleType.RelativeEvent: {
-        const schedule = props.scheduler as RelativeEvent;
+        const schedule = scheduler as RelativeEvent;
         switch (prop) {
           case 'every':
             return schedule.rrrule?.frequency
@@ -184,8 +224,13 @@ Licensed under the Elastic License 2.0. */
     class="col-span-8 col-start-0 grid grid-cols-8"
     :class="{ 'scheduler-not-editable pb-4': !editable }"
   >
-    <h5 class="col-span-8 col-start-0">{{ $t('scheduler.singular') }}*</h5>
+    <h5 class="col-span-8 col-start-0" :class="{ 'error-label': !!error }">
+      {{ $t('scheduler.singular') }}*
+    </h5>
     <div class="col-span-8 mb-3">{{ getSchedulerDescription() }}</div>
+    <div v-if="error" class="error error-label col-span-8 mb-4">
+      {{ error }}
+    </div>
     <div
       v-if="isObjectEmpty(scheduler)"
       class="schedule-preview col-span-8 mb-2 px-6 py-4 italic"

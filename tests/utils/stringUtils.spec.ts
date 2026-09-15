@@ -4,13 +4,10 @@
  for Digital Health and Prevention -- A research institute of the
  Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
  Foerderung der wissenschaftlichen Forschung).
- Licensed under the Elastic License 2.0.
+ Licensed under the Apache License, Version 2.0.
  */
-import { describe, it, expect } from 'vitest';
-import {
-  validateEmail,
-  validateTelephoneNumber,
-} from '../../src/utils/stringUtils';
+import { describe, expect, it } from 'vitest';
+import { validateEmail, validateTelephoneNumber } from '../../src/utils/stringUtils';
 
 describe('The validateEmail method', () => {
   it('should return true for valid email addresses', () => {

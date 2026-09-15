@@ -4,19 +4,19 @@
  for Digital Health and Prevention -- A research institute of the
  Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
  Foerderung der wissenschaftlichen Forschung).
- Licensed under the Elastic License 2.0.
+ Licensed under the Apache License, Version 2.0.
  */
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
+  createLuxonDateTime,
+  dateTimeFromString,
+  dateTimeStringToDate,
   dateToDateString,
   dateToDateTimeString,
-  dateTimeStringToDate,
-  ZTimeToOffsetTime,
-  ZTimeStringToOffsetTimeString,
-  timeToHourMinuteString,
-  dateTimeFromString,
-  createLuxonDateTime,
   timeFromString,
+  timeToHourMinuteString,
+  ZTimeStringToOffsetTimeString,
+  ZTimeToOffsetTime
 } from '../../src/utils/dateUtils';
 
 describe('The dateUtils.ts function ', () => {

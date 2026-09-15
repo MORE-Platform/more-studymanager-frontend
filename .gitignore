@@ -11,3 +11,4 @@ ConfiguratorAPI.yaml
 src/generated-sources
 tests/coverage
 .env
+.playwright-mcp

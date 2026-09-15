@@ -9,7 +9,8 @@
 import { useMutation, UseMutationReturnType, useQuery, useQueryClient, UseQueryReturnType } from '@tanstack/vue-query';
 import { useParticipantsApi } from '../composable/useApi';
 import { MaybeRefOrGetter, toValue } from 'vue';
-import { Participant } from '@gs';
+import { AxiosError } from 'axios';
+import { ObservationResyncRequest, Participant } from '@gs';
 
 export const useParticipants = (
   studyId: MaybeRefOrGetter<number>,
@@ -108,6 +109,84 @@ export const useDeleteParticipant = (): UseMutationReturnType<
       queryClient.invalidateQueries({
         queryKey: ['studies', studyId, 'participants'],
       });
+    },
+  });
+};
+
+export const useObservationResyncStatus = (
+  studyId: MaybeRefOrGetter<number>,
+  participantId: MaybeRefOrGetter<number>,
+  observationId: MaybeRefOrGetter<number>,
+): UseQueryReturnType<ObservationResyncRequest, Error> => {
+  const { participantsApi } = useParticipantsApi();
+
+  return useQuery({
+    queryKey: [
+      'studies',
+      studyId,
+      'participants',
+      participantId,
+      'observations',
+      observationId,
+      'resync',
+    ],
+    queryFn: () =>
+      participantsApi
+        .getObservationResyncRequest(
+          toValue(studyId),
+          toValue(participantId),
+          toValue(observationId),
+        )
+        .then((res) => res.data),
+    enabled: () =>
+      !!toValue(studyId) &&
+      !!toValue(participantId) &&
+      !!toValue(observationId),
+  });
+};
+
+export const useCreateObservationResync = (): UseMutationReturnType<
+  ObservationResyncRequest,
+  Error,
+  { studyId: number; participantId: number; observationId: number },
+  unknown
+> => {
+  const { participantsApi } = useParticipantsApi();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ studyId, participantId, observationId }) =>
+      participantsApi
+        .createObservationResyncRequest(studyId, participantId, observationId)
+        .then((res) => res.data),
+    onSuccess: (resyncRequest, { studyId, participantId, observationId }) => {
+      queryClient.setQueryData(
+        [
+          'studies',
+          studyId,
+          'participants',
+          participantId,
+          'observations',
+          observationId,
+          'resync',
+        ],
+        resyncRequest,
+      );
+    },
+    onError: (error, { studyId, participantId, observationId }) => {
+      if ((error as AxiosError).response?.status === 409) {
+        queryClient.invalidateQueries({
+          queryKey: [
+            'studies',
+            studyId,
+            'participants',
+            participantId,
+            'observations',
+            observationId,
+            'resync',
+          ],
+        });
+      }
     },
   });
 };

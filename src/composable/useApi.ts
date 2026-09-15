@@ -4,26 +4,27 @@
  for Digital Health and Prevention -- A research institute of the
  Ludwig Boltzmann Gesellschaft, Oesterreichische Vereinigung zur
  Foerderung der wissenschaftlichen Forschung).
- Licensed under the Elastic License 2.0.
+ Licensed under the Apache 2.0 license (see https://www.apache.org/licenses/LICENSE-2.0).
  */
 import {
+  ApplicationsApi,
+  AuditLogApi,
+  CalendarApi,
+  CollaboratorsApi,
+  ComponentsApi,
   Configuration,
+  ConfigurationApi,
+  DataApi,
+  ImportExportApi,
+  InterventionsApi,
+  MilestonesApi,
+  ObservationGroupsApi,
+  ObservationsApi,
+  OccurredObservationsApi,
   ParticipantsApi,
   StudiesApi,
   StudyGroupsApi,
-  UsersApi,
-  ObservationsApi,
-  ComponentsApi,
-  InterventionsApi,
-  CollaboratorsApi,
-  ImportExportApi,
-  DataApi,
-  ConfigurationApi,
-  CalendarApi,
-  AuditLogApi,
-  OccurredObservationsApi,
-  ObservationGroupsApi,
-  ApplicationsApi
+  UsersApi
 } from '@gs';
 
 const apiConfig = {
@@ -49,6 +50,7 @@ let auditLogApi: AuditLogApi;
 let occurredObservationsApi: OccurredObservationsApi;
 let observationGroupsApi: ObservationGroupsApi;
 let applicationsApi: ApplicationsApi;
+let milestonesApi: MilestonesApi;
 
 export function useStudiesApi(): {
   studiesApi: StudiesApi;
@@ -191,5 +193,14 @@ export function useApplicationsApi(): {
   applicationsApi = applicationsApi || new ApplicationsApi(apiConfig);
   return {
     applicationsApi,
+  };
+}
+
+export function useMilestonesApi(): {
+  milestonesApi: MilestonesApi;
+} {
+  milestonesApi = milestonesApi || new MilestonesApi(apiConfig);
+  return {
+    milestonesApi,
   };
 }
