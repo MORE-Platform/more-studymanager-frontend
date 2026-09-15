@@ -4,7 +4,7 @@ Prevention -- A research institute of the Ludwig Boltzmann Gesellschaft,
 Oesterreichische Vereinigung zur Foerderung der wissenschaftlichen Forschung).
 Licensed under the Elastic License 2.0. */
 <script setup lang="ts">
-  import { inject, ref, Ref } from 'vue';
+  import { computed, inject, ref, Ref } from 'vue';
   import InputText from 'primevue/inputtext';
   import Textarea from 'primevue/textarea';
   import Button from 'primevue/button';
@@ -33,6 +33,7 @@ Licensed under the Elastic License 2.0. */
   import { useToastService } from '../../composable/toastService';
   import MultiSelect from 'primevue/multiselect';
   import { useObservationGroupStore } from '../../stores/observationGroupStore';
+  import { useMilestoneStore } from '../../stores/milestoneStore';
   import ObservationToggle from '../subComponents/ObservationToggle.vue';
   import { extractCurrentLimeDomain } from '../../utils/limeSurveyUtils';
 
@@ -42,6 +43,7 @@ Licensed under the Elastic License 2.0. */
   const { handleIndividualError } = useErrorHandling();
   const studyStore = useStudyStore();
   const observationGroupStore = useObservationGroupStore();
+  const milestoneStore = useMilestoneStore();
   const { t } = useI18n();
 
   const dialogRef: any = inject('dialogRef');
@@ -87,6 +89,11 @@ Licensed under the Elastic License 2.0. */
     observation.schedule ? observation.schedule : {},
   );
 
+  const milestoneId: Ref<number | undefined> = ref(observation.milestoneId);
+  const selectedMilestone = computed(() =>
+    milestoneStore.milestones.find((m) => m.milestoneId === milestoneId.value),
+  );
+
   const studyGroupId = ref(observation.studyGroupId);
 
   function getLabelForChoiceValue(
@@ -107,6 +114,7 @@ Licensed under the Elastic License 2.0. */
         data: {
           scheduler: scheduler.value,
           schedulerType: scheduler.value.type,
+          milestone: selectedMilestone.value,
         },
         props: {
           header:
@@ -202,6 +210,7 @@ Licensed under the Elastic License 2.0. */
       studyGroupId: studyGroupId.value,
       hidden: hidden.value,
       reminder: reminder.value,
+      milestoneId: milestoneId.value,
     } as Observation;
 
     if (!isObjectEmpty(scheduler.value)) {
@@ -280,10 +289,28 @@ Licensed under the Elastic License 2.0. */
           ></InputText>
         </div>
       </div>
+      <div
+        v-if="milestoneStore.milestones.length > 0"
+        class="col-span-8 col-start-0 mb-2"
+      >
+        <h5 class="mb-1">{{ $t('milestone.singular') }}</h5>
+        <Dropdown
+          v-model="milestoneId"
+          :options="milestoneStore.milestones"
+          option-label="name"
+          option-value="milestoneId"
+          show-clear
+          :disabled="!editable"
+          :placeholder="
+            $t('scheduler.dialog.relativeSchedule.milestone.placeholder')
+          "
+        />
+      </div>
       <SchedulerInfoBlock
         :scheduler="scheduler"
         :editable="editable"
         :error="getError('scheduler') ? (getError('scheduler') as string) : ''"
+        :milestone="selectedMilestone"
         class="mb-2"
         @open-dialog="openScheduler($event)"
         @remove-scheduler="removeScheduler"
@@ -439,37 +466,37 @@ Licensed under the Elastic License 2.0. */
 </template>
 
 <style scoped>
-@import '../../styles/components/moreTable-dialogs.css';
-@import '../../styles/components/eye-checkbox.css';
+  @import '../../styles/components/moreTable-dialogs.css';
+  @import '../../styles/components/eye-checkbox.css';
 
-.dialog {
-  :deep(.dropdown-has-value .p-select-label) {
-    color: var(--text-color);
-  }
-
-  .day {
-    &:after {
-      content: ', ';
+  .dialog {
+    :deep(.dropdown-has-value .p-select-label) {
+      color: var(--text-color);
     }
 
-    &:last-of-type:after {
-      content: '';
-    }
-  }
+    .day {
+      &:after {
+        content: ', ';
+      }
 
-  .info-box {
-    &-hidden {
-      width: 20vw;
-      border: 1px solid var(--bluegray-200);
-      transition: ease-in-out opacity 0.25s;
-      box-shadow: 1px 1px 5px var(--bluegray-200);
+      &:last-of-type:after {
+        content: '';
+      }
     }
 
-    &:hover {
-      .info-box-hidden {
-        opacity: 1;
+    .info-box {
+      &-hidden {
+        width: 20vw;
+        border: 1px solid var(--bluegray-200);
+        transition: ease-in-out opacity 0.25s;
+        box-shadow: 1px 1px 5px var(--bluegray-200);
+      }
+
+      &:hover {
+        .info-box-hidden {
+          opacity: 1;
+        }
       }
     }
   }
-}
 </style>
