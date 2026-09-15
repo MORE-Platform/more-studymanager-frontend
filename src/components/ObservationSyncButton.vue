@@ -19,6 +19,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
     studyId: number;
     participantId: number;
     observationId: number;
+    enabled: boolean;
   }>();
 
   const { t } = useI18n();
@@ -35,6 +36,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
   const pending = computed(
     () => resyncStatus.value?.pending || createResync.isPending.value,
   );
+  const disabled = computed(() => pending.value || !props.enabled);
 
   async function triggerResync(): Promise<void> {
     try {
@@ -67,7 +69,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
     type="button"
     icon="pi pi-sync"
     :loading="pending"
-    :disabled="pending"
+    :disabled="disabled"
     @click="triggerResync"
   />
 </template>
