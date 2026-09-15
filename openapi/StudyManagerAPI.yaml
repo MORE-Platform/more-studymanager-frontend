@@ -900,6 +900,44 @@ paths:
         '404':
           description: not found
 
+  /studies/{studyId}/participants/{participantId}/observations/{observationId}/resync:
+    parameters:
+      - $ref: '#/components/parameters/StudyId'
+      - $ref: '#/components/parameters/ParticipantId'
+      - $ref: '#/components/parameters/ObservationId'
+    get:
+      tags:
+        - participants
+      description: Current resync state for one observation of one participant
+      operationId: getObservationResyncRequest
+      responses:
+        '200':
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationResyncRequest'
+        '404':
+          description: study, participant or observation not found
+    post:
+      tags:
+        - participants
+      description: Request a resync of the data for this observation and participant
+      operationId: createObservationResyncRequest
+      responses:
+        '201':
+          description: resync requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObservationResyncRequest'
+        '400':
+          description: the observation does not support resync
+        '404':
+          description: study, participant or observation not found
+        '409':
+          description: a resync request is already pending
+
   /studies/{studyId}/occurredObservations:
     get:
       tags:
@@ -1884,6 +1922,8 @@ components:
           type: boolean
         visibility:
           $ref: '#/components/schemas/Visibility'
+        resyncable:
+          type: boolean
 
     Visibility:
       type: object
@@ -2223,6 +2263,30 @@ components:
         - start
         - end
         - state
+
+    ObservationResyncRequest:
+      type: object
+      properties:
+        studyId:
+          $ref: '#/components/schemas/StudyId'
+        participantId:
+          $ref: '#/components/schemas/Id'
+        observationId:
+          $ref: '#/components/schemas/Id'
+        resyncable:
+          type: boolean
+          readOnly: true
+        pending:
+          type: boolean
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - studyId
+        - participantId
+        - observationId
+        - pending
 
     StudyTimeline:
       type: object

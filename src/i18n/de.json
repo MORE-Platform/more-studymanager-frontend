@@ -683,6 +683,12 @@
         "deleteWithData": "Sollen alle Daten gelöscht werden?",
         "qrCode": "Mit diesem QR Code kann sich der Teilnehmer {part} mittels der More Handy App anmelden.",
         "alert": "Der QR Code Link wurde erfolgreich kopiert."
+      },
+      "resync": {
+        "columnHeader": "Sync",
+        "tooltip": "Daten jetzt synchronisieren",
+        "requested": "Daten-Synchronisierung angefordert",
+        "failed": "Anfrage zur Daten-Synchronisierung fehlgeschlagen"
       }
     },
     "participantsList": {

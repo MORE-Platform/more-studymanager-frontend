@@ -683,6 +683,12 @@
         "delete": "Do you really want to delete this participant?",
         "deleteWithData": "Include all data for the participant?",
         "qrCode": "With this QR code, participant {part} can log in using the More mobile app."
+      },
+      "resync": {
+        "columnHeader": "Sync",
+        "tooltip": "Sync data now",
+        "requested": "Data sync requested",
+        "failed": "Failed to request data sync"
       }
     },
     "participantsList": {
