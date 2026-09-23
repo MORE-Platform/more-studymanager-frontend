@@ -286,6 +286,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
       } else {
         const date = new Date();
         scheduler.value = {
+          type: ScheduleType.Event,
           dtstart: minDate(date).toISOString(),
           dtend: maxDate(date).toISOString(),
         };
@@ -350,7 +351,11 @@ https://www.apache.org/licenses/LICENSE-2.0). */
                   parseInt(id),
                 )
               : [],
-            schedule: scheduler.value,
+            // `schedule` is a discriminated union on the backend: an empty
+            // object has no `type` and fails to deserialize, so leave it out
+            schedule: isObjectEmpty(scheduler.value)
+              ? undefined
+              : scheduler.value,
             milestoneId: milestoneId.value,
           } as Intervention;
 

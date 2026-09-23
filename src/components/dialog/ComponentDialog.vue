@@ -234,6 +234,7 @@ Licensed under the Apache License, Version 2.0. */
       } else {
         const date = new Date();
         scheduler.value = {
+          type: ScheduleType.Event,
           dtstart: minDate(date).toISOString(),
           dtend: maxDate(date).toISOString(),
         };
