@@ -286,6 +286,7 @@ https://www.apache.org/licenses/LICENSE-2.0). */
       } else {
         const date = new Date();
         scheduler.value = {
+          type: ScheduleType.Event,
           dtstart: minDate(date).toISOString(),
           dtend: maxDate(date).toISOString(),
         };
@@ -350,7 +351,11 @@ https://www.apache.org/licenses/LICENSE-2.0). */
                   parseInt(id),
                 )
               : [],
-            schedule: scheduler.value,
+            // `schedule` is a discriminated union on the backend: an empty
+            // object has no `type` and fails to deserialize, so leave it out
+            schedule: isObjectEmpty(scheduler.value)
+              ? undefined
+              : scheduler.value,
             milestoneId: milestoneId.value,
           } as Intervention;
 
@@ -544,35 +549,32 @@ https://www.apache.org/licenses/LICENSE-2.0). */
               $t('scheduler.dialog.relativeSchedule.milestone.placeholder')
             "
           />
-          <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
-          <div
-            class="col-span-3 col-start-3"
-            :class="{ 'text-end': !editable }"
-          >
-            <div class="col-span-3">
-              <div v-if="!editable" class="inline font-bold">
-                {{ $t('intervention.dialog.label.triggerType') }}
-              </div>
-              <Dropdown
-                v-model="triggerType"
-                :options="triggerTypesOptions"
-                class="dropdown-btn col-span-1 w-full"
-                option-label="label"
-                option-value="value"
-                required
-                :disabled="!editable"
-                :placeholder="$t('intervention.placeholder.trigger')"
-                @change="setTriggerConfig(triggerType)"
-              />
+        </div>
+        <h5 class="col-span-2">{{ $t('intervention.props.trigger') }}*</h5>
+        <div class="col-span-3 col-start-3" :class="{ 'text-end': !editable }">
+          <div class="col-span-3">
+            <div v-if="!editable" class="inline font-bold">
+              {{ $t('intervention.dialog.label.triggerType') }}
             </div>
+            <Dropdown
+              v-model="triggerType"
+              :options="triggerTypesOptions"
+              class="dropdown-btn col-span-1 w-full"
+              option-label="label"
+              option-value="value"
+              required
+              :disabled="!editable"
+              :placeholder="$t('intervention.placeholder.trigger')"
+              @change="setTriggerConfig(triggerType)"
+            />
           </div>
-          <div class="col-span-6">
-            <div
-              v-if="getError(ListComponentsComponentTypeEnum.Trigger)"
-              class="error error-label col-span-8 mb-4"
-            >
-              {{ getError(ListComponentsComponentTypeEnum.Trigger) }}
-            </div>
+        </div>
+        <div class="col-span-6">
+          <div
+            v-if="getError(ListComponentsComponentTypeEnum.Trigger)"
+            class="error error-label col-span-8 mb-4"
+          >
+            {{ getError(ListComponentsComponentTypeEnum.Trigger) }}
           </div>
         </div>
         <div

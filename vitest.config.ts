@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@gs': resolve(__dirname, './src/generated-sources'),
+      '@': resolve(__dirname, './src'),
     },
   },
   test: {
