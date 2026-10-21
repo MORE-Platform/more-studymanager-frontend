@@ -86,7 +86,7 @@ Licensed under the Apache 2.0 license (see https://www.apache.org/licenses/LICEN
       >
         <div class="col-start-0 col-span-8" :class="{ 'pb-4': !editable }">
           <h5 class="my-1 text-base font-bold">
-            {{ $t('integration.dialog.label.integrationTitle') }}
+            {{ $t('integration.dialog.label.integrationTitle') }}*
           </h5>
 
           <div v-if="!tokenLabel" class="error col-span-8 mb-2">
