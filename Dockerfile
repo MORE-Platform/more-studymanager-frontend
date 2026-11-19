@@ -14,6 +14,7 @@ ARG KEYCLOAK_CLIENTID=oauth2-pkce-client
 RUN npm run package:quick
 
 # production stage
+# nginx will update to next stable alpine version with build
 FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY docker/nginx/*.conf.template /etc/nginx/templates/
